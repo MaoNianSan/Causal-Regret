@@ -1,0 +1,8 @@
+{
+  "figure_id": "fig_exp1_proxy_quality",
+  "generated_at_utc": "2026-06-20T08:29:55.895873+00:00",
+  "description": "Proxy-quality sweep within the unlabelled regime: time-averaged Kalman state error versus contextual causal regret. The two settings share state, context, and delay paths; only proxy observation noise differs.",
+  "data_csv": "figures/data/fig_exp1_proxy_quality_data.csv",
+  "paper_result": false,
+  "comparison_rule": "Method comparisons are made only within the same information regime. No panel mixes labelled, mixture_labelled, and unlabelled methods."
+}

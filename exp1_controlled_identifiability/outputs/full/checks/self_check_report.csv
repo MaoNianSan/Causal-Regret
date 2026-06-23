@@ -1,0 +1,28 @@
+check_name,status,details
+backend completed,PASSED,completed
+contextual estimand declared,PASSED,"all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]"
+primary shared-path contract declared,PASSED,pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay
+structural EM contract declared,PASSED,default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation
+proxy feature-consistency contract declared,PASSED,"proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature"
+no output marked as paper result,PASSED,paper_result=False
+seed summary schema,PASSED,missing=[]
+expected run count,PASSED,expected=7920; observed=7920
+unique design keys,PASSED,duplicates=0
+all learners receive context,PASSED,context_observed_by_all
+regret comparator is context-information oracle,PASSED,['context_information_oracle']
+causal regret finite,PASSED,final_Rc
+primary paths shared across methods,PASSED,max distinct path IDs=1
+primary realised delay unchanged by learner,PASSED,max method spread=0.0
+primary paths calibrated to observed-delay target,PASSED,max |mean-15|=0.011049723756908492; tolerance=0.75
+action-dependent delay isolated as stress test,PASSED,policy_dependent_delay
+per-arrival feedback-unit accounting,PASSED,max |units-arrivals|=0.0
+labelled source learner processes each source outcome,PASSED,max discrepancy=0.0
+soft attribution metrics are posterior-derived,PASSED,finite posterior metrics=1440; events=5911519
+structural EM uses observable-state integrated delay likelihood,PASSED,['gaussian_observable_state_integrated_quadrature']
+EM ablation is explicitly stationary,PASSED,['stationary_geometric_ablation']
+EM/proxy labelled updates share their decision feature space,PASSED,max feature discrepancy=0.0
+proxy error is time-averaged and finite,PASSED,nonfinite=0
+proxy quality sweep changes time-averaged state error,PASSED,"{'proxy_bad_matched_15': 0.6803731050831184, 'proxy_good_matched_15': 0.21681860082647356}"
+design manifest expected count,PASSED,expected=7920; observed=7920
+design manifest contains no failed row,PASSED,{'completed': 7920}
+registered diagnostic figure bundles exist,PASSED,

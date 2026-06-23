@@ -1,0 +1,12 @@
+{
+  "completed_runs": 7920,
+  "cpu_count": 32,
+  "expected_runs": 7920,
+  "is_smoke": false,
+  "mode": "full",
+  "project_id": "exp1_controlled_identifiability_contextual",
+  "status": "PASSED",
+  "updated_at": "2026-06-20T08:29:56.192305+00:00",
+  "workers": 24,
+  "workers_source": "environment"
+}

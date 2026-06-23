@@ -1,0 +1,54 @@
+{
+  "timestamp_utc": "2026-06-22T07:14:27+00:00",
+  "mode": "fast",
+  "paper_result": false,
+  "experiment_id": "exp4_recoverability_boundary",
+  "experiment_display_name": "Source-label sufficiency and proxy-only recovery limitation",
+  "T": 5000,
+  "warmup_t": 250,
+  "primary_metric": "causal_regret_per_round",
+  "primary_metric_formula": "mean_{t=warmup_t+1..T}[ell(A_t,S_t)-min_a ell(a,S_t)]",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "n_jobs": 16,
+  "requested_n_jobs": 28,
+  "task_count": 132,
+  "run_directory": "/home/ubuntu/crmd_df/runs/exp4_unclean_20260622_150646/src/exp4_proxy_sufficiency_impossibility/outputs/runs/exp4_fast_cloud_20260622_151424",
+  "target_mean_delay": 2,
+  "q_grid": [
+    0.0,
+    0.1,
+    0.3,
+    0.5,
+    0.7,
+    1.0
+  ],
+  "beta_grid": [
+    0.0,
+    0.25,
+    0.5,
+    1.0,
+    1.5,
+    2.0,
+    3.0
+  ],
+  "proxy_sigmas": [
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0
+  ],
+  "primary_proxy_sigma": 0.25,
+  "ci_level": 0.95,
+  "n_bootstrap": 2000,
+  "design_note": "fast and full share the complete task grid; only seed count differs",
+  "feedback_protocol": "A_u is selected before arrivals at u are processed; anonymous arrival losses are passed to recovery routes without their hidden source index",
+  "proxy_interface": "deployable routes receive only simulator-emitted proxy observations at indices no later than the current round",
+  "horizon_censoring": "regret is evaluated over all T source actions; post-horizon arrivals cannot update later actions and are shared across methods",
+  "interpretation_boundary": "controlled source-label sufficiency and proxy-only recovery limitation stress test; not a logged-data study, online RCT, or information-theoretic impossibility theorem",
+  "proxy_route_specification": "proxy_label_recovery uses a fixed bounded-window RBF similarity rule with recency prior over stored observable proxy history; results do not establish optimality or impossibility for all proxy-only algorithms"
+}

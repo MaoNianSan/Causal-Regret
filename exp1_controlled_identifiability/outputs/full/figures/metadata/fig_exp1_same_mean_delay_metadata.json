@@ -1,0 +1,8 @@
+{
+  "figure_id": "fig_exp1_same_mean_delay",
+  "generated_at_utc": "2026-06-20T08:29:53.641721+00:00",
+  "description": "Primary mechanisms calibrated to the realised observed finite-horizon mean delay. Method comparisons are made only within each regime.",
+  "data_csv": "figures/data/fig_exp1_same_mean_delay_data.csv",
+  "paper_result": false,
+  "comparison_rule": "Method comparisons are made only within the same information regime. No panel mixes labelled, mixture_labelled, and unlabelled methods."
+}

@@ -1,0 +1,29 @@
+method_display_name,delay_state_coupling_beta,causal_regret,ranking_reversal_rate_mean,mean_delay_mean,pending_fraction_mean,n_seeds,uncertainty_unit
+Arrival time,0.0,0.5816 [fast preview],0.064229867785951,2.0,0.0004666666666666,3,fast_preview_point_estimate_only
+Arrival time,0.25,0.5936 [fast preview],0.0845172325128285,2.0,0.0006,3,fast_preview_point_estimate_only
+Arrival time,0.5,0.5918 [fast preview],0.1064043550229416,2.0,0.0006666666666666,3,fast_preview_point_estimate_only
+Arrival time,1.0,0.5759 [fast preview],0.1501866999396154,2.0,0.0007999999999999,3,fast_preview_point_estimate_only
+Arrival time,1.5,0.6101 [fast preview],0.1656763735683033,2.0,0.0012666666666666,3,fast_preview_point_estimate_only
+Arrival time,2.0,0.6060 [fast preview],0.1661994393271926,2.0,0.0012,3,fast_preview_point_estimate_only
+Arrival time,3.0,0.6051 [fast preview],0.1660659458016286,2.0,0.0012,3,fast_preview_point_estimate_only
+Observable history surrogate,0.0,0.5198 [fast preview],0.064229867785951,2.0,0.0004666666666666,3,fast_preview_point_estimate_only
+Observable history surrogate,0.25,0.5439 [fast preview],0.0845172325128285,2.0,0.0006,3,fast_preview_point_estimate_only
+Observable history surrogate,0.5,0.5442 [fast preview],0.1064043550229416,2.0,0.0006666666666666,3,fast_preview_point_estimate_only
+Observable history surrogate,1.0,0.5693 [fast preview],0.1501866999396154,2.0,0.0007999999999999,3,fast_preview_point_estimate_only
+Observable history surrogate,1.5,0.5360 [fast preview],0.1656763735683033,2.0,0.0012666666666666,3,fast_preview_point_estimate_only
+Observable history surrogate,2.0,0.5678 [fast preview],0.1661994393271926,2.0,0.0012,3,fast_preview_point_estimate_only
+Observable history surrogate,3.0,0.5370 [fast preview],0.1660659458016286,2.0,0.0012,3,fast_preview_point_estimate_only
+Proxy label recovery,0.0,0.5539 [fast preview],0.064229867785951,2.0,0.0004666666666666,3,fast_preview_point_estimate_only
+Proxy label recovery,0.25,0.5348 [fast preview],0.0845172325128285,2.0,0.0006,3,fast_preview_point_estimate_only
+Proxy label recovery,0.5,0.5350 [fast preview],0.1064043550229416,2.0,0.0006666666666666,3,fast_preview_point_estimate_only
+Proxy label recovery,1.0,0.5456 [fast preview],0.1501866999396154,2.0,0.0007999999999999,3,fast_preview_point_estimate_only
+Proxy label recovery,1.5,0.5457 [fast preview],0.1656763735683033,2.0,0.0012666666666666,3,fast_preview_point_estimate_only
+Proxy label recovery,2.0,0.5449 [fast preview],0.1661994393271926,2.0,0.0012,3,fast_preview_point_estimate_only
+Proxy label recovery,3.0,0.5451 [fast preview],0.1660659458016286,2.0,0.0012,3,fast_preview_point_estimate_only
+Source labelled reference,0.0,0.2841 [fast preview],0.064229867785951,2.0,0.0004666666666666,3,fast_preview_point_estimate_only
+Source labelled reference,0.25,0.2812 [fast preview],0.0845172325128285,2.0,0.0006,3,fast_preview_point_estimate_only
+Source labelled reference,0.5,0.2823 [fast preview],0.1064043550229416,2.0,0.0006666666666666,3,fast_preview_point_estimate_only
+Source labelled reference,1.0,0.2831 [fast preview],0.1501866999396154,2.0,0.0007999999999999,3,fast_preview_point_estimate_only
+Source labelled reference,1.5,0.2736 [fast preview],0.1656763735683033,2.0,0.0012666666666666,3,fast_preview_point_estimate_only
+Source labelled reference,2.0,0.2769 [fast preview],0.1661994393271926,2.0,0.0012,3,fast_preview_point_estimate_only
+Source labelled reference,3.0,0.2718 [fast preview],0.1660659458016286,2.0,0.0012,3,fast_preview_point_estimate_only

@@ -1,0 +1,13 @@
+{
+  "completed_runs": 204,
+  "cpu_count": 22,
+  "error": "OSError(22, 'Invalid argument')",
+  "expected_runs": 1089,
+  "is_smoke": false,
+  "mode": "fast",
+  "project_id": "exp1_controlled_validity",
+  "status": "FAILED",
+  "updated_at": "2026-06-23T06:09:44.579590+00:00",
+  "workers": 4,
+  "workers_source": "environment"
+}

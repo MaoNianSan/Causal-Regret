@@ -1,0 +1,5 @@
+CODE CHECK PASSED
+[PASS] chronology, history-only static control, and paired uncertainty contracts are present
+[PASS] source-label sensitivity is table-only; unsupported active contrast plots are retired
+[PASS] explanatory labels and eligibility diagnostic interfaces are present
+[PASS] all Python modules parse

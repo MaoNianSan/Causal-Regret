@@ -1,0 +1,53 @@
+experiment_id: toy
+T: 2000
+K: 5
+D_max: 10
+seeds:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+- 11
+- 12
+- 13
+- 14
+- 15
+- 16
+- 17
+- 18
+- 19
+- 20
+- 21
+- 22
+- 23
+- 24
+- 25
+- 26
+- 27
+- 28
+- 29
+delay_settings:
+- zero
+- geometric
+- piecewise
+- mixture
+methods:
+- oracle
+- naive
+- causal_labelled
+output_dir: outputs
+save_raw_trajectories: false
+save_summary: true
+save_figures: true
+figure_format:
+- pdf
+- png
+dpi: 300
+run_mode: full

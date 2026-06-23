@@ -1,0 +1,72 @@
+{
+  "action_dependent_delay_contract": "policy-dependent stress test; excluded from same-mean-delay primary claim",
+  "backend_status": "failed",
+  "completed_runs": 204,
+  "cpu_count": 22,
+  "created_at_utc": "2026-06-23T06:09:44.539858+00:00",
+  "error": "OSError: [Errno 22] Invalid argument",
+  "expected_runs": 1089,
+  "experiment_id": "exp1_controlled_validity",
+  "formal_required_methods": [
+    "arrival_time_naive",
+    "delayed_exp3",
+    "source_labelled",
+    "soft_attribution_em",
+    "proxy_state",
+    "oracle_reference"
+  ],
+  "formal_required_settings": [
+    "zero_static",
+    "aligned_static_delay_15",
+    "geometric_mid",
+    "mixture_mid",
+    "structural_mid",
+    "matched_geometric_target_15",
+    "matched_mixture_target_15",
+    "matched_structural_target_15"
+  ],
+  "horizon": 5000,
+  "information_structure": "all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]",
+  "is_smoke": false,
+  "methods": [
+    "oracle",
+    "naive",
+    "naive_ewma",
+    "delayed_ucb",
+    "delayed_exp3",
+    "sliding_window_W250",
+    "anonymous_delayed",
+    "causal_labeled",
+    "causal_em",
+    "causal_em_misspecified",
+    "proxy"
+  ],
+  "mode": "fast",
+  "n_seeds": 3,
+  "paper_result": false,
+  "primary_delay_contract": "pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay",
+  "project_id": "exp1_controlled_validity",
+  "proxy_feature_contract": "proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature",
+  "regimes": [
+    "labelled",
+    "mixture_labelled",
+    "unlabelled"
+  ],
+  "settings": [
+    "zero_static",
+    "aligned_static_delay_15",
+    "geometric_mid",
+    "mixture_mid",
+    "structural_mid",
+    "proxy_good_matched_15",
+    "proxy_bad_matched_15",
+    "action_structural_stress",
+    "matched_geometric_target_15",
+    "matched_mixture_target_15",
+    "matched_structural_target_15"
+  ],
+  "status": "FAILED",
+  "structural_em_contract": "default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation",
+  "workers": 4,
+  "workers_source": "environment"
+}

@@ -1,0 +1,5 @@
+python=3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
+platform=Windows-10-10.0.26200-SP0
+numpy=2.4.4
+estimand=context-information oracle excess conditional risk
+primary paths=pre-generated and shared across methods

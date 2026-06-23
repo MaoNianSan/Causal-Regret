@@ -1,0 +1,66 @@
+{
+  "figure_id": "fig_exp2_attribution_sensitivity",
+  "panel_id": "panel_b",
+  "annotation_count": 5,
+  "all_annotations_inside_figure": true,
+  "passed": true,
+  "attempts": 3,
+  "figure_bbox_pixels": {
+    "x0": 0.0,
+    "y0": 0.0,
+    "x1": 685.0,
+    "y1": 270.0
+  },
+  "annotations": [
+    {
+      "text": "Top-10 overlap: 1.00",
+      "bbox_pixels": {
+        "x0": 444.5550358280255,
+        "y0": 209.4327777777778,
+        "x1": 524.0550358280254,
+        "y1": 218.4327777777778
+      },
+      "inside_figure": true
+    },
+    {
+      "text": "Top-10 overlap: 0.00",
+      "bbox_pixels": {
+        "x0": 585.5654049977801,
+        "y0": 172.89833333333337,
+        "x1": 664.9404049977801,
+        "y1": 181.89833333333337
+      },
+      "inside_figure": true
+    },
+    {
+      "text": "Top-10 overlap: 0.00",
+      "bbox_pixels": {
+        "x0": 585.2479519096191,
+        "y0": 136.3638888888889,
+        "x1": 664.6229519096191,
+        "y1": 145.3638888888889
+      },
+      "inside_figure": true
+    },
+    {
+      "text": "Top-10 overlap: 0.00",
+      "bbox_pixels": {
+        "x0": 585.4236021060201,
+        "y0": 99.82944444444446,
+        "x1": 664.7986021060201,
+        "y1": 108.82944444444446
+      },
+      "inside_figure": true
+    },
+    {
+      "text": "Top-10 overlap: 0.00",
+      "bbox_pixels": {
+        "x0": 585.2842023793183,
+        "y0": 63.295000000000016,
+        "x1": 664.6592023793183,
+        "y1": 72.29500000000002
+      },
+      "inside_figure": true
+    }
+  ]
+}

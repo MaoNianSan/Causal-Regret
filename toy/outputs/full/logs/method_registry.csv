@@ -1,0 +1,4 @@
+method,method_display_name,description
+oracle,Oracle,Full-information lower-bound reference; always selects the structural-time optimal action.
+naive,Naive,Arrival-time binding baseline; deliberately assigns arrived feedback to the current action.
+causal_labelled,Causal-labelled,Source-labelled delay-aware learner; updates the action that generated each arrived feedback item.

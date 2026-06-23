@@ -1,0 +1,8 @@
+{
+  "figure_id": "fig_exp1_validity_boundary",
+  "generated_at_utc": "2026-06-20T08:29:52.727037+00:00",
+  "description": "Context-information regret under aligned and source-binding-disrupted delay mechanisms. Every panel contains a single information regime.",
+  "data_csv": "figures/data/fig_exp1_validity_boundary_data.csv",
+  "paper_result": false,
+  "comparison_rule": "Method comparisons are made only within the same information regime. No panel mixes labelled, mixture_labelled, and unlabelled methods."
+}

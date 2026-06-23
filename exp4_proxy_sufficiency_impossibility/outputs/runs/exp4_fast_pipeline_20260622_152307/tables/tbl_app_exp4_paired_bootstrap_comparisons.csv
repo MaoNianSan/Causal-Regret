@@ -1,0 +1,14 @@
+source_label_rate_q,proxy_noise_sigma,reference,candidate,n_paired_seeds,mean_difference_candidate_minus_reference,ci_low,ci_high,inference_status,inference_note,delay_state_coupling_beta
+0.0,0.25,arrival_time_naive,proxy_label_recovery,3,-0.0610916778849894,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+0.1,0.25,arrival_time_naive,proxy_label_recovery,3,-0.0929265648501446,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+0.3,0.25,arrival_time_naive,proxy_label_recovery,3,-0.1639785564704819,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+0.5,0.25,arrival_time_naive,proxy_label_recovery,3,-0.228239184793163,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+0.7,0.25,arrival_time_naive,proxy_label_recovery,3,-0.2815205509892353,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+1.0,0.25,arrival_time_naive,proxy_label_recovery,3,-0.3290373505818835,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",
+,,arrival_time_naive,source_labelled_reference,3,-0.297493124011687,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",0.0
+,,arrival_time_naive,source_labelled_reference,3,-0.3123967836285877,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",0.25
+,,arrival_time_naive,source_labelled_reference,3,-0.3095117972352317,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",0.5
+,,arrival_time_naive,source_labelled_reference,3,-0.2928301670916731,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",1.0
+,,arrival_time_naive,source_labelled_reference,3,-0.3365282826917239,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",1.5
+,,arrival_time_naive,source_labelled_reference,3,-0.3290373505818835,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",2.0
+,,arrival_time_naive,source_labelled_reference,3,-0.3333317399952563,,,fast_preview_no_formal_inference,"Fast uses three seeds; direction checks only, with no confidence interval or p-value.",3.0

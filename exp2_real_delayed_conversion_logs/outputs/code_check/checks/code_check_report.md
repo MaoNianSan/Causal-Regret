@@ -1,0 +1,21 @@
+# Experiment 2 Code-check Report
+
+- [PASS] all_python_files_compile: 30 files
+- [PASS] mode_isolation: runner clears isolated outputs/<mode>
+- [PASS] missing_input_hard_failure: missing protected input exits non-zero
+- [PASS] all_conversion_main_cohort: all conversion candidates use source-time decision cells
+- [PASS] source_linked_audit_only: source-linked reference is restricted by semantic check
+- [PASS] uid_bootstrap: UID-cluster percentile bootstrap implemented
+- [PASS] main_figure_contract: main figure displays allocation TV point-range and top-10 overlap annotations
+- [PASS] appendix_pairwise_overlap_figure: appendix uses pairwise TV and top-10 overlap heatmaps
+- [PASS] appendix_diagnostics_as_tables: source-linked, window, and EM diagnostics are tables
+- [PASS] no_replay_as_main_endpoint: deprecated temporal replay removed from formal pipeline
+- [PASS] no_label_availability_leakage: Exp2 does not reuse invalid label-mask sensitivity
+- [PASS] honest_estimand_language: configuration preserves observational estimand boundary
+- [PASS] source_time_cell_design: source-time cells plus core-route scientific degeneracy gate
+- [PASS] primary_metric_semantics: primary outcome is credited mass; cost-adjusted score is appendix-only
+- [PASS] arrival_anchor_label: arrival anchor is explicitly diagnostic
+- [PASS] paper_result_finalization_gate: full paper_result is promoted only after semantic self-check
+- [PASS] deprecated_ids_removed_from_formal_code: no old Exp2 route or figure ids in formal code: []
+- [PASS] figure_ids_snake_case: formal figure ids are snake_case: []
+- [PASS] formal_latex_figure_interface_nonempty: formal LaTeX figure interface contains required figure ids: ['fig_exp2_attribution_sensitivity', 'fig_app_exp2_source_route_pairwise_overlap']

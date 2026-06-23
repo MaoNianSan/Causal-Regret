@@ -1,0 +1,17 @@
+route_left,route_right,pairwise_credit_allocation_tv_distance,top_k,pairwise_top_k_overlap,n_eligible_conversion_events
+first_click,first_click,0.0,10,1.0,145248
+first_click,last_click,0.27724994492178895,10,0.6,145248
+first_click,linear_attribution,0.16560098011919183,10,0.7,145248
+first_click,time_decay_soft,0.23861103003670509,10,0.6,145248
+last_click,first_click,0.27724994492178895,10,0.6,145248
+last_click,last_click,0.0,10,1.0,145248
+last_click,linear_attribution,0.16560098011919183,10,0.8,145248
+last_click,time_decay_soft,0.07039908340424174,10,1.0,145248
+linear_attribution,first_click,0.16560098011919183,10,0.7,145248
+linear_attribution,last_click,0.16560098011919183,10,0.8,145248
+linear_attribution,linear_attribution,0.0,10,1.0,145248
+linear_attribution,time_decay_soft,0.10314492798412347,10,0.8,145248
+time_decay_soft,first_click,0.23861103003670509,10,0.6,145248
+time_decay_soft,last_click,0.07039908340424174,10,1.0,145248
+time_decay_soft,linear_attribution,0.10314492798412347,10,0.8,145248
+time_decay_soft,time_decay_soft,0.0,10,1.0,145248

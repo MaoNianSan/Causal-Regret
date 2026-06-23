@@ -1,0 +1,11 @@
+method_id,method_display_name,information_interface,reference_role,diagnostic_only,deployable
+arrival_time_naive,Arrival-time carrier,arrival_time_carrier,none,False,False
+source_labelled_empirical,Source-labelled empirical,source_labelled,source_labelled_control,True,False
+source_aware_reference,Source-aware reference,offline_source_target,source_aware_reference,False,False
+partial_source_label_q10,"Partial source labels, q=0.10",partial_source_label,none,False,False
+partial_source_label_q30,"Partial source labels, q=0.30",partial_source_label,none,False,False
+partial_source_label_q50,"Partial source labels, q=0.50",partial_source_label,none,False,False
+history_mean_static,History mean static,history_target_mean_only,diagnostic_control,True,False
+short_term_ridge_proxy,Short-term ridge proxy,lagged_short_term_proxy,none,False,False
+history_ewma_ridge_proxy,History EWMA ridge proxy,history_plus_lagged_proxy,none,True,False
+short_term_composite_surrogate,Short-term composite surrogate,lagged_composite_proxy,none,False,False

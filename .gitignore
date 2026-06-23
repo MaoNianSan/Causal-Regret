@@ -1,0 +1,102 @@
+# Python and notebook caches
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# Runtime and temporary state
+.runtime/
+*.pid
+*.tmp
+*.temp
+*.bak
+*.backup
+*.log.tmp
+tmp/
+temp/
+cache/
+
+# Environments and secrets
+.venv/
+venv/
+env/
+ENV/
+.env
+.env.*
+!.env.example
+
+# OS, editor, and nested VCS metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+**/.git/
+
+# Archives and local downloads
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.rar
+downloads/
+datasets/
+data/raw/
+data/external/
+
+# Local raw-data holders. Keep only lightweight placement notes.
+**/inputs/**
+!**/inputs/
+!**/inputs/README.md
+!**/inputs/README_local_data.md
+**/input/raw/
+**/input/external/
+
+# Large model/cache files
+.cache/
+models/
+model_cache/
+huggingface_cache/
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.pkl
+*.joblib
+*.npy
+*.npz
+*.parquet
+*.feather
+
+# Heavy experiment intermediates
+**/outputs/**/processed/
+**/outputs/**/raw/
+**/outputs/**/intermediate/
+**/outputs/**/cache/
+**/outputs/**/raw_large/
+
+# Keep GitHub-facing lightweight outputs explicitly visible.
+!README.md
+!LICENSE
+!LICENSE_PENDING.md
+!requirements.txt
+!environment.yml
+!**/README.md
+!**/requirements.txt
+!**/docs/**
+!**/ipy/**
+!**/runlogs/*.md
+!**/runlogs/*.txt
+!**/runlogs/*.log
+!**/output_manifest.md
+!**/outputs/**/summary*.csv
+!**/outputs/**/summaries/**
+!**/outputs/**/summary/**
+!**/outputs/**/tables/**
+!**/outputs/**/figures/**
+!**/outputs/**/checks/**
+!**/outputs/**/metadata/**
+!**/outputs/**/reports/**

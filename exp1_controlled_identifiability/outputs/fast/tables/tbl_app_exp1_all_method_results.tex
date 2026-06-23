@@ -1,0 +1,36 @@
+\begin{tabular}{lllllrlrrrrrrr}
+\toprule
+setting_id & method_id & method_display_name & information_interface & reference_role & deployable & metric_id & point_estimate & ci_lower & ci_upper & ci_level & n_seeds & n_bootstrap & paper_result \\
+\midrule
+zero_static & arrival_time_naive & Arrival time & arrival_time & none & True & causal_regret_per_round & 0.030973 & 0.030973 & 0.030973 & 0.950000 & 1 & 1000 & False \\
+zero_static & delayed_exp3 & Delayed EXP3 & unlabelled_delayed & none & True & causal_regret_per_round & 0.253807 & 0.253807 & 0.253807 & 0.950000 & 1 & 1000 & False \\
+zero_static & source_labelled & Source labelled & source_labelled & none & True & causal_regret_per_round & 0.032178 & 0.032178 & 0.032178 & 0.950000 & 1 & 1000 & False \\
+zero_static & soft_attribution_em & Soft attribution & partial_attribution & none & True & causal_regret_per_round & 0.030519 & 0.030519 & 0.030519 & 0.950000 & 1 & 1000 & False \\
+zero_static & proxy_state & Proxy state & proxy_state & none & True & causal_regret_per_round & 0.033027 & 0.033027 & 0.033027 & 0.950000 & 1 & 1000 & False \\
+zero_static & oracle_reference & Oracle reference† & oracle_reference & oracle_reference & False & causal_regret_per_round & 0.000000 & 0.000000 & 0.000000 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & arrival_time_naive & Arrival time & arrival_time & none & True & causal_regret_per_round & 0.133314 & 0.133314 & 0.133314 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & delayed_exp3 & Delayed EXP3 & unlabelled_delayed & none & True & causal_regret_per_round & 0.392296 & 0.392296 & 0.392296 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & source_labelled & Source labelled & source_labelled & none & True & causal_regret_per_round & 0.030598 & 0.030598 & 0.030598 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & soft_attribution_em & Soft attribution & partial_attribution & none & True & causal_regret_per_round & 0.034469 & 0.034469 & 0.034469 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & proxy_state & Proxy state & proxy_state & none & True & causal_regret_per_round & 0.030933 & 0.030933 & 0.030933 & 0.950000 & 1 & 1000 & False \\
+aligned_static_delay_15 & oracle_reference & Oracle reference† & oracle_reference & oracle_reference & False & causal_regret_per_round & 0.000000 & 0.000000 & 0.000000 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & arrival_time_naive & Arrival time & arrival_time & none & True & causal_regret_per_round & 1.297033 & 1.297033 & 1.297033 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & delayed_exp3 & Delayed EXP3 & unlabelled_delayed & none & True & causal_regret_per_round & 1.679609 & 1.679609 & 1.679609 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & source_labelled & Source labelled & source_labelled & none & True & causal_regret_per_round & 0.371801 & 0.371801 & 0.371801 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & soft_attribution_em & Soft attribution & partial_attribution & none & True & causal_regret_per_round & 0.561633 & 0.561633 & 0.561633 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & proxy_state & Proxy state & proxy_state & none & True & causal_regret_per_round & 1.736035 & 1.736035 & 1.736035 & 0.950000 & 1 & 1000 & False \\
+geometric_mid & oracle_reference & Oracle reference† & oracle_reference & oracle_reference & False & causal_regret_per_round & 0.000000 & 0.000000 & 0.000000 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & arrival_time_naive & Arrival time & arrival_time & none & True & causal_regret_per_round & 1.012796 & 1.012796 & 1.012796 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & delayed_exp3 & Delayed EXP3 & unlabelled_delayed & none & True & causal_regret_per_round & 1.694605 & 1.694605 & 1.694605 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & source_labelled & Source labelled & source_labelled & none & True & causal_regret_per_round & 0.377700 & 0.377700 & 0.377700 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & soft_attribution_em & Soft attribution & partial_attribution & none & True & causal_regret_per_round & 0.539435 & 0.539435 & 0.539435 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & proxy_state & Proxy state & proxy_state & none & True & causal_regret_per_round & 1.283226 & 1.283226 & 1.283226 & 0.950000 & 1 & 1000 & False \\
+mixture_mid & oracle_reference & Oracle reference† & oracle_reference & oracle_reference & False & causal_regret_per_round & 0.000000 & 0.000000 & 0.000000 & 0.950000 & 1 & 1000 & False \\
+structural_mid & arrival_time_naive & Arrival time & arrival_time & none & True & causal_regret_per_round & 0.991641 & 0.991641 & 0.991641 & 0.950000 & 1 & 1000 & False \\
+structural_mid & delayed_exp3 & Delayed EXP3 & unlabelled_delayed & none & True & causal_regret_per_round & 1.658546 & 1.658546 & 1.658546 & 0.950000 & 1 & 1000 & False \\
+structural_mid & source_labelled & Source labelled & source_labelled & none & True & causal_regret_per_round & 0.487172 & 0.487172 & 0.487172 & 0.950000 & 1 & 1000 & False \\
+structural_mid & soft_attribution_em & Soft attribution & partial_attribution & none & True & causal_regret_per_round & 0.554947 & 0.554947 & 0.554947 & 0.950000 & 1 & 1000 & False \\
+structural_mid & proxy_state & Proxy state & proxy_state & none & True & causal_regret_per_round & 0.952330 & 0.952330 & 0.952330 & 0.950000 & 1 & 1000 & False \\
+structural_mid & oracle_reference & Oracle reference† & oracle_reference & oracle_reference & False & causal_regret_per_round & 0.000000 & 0.000000 & 0.000000 & 0.950000 & 1 & 1000 & False \\
+\bottomrule
+\end{tabular}

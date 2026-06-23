@@ -1,0 +1,7 @@
+﻿Project: exp1_controlled_identifiability
+Package purpose: Tencent Cloud full experiment execution
+Created at: 2026-06-20 15:49:47
+Source path: D:\research\CausalRegretMinimizationUnderDelayedFeedback\experiment\IPY\exp1_controlled_identifiability
+Package policy:
+- excluded old outputs, logs, caches, virtual environments, archives, backups
+- included source code, configs, scripts, README, requirements, checks

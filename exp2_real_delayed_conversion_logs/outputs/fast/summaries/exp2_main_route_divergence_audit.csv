@@ -1,0 +1,16 @@
+route_left,route_right,n_conversion_events,mean_total_variation_distance,exact_assignment_duplicate
+arrival_bin_anchor,first_click,145248,0.9830841044282882,False
+arrival_bin_anchor,last_click,145248,0.9730392156862745,False
+arrival_bin_anchor,linear_attribution,145248,0.9793387707421464,False
+arrival_bin_anchor,time_decay_soft,145248,0.9760243147207771,False
+arrival_bin_anchor,soft_attribution_em,145248,0.976139746137981,False
+first_click,last_click,145248,0.27724994492178895,False
+first_click,linear_attribution,145248,0.16560098011919183,False
+first_click,time_decay_soft,145248,0.23861103003670509,False
+first_click,soft_attribution_em,145248,0.23750273985496692,False
+last_click,linear_attribution,145248,0.16560098011919183,False
+last_click,time_decay_soft,145248,0.07039908340424174,False
+last_click,soft_attribution_em,145248,0.07243378654542573,False
+linear_attribution,time_decay_soft,145248,0.10314492798412347,False
+linear_attribution,soft_attribution_em,145248,0.10193838989103612,False
+time_decay_soft,soft_attribution_em,145248,0.007196339372554854,False

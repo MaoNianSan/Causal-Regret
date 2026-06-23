@@ -1,0 +1,6 @@
+cohort_id,n_conversion_events,candidate_window_days,delay_bucket,conversion_event_share_percent
+all_conversion_candidates,58517,30,less_equal_1h,31.255574962210435
+all_conversion_candidates,14489,30,h1_to_h6,7.7389822722878305
+all_conversion_candidates,19650,30,h6_to_h24,10.495617478808468
+all_conversion_candidates,59015,30,d1_to_d7,31.521570763963446
+all_conversion_candidates,35550,30,d7_to_d30,18.98825452272982

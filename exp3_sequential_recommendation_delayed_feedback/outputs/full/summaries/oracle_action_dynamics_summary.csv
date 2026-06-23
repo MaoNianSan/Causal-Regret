@@ -1,0 +1,2 @@
+delay_condition,n_decision_bins,oracle_top_action_unique_count,oracle_top_action_switch_count,oracle_top_action_switch_rate,oracle_top_action_share,most_common_oracle_action,interpretation,n_unique_oracle_top_actions,largest_oracle_top_action_share
+action_value_coupled_matched_delay_pool,18,2,4,0.2352941176470588,0.5,20,Task-difficulty audit; stable oracle categories can make history-only ranking competitive.,2,0.5

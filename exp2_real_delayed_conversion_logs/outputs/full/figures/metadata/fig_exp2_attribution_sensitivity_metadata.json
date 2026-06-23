@@ -1,0 +1,124 @@
+{
+  "figure_id": "fig_exp2_attribution_sensitivity",
+  "figure_status": "generated",
+  "paper_result": true,
+  "run_mode": "full",
+  "input_data_status": "complete",
+  "estimand_boundary": "observational logged credit-allocation and source-time decision-cell ranking sensitivity; not policy value, causal effect, ROI, or deployment evaluation",
+  "figure_size_in": [
+    6.85,
+    2.7
+  ],
+  "dpi": 600,
+  "metric_id": "credit_allocation_tv_distance_vs_arrival_anchor",
+  "metric_formula_id": "tv_distance_between_normalized_route_credit_allocation_and_arrival_anchor;top10_set_overlap_between_route_and_arrival_anchor",
+  "uncertainty_unit": "uid",
+  "ci_level": 0.95,
+  "n_bootstrap": 1000,
+  "input_files": [
+    "summaries/exp2_route_sensitivity_summary.csv",
+    "summaries/exp2_source_event_delay_profile.csv"
+  ],
+  "config_hash": "8f4185f31a816d68",
+  "caption_template": "Panel A reports the delay composition within the eligible decision-cell cohort under the 30-day candidate window, not the full Criteo-log delay distribution. Panel B reports logged credit-allocation TV distance and Top-10 decision-cell overlap relative to the constructed arrival-bin anchor.",
+  "layout": "1_row_2_columns",
+  "panel_titles": [
+    "(a) Delay composition",
+    "(b) Allocation and ranking displacement"
+  ],
+  "panel_title_font_size": 9.0,
+  "title_layout": "tight_layout_rect_plus_subplots_adjust_top",
+  "subplots_adjust_top": 0.86,
+  "panel_b_geometry": "horizontal_point_range",
+  "panel_b_x_id": "credit_allocation_tv_distance_vs_arrival_anchor",
+  "panel_b_y_id": "method_display_name",
+  "panel_b_annotation_rule": "x_annotation = min(x_ci_upper + padding, x_axis_max - right_margin); x_axis_max expands until renderer bounding boxes fit inside panel and canvas",
+  "panel_b_annotation_padding": 0.035,
+  "panel_b_annotation_right_margin": 0.1,
+  "panel_b_annotation_layout": "right-side data-coordinate gutter with renderer bounding-box validation",
+  "panel_b_annotation_layout_validation": {
+    "passed": true,
+    "attempts": 3,
+    "canvas_width_px": 685.0,
+    "canvas_height_px": 270.0,
+    "panel_b_axes_right_px": 673.7500000000001,
+    "max_annotation_right_px": 664.9404049977801,
+    "figure_canvas_validation": {
+      "figure_id": "fig_exp2_attribution_sensitivity",
+      "panel_id": "panel_b",
+      "annotation_count": 5,
+      "all_annotations_inside_figure": true,
+      "passed": true,
+      "attempts": 3,
+      "figure_bbox_pixels": {
+        "x0": 0.0,
+        "y0": 0.0,
+        "x1": 685.0,
+        "y1": 270.0
+      },
+      "annotations": [
+        {
+          "text": "Top-10 overlap: 1.00",
+          "bbox_pixels": {
+            "x0": 444.5550358280255,
+            "y0": 209.4327777777778,
+            "x1": 524.0550358280254,
+            "y1": 218.4327777777778
+          },
+          "inside_figure": true
+        },
+        {
+          "text": "Top-10 overlap: 0.00",
+          "bbox_pixels": {
+            "x0": 585.5654049977801,
+            "y0": 172.89833333333337,
+            "x1": 664.9404049977801,
+            "y1": 181.89833333333337
+          },
+          "inside_figure": true
+        },
+        {
+          "text": "Top-10 overlap: 0.00",
+          "bbox_pixels": {
+            "x0": 585.2479519096191,
+            "y0": 136.3638888888889,
+            "x1": 664.6229519096191,
+            "y1": 145.3638888888889
+          },
+          "inside_figure": true
+        },
+        {
+          "text": "Top-10 overlap: 0.00",
+          "bbox_pixels": {
+            "x0": 585.4236021060201,
+            "y0": 99.82944444444446,
+            "x1": 664.7986021060201,
+            "y1": 108.82944444444446
+          },
+          "inside_figure": true
+        },
+        {
+          "text": "Top-10 overlap: 0.00",
+          "bbox_pixels": {
+            "x0": 585.2842023793183,
+            "y0": 63.295000000000016,
+            "x1": 664.6592023793183,
+            "y1": 72.29500000000002
+          },
+          "inside_figure": true
+        }
+      ]
+    }
+  },
+  "panel_b_x_axis_min": -0.03,
+  "panel_b_x_axis_max": 1.54,
+  "panel_b_annotation_x_values": {
+    "arrival_bin_anchor": 0.035,
+    "first_click": 0.9609392167152621,
+    "last_click": 0.9588546731066866,
+    "linear_attribution": 0.9600080734291524,
+    "time_decay_soft": 0.9590927104348387
+  },
+  "secondary_annotation": "top_k_decision_cell_overlap_vs_arrival_anchor",
+  "finalized_after_semantic_self_check": true
+}

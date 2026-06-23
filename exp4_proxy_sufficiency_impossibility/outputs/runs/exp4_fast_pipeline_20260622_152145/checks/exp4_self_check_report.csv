@@ -1,0 +1,28 @@
+check_name,status,details
+all expected subexperiments present,PASSED,"['baseline_reference', 'delay_state_coupling_diagnostic', 'proxy_distortion_diagnostic', 'recoverability_phase_map', 'source_label_sweep']"
+shared delay paths are identical within seed and beta,PASSED,all methods share simulator trace by seed x beta
+warmup is active,PASSED,n_eval_rounds=4750
+q=0 recovery route receives zero exact labels,PASSED,max=0
+q=1 proxy-label recovery equals source-labelled reference in regret,PASSED,only exact source-labelled updates remain at q=1
+q=1 proxy-label recovery equals source-labelled reference in action trace,PASSED,SHA-256 over complete selected-action trace for each shared seed
+exact source updates occur after their decision,PASSED,min_gap=1.0
+complete q by sigma phase grid,PASSED,observed=90; expected=90
+oracle phase denominator is positive,PASSED,minimum=0.587481
+source-reference phase denominator is positive,PASSED,minimum=0.302411
+q=1 source-reference-normalized recovery equals one,PASSED,source-labelled reference is the q=1 denominator anchor
+phase-grid q=1 regret equals source-labelled reference for every seed and sigma,PASSED,observed=15; expected=15
+phase-grid q=1 action trace equals source-labelled reference for every seed and sigma,PASSED,SHA-256 over complete selected-action traces; proxy sigma is inactive when every arrival is source-labelled
+phase-map raw metrics are not clipped,PASSED,raw values are retained in both normalization metrics
+noisy proxy diagnostics use simulator-emitted observations,PASSED,noisy diagnostic never accesses latent state
+observable history metadata records arrival feedback,PASSED,registry matches policy observe interface
+diagnostic and reference roles are explicitly marked,PASSED,oracle is diagnostic; source-labelled route is reference
+fast suppresses formal confidence intervals and p-values,PASSED,direction checks only
+figure bundle exists: fig_exp4_recoverability_boundary,PASSED,pdf/png/data/metadata
+figure data contract complete: fig_exp4_recoverability_boundary,PASSED,required schema columns
+figure bundle exists: fig_app_exp4_delay_state_coupling,PASSED,pdf/png/data/metadata
+figure data contract complete: fig_app_exp4_delay_state_coupling,PASSED,required schema columns
+primary figure has accepted three-panel structure,PASSED,"['proxy distortion diagnostic', 'source-label sweep', 'recoverability phase map']"
+phase-map display is fixed to reference scale,PASSED,display scale is fixed; stored metric remains raw
+coupling figure is appendix-only and uses source-binding advantage,PASSED,"['coupling mechanism diagnostic', 'source-binding advantage']"
+all canonical summary outputs exist,PASSED,"proxy_distortion_diagnostic_summary.csv, source_label_sweep_summary.csv, recoverability_phase_map_summary.csv, recoverability_phase_map_seed_level.csv, delay_state_coupling_summary.csv, source_binding_advantage_summary.csv, delay_calibration_audit.csv, paired_bootstrap_comparisons.csv, metric_specification.csv"
+no duplicate source-labelled recovery summary is emitted,PASSED,recoverability_phase_map_summary.csv carries both normalization metrics

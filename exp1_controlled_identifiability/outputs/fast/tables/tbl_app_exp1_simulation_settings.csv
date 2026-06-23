@@ -1,0 +1,8 @@
+setting_id,setting_display_name,state_process,fixed_state,delay_type,delay_value,target_mean_delay,empirical_mean_delay,source_binding_class,K,T,n_seeds,d_max,run_mode,paper_result,config_hash
+aligned_static_delay_15,aligned_static_delay_15,static,0.0,fixed,15.0,15.0,15.0,source_preserving,10,5000,1,100,fast,False,cc2caca16339a3ed
+geometric_mid,geometric_mid,ar1,,geometric,,15.0,15.0,source_disrupting,10,5000,1,100,fast,False,8df56802d0ad805f
+mixture_mid,mixture_mid,ar1,,mixture,,15.0,15.005931683370832,source_disrupting,10,5000,1,100,fast,False,b76e883107f7fac0
+proxy_bad_matched_15,proxy_bad_matched_15,ar1,,state_structural,,15.0,15.000216778668978,source_disrupting,10,5000,1,100,fast,False,c20bc22ddb5d8757
+proxy_good_matched_15,proxy_good_matched_15,ar1,,state_structural,,15.0,15.000216778668976,source_disrupting,10,5000,1,100,fast,False,c54fb6cc0a794b59
+structural_mid,structural_mid,ar1,,state_structural,,15.0,15.000216778668976,source_disrupting,10,5000,1,100,fast,False,0a94e9635424ffdf
+zero_static,zero_static,static,0.0,zero,,0.0,0.0,source_preserving,10,5000,1,100,fast,False,1acd690a1ef53233

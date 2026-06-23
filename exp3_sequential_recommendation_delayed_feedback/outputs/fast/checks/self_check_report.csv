@@ -1,0 +1,2 @@
+check_id,mode,status,n_errors,details
+self_check,fast,passed,0,SELF-CHECK PASSED

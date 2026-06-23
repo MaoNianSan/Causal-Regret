@@ -1,0 +1,23 @@
+{
+  "figure_id": "fig_app_exp2_source_route_pairwise_overlap",
+  "figure_status": "generated",
+  "paper_result": false,
+  "run_mode": "fast",
+  "input_data_status": "complete",
+  "estimand_boundary": "observational logged credit-allocation and source-time decision-cell ranking sensitivity; not policy value, causal effect, ROI, or deployment evaluation",
+  "figure_size_in": [
+    6.85,
+    2.65
+  ],
+  "dpi": 600,
+  "metric_id": "pairwise_credit_allocation_tv_distance;pairwise_top_k_overlap",
+  "metric_formula_id": "pairwise_tv_distance_between_source_route_assignment_distributions;pairwise_top10_decision_cell_set_overlap",
+  "uncertainty_unit": "uid",
+  "ci_level": 0.95,
+  "n_bootstrap": 200,
+  "input_files": [
+    "summaries/exp2_source_route_pairwise_overlap.csv"
+  ],
+  "config_hash": "553a33ed82d2a6c0",
+  "figure_role": "appendix_source_route_mechanism_diagnostic"
+}

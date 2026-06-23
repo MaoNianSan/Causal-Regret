@@ -1,0 +1,5 @@
+python=3.10.12 (main, Mar  3 2026, 11:56:32) [GCC 11.4.0]
+platform=Linux-5.15.0-119-generic-x86_64-with-glibc2.35
+numpy=2.2.6
+estimand=context-information oracle excess conditional risk
+primary paths=pre-generated and shared across methods

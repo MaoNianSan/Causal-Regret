@@ -1,0 +1,35 @@
+[PASS] all Python files compile: compiled
+[PASS] contextual information structure is executable: X_t and context comparator are in runner/agents
+[PASS] no hidden pending-source queue is queried: unlabelled methods use bounded action/context history only
+[PASS] per-arrival fairness is encoded: all updates are source-outcome units
+[PASS] primary delay path is pre-generated: shared trace IDs are emitted
+[PASS] structural EM integrates observable state: no structural plug-in prior is used in the default EM
+[PASS] proxy labelled updates use saved proxy features: proxy train and decision features are source-time consistent
+[PASS] isolated end-to-end smoke: [runtime] workers=4, tasks=264
+[EXP1 code_check_smoke] completed 12/264 runs
+[EXP1 code_check_smoke] completed 24/264 runs
+[EXP1 code_check_smoke] completed 36/264 runs
+[EXP1 code_check_smoke] completed 48/264 runs
+[EXP1 code_check_smoke] completed 60/264 runs
+[EXP1 code_check_smoke] completed 72/264 runs
+[EXP1 code_check_smoke] completed 84/264 runs
+[EXP1 code_check_smoke] completed 96/264 runs
+[EXP1 code_check_smoke] completed 108/264 runs
+[EXP1 code_check_smoke] completed 120/264 runs
+[EXP1 code_check_smoke] completed 132/264 runs
+[EXP1 code_check_smoke] completed 144/264 runs
+[EXP1 code_check_smoke] completed 156/264 runs
+[EXP1 code_check_smoke] completed 168/264 runs
+[EXP1 code_check_smoke] completed 180/264 runs
+[EXP1 code_check_smoke] completed 192/264 runs
+[EXP1 code_check_smoke] completed 204/264 runs
+[EXP1 code_check_smoke] completed 216/264 runs
+[EXP1 code_check_smoke] completed 228/264 runs
+[EXP1 code_check_smoke] completed 240/264 runs
+[EXP1 code_check_smoke] completed 252/264 runs
+[EXP1 code_check_smoke] completed 264/264 runs
+[SELF-CHECK PASSED]
+
+
+[PASS] smoke structural EM likelihood contract: ['gaussian_observable_state_integrated_quadrature']
+[PASS] smoke proxy feature alignment: max_gap=0.0

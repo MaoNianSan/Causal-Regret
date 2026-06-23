@@ -1,0 +1,17 @@
+check_name,status,details
+backend completed,FAILED,failed
+contextual estimand declared,PASSED,"all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]"
+primary shared-path contract declared,PASSED,pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay
+structural EM contract declared,PASSED,default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation
+proxy feature-consistency contract declared,PASSED,"proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature"
+no output marked as paper result,PASSED,paper_result=False
+seed summary schema,PASSED,missing=[]
+expected run count,FAILED,expected=792; observed=204
+unique design keys,PASSED,duplicates=0
+all learners receive context,PASSED,context_observed_by_all
+regret comparator is context-information oracle,PASSED,['context_information_oracle']
+causal regret finite,PASSED,final_Rc
+seed summary readable,FAILED,OverflowError('cannot convert float infinity to integer')
+design manifest expected count,FAILED,expected=792; observed=204
+design manifest contains no failed row,PASSED,{'completed': 204}
+registered diagnostic figure bundles exist,FAILED,figures/data/fig_exp1_same_mean_delay_data.csv; figures/png/fig_exp1_same_mean_delay.png; figures/pdf/fig_exp1_same_mean_delay.pdf; figures/metadata/fig_exp1_same_mean_delay_metadata.json; figures/data/fig_exp1_attribution_diagnostics_data.csv; figures/png/fig_exp1_attribution_diagnostics.png; figures/pdf/fig_exp1_attribution_diagnostics.pdf; figures/metadata/fig_exp1_attribution_diagnostics_metadata.json; figures/data/fig_exp1_proxy_quality_data.csv; figures/png/fig_exp1_proxy_quality.png; figures/pdf/fig_exp1_proxy_quality.pdf; figures/metadata/fig_exp1_proxy_quality_metadata.json

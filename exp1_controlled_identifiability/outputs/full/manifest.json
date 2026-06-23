@@ -1,0 +1,123 @@
+{
+  "artifacts": [
+    {
+      "bytes": 1718,
+      "exists": true,
+      "relative_path": "metadata/run_manifest.json",
+      "required": true
+    },
+    {
+      "bytes": 517381,
+      "exists": true,
+      "relative_path": "metadata/design_manifest.csv",
+      "required": true
+    },
+    {
+      "bytes": 55246,
+      "exists": true,
+      "relative_path": "metadata/scenario_trace_manifest.csv",
+      "required": true
+    },
+    {
+      "bytes": 240,
+      "exists": true,
+      "relative_path": "metadata/environment.txt",
+      "required": true
+    },
+    {
+      "bytes": 4267899,
+      "exists": true,
+      "relative_path": "summaries/seed_summary.csv",
+      "required": true
+    },
+    {
+      "bytes": 63856,
+      "exists": true,
+      "relative_path": "summaries/method_summary.csv",
+      "required": true
+    },
+    {
+      "bytes": 76197,
+      "exists": true,
+      "relative_path": "summaries/diagnostic_summary.csv",
+      "required": true
+    },
+    {
+      "bytes": 11120,
+      "exists": true,
+      "relative_path": "figures/data/fig_exp1_validity_boundary_data.csv",
+      "required": true
+    },
+    {
+      "bytes": 173721,
+      "exists": true,
+      "relative_path": "figures/png/fig_exp1_validity_boundary.png",
+      "required": true
+    },
+    {
+      "bytes": 25392,
+      "exists": true,
+      "relative_path": "figures/pdf/fig_exp1_validity_boundary.pdf",
+      "required": true
+    },
+    {
+      "bytes": 7593,
+      "exists": true,
+      "relative_path": "figures/data/fig_exp1_same_mean_delay_data.csv",
+      "required": true
+    },
+    {
+      "bytes": 251075,
+      "exists": true,
+      "relative_path": "figures/png/fig_exp1_same_mean_delay.png",
+      "required": true
+    },
+    {
+      "bytes": 34190,
+      "exists": true,
+      "relative_path": "figures/pdf/fig_exp1_same_mean_delay.pdf",
+      "required": true
+    },
+    {
+      "bytes": 16760,
+      "exists": true,
+      "relative_path": "figures/data/fig_exp1_attribution_diagnostics_data.csv",
+      "required": true
+    },
+    {
+      "bytes": 355539,
+      "exists": true,
+      "relative_path": "figures/png/fig_exp1_attribution_diagnostics.png",
+      "required": true
+    },
+    {
+      "bytes": 32029,
+      "exists": true,
+      "relative_path": "figures/pdf/fig_exp1_attribution_diagnostics.pdf",
+      "required": true
+    },
+    {
+      "bytes": 442,
+      "exists": true,
+      "relative_path": "figures/data/fig_exp1_proxy_quality_data.csv",
+      "required": true
+    },
+    {
+      "bytes": 66867,
+      "exists": true,
+      "relative_path": "figures/png/fig_exp1_proxy_quality.png",
+      "required": true
+    },
+    {
+      "bytes": 19747,
+      "exists": true,
+      "relative_path": "figures/pdf/fig_exp1_proxy_quality.pdf",
+      "required": true
+    }
+  ],
+  "runtime": {
+    "cpu_count": 32,
+    "workers": 24,
+    "workers_source": "environment"
+  }
+}

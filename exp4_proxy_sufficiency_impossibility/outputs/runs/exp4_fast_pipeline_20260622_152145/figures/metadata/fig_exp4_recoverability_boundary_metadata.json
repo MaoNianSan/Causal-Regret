@@ -1,0 +1,27 @@
+{
+  "figure_id": "fig_exp4_recoverability_boundary",
+  "figure_size_in": [
+    6.85,
+    2.65
+  ],
+  "dpi": 600,
+  "mode": "fast",
+  "paper_result": false,
+  "figure_status": "fast_preview",
+  "panels": [
+    "proxy distortion diagnostic",
+    "source-label sweep",
+    "recoverability phase map"
+  ],
+  "primary_metric": "causal_regret_per_round",
+  "uncertainty_unit": "fast_preview_point_estimate_only",
+  "ci_level": null,
+  "n_bootstrap": 0,
+  "input_data_status": "complete_simulator",
+  "uses_latent_oracle_as_plotted_method": false,
+  "uses_latent_oracle_normalization": true,
+  "phase_map_metric_raw_not_clipped": true,
+  "phase_map_display_vmin": 0.0,
+  "phase_map_display_vmax": 1.0,
+  "caption_note": "Panels (b) and (c) use the structural_high setting with beta=2.00. In panel (c), sigma perturbs only the attribution proxy used to weight candidate historical sources. The decision-time context proxy is held fixed at sigma = 0.25. A value of one in the arrival-oracle normalized recovery map corresponds to the latent action oracle, not to the source-labelled online reference. The phase map evaluates the specified fixed proxy-recovery route, not every proxy-only algorithm."
+}

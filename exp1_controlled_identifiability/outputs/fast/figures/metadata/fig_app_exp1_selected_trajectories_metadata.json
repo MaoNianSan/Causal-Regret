@@ -1,0 +1,41 @@
+{
+  "data_csv": "figures/data/fig_app_exp1_selected_trajectories_data.csv",
+  "experiment_id": "exp1_controlled_validity",
+  "figure_id": "fig_app_exp1_selected_trajectories",
+  "figure_status": "blocked_validation_error",
+  "generated_at_utc": "2026-06-23T06:18:41.871295+00:00",
+  "missing_setting_ids": [
+    "matched_geometric_target_15",
+    "matched_mixture_target_15",
+    "matched_structural_target_15"
+  ],
+  "paper_result": false,
+  "required_methods": [
+    "arrival_time_naive",
+    "delayed_exp3",
+    "source_labelled",
+    "soft_attribution_em",
+    "proxy_state",
+    "oracle_reference"
+  ],
+  "required_settings": [
+    "zero_static",
+    "aligned_static_delay_15",
+    "geometric_mid",
+    "mixture_mid",
+    "structural_mid",
+    "matched_geometric_target_15",
+    "matched_mixture_target_15",
+    "matched_structural_target_15"
+  ],
+  "setting_source_map": {
+    "aligned_static_delay_15": "aligned_static_delay_15",
+    "geometric_mid": "geometric_mid",
+    "matched_geometric_target_15": "matched_geometric_target_15",
+    "matched_mixture_target_15": "matched_mixture_target_15",
+    "matched_structural_target_15": "matched_structural_target_15",
+    "mixture_mid": "mixture_mid",
+    "structural_mid": "structural_mid",
+    "zero_static": "zero_static"
+  }
+}

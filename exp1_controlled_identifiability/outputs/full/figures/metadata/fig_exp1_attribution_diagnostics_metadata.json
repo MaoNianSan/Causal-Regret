@@ -1,0 +1,8 @@
+{
+  "figure_id": "fig_exp1_attribution_diagnostics",
+  "generated_at_utc": "2026-06-20T08:29:54.975843+00:00",
+  "description": "Soft posterior mass and top-1 source recovery accumulated over all unlabelled arrivals, with separate panels for each information regime.",
+  "data_csv": "figures/data/fig_exp1_attribution_diagnostics_data.csv",
+  "paper_result": false,
+  "comparison_rule": "Method comparisons are made only within the same information regime. No panel mixes labelled, mixture_labelled, and unlabelled methods."
+}
