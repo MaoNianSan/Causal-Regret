@@ -1,17 +1,24 @@
 {
   "backend_status": "executed",
   "config_file": "config.yaml",
-  "config_hash": "a924f01a5b",
-  "end_time": "2026-06-20T06:08:42.000227Z",
+  "config_hash": "13b5551d55",
+  "end_time": "2026-06-24T05:30:15.006641Z",
   "experiment_id": "toy",
+  "feedback_timing": "post_decision",
   "mode": "fast",
-  "numpy_version": "2.2.6",
-  "python_version": "3.10.12",
+  "numpy_version": "2.4.4",
+  "python_version": "3.11.6",
   "seed_list": [
     0,
     1,
     2
   ],
-  "start_time": "2026-06-20T06:08:35.767603Z",
+  "start_time": "2026-06-24T05:30:07.923368Z",
+  "state_process": {
+    "clip": 1.0,
+    "rho": 0.98,
+    "sigma": 0.1,
+    "type": "clipped_ar1"
+  },
   "status": "success"
 }

@@ -8,7 +8,7 @@ Each execution writes into `outputs/<mode>/`. The runner clears only the selecte
 - `logs/run_metadata.json`: execution state. A valid run requires `status: success` and `backend_status: executed`.
 - `logs/run_manifest.csv`: one row per seed × delay setting × method run.
 - `logs/method_registry.csv`: descriptions of `oracle`, `naive`, and `causal_labelled`.
-- `summary/toy_seed_summary.csv`: per seed × delay setting × method outcomes.
+- `summary/toy_seed_summary.csv`: per seed × delay setting × method outcomes, including ranking-reversal and source-state-distance diagnostics used by same-mode analysis.
 - `summary/toy_method_summary.csv`: aggregate final-regret statistics.
 - `summary/toy_trajectory_summary.csv`: trajectory means, standard errors, and 95% intervals.
 - `figures/toy_selected_trajectories.{pdf,png}` and `figures/toy_full_trajectories.{pdf,png}`.
@@ -30,4 +30,4 @@ python self_check.py --mode fast
 python self_check.py --mode full
 ```
 
-The self-check rejects skipped or failed backends, missing/empty files, nonfinite values, incomplete design coverage, invalid delay arithmetic, non-shared fast delay paths, nonzero oracle regret, and zero-delay disagreement between naive and causal-labelled outputs.
+The self-check rejects skipped or failed backends, missing/empty files, nonfinite values, incomplete design coverage, invalid source--arrival arithmetic or censoring, non-shared fast delay/state paths, raw/summary disagreement, nonzero oracle regret, and zero-delay disagreement between naive and causal-labelled outputs.

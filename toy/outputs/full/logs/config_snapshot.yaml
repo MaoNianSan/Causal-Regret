@@ -2,6 +2,9 @@ experiment_id: toy
 T: 2000
 K: 5
 D_max: 10
+state_rho: 0.98
+state_sigma: 0.1
+state_clip: 1.0
 seeds:
 - 0
 - 1

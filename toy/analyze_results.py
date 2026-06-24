@@ -101,34 +101,44 @@ def curve_ordering_table(trajectory: pd.DataFrame) -> pd.DataFrame:
 
 
 def load_ranking_reversal(
-    outputs_root: Path, mode: str
+    outputs_root: Path, mode: str, seed: pd.DataFrame
 ) -> tuple[pd.DataFrame | None, str]:
-    preferred = outputs_root / mode / "raw" / "arrival_log.csv"
-    fallback = outputs_root / "fast" / "raw" / "arrival_log.csv"
-    if preferred.exists():
-        path = preferred
-        source_note = f"`outputs/{mode}/raw/arrival_log.csv`"
-    elif fallback.exists():
-        path = fallback
-        source_note = (
-            "`outputs/fast/raw/arrival_log.csv` (auxiliary fast-mode diagnostics; "
-            "full mode intentionally stores no raw trajectories)"
-        )
-    else:
-        return None, "unavailable because no raw `arrival_log.csv` exists"
+    """Load diagnostics from the same mode's summary whenever possible.
 
-    arrival = pd.read_csv(path)
-    dedupe_columns = ["delay_setting", "seed", "clock_t", "source_t", "delay_tau"]
-    diagnostic = arrival.drop_duplicates(subset=dedupe_columns)
-    reversal = diagnostic.groupby("delay_setting")["ranking_reversal"].mean()
-    distance = diagnostic.groupby("delay_setting")["source_state_distance"].mean()
-    result = pd.DataFrame(
-        {
-            "ranking_reversal_rate": reversal,
-            "mean_source_state_distance": distance,
-        }
-    )
-    return result, source_note
+    Full mode intentionally omits raw trajectories, so silently falling back to
+    ``outputs/fast`` can mix an old fast configuration with new full results.
+    The per-seed summary now carries the required diagnostics and is therefore
+    the authoritative source for both modes.
+    """
+    summary_columns = {
+        "delay_setting",
+        "ranking_reversal_rate",
+        "source_state_distance_mean",
+    }
+    if summary_columns.issubset(seed.columns):
+        result = (
+            seed.groupby("delay_setting", as_index=True)
+            .agg(
+                ranking_reversal_rate=("ranking_reversal_rate", "mean"),
+                mean_source_state_distance=("source_state_distance_mean", "mean"),
+            )
+        )
+        return result, f"`outputs/{mode}/summary/toy_seed_summary.csv`"
+
+    # Backward-compatible fallback for legacy fast runs only. Never use a fast
+    # raw log to interpret a full run, because the configurations may differ.
+    preferred = outputs_root / mode / "raw" / "arrival_log.csv"
+    if mode == "fast" and preferred.exists():
+        arrival = pd.read_csv(preferred)
+        dedupe_columns = ["delay_setting", "seed", "clock_t", "source_t", "delay_tau"]
+        diagnostic = arrival.drop_duplicates(subset=dedupe_columns)
+        return pd.DataFrame(
+            {
+                "ranking_reversal_rate": diagnostic.groupby("delay_setting")["ranking_reversal"].mean(),
+                "mean_source_state_distance": diagnostic.groupby("delay_setting")["source_state_distance"].mean(),
+            }
+        ), "`outputs/fast/raw/arrival_log.csv` (legacy fallback)"
+    return None, "unavailable because the same-mode summary lacks diagnostics"
 
 
 def build_report(
@@ -318,7 +328,7 @@ def main() -> None:
     outputs_root = resolve_outputs_root(base, args.output_dir)
     mode_root = outputs_root / args.mode
     seed, method, trajectory = load_inputs(mode_root)
-    ranking, ranking_source = load_ranking_reversal(outputs_root, args.mode)
+    ranking, ranking_source = load_ranking_reversal(outputs_root, args.mode, seed)
     report = build_report(
         mode=args.mode,
         seed=seed,

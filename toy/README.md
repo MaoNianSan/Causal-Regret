@@ -30,6 +30,15 @@ The runner is self-contained. It does not require an external `common.dual_mode`
 
 A valid run has `logs/run_metadata.json` with `status: success` and `backend_status: executed`; nonempty seed, method, and trajectory summaries; figure source CSVs and figures; and, in fast mode, raw delay, arrival, step, and diagnostic logs. `self_check.py` rejects skipped backends, missing/empty artifacts, nonfinite values, invalid shared delay paths, incomplete design coverage, nonzero oracle regret, and zero-delay disagreement between naive and causal-labelled learners.
 
+## State process and timing convention
+
+The latent state follows a clipped AR(1) process controlled by `state_rho`,
+`state_sigma`, and `state_clip` in `config.yaml`. This keeps the dynamic state
+on the same bounded support as the action anchors and prevents an unbounded
+random walk from mechanically determining the regret scale. At each structural
+round, the learner selects an action, then feedback scheduled to arrive at that
+round is observed and used to update the learner for subsequent decisions.
+
 ## Scope and limitations
 
 This is a mechanism diagnostic, not a real-data study, a proxy-sufficiency test, a complete delayed-bandit benchmark, or a replacement for the main experiments. The causal-labelled learner is intentionally a simple EWMA learner; remaining regret relative to the oracle reflects learning and information limits rather than a failure of source attribution alone.

@@ -305,7 +305,10 @@ def run_one_seed(
                 "source_optimal_action": a_star,
                 "source_loss": loss_t,
                 "delay_tau": d,
-                "arrival_t": arrival_t if d <= D_max else None,
+                # Keep the true arrival time even when the observation is censored.
+                # Censoring controls delivery to the learner; it must not erase the
+                # source-to-arrival mapping needed for auditability.
+                "arrival_t": arrival_t,
                 "is_censored": censored,
                 "censor_reason": censor_reason,
             }

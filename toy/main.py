@@ -86,7 +86,8 @@ RAW_FIELDNAMES = {
 SEED_SUMMARY_FIELDNAMES = [
     "experiment_id", "mode", "config_hash", "run_id", "seed", "delay_setting", "method",
     "T", "K", "D_max", "mean_delay", "median_delay", "p90_delay", "max_delay",
-    "arrival_rate", "censor_rate", "ranking_reversal_rate", "final_Rc", "normalized_final_Rc",
+    "arrival_rate", "censor_rate", "ranking_reversal_rate", "source_state_distance_mean",
+    "source_state_distance_sum", "source_state_distance_p90", "final_Rc", "normalized_final_Rc",
     "auc_causal_regret", "mean_instant_causal_regret", "gain_vs_naive", "gain_vs_naive_pct",
     "runtime_seconds",
 ]
@@ -101,18 +102,35 @@ class ToyCausalEnv:
     """Latent-state environment used by the Toy diagnostic.
 
     Actions index evenly spaced anchor states on [-1, 1]. The latent state is a
-    reproducible Gaussian random walk; loss is squared distance between the
-    action anchor and the current state. This is intentionally simple: it
-    creates source-time/action binding that can change before feedback arrives.
+    reproducible clipped AR(1) process, so it is dynamic but remains on the
+    same bounded support as the action anchors. Loss is squared distance between
+    the action anchor and the current state. This intentionally simple process
+    creates source-time/action binding that can change before feedback arrives
+    without allowing an unbounded random walk to dominate regret magnitudes.
     """
 
-    def __init__(self, A: list[int], seed: int, sigma_state: float = 0.1):
+    def __init__(
+        self,
+        A: list[int],
+        seed: int,
+        rho_state: float = 0.98,
+        sigma_state: float = 0.10,
+        state_clip: float = 1.0,
+    ):
         if not A:
             raise ValueError("A must contain at least one action")
+        if not (-1.0 < float(rho_state) < 1.0):
+            raise ValueError("rho_state must lie strictly between -1 and 1")
+        if float(sigma_state) <= 0.0:
+            raise ValueError("sigma_state must be positive")
+        if float(state_clip) <= 0.0:
+            raise ValueError("state_clip must be positive")
         self.A = list(A)
         self.rng = np.random.default_rng(seed)
         self.S = 0.0
+        self.rho_state = float(rho_state)
         self.sigma_state = float(sigma_state)
+        self.state_clip = float(state_clip)
         denom = max(1, len(self.A) - 1)
         self.mu = {a: -1.0 + 2.0 * idx / denom for idx, a in enumerate(self.A)}
 
@@ -121,7 +139,8 @@ class ToyCausalEnv:
 
     def step(self, t: int) -> None:
         del t
-        self.S += float(self.rng.normal(0.0, self.sigma_state))
+        innovation = float(self.rng.normal(0.0, self.sigma_state))
+        self.S = float(np.clip(self.rho_state * self.S + innovation, -self.state_clip, self.state_clip))
 
     def true_loss(self, a: int, S_t: float) -> float:
         if a not in self.mu:
@@ -161,6 +180,29 @@ def validate_config(config: dict[str, Any]) -> None:
         raise ValueError("T must be positive, K must be >= 2, and D_max must be nonnegative")
     if not isinstance(config["seeds"], list) or not config["seeds"]:
         raise ValueError("seeds must be a nonempty list")
+    seeds = [int(seed) for seed in config["seeds"]]
+    if len(seeds) != len(set(seeds)):
+        raise ValueError("seeds must be unique")
+    if len(config["delay_settings"]) != len(set(config["delay_settings"])):
+        raise ValueError("delay_settings must not contain duplicates")
+    if len(config["methods"]) != len(set(config["methods"])):
+        raise ValueError("methods must not contain duplicates")
+    rho_state = float(config.get("state_rho", 0.98))
+    sigma_state = float(config.get("state_sigma", 0.10))
+    state_clip = float(config.get("state_clip", 1.0))
+    if not (-1.0 < rho_state < 1.0):
+        raise ValueError("state_rho must lie strictly between -1 and 1")
+    if sigma_state <= 0.0:
+        raise ValueError("state_sigma must be positive")
+    if state_clip <= 0.0:
+        raise ValueError("state_clip must be positive")
+    if not bool(config["save_summary"]) or not bool(config["save_figures"]):
+        raise ValueError("Toy artifact contract requires save_summary=true and save_figures=true")
+    requested_formats = set(config["figure_format"])
+    if not {"pdf", "png"}.issubset(requested_formats):
+        raise ValueError("figure_format must include both 'pdf' and 'png'")
+    if set(config["delay_settings"]) != set(DELAY_GROUP_TO_NAME):
+        raise ValueError("Toy requires exactly zero, geometric, piecewise, and mixture delay settings")
     invalid_groups = [name for name in config["delay_settings"] if name not in DELAY_GROUP_TO_NAME]
     if invalid_groups:
         raise ValueError(f"Unsupported delay groups: {invalid_groups}; supported={sorted(DELAY_GROUP_TO_NAME)}")
@@ -323,6 +365,13 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
         "end_time": None,
         "status": "running",
         "backend_status": "running",
+        "feedback_timing": "post_decision",
+        "state_process": {
+            "type": "clipped_ar1",
+            "rho": float(config.get("state_rho", 0.98)),
+            "sigma": float(config.get("state_sigma", 0.10)),
+            "clip": float(config.get("state_clip", 1.0)),
+        },
     }
     write_json(metadata_path, metadata)
 
@@ -359,7 +408,13 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
                 for method in config["methods"]:
                     method = str(method)
                     run_id = f"{experiment_id}_{mode}_{config_hash}_{delay_name}_{method}_s{seed:03d}"
-                    env = ToyCausalEnv(A=A, seed=seed)
+                    env = ToyCausalEnv(
+                        A=A,
+                        seed=seed,
+                        rho_state=float(config.get("state_rho", 0.98)),
+                        sigma_state=float(config.get("state_sigma", 0.10)),
+                        state_clip=float(config.get("state_clip", 1.0)),
+                    )
                     learner = learner_for_method(method)
                     started = time.perf_counter()
                     result = run_one_seed(
@@ -429,6 +484,9 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
                             "arrival_rate": summary["arrival_rate_final"],
                             "censor_rate": summary["censor_rate"],
                             "ranking_reversal_rate": summary["ranking_reversal_rate"],
+                            "source_state_distance_mean": summary["source_state_distance_mean"],
+                            "source_state_distance_sum": summary["source_state_distance_sum"],
+                            "source_state_distance_p90": summary["source_state_distance_p90"],
                             "final_Rc": summary["final_causal_regret"],
                             "normalized_final_Rc": summary["normalized_final_regret"],
                             "auc_causal_regret": summary["auc_causal_regret"],
