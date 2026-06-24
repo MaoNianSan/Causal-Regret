@@ -54,11 +54,13 @@ def plot_trajectories(
         subset = df[df["delay_setting"] == delay_setting]
         x = np.array(sorted(subset["t"].unique()))
 
-        for method_index, (method, color, marker) in enumerate([
-            ("oracle", "C2", "s"),
-            ("naive", "C0", "o"),
-            ("causal_labelled", "C1", "^"),
-        ]):
+        for method_index, (method, color, marker) in enumerate(
+            [
+                ("oracle", "C2", "s"),
+                ("naive", "C0", "o"),
+                ("causal_labelled", "C1", "^"),
+            ]
+        ):
             method_df = subset[subset["method"] == method]
             if method_df.empty:
                 continue

@@ -24,7 +24,6 @@ from src.common import (
 )
 from src.parallel import parallel_map
 
-
 MAIN_REFERENCE_ROUTE = "arrival_bin_anchor"
 MAIN_REFERENCE_LABEL = "arrival_anchor"
 TOP_K_CREDITED_MASS = "top_k_credited_mass_per_1000_events"
@@ -54,16 +53,32 @@ def _reference_fields(reference_label: str) -> dict[str, str]:
     }
 
 
-def _action_arrays(exposure: pd.DataFrame) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
+def _action_arrays(
+    exposure: pd.DataFrame,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray, float]:
     frame = exposure.copy().sort_values("action_id", kind="stable")
     actions = pd.to_numeric(frame["action_id"], errors="coerce").astype(int).to_numpy()
-    n_impressions = pd.to_numeric(frame["n_impressions"], errors="coerce").fillna(0).to_numpy(dtype=float)
-    total_cost = pd.to_numeric(frame.get("total_cost", 0.0), errors="coerce").fillna(0).to_numpy(dtype=float)
-    mean_cost = pd.to_numeric(frame.get("mean_cost", 0.0), errors="coerce").fillna(0).to_numpy(dtype=float)
+    n_impressions = (
+        pd.to_numeric(frame["n_impressions"], errors="coerce")
+        .fillna(0)
+        .to_numpy(dtype=float)
+    )
+    total_cost = (
+        pd.to_numeric(frame.get("total_cost", 0.0), errors="coerce")
+        .fillna(0)
+        .to_numpy(dtype=float)
+    )
+    mean_cost = (
+        pd.to_numeric(frame.get("mean_cost", 0.0), errors="coerce")
+        .fillna(0)
+        .to_numpy(dtype=float)
+    )
     positive = mean_cost[np.isfinite(mean_cost) & (mean_cost > 0)]
     cost_scale = float(np.median(positive)) if positive.size else 1.0
     if len(actions) == 0 or np.any(n_impressions <= 0):
-        raise RuntimeError("Decision-cell exposure contract failed: no action cells or nonpositive exposure.")
+        raise RuntimeError(
+            "Decision-cell exposure contract failed: no action cells or nonpositive exposure."
+        )
     return actions, n_impressions, total_cost, max(cost_scale, 1e-12)
 
 
@@ -85,12 +100,15 @@ def _score_arrays(
         out=np.full_like(credits, -np.inf),
         where=n_impressions[None, :] > 0,
     )
-    mean_cost_scaled = np.divide(
-        total_cost,
-        n_impressions,
-        out=np.zeros_like(total_cost),
-        where=n_impressions > 0,
-    ) / cost_scale
+    mean_cost_scaled = (
+        np.divide(
+            total_cost,
+            n_impressions,
+            out=np.zeros_like(total_cost),
+            where=n_impressions > 0,
+        )
+        / cost_scale
+    )
     scores = credit_rate - float(cost_lambda) * mean_cost_scaled[None, :]
     return credit_rate, mean_cost_scaled, scores
 
@@ -115,7 +133,9 @@ def _metrics_from_credit(
     from this observational conversion log.
     """
     if n_events <= 0:
-        raise RuntimeError("At least one conversion event is required for logged attribution metrics.")
+        raise RuntimeError(
+            "At least one conversion event is required for logged attribution metrics."
+        )
     if top_k >= len(actions):
         raise RuntimeError(
             f"Top-k diagnostic is degenerate: top_k={top_k} must be strictly below action-cell universe={len(actions)}."
@@ -147,12 +167,21 @@ def _metrics_from_credit(
         route_selected = selected[route]
         credited_mass = float(np.sum(credits[index, route_selected]))
         cost_adjusted_score = float(
-            np.sum(credits[index, route_selected] - float(cost_lambda) * total_cost[route_selected] / cost_scale)
+            np.sum(
+                credits[index, route_selected]
+                - float(cost_lambda) * total_cost[route_selected] / cost_scale
+            )
         )
-        corr = 1.0 if route == reference_route else float(spearmanr(scores[index], reference_scores).statistic)
+        corr = (
+            1.0
+            if route == reference_route
+            else float(spearmanr(scores[index], reference_scores).statistic)
+        )
         if not np.isfinite(corr):
             corr = np.nan
-        overlap = len(set(route_selected).intersection(reference_selected)) / float(top_k)
+        overlap = len(set(route_selected).intersection(reference_selected)) / float(
+            top_k
+        )
         allocation = np.divide(credits[index], max(float(credits[index].sum()), 1e-12))
         allocation_tv = 0.5 * float(np.abs(allocation - reference_allocation).sum())
         rows.append(
@@ -166,13 +195,17 @@ def _metrics_from_credit(
                 "n_eligible_conversion_events": float(n_events),
                 TOP_K_CREDITED_MASS: 1000.0 * credited_mass / n_events,
                 TOP_K_COST_ADJUSTED_SCORE: 1000.0 * cost_adjusted_score / n_events,
-                fields["mass_difference"]: 1000.0 * (credited_mass - np.sum(credits[ref_index, reference_selected])) / n_events,
+                fields["mass_difference"]: 1000.0
+                * (credited_mass - np.sum(credits[ref_index, reference_selected]))
+                / n_events,
                 fields["cost_adjusted_difference"]: 1000.0
                 * (
                     cost_adjusted_score
                     - np.sum(
                         credits[ref_index, reference_selected]
-                        - float(cost_lambda) * total_cost[reference_selected] / cost_scale
+                        - float(cost_lambda)
+                        * total_cost[reference_selected]
+                        / cost_scale
                     )
                 )
                 / n_events,
@@ -202,32 +235,49 @@ def _metrics_from_credit(
     return pd.DataFrame(rows), pd.DataFrame(action_rows)
 
 
-def _user_credit_matrix(assignments: pd.DataFrame, conversions: pd.DataFrame, routes: list[str], actions: np.ndarray) -> UserCreditMatrix:
+def _user_credit_matrix(
+    assignments: pd.DataFrame,
+    conversions: pd.DataFrame,
+    routes: list[str],
+    actions: np.ndarray,
+) -> UserCreditMatrix:
     route_index = {route: index for index, route in enumerate(routes)}
     action_index = {int(action): index for index, action in enumerate(actions)}
     conversion_uid = conversions[["conversion_id", "uid"]].copy()
-    conversion_uid["conversion_id"] = normalise_conversion_identifier(conversion_uid["conversion_id"])
+    conversion_uid["conversion_id"] = normalise_conversion_identifier(
+        conversion_uid["conversion_id"]
+    )
     conversion_uid["uid"] = normalise_uid_identifier(conversion_uid["uid"])
     invalid = conversion_uid["conversion_id"].isna() | conversion_uid["uid"].isna()
     if invalid.any():
         raise RuntimeError(
             f"UID bootstrap contract failed: {int(invalid.sum())} conversion reference rows have missing identifiers."
         )
-    uid_counts = conversion_uid.groupby("conversion_id", sort=False)["uid"].nunique(dropna=True)
+    uid_counts = conversion_uid.groupby("conversion_id", sort=False)["uid"].nunique(
+        dropna=True
+    )
     if uid_counts.ne(1).any():
         raise RuntimeError(
             "UID bootstrap contract failed: cross-UID conversions remain; "
             f"examples={uid_counts[uid_counts.ne(1)].index[:5].tolist()}"
         )
-    conversion_uid = conversion_uid.drop_duplicates("conversion_id", keep="first").copy()
+    conversion_uid = conversion_uid.drop_duplicates(
+        "conversion_id", keep="first"
+    ).copy()
     conversion_uid["conversion_id"] = conversion_uid["conversion_id"].astype(str)
     conversion_uid["uid"] = conversion_uid["uid"].astype(str)
 
     frame = assignments[assignments["route"].isin(routes)].copy()
     frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
     frame["uid"] = normalise_uid_identifier(frame["uid"])
-    frame["candidate_action_id"] = pd.to_numeric(frame["candidate_action_id"], errors="coerce")
-    bad = frame["conversion_id"].isna() | frame["uid"].isna() | frame["candidate_action_id"].isna()
+    frame["candidate_action_id"] = pd.to_numeric(
+        frame["candidate_action_id"], errors="coerce"
+    )
+    bad = (
+        frame["conversion_id"].isna()
+        | frame["uid"].isna()
+        | frame["candidate_action_id"].isna()
+    )
     if bad.any():
         raise RuntimeError(
             f"UID bootstrap contract failed: {int(bad.sum())} assignment rows have missing identifiers/action IDs."
@@ -242,46 +292,76 @@ def _user_credit_matrix(assignments: pd.DataFrame, conversions: pd.DataFrame, ro
         validate="many_to_one",
     )
     missing_reference = assigned["expected_uid"].isna()
-    uid_mismatch = assigned["expected_uid"].notna() & assigned["uid"].ne(assigned["expected_uid"])
+    uid_mismatch = assigned["expected_uid"].notna() & assigned["uid"].ne(
+        assigned["expected_uid"]
+    )
     if missing_reference.any() or uid_mismatch.any():
-        examples = assigned.loc[
-            missing_reference | uid_mismatch,
-            ["conversion_id", "uid", "expected_uid"],
-        ].head(5).to_dict(orient="records")
+        examples = (
+            assigned.loc[
+                missing_reference | uid_mismatch,
+                ["conversion_id", "uid", "expected_uid"],
+            ]
+            .head(5)
+            .to_dict(orient="records")
+        )
         raise RuntimeError(
             "UID bootstrap contract failed: assignment/reference incompatibility; "
             f"missing_reference={int(missing_reference.sum())}, "
             f"uid_mismatch={int(uid_mismatch.sum())}, examples={examples}"
         )
-    if assigned["route"].map(route_index).isna().any() or assigned["candidate_action_id"].map(action_index).isna().any():
-        raise RuntimeError("Sparse credit matrix contract failed: unknown route or action-cell ID.")
+    if (
+        assigned["route"].map(route_index).isna().any()
+        or assigned["candidate_action_id"].map(action_index).isna().any()
+    ):
+        raise RuntimeError(
+            "Sparse credit matrix contract failed: unknown route or action-cell ID."
+        )
     users = np.sort(conversion_uid["uid"].unique())
     user_index = {user: index for index, user in enumerate(users)}
     conversion_count = (
-        conversion_uid.groupby("uid")["conversion_id"].nunique().reindex(users, fill_value=0).to_numpy(dtype=float)
+        conversion_uid.groupby("uid")["conversion_id"]
+        .nunique()
+        .reindex(users, fill_value=0)
+        .to_numpy(dtype=float)
     )
     row = assigned["uid"].map(user_index)
     if row.isna().any():
-        raise RuntimeError("Sparse credit matrix contract failed: UID factorisation yielded unmapped rows.")
-    columns = (
-        assigned["route"].map(route_index).to_numpy(dtype=np.int64) * len(actions)
-        + assigned["candidate_action_id"].map(action_index).to_numpy(dtype=np.int64)
+        raise RuntimeError(
+            "Sparse credit matrix contract failed: UID factorisation yielded unmapped rows."
+        )
+    columns = assigned["route"].map(route_index).to_numpy(dtype=np.int64) * len(
+        actions
+    ) + assigned["candidate_action_id"].map(action_index).to_numpy(dtype=np.int64)
+    values = (
+        pd.to_numeric(assigned["weight"], errors="coerce")
+        .fillna(0.0)
+        .to_numpy(dtype=float)
     )
-    values = pd.to_numeric(assigned["weight"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
     matrix = sparse.coo_matrix(
         (values, (row.to_numpy(dtype=np.int64), columns)),
         shape=(len(users), len(routes) * len(actions)),
     ).tocsr()
     return UserCreditMatrix(
-        tuple(routes), actions, matrix.transpose().tocsr(), conversion_count, len(users), int(len(conversion_uid))
+        tuple(routes),
+        actions,
+        matrix.transpose().tocsr(),
+        conversion_count,
+        len(users),
+        int(len(conversion_uid)),
     )
 
 
-def _credit_totals(matrix: UserCreditMatrix, user_counts: np.ndarray | None = None) -> tuple[np.ndarray, float]:
+def _credit_totals(
+    matrix: UserCreditMatrix, user_counts: np.ndarray | None = None
+) -> tuple[np.ndarray, float]:
     if user_counts is None:
         user_counts = np.ones(matrix.n_users, dtype=float)
-    flat = np.asarray(matrix.feature_by_user @ np.asarray(user_counts, dtype=float)).ravel()
-    return flat.reshape(len(matrix.routes), len(matrix.actions)), float(np.dot(user_counts, matrix.conversion_count_by_user))
+    flat = np.asarray(
+        matrix.feature_by_user @ np.asarray(user_counts, dtype=float)
+    ).ravel()
+    return flat.reshape(len(matrix.routes), len(matrix.actions)), float(
+        np.dot(user_counts, matrix.conversion_count_by_user)
+    )
 
 
 def _bootstrap_matrix(
@@ -308,7 +388,9 @@ def _bootstrap_matrix(
     ]
 
     def one(replicate: int) -> pd.DataFrame:
-        rng = np.random.default_rng(np.random.SeedSequence([seed_base, seed_offset, int(replicate)]))
+        rng = np.random.default_rng(
+            np.random.SeedSequence([seed_base, seed_offset, int(replicate)])
+        )
         sampled = rng.integers(0, matrix.n_users, size=matrix.n_users, endpoint=False)
         counts = np.bincount(sampled, minlength=matrix.n_users).astype(float)
         credits, n_events = _credit_totals(matrix, counts)
@@ -328,17 +410,30 @@ def _bootstrap_matrix(
         metrics["bootstrap_replicate"] = int(replicate)
         return metrics[["bootstrap_replicate", "route", *output_fields]]
 
-    result = pd.concat(parallel_map(one, range(n_bootstrap), cfg, purpose="bootstrap"), ignore_index=True)
-    return result.sort_values(["bootstrap_replicate", "route"], kind="stable").reset_index(drop=True)
+    result = pd.concat(
+        parallel_map(one, range(n_bootstrap), cfg, purpose="bootstrap"),
+        ignore_index=True,
+    )
+    return result.sort_values(
+        ["bootstrap_replicate", "route"], kind="stable"
+    ).reset_index(drop=True)
 
 
-def _add_bootstrap_intervals(summary: pd.DataFrame, bootstrap: pd.DataFrame, level: float, metric_fields: list[str]) -> pd.DataFrame:
+def _add_bootstrap_intervals(
+    summary: pd.DataFrame,
+    bootstrap: pd.DataFrame,
+    level: float,
+    metric_fields: list[str],
+) -> pd.DataFrame:
     result = summary.copy()
     for field in metric_fields:
         lows, highs = [], []
         for route in result["route"]:
             lo, hi = ci_from_values(
-                bootstrap.loc[bootstrap["route"].eq(route), field].to_numpy(dtype=float), level
+                bootstrap.loc[bootstrap["route"].eq(route), field].to_numpy(
+                    dtype=float
+                ),
+                level,
             )
             lows.append(lo)
             highs.append(hi)
@@ -348,44 +443,61 @@ def _add_bootstrap_intervals(summary: pd.DataFrame, bootstrap: pd.DataFrame, lev
     return result
 
 
-def _pairwise_route_divergence(assignments: pd.DataFrame, routes: list[str]) -> pd.DataFrame:
+def _pairwise_route_divergence(
+    assignments: pd.DataFrame, routes: list[str]
+) -> pd.DataFrame:
     frame = assignments[assignments["route"].isin(routes)][
         ["route", "conversion_id", "candidate_action_id", "weight"]
     ].copy()
     rows: list[dict] = []
     for left, right in combinations(routes, 2):
-        a = frame[frame["route"].eq(left)][["conversion_id", "candidate_action_id", "weight"]].rename(
-            columns={"weight": "weight_left"}
+        a = frame[frame["route"].eq(left)][
+            ["conversion_id", "candidate_action_id", "weight"]
+        ].rename(columns={"weight": "weight_left"})
+        b = frame[frame["route"].eq(right)][
+            ["conversion_id", "candidate_action_id", "weight"]
+        ].rename(columns={"weight": "weight_right"})
+        merged = a.merge(
+            b, on=["conversion_id", "candidate_action_id"], how="outer"
+        ).fillna(0.0)
+        tv = (
+            0.5
+            * merged.assign(diff=(merged["weight_left"] - merged["weight_right"]).abs())
+            .groupby("conversion_id", sort=False)["diff"]
+            .sum()
         )
-        b = frame[frame["route"].eq(right)][["conversion_id", "candidate_action_id", "weight"]].rename(
-            columns={"weight": "weight_right"}
-        )
-        merged = a.merge(b, on=["conversion_id", "candidate_action_id"], how="outer").fillna(0.0)
-        tv = 0.5 * merged.assign(diff=(merged["weight_left"] - merged["weight_right"]).abs()).groupby(
-            "conversion_id", sort=False
-        )["diff"].sum()
         rows.append(
             {
                 "route_left": left,
                 "route_right": right,
                 "n_conversion_events": int(tv.size),
                 "mean_total_variation_distance": float(tv.mean()),
-                "exact_assignment_duplicate": bool(np.allclose(tv.to_numpy(dtype=float), 0.0, atol=1e-12)),
+                "exact_assignment_duplicate": bool(
+                    np.allclose(tv.to_numpy(dtype=float), 0.0, atol=1e-12)
+                ),
             }
         )
     return pd.DataFrame(rows)
 
 
-def _pairwise_route_divergence_matrix(assignments: pd.DataFrame, routes: list[str]) -> pd.DataFrame:
+def _pairwise_route_divergence_matrix(
+    assignments: pd.DataFrame, routes: list[str]
+) -> pd.DataFrame:
     pair = _pairwise_route_divergence(assignments, routes)
     value = {
-        (str(row.route_left), str(row.route_right)): float(row.mean_total_variation_distance)
+        (str(row.route_left), str(row.route_right)): float(
+            row.mean_total_variation_distance
+        )
         for row in pair.itertuples()
     }
     rows: list[dict] = []
     for left in routes:
         for right in routes:
-            tv = 0.0 if left == right else value.get((left, right), value.get((right, left), np.nan))
+            tv = (
+                0.0
+                if left == right
+                else value.get((left, right), value.get((right, left), np.nan))
+            )
             rows.append(
                 {
                     "route_left": left,
@@ -421,7 +533,9 @@ def _pairwise_top_k_overlap(
         }
         for left in routes:
             for right in routes:
-                overlap = len(set(selected[left]).intersection(selected[right])) / float(top_k)
+                overlap = len(
+                    set(selected[left]).intersection(selected[right])
+                ) / float(top_k)
                 rows.append(
                     {
                         "top_k": int(top_k),
@@ -434,15 +548,21 @@ def _pairwise_top_k_overlap(
     return pd.DataFrame(rows)
 
 
-def _route_agreement(audit_assignments: pd.DataFrame, routes: list[str], reference: str) -> pd.DataFrame:
+def _route_agreement(
+    audit_assignments: pd.DataFrame, routes: list[str], reference: str
+) -> pd.DataFrame:
     truth = (
-        audit_assignments[audit_assignments["route"].eq(reference)][["conversion_id", "candidate_action_id"]]
+        audit_assignments[audit_assignments["route"].eq(reference)][
+            ["conversion_id", "candidate_action_id"]
+        ]
         .drop_duplicates("conversion_id")
         .rename(columns={"candidate_action_id": "reference_action_id"})
     )
     rows = []
     for route in routes:
-        x = audit_assignments[audit_assignments["route"].eq(route)].merge(truth, on="conversion_id", how="inner")
+        x = audit_assignments[audit_assignments["route"].eq(route)].merge(
+            truth, on="conversion_id", how="inner"
+        )
         mass = float(
             x.loc[x["candidate_action_id"].eq(x["reference_action_id"]), "weight"].sum()
             / max(truth["conversion_id"].nunique(), 1)
@@ -484,7 +604,11 @@ def _audit_summary(
         "source_linked_reference",
         "source_linked_reference",
     )
-    return metrics.merge(_route_agreement(assignments, routes, "source_linked_reference"), on="route", how="left")
+    return metrics.merge(
+        _route_agreement(assignments, routes, "source_linked_reference"),
+        on="route",
+        how="left",
+    )
 
 
 def _delay_profile(
@@ -498,14 +622,22 @@ def _delay_profile(
     buckets.  Panel A is therefore a source-event composition, not a unique
     conversion-journey distribution.
     """
-    ids = set(normalise_conversion_identifier(main_conversions["conversion_id"]).dropna().astype(str))
+    ids = set(
+        normalise_conversion_identifier(main_conversions["conversion_id"])
+        .dropna()
+        .astype(str)
+    )
     frame = candidates.copy()
     frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
-    frame = frame[frame["conversion_id"].notna() & frame["conversion_id"].astype(str).isin(ids)].copy()
+    frame = frame[
+        frame["conversion_id"].notna() & frame["conversion_id"].astype(str).isin(ids)
+    ].copy()
     values = pd.to_numeric(frame["delay_to_conversion_days"], errors="coerce")
     labels = ["less_equal_1h", "h1_to_h6", "h6_to_h24", "d1_to_d7", "d7_to_d30"]
     bins = [-np.inf, 1 / 24, 6 / 24, 1.0, 7.0, float(candidate_window_days) + 1e-12]
-    frame["delay_bucket"] = pd.cut(values, bins=bins, labels=labels, include_lowest=True)
+    frame["delay_bucket"] = pd.cut(
+        values, bins=bins, labels=labels, include_lowest=True
+    )
     frame = frame[frame["delay_bucket"].notna()].copy()
     result = (
         frame.groupby("delay_bucket", observed=False)
@@ -517,8 +649,18 @@ def _delay_profile(
     result["candidate_window_days"] = float(candidate_window_days)
     result["delay_bucket"] = result["delay_bucket"].astype(str)
     total = max(int(result["n_eligible_source_events"].sum()), 1)
-    result["source_event_share_percent"] = 100.0 * result["n_eligible_source_events"] / total
-    return result[["cohort_id", "n_eligible_source_events", "candidate_window_days", "delay_bucket", "source_event_share_percent"]]
+    result["source_event_share_percent"] = (
+        100.0 * result["n_eligible_source_events"] / total
+    )
+    return result[
+        [
+            "cohort_id",
+            "n_eligible_source_events",
+            "candidate_window_days",
+            "delay_bucket",
+            "source_event_share_percent",
+        ]
+    ]
 
 
 def _window_sensitivity(
@@ -566,7 +708,9 @@ def _window_sensitivity(
         )
     common_ids = set.intersection(*id_sets.values()) if id_sets else set()
     if not common_ids:
-        raise RuntimeError("Candidate-window common cohort is empty after intersecting eligible conversion IDs.")
+        raise RuntimeError(
+            "Candidate-window common cohort is empty after intersecting eligible conversion IDs."
+        )
     common_conversions = main_conversions[
         main_conversions["conversion_id"].astype(str).isin(common_ids)
     ].copy()
@@ -588,7 +732,9 @@ def _window_sensitivity(
             window,
             routes,
         )
-        matrix = _user_credit_matrix(result.assignments, common_conversions, routes, actions)
+        matrix = _user_credit_matrix(
+            result.assignments, common_conversions, routes, actions
+        )
         credits, n_events = _credit_totals(matrix)
         point, _ = _metrics_from_credit(
             credits,
@@ -605,15 +751,23 @@ def _window_sensitivity(
         )
         point["candidate_window_days"] = window
         point["window_common_cohort_events"] = int(len(common_conversions))
-        point["common_cohort_coverage"] = int(len(common_conversions)) / max(int(len(id_sets[window])), 1)
+        point["common_cohort_coverage"] = int(len(common_conversions)) / max(
+            int(len(id_sets[window])), 1
+        )
         point["window_bootstrap_replicates"] = 0
-        point["window_uncertainty_status"] = "not_computed_point_estimate_common_cohort_diagnostic"
+        point["window_uncertainty_status"] = (
+            "not_computed_point_estimate_common_cohort_diagnostic"
+        )
         metrics_rows.append(point)
         audit_rows.append(
             {
                 "candidate_window_days": window,
-                "n_conversion_ids_available_before_intersection": int(len(id_sets[window])),
-                "n_conversion_ids_common_across_all_windows": int(len(common_conversions)),
+                "n_conversion_ids_available_before_intersection": int(
+                    len(id_sets[window])
+                ),
+                "n_conversion_ids_common_across_all_windows": int(
+                    len(common_conversions)
+                ),
                 "n_assignment_rows": int(len(result.assignments)),
                 "missing_reference": 0,
                 "uid_mismatch": 0,
@@ -645,14 +799,20 @@ def _em_assignment_diagnostic(assignments: pd.DataFrame) -> pd.DataFrame:
         )
     rows: list[dict] = []
     for conversion_id, group in em.groupby("conversion_id", sort=False):
-        weights = pd.to_numeric(group["weight"], errors="coerce").fillna(0.0).to_numpy(dtype=float)
+        weights = (
+            pd.to_numeric(group["weight"], errors="coerce")
+            .fillna(0.0)
+            .to_numpy(dtype=float)
+        )
         entropy = -float(np.sum(np.where(weights > 0, weights * np.log(weights), 0.0)))
         rows.append(
             {
                 "conversion_id": conversion_id,
                 "max_assignment_weight": float(weights.max()),
                 "assignment_entropy": entropy,
-                "n_assigned_decision_cells": int(group["candidate_action_id"].nunique()),
+                "n_assigned_decision_cells": int(
+                    group["candidate_action_id"].nunique()
+                ),
                 "nontrivial_assignment": int(entropy > 1e-12),
             }
         )
@@ -667,7 +827,11 @@ def main() -> None:
     args = parser.parse_args()
     cfg = load_config(args.config)
     ensure_output_dirs(cfg)
-    processed, summaries, raw = out_dir(cfg, "processed"), out_dir(cfg, "summaries"), out_dir(cfg, "raw")
+    processed, summaries, raw = (
+        out_dir(cfg, "processed"),
+        out_dir(cfg, "summaries"),
+        out_dir(cfg, "raw"),
+    )
     assignments = pd.read_csv(processed / "exp2_route_assignments.csv")
     conversions = pd.read_csv(processed / "exp2_conversion_arrivals.csv")
     candidates = pd.read_csv(processed / "exp2_candidate_sources.csv")
@@ -678,12 +842,16 @@ def main() -> None:
     audit_id = str(cfg["subsets"]["source_linked_audit_cohort_id"])
     main_routes = list(map(str, cfg["attribution_routes"]["main"]))
     main_conversions = conversions[conversions["main_cohort_eligible"].eq(1)].copy()
-    audit_conversions = conversions[conversions["source_linked_audit_eligible"].eq(1)].copy()
+    audit_conversions = conversions[
+        conversions["source_linked_audit_eligible"].eq(1)
+    ].copy()
     main_assignments = assignments[
         (assignments["cohort_id"].eq(main_id)) & assignments["route"].isin(main_routes)
     ].copy()
 
-    matrix = _user_credit_matrix(main_assignments, main_conversions, main_routes, actions)
+    matrix = _user_credit_matrix(
+        main_assignments, main_conversions, main_routes, actions
+    )
     credits, n_events = _credit_totals(matrix)
     point, action_scores = _metrics_from_credit(
         credits,
@@ -699,7 +867,9 @@ def main() -> None:
         MAIN_REFERENCE_LABEL,
     )
     bootstrap_started = time.monotonic()
-    bootstrap = _bootstrap_matrix(matrix, main_routes, actions, n_impressions, total_cost, cost_scale, cfg)
+    bootstrap = _bootstrap_matrix(
+        matrix, main_routes, actions, n_impressions, total_cost, cost_scale, cfg
+    )
     print(
         f"[stats] main UID bootstrap completed: {int(cfg['statistics']['uid_bootstrap']['n_bootstrap'])} replicates; "
         f"elapsed={time.monotonic() - bootstrap_started:.1f}s",
@@ -720,11 +890,19 @@ def main() -> None:
     )
     summary["n_bootstrap"] = int(cfg["statistics"]["uid_bootstrap"]["n_bootstrap"])
     summary["bootstrap_unit"] = "uid"
-    summary["metric_formula_id"] = "source_time_decision_cell_credit_allocation_distance_vs_constructed_arrival_anchor"
+    summary["metric_formula_id"] = (
+        "source_time_decision_cell_credit_allocation_distance_vs_constructed_arrival_anchor"
+    )
     write_csv(summary, summaries / "exp2_route_sensitivity_summary.csv")
     write_csv(bootstrap, raw / "exp2_uid_bootstrap_replicates.csv")
-    write_csv(action_scores.assign(cohort_id=main_id), processed / "exp2_action_route_scores.csv")
-    write_csv(_pairwise_route_divergence(main_assignments, main_routes), summaries / "exp2_main_route_divergence_audit.csv")
+    write_csv(
+        action_scores.assign(cohort_id=main_id),
+        processed / "exp2_action_route_scores.csv",
+    )
+    write_csv(
+        _pairwise_route_divergence(main_assignments, main_routes),
+        summaries / "exp2_main_route_divergence_audit.csv",
+    )
     core_routes = list(map(str, cfg["reporting"]["core_source_routes"]))
     core_credit_rows = [main_routes.index(route) for route in core_routes]
     pairwise_tv = _pairwise_route_divergence_matrix(main_assignments, core_routes)
@@ -739,7 +917,9 @@ def main() -> None:
         [int(cfg["action"]["main_top_k"])],
     )
     write_csv(
-        pairwise_tv.merge(pairwise_overlap, on=["route_left", "route_right"], how="left"),
+        pairwise_tv.merge(
+            pairwise_overlap, on=["route_left", "route_right"], how="left"
+        ),
         summaries / "exp2_source_route_pairwise_overlap.csv",
     )
     write_csv(
@@ -758,13 +938,18 @@ def main() -> None:
         summaries / "exp2_pairwise_top_k_overlap.csv",
     )
     write_csv(
-        _delay_profile(candidates, main_conversions, float(cfg["candidate_set"]["window_days_main"])),
+        _delay_profile(
+            candidates,
+            main_conversions,
+            float(cfg["candidate_set"]["window_days_main"]),
+        ),
         summaries / "exp2_source_event_delay_profile.csv",
     )
 
     audit_routes = main_routes + [str(cfg["attribution_routes"]["audit_reference"])]
     audit_assignments = assignments[
-        (assignments["cohort_id"].eq(audit_id)) & assignments["route"].isin(audit_routes)
+        (assignments["cohort_id"].eq(audit_id))
+        & assignments["route"].isin(audit_routes)
     ].copy()
     write_csv(
         _audit_summary(
@@ -796,7 +981,10 @@ def main() -> None:
             MAIN_REFERENCE_LABEL,
         )
         cost_rows.append(metrics)
-    write_csv(pd.concat(cost_rows, ignore_index=True), summaries / "exp2_cost_adjusted_credit_score.csv")
+    write_csv(
+        pd.concat(cost_rows, ignore_index=True),
+        summaries / "exp2_cost_adjusted_credit_score.csv",
+    )
 
     window, window_audit = _window_sensitivity(
         candidates,
@@ -811,7 +999,10 @@ def main() -> None:
     write_csv(window, summaries / "exp2_candidate_window_sensitivity.csv")
     write_csv(window_audit, processed / "exp2_candidate_window_uid_integrity.csv")
 
-    write_csv(_em_assignment_diagnostic(main_assignments), summaries / "exp2_em_assignment_diagnostic.csv")
+    write_csv(
+        _em_assignment_diagnostic(main_assignments),
+        summaries / "exp2_em_assignment_diagnostic.csv",
+    )
     save_run_metadata(
         cfg,
         "statistics_success",

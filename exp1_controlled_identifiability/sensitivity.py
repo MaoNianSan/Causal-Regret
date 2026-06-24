@@ -24,11 +24,23 @@ def main() -> int:
     if not source.exists():
         raise FileNotFoundError(f"Missing {source}; run the design first.")
     seed = pd.read_csv(source)
-    columns = [c for c in [
-        "seed", "delay_setting", "regime", "method", "final_Rc", "mean_delay",
-        "soft_attribution_true_mass", "soft_attribution_top1_accuracy",
-        "proxy_state_error_mean", "assignment_entropy", "ranking_reversal_rate",
-    ] if c in seed.columns]
+    columns = [
+        c
+        for c in [
+            "seed",
+            "delay_setting",
+            "regime",
+            "method",
+            "final_Rc",
+            "mean_delay",
+            "soft_attribution_true_mass",
+            "soft_attribution_top1_accuracy",
+            "proxy_state_error_mean",
+            "assignment_entropy",
+            "ranking_reversal_rate",
+        ]
+        if c in seed.columns
+    ]
     out = seed.loc[:, columns].copy()
     dest = root / "summaries" / "sensitivity_extract.csv"
     out.to_csv(dest, index=False)

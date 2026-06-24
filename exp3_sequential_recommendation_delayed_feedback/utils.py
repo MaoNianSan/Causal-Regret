@@ -1,4 +1,5 @@
 """Small, deterministic IO and numeric utilities for Exp3."""
+
 from __future__ import annotations
 
 import hashlib
@@ -30,7 +31,9 @@ def utf8_safe_text(value: Any) -> str:
 def logical_path(path: Path, root: Path | None = None) -> str:
     """Return a portable, UTF-8-safe path representation for metadata outputs."""
     try:
-        rendered = path.relative_to(root).as_posix() if root is not None else path.as_posix()
+        rendered = (
+            path.relative_to(root).as_posix() if root is not None else path.as_posix()
+        )
     except ValueError:
         rendered = path.name
     return utf8_safe_text(rendered)
@@ -58,16 +61,22 @@ def _sanitize_dataframe_for_utf8(df: pd.DataFrame) -> pd.DataFrame:
     """Escape only string/object cells that cannot be encoded as UTF-8."""
     out = df.copy()
     for column in out.columns:
-        if pd.api.types.is_object_dtype(out[column]) or pd.api.types.is_string_dtype(out[column]):
+        if pd.api.types.is_object_dtype(out[column]) or pd.api.types.is_string_dtype(
+            out[column]
+        ):
             out[column] = out[column].map(
-                lambda value: utf8_safe_text(value) if isinstance(value, (str, Path)) else value
+                lambda value: (
+                    utf8_safe_text(value) if isinstance(value, (str, Path)) else value
+                )
             )
     return out
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     """Write JSON atomically with path-safe UTF-8 content."""
-    rendered = utf8_safe_text(json.dumps(payload, ensure_ascii=False, indent=2, default=str))
+    rendered = utf8_safe_text(
+        json.dumps(payload, ensure_ascii=False, indent=2, default=str)
+    )
     temporary = _temporary_path(path, ".json.tmp")
     try:
         temporary.write_text(rendered, encoding="utf-8")
@@ -79,7 +88,9 @@ def write_json(path: Path, payload: dict[str, Any]) -> None:
 
 def stable_json_hash(payload: Any) -> str:
     """Return a deterministic SHA-256 hash for JSON-serializable content."""
-    encoded = json.dumps(payload, ensure_ascii=True, sort_keys=True, default=str, separators=(",", ":")).encode("utf-8")
+    encoded = json.dumps(
+        payload, ensure_ascii=True, sort_keys=True, default=str, separators=(",", ":")
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -92,7 +103,9 @@ def read_csv_checked(path: Path, **kwargs: Any) -> pd.DataFrame:
 def require_columns(df: pd.DataFrame, required: Sequence[str], name: str) -> None:
     missing = [column for column in required if column not in df.columns]
     if missing:
-        raise ValueError(f"Missing required columns in {utf8_safe_text(name)}: {missing}")
+        raise ValueError(
+            f"Missing required columns in {utf8_safe_text(name)}: {missing}"
+        )
 
 
 def coerce_binary(series: pd.Series) -> pd.Series:
@@ -117,7 +130,9 @@ def save_dataframe(df: pd.DataFrame, path: Path) -> None:
     """Write a CSV atomically and avoid failures from malformed path text."""
     temporary = _temporary_path(path, ".csv.tmp")
     try:
-        _sanitize_dataframe_for_utf8(df).to_csv(temporary, index=False, encoding="utf-8", errors="backslashreplace")
+        _sanitize_dataframe_for_utf8(df).to_csv(
+            temporary, index=False, encoding="utf-8", errors="backslashreplace"
+        )
         _atomic_replace(temporary, path)
     finally:
         if temporary.exists():
@@ -156,26 +171,35 @@ def build_artifact_manifest(output_dir: Path) -> pd.DataFrame:
     manifest_path = output_dir / "metadata" / "artifacts_manifest.csv"
     for path in sorted(output_dir.rglob("*")):
         if path.is_file() and path != manifest_path:
-            rows.append({
-                "relative_path": logical_path(path, output_dir),
-                "size_bytes": path.stat().st_size,
-                "sha256": sha256_file(path),
-            })
+            rows.append(
+                {
+                    "relative_path": logical_path(path, output_dir),
+                    "size_bytes": path.stat().st_size,
+                    "sha256": sha256_file(path),
+                }
+            )
     return pd.DataFrame(rows)
 
 
 def write_artifact_manifest(output_dir: Path) -> None:
-    save_dataframe(build_artifact_manifest(output_dir), output_dir / "metadata" / "artifacts_manifest.csv")
+    save_dataframe(
+        build_artifact_manifest(output_dir),
+        output_dir / "metadata" / "artifacts_manifest.csv",
+    )
 
 
 def stable_uint64(series: pd.Series) -> np.ndarray:
-    return pd.util.hash_pandas_object(series.astype(str), index=False).to_numpy(dtype=np.uint64)
+    return pd.util.hash_pandas_object(series.astype(str), index=False).to_numpy(
+        dtype=np.uint64
+    )
 
 
 def splitmix64_uniform(keys: np.ndarray, seed: int) -> np.ndarray:
     """Deterministic U[0, 1) values from uint64 keys and a mask seed."""
     with np.errstate(over="ignore"):
-        z = np.asarray(keys, dtype=np.uint64) + np.uint64(0x9E3779B97F4A7C15) * np.uint64(seed + 1)
+        z = np.asarray(keys, dtype=np.uint64) + np.uint64(
+            0x9E3779B97F4A7C15
+        ) * np.uint64(seed + 1)
     z = (z ^ (z >> np.uint64(30))) * np.uint64(0xBF58476D1CE4E5B9)
     z = (z ^ (z >> np.uint64(27))) * np.uint64(0x94D049BB133111EB)
     z = z ^ (z >> np.uint64(31))
@@ -188,4 +212,7 @@ def percentile_ci(values: Sequence[float], level: float = 0.95) -> tuple[float, 
     if values_array.size == 0:
         return (np.nan, np.nan)
     alpha = (1.0 - level) / 2.0
-    return (float(np.quantile(values_array, alpha)), float(np.quantile(values_array, 1.0 - alpha)))
+    return (
+        float(np.quantile(values_array, alpha)),
+        float(np.quantile(values_array, 1.0 - alpha)),
+    )

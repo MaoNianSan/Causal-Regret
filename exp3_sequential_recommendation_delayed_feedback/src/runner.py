@@ -1,4 +1,5 @@
 """Run orchestration and provenance for Exp3."""
+
 from __future__ import annotations
 
 from dataclasses import asdict, replace
@@ -29,7 +30,10 @@ from utils import (
     write_json,
 )
 from bootstrap_analysis import run_user_bootstrap
-from report_tables import build_partial_label_sensitivity_table, build_proxy_static_control_table
+from report_tables import (
+    build_partial_label_sensitivity_table,
+    build_proxy_static_control_table,
+)
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -66,8 +70,18 @@ def _output_dir(mode: str) -> Path:
 
 
 ACTIVE_OUTPUT_CHILDREN = (
-    "raw", "processed", "summaries", "tables", "checks", "logs", "metadata",
-    "reports", "figures", "_synthetic_input", "run_manifest.json", "manifest.csv",
+    "raw",
+    "processed",
+    "summaries",
+    "tables",
+    "checks",
+    "logs",
+    "metadata",
+    "reports",
+    "figures",
+    "_synthetic_input",
+    "run_manifest.json",
+    "manifest.csv",
 )
 
 
@@ -117,23 +131,27 @@ def _write_environment(output_dir: Path, n_jobs: int) -> None:
 def _input_manifest(root: Path, cfg: ExperimentConfig) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for path in required_input_paths(root, cfg):
-        rows.append({
-            "input_path": logical_path(path, root),
-            "file_name": utf8_safe_text(path.name),
-            "required_for_primary": True,
-            "size_bytes": path.stat().st_size,
-            "sha256": sha256_file(path),
-        })
+        rows.append(
+            {
+                "input_path": logical_path(path, root),
+                "file_name": utf8_safe_text(path.name),
+                "required_for_primary": True,
+                "size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        )
     optional = root / "data" / cfg.random_log
     if not optional.exists():
         optional = root / cfg.random_log
-    rows.append({
-        "input_path": logical_path(optional, root),
-        "file_name": cfg.random_log,
-        "required_for_primary": False,
-        "size_bytes": optional.stat().st_size if optional.exists() else np.nan,
-        "sha256": sha256_file(optional) if optional.exists() else "not_present",
-    })
+    rows.append(
+        {
+            "input_path": logical_path(optional, root),
+            "file_name": cfg.random_log,
+            "required_for_primary": False,
+            "size_bytes": optional.stat().st_size if optional.exists() else np.nan,
+            "sha256": sha256_file(optional) if optional.exists() else "not_present",
+        }
+    )
     return pd.DataFrame(rows)
 
 
@@ -145,17 +163,25 @@ def _proxy_quality_table(
 ) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     primary = cfg.primary_delay_condition
-    for method, frame in calibration_raw[calibration_raw["delay_condition"] == primary].groupby("method_id", sort=False):
-        spearman = frame["predicted_long_value_log"].corr(frame["observed_long_value_log"], method="spearman")
+    for method, frame in calibration_raw[
+        calibration_raw["delay_condition"] == primary
+    ].groupby("method_id", sort=False):
+        spearman = frame["predicted_long_value_log"].corr(
+            frame["observed_long_value_log"], method="spearman"
+        )
         calibration = calibration_summary[
             (calibration_summary["delay_condition"] == primary)
             & (calibration_summary["method_id"] == method)
         ]
         calibration_error = (
-            float(np.mean(np.abs(
-                calibration["mean_predicted_long_value_log"]
-                - calibration["mean_observed_long_value_log"]
-            )))
+            float(
+                np.mean(
+                    np.abs(
+                        calibration["mean_predicted_long_value_log"]
+                        - calibration["mean_observed_long_value_log"]
+                    )
+                )
+            )
             if not calibration.empty
             else np.nan
         )
@@ -163,24 +189,36 @@ def _proxy_quality_table(
             (metric_summary["delay_condition"] == primary)
             & (metric_summary["method_id"] == method)
         ]
-        rows.append({
-            "method_id": method,
-            "held_out_proxy_score_target_spearman": float(spearman) if pd.notna(spearman) else np.nan,
-            "proxy_calibration_error": calibration_error,
-            "top_10_overlap_with_source_aware_reference": (
-                float(metric["top_k_overlap_with_source_aware_reference"].iloc[0]) if not metric.empty else np.nan
-            ),
-            "ranking_regret_per_time_bin": float(metric["point_estimate"].iloc[0]) if not metric.empty else np.nan,
-            "fit_split": "history_standard_only",
-            "evaluation_split": "main_standard_only",
-            "target_context": "same_split_standard_log_only",
-            "main_feature_information": "completed_history_plus_earlier_main_bins_only",
-            "primary_horizon": cfg.primary_horizon,
-        })
+        rows.append(
+            {
+                "method_id": method,
+                "held_out_proxy_score_target_spearman": (
+                    float(spearman) if pd.notna(spearman) else np.nan
+                ),
+                "proxy_calibration_error": calibration_error,
+                "top_10_overlap_with_source_aware_reference": (
+                    float(metric["top_k_overlap_with_source_aware_reference"].iloc[0])
+                    if not metric.empty
+                    else np.nan
+                ),
+                "ranking_regret_per_time_bin": (
+                    float(metric["point_estimate"].iloc[0])
+                    if not metric.empty
+                    else np.nan
+                ),
+                "fit_split": "history_standard_only",
+                "evaluation_split": "main_standard_only",
+                "target_context": "same_split_standard_log_only",
+                "main_feature_information": "completed_history_plus_earlier_main_bins_only",
+                "primary_horizon": cfg.primary_horizon,
+            }
+        )
     return pd.DataFrame(rows)
 
 
-def _write_report(output_dir: Path, manifest: dict[str, Any], cfg: ExperimentConfig) -> None:
+def _write_report(
+    output_dir: Path, manifest: dict[str, Any], cfg: ExperimentConfig
+) -> None:
     text = f"""# Experiment 3 completion report
 
 ## Status
@@ -208,7 +246,9 @@ def _write_report(output_dir: Path, manifest: dict[str, Any], cfg: ExperimentCon
 
 The package evaluates offline recoverability of a constructed 6h target on logged support under a semi-synthetic pseudo-arrival mechanism. It does not establish native delayed feedback, online causal policy improvement, off-policy policy value, or an official platform utility.
 """
-    (output_dir / "reports" / "experiment_refactor_completion_report.md").write_text(text, encoding="utf-8")
+    (output_dir / "reports" / "experiment_refactor_completion_report.md").write_text(
+        text, encoding="utf-8"
+    )
 
 
 def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> int:
@@ -220,7 +260,9 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
     if mode == "full" and real_root is None:
         # Never clear or overwrite a prior full result merely because a caller
         # invoked full mode before restoring the raw input files.
-        print("[BLOCKED] full mode requires real KuaiRand-1K standard logs under inputs/KuaiRand-1K/data/.")
+        print(
+            "[BLOCKED] full mode requires real KuaiRand-1K standard logs under inputs/KuaiRand-1K/data/."
+        )
         return 2
 
     _prepare_output_dir(output_dir, clean_output=clean_output)
@@ -244,7 +286,9 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
         "started_at_utc": utc_now(),
         "input_data_status": input_status,
         "paper_result": False,
-        "paper_result_candidate": bool(mode == "full" and input_status == "real_kuairand_1k"),
+        "paper_result_candidate": bool(
+            mode == "full" and input_status == "real_kuairand_1k"
+        ),
         "primary_horizon": cfg.primary_horizon,
         "primary_outcome_id": cfg.primary_outcome_id,
         "n_jobs": workers,
@@ -258,20 +302,30 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
         "clean_output_requested": bool(clean_output),
     }
     write_json(output_dir / "metadata" / "run_manifest.json", manifest)
-    write_json(output_dir / "metadata" / "run_config_snapshot.json", {
-        "project_id": manifest["project_id"],
-        "run_id": run_id,
-        "config_hash": config_hash,
-        "config": config_payload,
-        "n_jobs": workers,
-    })
+    write_json(
+        output_dir / "metadata" / "run_config_snapshot.json",
+        {
+            "project_id": manifest["project_id"],
+            "run_id": run_id,
+            "config_hash": config_hash,
+            "config": config_payload,
+            "n_jobs": workers,
+        },
+    )
 
     try:
-        save_dataframe(_input_manifest(input_root, cfg), output_dir / "metadata" / "input_data_manifest.csv")
+        save_dataframe(
+            _input_manifest(input_root, cfg),
+            output_dir / "metadata" / "input_data_manifest.csv",
+        )
         sample_users = cfg.fast_users if mode == "fast" else cfg.full_users
         logs = prepare_logs(input_root, output_dir, cfg, sample_users)
-        history = add_future_engagement_targets(logs.history_standard, output_dir, "history_standard", cfg, n_jobs=workers)
-        main = add_future_engagement_targets(logs.main_standard, output_dir, "main_standard", cfg, n_jobs=workers)
+        history = add_future_engagement_targets(
+            logs.history_standard, output_dir, "history_standard", cfg, n_jobs=workers
+        )
+        main = add_future_engagement_targets(
+            logs.main_standard, output_dir, "main_standard", cfg, n_jobs=workers
+        )
         results = run_recoverability_experiment(
             main,
             history,
@@ -279,7 +333,11 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
             logs.candidate_action_indices,
             output_dir,
             cfg,
-            replication_seeds=(cfg.fast_replication_seeds if mode == "fast" else cfg.full_replication_seeds),
+            replication_seeds=(
+                cfg.fast_replication_seeds
+                if mode == "fast"
+                else cfg.full_replication_seeds
+            ),
         )
         n_bootstrap = cfg.fast_bootstrap_n if mode == "fast" else cfg.full_bootstrap_n
         metric_summary, _, calibration_summary = run_user_bootstrap(
@@ -289,16 +347,28 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
             cfg,
             n_bootstrap=n_bootstrap,
         )
-        calibration_raw = pd.read_csv(output_dir / "raw" / "proxy_calibration_cells_raw.csv")
-        arrival_effects = pd.read_csv(output_dir / "summaries" / "paired_effect_vs_arrival_time.csv")
-        static_effects = pd.read_csv(output_dir / "summaries" / "paired_effect_vs_history_mean_static.csv")
-        arrival_summary = pd.read_csv(output_dir / "summaries" / "arrival_mechanism_summary.csv")
+        calibration_raw = pd.read_csv(
+            output_dir / "raw" / "proxy_calibration_cells_raw.csv"
+        )
+        arrival_effects = pd.read_csv(
+            output_dir / "summaries" / "paired_effect_vs_arrival_time.csv"
+        )
+        static_effects = pd.read_csv(
+            output_dir / "summaries" / "paired_effect_vs_history_mean_static.csv"
+        )
+        arrival_summary = pd.read_csv(
+            output_dir / "summaries" / "arrival_mechanism_summary.csv"
+        )
         save_dataframe(
-            _proxy_quality_table(calibration_raw, calibration_summary, metric_summary, cfg),
+            _proxy_quality_table(
+                calibration_raw, calibration_summary, metric_summary, cfg
+            ),
             output_dir / "tables" / "tbl_app_exp3_proxy_score_quality.csv",
         )
         save_dataframe(
-            build_partial_label_sensitivity_table(metric_summary, arrival_summary, arrival_effects, cfg),
+            build_partial_label_sensitivity_table(
+                metric_summary, arrival_summary, arrival_effects, cfg
+            ),
             output_dir / "tables" / "tbl_app_exp3_source_label_sensitivity.csv",
         )
         save_dataframe(
@@ -306,39 +376,47 @@ def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> 
             output_dir / "tables" / "tbl_app_exp3_proxy_static_control.csv",
         )
         plot_all(output_dir, mode, False, cfg, input_data_status=input_status)
-        manifest.update({
-            "status": "complete_pending_external_checks",
-            "finished_at_utc": utc_now(),
-            "n_main_standard_source_events": int(len(main)),
-            "n_main_users": int(main[cfg.user_col].nunique()),
-            "n_action_buckets_including_residual": int(len(logs.actions)),
-            "n_candidate_action_buckets": int(len(logs.candidate_action_indices)),
-            "n_bootstrap": n_bootstrap,
-            "n_label_mask_trajectories": len(cfg.fast_replication_seeds if mode == "fast" else cfg.full_replication_seeds),
-            "primary_figures": ["fig_exp3_long_term_recoverability"],
-            "appendix_figures": ["fig_app_exp3_horizon_eligibility"],
-            "appendix_tables": [
-                "tbl_app_exp3_source_label_sensitivity",
-                "tbl_app_exp3_proxy_static_control",
-                "tbl_app_exp3_proxy_score_quality",
-            ],
-            "retired_figure_interfaces": [
-                "fig_app_exp3_arrival_mechanism_contrast",
-                "fig_app_exp3_source_label_coverage",
-                "fig_app_exp3_horizon_saturation",
-            ],
-        })
+        manifest.update(
+            {
+                "status": "complete_pending_external_checks",
+                "finished_at_utc": utc_now(),
+                "n_main_standard_source_events": int(len(main)),
+                "n_main_users": int(main[cfg.user_col].nunique()),
+                "n_action_buckets_including_residual": int(len(logs.actions)),
+                "n_candidate_action_buckets": int(len(logs.candidate_action_indices)),
+                "n_bootstrap": n_bootstrap,
+                "n_label_mask_trajectories": len(
+                    cfg.fast_replication_seeds
+                    if mode == "fast"
+                    else cfg.full_replication_seeds
+                ),
+                "primary_figures": ["fig_exp3_long_term_recoverability"],
+                "appendix_figures": ["fig_app_exp3_horizon_eligibility"],
+                "appendix_tables": [
+                    "tbl_app_exp3_source_label_sensitivity",
+                    "tbl_app_exp3_proxy_static_control",
+                    "tbl_app_exp3_proxy_score_quality",
+                ],
+                "retired_figure_interfaces": [
+                    "fig_app_exp3_arrival_mechanism_contrast",
+                    "fig_app_exp3_source_label_coverage",
+                    "fig_app_exp3_horizon_saturation",
+                ],
+            }
+        )
         write_json(output_dir / "metadata" / "run_manifest.json", manifest)
         _write_report(output_dir, manifest, cfg)
         write_artifact_manifest(output_dir)
         print(f"[SUCCESS] {mode} completed: {output_dir}")
         return 0
     except Exception as exc:
-        manifest.update({
-            "status": "failed",
-            "finished_at_utc": utc_now(),
-            "error": f"{type(exc).__name__}: {exc}",
-        })
+        manifest.update(
+            {
+                "status": "failed",
+                "finished_at_utc": utc_now(),
+                "error": f"{type(exc).__name__}: {exc}",
+            }
+        )
         write_json(output_dir / "metadata" / "run_manifest.json", manifest)
         write_artifact_manifest(output_dir)
         raise

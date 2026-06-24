@@ -65,7 +65,15 @@ def _display_short(method: str) -> str:
     return labels.get(method, _display(method))
 
 
-def _common_figure_row(figure_id: str, panel_id: str, rec: dict[str, Any], metric_id: str, x_value: Any, y_value: Any, **extra: Any) -> dict[str, Any]:
+def _common_figure_row(
+    figure_id: str,
+    panel_id: str,
+    rec: dict[str, Any],
+    metric_id: str,
+    x_value: Any,
+    y_value: Any,
+    **extra: Any,
+) -> dict[str, Any]:
     meta = METHOD_META.get(str(rec.get("method_id", "")), {})
     return {
         "figure_id": figure_id,
@@ -74,7 +82,9 @@ def _common_figure_row(figure_id: str, panel_id: str, rec: dict[str, Any], metri
         "subexperiment_id": "kuairand_1k_semi_synthetic",
         "setting_id": rec.get("delay_condition", "not_applicable"),
         "method_id": rec.get("method_id", "not_applicable"),
-        "method_display_name": meta.get("method_display_name", rec.get("method_id", "not_applicable")),
+        "method_display_name": meta.get(
+            "method_display_name", rec.get("method_id", "not_applicable")
+        ),
         "plot_label": _display_short(str(rec.get("method_id", ""))),
         "information_interface": meta.get("information_interface", "not_applicable"),
         "reference_role": meta.get("reference_role", "none"),
@@ -94,8 +104,13 @@ def _common_figure_row(figure_id: str, panel_id: str, rec: dict[str, Any], metri
         "n_bootstrap": rec.get("n_bootstrap", np.nan),
         "n_events": rec.get("n_events", np.nan),
         "n_users": rec.get("n_users", np.nan),
-        "filter_id": extra.pop("filter_id", "history_defined_action_vocabulary__main_support_restricted"),
-        "filter_description": extra.pop("filter_description", "valid 6h standard-log source events; fixed history-defined actions; current-bin logged-support restriction"),
+        "filter_id": extra.pop(
+            "filter_id", "history_defined_action_vocabulary__main_support_restricted"
+        ),
+        "filter_description": extra.pop(
+            "filter_description",
+            "valid 6h standard-log source events; fixed history-defined actions; current-bin logged-support restriction",
+        ),
         "run_mode": extra.pop("run_mode", "unknown"),
         "paper_result": extra.pop("paper_result", False),
         "notes": extra.pop("notes", ""),
@@ -103,11 +118,24 @@ def _common_figure_row(figure_id: str, panel_id: str, rec: dict[str, Any], metri
     }
 
 
-def _static_effect_note(output_dir: Path, cfg: ExperimentConfig) -> tuple[str, dict[str, Any]]:
-    effects = _load(output_dir / "summaries" / "paired_effect_vs_history_mean_static.csv")
-    hit = effects[(effects.get("delay_condition", pd.Series(dtype=str)) == cfg.primary_delay_condition) & (effects.get("method_id", pd.Series(dtype=str)) == "short_term_ridge_proxy")]
+def _static_effect_note(
+    output_dir: Path, cfg: ExperimentConfig
+) -> tuple[str, dict[str, Any]]:
+    effects = _load(
+        output_dir / "summaries" / "paired_effect_vs_history_mean_static.csv"
+    )
+    hit = effects[
+        (
+            effects.get("delay_condition", pd.Series(dtype=str))
+            == cfg.primary_delay_condition
+        )
+        & (effects.get("method_id", pd.Series(dtype=str)) == "short_term_ridge_proxy")
+    ]
     if hit.empty:
-        return "Paired ST-ridge-versus-history-mean contrast is reported in the appendix table.", {}
+        return (
+            "Paired ST-ridge-versus-history-mean contrast is reported in the appendix table.",
+            {},
+        )
     rec = hit.iloc[0].to_dict()
     note = (
         "ST ridge versus History mean paired contrast: "
@@ -117,21 +145,33 @@ def _static_effect_note(output_dir: Path, cfg: ExperimentConfig) -> tuple[str, d
     return note, rec
 
 
-def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool, cfg: ExperimentConfig = DEFAULT_CONFIG, input_data_status: str = "unknown") -> None:
+def plot_main_recoverability(
+    output_dir: Path,
+    run_mode: str,
+    paper_result: bool,
+    cfg: ExperimentConfig = DEFAULT_CONFIG,
+    input_data_status: str = "unknown",
+) -> None:
     boot = _load(output_dir / "summaries" / "user_bootstrap_metric_summary.csv")
     calibration = _load(output_dir / "summaries" / "proxy_calibration_summary.csv")
     if boot.empty or calibration.empty:
-        raise RuntimeError("Cannot render main Exp3 figure: bootstrap or calibration summaries are missing.")
+        raise RuntimeError(
+            "Cannot render main Exp3 figure: bootstrap or calibration summaries are missing."
+        )
 
     condition = cfg.primary_delay_condition
     boot = boot[boot["delay_condition"] == condition].copy()
     calibration = calibration[calibration["delay_condition"] == condition].copy()
-    fig, axes = plt.subplots(1, 2, figsize=(6.85, 2.75), gridspec_kw={"width_ratios": [0.88, 1.28]})
+    fig, axes = plt.subplots(
+        1, 2, figsize=(6.85, 2.75), gridspec_kw={"width_ratios": [0.88, 1.28]}
+    )
     rows: list[dict[str, Any]] = []
 
     # Panel A: one prespecified proxy route, held out by calendar split.
     ax = axes[0]
-    data = calibration[calibration["method_id"] == "short_term_ridge_proxy"].sort_values("decile")
+    data = calibration[
+        calibration["method_id"] == "short_term_ridge_proxy"
+    ].sort_values("decile")
     if data.empty:
         raise RuntimeError("Main calibration route short_term_ridge_proxy missing.")
     x = data["mean_predicted_long_value_log"].to_numpy(float)
@@ -144,7 +184,14 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     finite = finite[np.isfinite(finite)]
     span = float(max(finite.max() - finite.min(), 0.1))
     lower, upper = float(finite.min() - 0.08 * span), float(finite.max() + 0.08 * span)
-    ax.plot([lower, upper], [lower, upper], linestyle="--", linewidth=1.0, color="0.35", label="y = x")
+    ax.plot(
+        [lower, upper],
+        [lower, upper],
+        linestyle="--",
+        linewidth=1.0,
+        color="0.35",
+        label="y = x",
+    )
     ax.set_xlim(lower, upper)
     ax.set_ylim(lower, upper)
     ax.set_xlabel("Mean predicted 6h target (log1p)", fontsize=8)
@@ -165,24 +212,28 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     ax.tick_params(labelsize=7)
     ax.grid(alpha=0.18)
     for rec in data.to_dict("records"):
-        rows.append(_common_figure_row(
-            "fig_exp3_long_term_recoverability",
-            "panel_a",
-            rec,
-            "held_out_calibration",
-            rec["mean_predicted_long_value_log"],
-            rec["mean_observed_long_value_log"],
-            x_id="mean_predicted_long_value_log",
-            x_display_label="Mean predicted 6h target (log1p)",
-            run_mode=run_mode,
-            paper_result=paper_result,
-            notes="ST ridge is fit on history-standard only and evaluated on main-standard. Points are prediction deciles; vertical bars are 95% user-bootstrap CIs.",
-        ))
+        rows.append(
+            _common_figure_row(
+                "fig_exp3_long_term_recoverability",
+                "panel_a",
+                rec,
+                "held_out_calibration",
+                rec["mean_predicted_long_value_log"],
+                rec["mean_observed_long_value_log"],
+                x_id="mean_predicted_long_value_log",
+                x_display_label="Mean predicted 6h target (log1p)",
+                run_mode=run_mode,
+                paper_result=paper_result,
+                notes="ST ridge is fit on history-standard only and evaluated on main-standard. Points are prediction deciles; vertical bars are 95% user-bootstrap CIs.",
+            )
+        )
 
     # Panel B: daily decision-level metric with static-history control visible.
     ax = axes[1]
     baseline = boot[boot["method_id"] == "arrival_time_naive"]
-    base_value = float(baseline["point_estimate"].iloc[0]) if not baseline.empty else np.nan
+    base_value = (
+        float(baseline["point_estimate"].iloc[0]) if not baseline.empty else np.nan
+    )
     if np.isfinite(base_value):
         ax.axvline(base_value, linestyle="--", linewidth=1.0, color="0.35")
         ax.text(
@@ -200,7 +251,9 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     y_positions = np.arange(len(method_order))
     by_method = boot.set_index("method_id")
     duplicated_methods = boot[boot["method_id"].isin(method_order)]["method_id"]
-    duplicated_methods = duplicated_methods[duplicated_methods.duplicated()].unique().tolist()
+    duplicated_methods = (
+        duplicated_methods[duplicated_methods.duplicated()].unique().tolist()
+    )
     if duplicated_methods:
         raise RuntimeError(
             "Required main-figure methods duplicated in bootstrap summary: "
@@ -222,21 +275,30 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
         style = {"marker": "o", "markersize": 3.8, "linewidth": 1.1, "capsize": 2.0}
         if method == "source_aware_reference":
             style.update({"markerfacecolor": "none", "color": "0.4"})
-        ax.errorbar(point, y_pos, xerr=[[max(0.0, point - low)], [max(0.0, high - point)]], **style)
-        rows.append(_common_figure_row(
-            "fig_exp3_long_term_recoverability",
-            "panel_b",
-            rec_dict,
-            "ranking_regret_per_time_bin",
-            method,
+        ax.errorbar(
             point,
-            x_id="method_id",
-            x_display_label=_display_short(method),
-            run_mode=run_mode,
-            paper_result=paper_result,
-            notes="Lower is better. Points are estimates; horizontal bars are 95% user-bootstrap CIs. Dashed line marks Carrier; Reference is offline only.",
-        ))
-    ax.set_yticks(y_positions, [_display_short(method) for method in method_order], fontsize=6.6)
+            y_pos,
+            xerr=[[max(0.0, point - low)], [max(0.0, high - point)]],
+            **style,
+        )
+        rows.append(
+            _common_figure_row(
+                "fig_exp3_long_term_recoverability",
+                "panel_b",
+                rec_dict,
+                "ranking_regret_per_time_bin",
+                method,
+                point,
+                x_id="method_id",
+                x_display_label=_display_short(method),
+                run_mode=run_mode,
+                paper_result=paper_result,
+                notes="Lower is better. Points are estimates; horizontal bars are 95% user-bootstrap CIs. Dashed line marks Carrier; Reference is offline only.",
+            )
+        )
+    ax.set_yticks(
+        y_positions, [_display_short(method) for method in method_order], fontsize=6.6
+    )
     ax.invert_yaxis()
     ax.set_xlabel("6h target ranking regret (lower is better)", fontsize=8)
     ax.set_title("(b) Daily ranking regret", loc="left", fontsize=9)
@@ -256,22 +318,36 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
 
     static_note, static_effect = _static_effect_note(output_dir, cfg)
     fig.subplots_adjust(left=0.10, right=0.99, bottom=0.18, top=0.88, wspace=0.68)
-    write_figure_bundle(fig, rows, output_dir, "fig_exp3_long_term_recoverability", {
-        "metric_id": "ranking_regret_per_time_bin",
-        "primary_horizon": "6h",
-        "primary_outcome_id": "long_value_log",
-        "uncertainty_unit": "user_cluster_resampling_of_empirical_update_routes_with_finite_event_level_label_mask_bank_and_fixed_history_fitted_proxy_scores",
-        "interpretation_boundary": "Offline logged-support diagnostic over a history-defined category vocabulary and main-period support-restricted action cells. It is not OPE or online causal policy evaluation.",
-        "training_evaluation_split": "History-standard fits ridge proxies and action vocabulary; main-standard supplies held-out scores and target evaluation.",
-        "arrival_time_baseline_value": base_value,
-        "paired_static_control_effect": static_effect,
-        "caption_note": static_note,
-        "plot_label_map_version": "v5_2_explanatory",
-        "visual_contract": MAIN_FIGURE_VISUAL_CONTRACT,
-    }, run_mode, paper_result, input_data_status=input_data_status)
+    write_figure_bundle(
+        fig,
+        rows,
+        output_dir,
+        "fig_exp3_long_term_recoverability",
+        {
+            "metric_id": "ranking_regret_per_time_bin",
+            "primary_horizon": "6h",
+            "primary_outcome_id": "long_value_log",
+            "uncertainty_unit": "user_cluster_resampling_of_empirical_update_routes_with_finite_event_level_label_mask_bank_and_fixed_history_fitted_proxy_scores",
+            "interpretation_boundary": "Offline logged-support diagnostic over a history-defined category vocabulary and main-period support-restricted action cells. It is not OPE or online causal policy evaluation.",
+            "training_evaluation_split": "History-standard fits ridge proxies and action vocabulary; main-standard supplies held-out scores and target evaluation.",
+            "arrival_time_baseline_value": base_value,
+            "paired_static_control_effect": static_effect,
+            "caption_note": static_note,
+            "plot_label_map_version": "v5_2_explanatory",
+            "visual_contract": MAIN_FIGURE_VISUAL_CONTRACT,
+        },
+        run_mode,
+        paper_result,
+        input_data_status=input_data_status,
+    )
 
 
-def plot_horizon_eligibility(output_dir: Path, run_mode: str, paper_result: bool, input_data_status: str = "unknown") -> None:
+def plot_horizon_eligibility(
+    output_dir: Path,
+    run_mode: str,
+    paper_result: bool,
+    input_data_status: str = "unknown",
+) -> None:
     table = _load(output_dir / "summaries" / "main_standard_horizon_target_summary.csv")
     if table.empty:
         return
@@ -282,7 +358,14 @@ def plot_horizon_eligibility(output_dir: Path, run_mode: str, paper_result: bool
     fig, ax = plt.subplots(figsize=(6.85, 2.25))
     ax.plot(positions, rates, marker="o", linewidth=1.15)
     for position, rate in zip(positions, rates):
-        ax.annotate(f"{rate:.1f}%", (position, rate), textcoords="offset points", xytext=(0, 5), ha="center", fontsize=6.5)
+        ax.annotate(
+            f"{rate:.1f}%",
+            (position, rate),
+            textcoords="offset points",
+            xytext=(0, 5),
+            ha="center",
+            fontsize=6.5,
+        )
     six_h = np.flatnonzero(table["horizon"].astype(str).to_numpy() == "6h")
     if len(six_h):
         six_h_position = int(six_h[0])
@@ -311,34 +394,51 @@ def plot_horizon_eligibility(output_dir: Path, run_mode: str, paper_result: bool
         row["method_id"] = "not_applicable"
         row["ci_level"] = np.nan
         row["n_bootstrap"] = np.nan
-        rows.append(_common_figure_row(
-            "fig_app_exp3_horizon_eligibility",
-            "panel_a",
-            row,
-            "right_censoring_rate_percent",
-            rec["horizon"],
-            100.0 * float(rec["right_censoring_rate"]),
-            x_id="horizon",
-            x_display_label=str(rec["horizon"]),
-            run_mode=run_mode,
-            paper_result=paper_result,
-            notes="Right-censoring rate is one minus the share of source events valid for the stated future window. 6h is prespecified.",
-            n_valid_source_events=int(rec["n_valid_source_events"]),
-            n_source_events=int(rec["n_source_events"]),
-        ))
-    write_figure_bundle(fig, rows, output_dir, "fig_app_exp3_horizon_eligibility", {
-        "figure_role": "appendix eligibility diagnostic",
-        "primary_horizon": "6h",
-        "metric_id": "right_censoring_rate_percent",
-        "eligibility_definition": "A source event is eligible when its user remains observed in the same standard-log split through the entire future target horizon.",
-        "interpretation_boundary": "This figure does not establish target saturation or choose the horizon post hoc; it reports right-censoring availability for prespecified diagnostic horizons.",
-        "plot_label_map_version": "v5_2_explanatory",
-        "caption_note": "The 6h horizon is prespecified; this is an availability diagnostic and not evidence of engagement saturation.",
-        "visual_contract": HORIZON_VISUAL_CONTRACT,
-    }, run_mode, paper_result, input_data_status=input_data_status)
+        rows.append(
+            _common_figure_row(
+                "fig_app_exp3_horizon_eligibility",
+                "panel_a",
+                row,
+                "right_censoring_rate_percent",
+                rec["horizon"],
+                100.0 * float(rec["right_censoring_rate"]),
+                x_id="horizon",
+                x_display_label=str(rec["horizon"]),
+                run_mode=run_mode,
+                paper_result=paper_result,
+                notes="Right-censoring rate is one minus the share of source events valid for the stated future window. 6h is prespecified.",
+                n_valid_source_events=int(rec["n_valid_source_events"]),
+                n_source_events=int(rec["n_source_events"]),
+            )
+        )
+    write_figure_bundle(
+        fig,
+        rows,
+        output_dir,
+        "fig_app_exp3_horizon_eligibility",
+        {
+            "figure_role": "appendix eligibility diagnostic",
+            "primary_horizon": "6h",
+            "metric_id": "right_censoring_rate_percent",
+            "eligibility_definition": "A source event is eligible when its user remains observed in the same standard-log split through the entire future target horizon.",
+            "interpretation_boundary": "This figure does not establish target saturation or choose the horizon post hoc; it reports right-censoring availability for prespecified diagnostic horizons.",
+            "plot_label_map_version": "v5_2_explanatory",
+            "caption_note": "The 6h horizon is prespecified; this is an availability diagnostic and not evidence of engagement saturation.",
+            "visual_contract": HORIZON_VISUAL_CONTRACT,
+        },
+        run_mode,
+        paper_result,
+        input_data_status=input_data_status,
+    )
 
 
-def plot_all(output_dir: Path, run_mode: str, paper_result: bool, cfg: ExperimentConfig = DEFAULT_CONFIG, input_data_status: str = "unknown") -> None:
+def plot_all(
+    output_dir: Path,
+    run_mode: str,
+    paper_result: bool,
+    cfg: ExperimentConfig = DEFAULT_CONFIG,
+    input_data_status: str = "unknown",
+) -> None:
     # Retire obsolete active figure interfaces. The underlying CSV audits remain
     # available in summaries/tables and are never discarded.
     for figure_id in [

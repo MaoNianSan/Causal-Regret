@@ -42,7 +42,12 @@ from src.agents import (
     ProxyAgent,
     SlidingWindowAgent,
 )
-from src.delay import CONTEXT_NOISE_SD, ScenarioTrace, build_scenario_trace, scenario_definitions
+from src.delay import (
+    CONTEXT_NOISE_SD,
+    ScenarioTrace,
+    build_scenario_trace,
+    scenario_definitions,
+)
 from src.environment import ToyDelayedEnv
 from src.io_utils import compute_config_hash
 from src.experiment_contract import (
@@ -93,11 +98,19 @@ class RunOptions:
 
     @property
     def seeds(self) -> list[int]:
-        return [int(FAST_SEEDS[0])] if self.smoke else list(FAST_SEEDS if self.mode == "fast" else SEEDS)
+        return (
+            [int(FAST_SEEDS[0])]
+            if self.smoke
+            else list(FAST_SEEDS if self.mode == "fast" else SEEDS)
+        )
 
     @property
     def horizon(self) -> int:
-        return int(os.environ.get("EXP1_SMOKE_T", "80")) if self.smoke else int(FAST_T if self.mode == "fast" else T)
+        return (
+            int(os.environ.get("EXP1_SMOKE_T", "80"))
+            if self.smoke
+            else int(FAST_T if self.mode == "fast" else T)
+        )
 
     @property
     def output_name(self) -> str:
@@ -136,7 +149,9 @@ def resolve_workers(n_tasks: int | None = None) -> int:
         try:
             workers = int(explicit)
         except ValueError as exc:
-            raise ValueError(f"CRMD_WORKERS must be a positive integer, got {explicit!r}.") from exc
+            raise ValueError(
+                f"CRMD_WORKERS must be a positive integer, got {explicit!r}."
+            ) from exc
 
         if workers < 1:
             raise ValueError("CRMD_WORKERS must be at least 1.")
@@ -160,7 +175,9 @@ def _workers_source() -> str:
 
 @lru_cache(maxsize=None)
 def _trace_cached(horizon: int, seed: int, setting: str) -> ScenarioTrace:
-    return build_scenario_trace(setting=setting, seed=int(seed), T=int(horizon), D_max=D_MAX, K=K)
+    return build_scenario_trace(
+        setting=setting, seed=int(seed), T=int(horizon), D_max=D_MAX, K=K
+    )
 
 
 def _family_and_role(setting: str) -> tuple[str, str]:
@@ -198,18 +215,30 @@ def _make_agent(method: str, trace: ScenarioTrace, horizon: int):
     scenario_cfg = scenario_definitions()[trace.setting]
     state_kwargs = {
         "state_process": trace.state_process,
-        "context_noise_sd": float(scenario_cfg.get("context_noise_sd", CONTEXT_NOISE_SD)),
+        "context_noise_sd": float(
+            scenario_cfg.get("context_noise_sd", CONTEXT_NOISE_SD)
+        ),
         "fixed_state": trace.fixed_state,
     }
     if method == "causal_em":
         return CausalEMAgent(
-            K, delay_cfg=cfg, T=horizon, D_max=D_MAX,
-            misspecified_delay_model=False, L=D_MAX + 1, **state_kwargs,
+            K,
+            delay_cfg=cfg,
+            T=horizon,
+            D_max=D_MAX,
+            misspecified_delay_model=False,
+            L=D_MAX + 1,
+            **state_kwargs,
         )
     if method == "causal_em_misspecified":
         return CausalEMAgent(
-            K, delay_cfg=cfg, T=horizon, D_max=D_MAX,
-            misspecified_delay_model=True, L=D_MAX + 1, **state_kwargs,
+            K,
+            delay_cfg=cfg,
+            T=horizon,
+            D_max=D_MAX,
+            misspecified_delay_model=True,
+            L=D_MAX + 1,
+            **state_kwargs,
         )
     if method == "proxy":
         # The filter receives the proxy observation path; its documented noise
@@ -218,24 +247,36 @@ def _make_agent(method: str, trace: ScenarioTrace, horizon: int):
         extra = float(scenario_cfg.get("proxy_extra_noise_sd", 0.0))
         obs_sd = float(np.sqrt(CONTEXT_NOISE_SD**2 + extra**2))
         return ProxyAgent(
-            K=K, T=horizon, delay=cfg, D_max=D_MAX,
-            observation_noise_sd=obs_sd, L=D_MAX + 1, sigma=1.0, **state_kwargs,
+            K=K,
+            T=horizon,
+            delay=cfg,
+            D_max=D_MAX,
+            observation_noise_sd=obs_sd,
+            L=D_MAX + 1,
+            sigma=1.0,
+            **state_kwargs,
         )
     raise ValueError(f"unknown method {method}")
 
 
-def _observed_arrivals(arrivals: list[dict[str, Any]], regime: str, label_rng: np.random.Generator) -> list[dict[str, Any]]:
+def _observed_arrivals(
+    arrivals: list[dict[str, Any]], regime: str, label_rng: np.random.Generator
+) -> list[dict[str, Any]]:
     exposed: list[dict[str, Any]] = []
     label_rate = float(os.environ.get("LABEL_RATE_MIXTURE", "0.30"))
     for item in arrivals:
         row: dict[str, Any] = {"loss": float(item["loss"])}
-        labelled = regime == "labelled" or (regime == "mixture_labelled" and bool(label_rng.random() < label_rate))
+        labelled = regime == "labelled" or (
+            regime == "mixture_labelled" and bool(label_rng.random() < label_rate)
+        )
         if labelled:
-            row.update({
-                "src_a": int(item["src_a"]),
-                "src_t": int(item["src_t"]),
-                "src_x": float(item["src_x"]),
-            })
+            row.update(
+                {
+                    "src_a": int(item["src_a"]),
+                    "src_t": int(item["src_t"]),
+                    "src_x": float(item["src_x"]),
+                }
+            )
         exposed.append(row)
     return exposed
 
@@ -246,7 +287,9 @@ def _safe_mean(values: Iterable[float]) -> float:
     return float(vals.mean()) if vals.size else float("nan")
 
 
-def _bootstrap_interval(values: Iterable[float], key: tuple[object, ...], n_bootstrap: int = N_BOOTSTRAP) -> tuple[int, float, float, float, float]:
+def _bootstrap_interval(
+    values: Iterable[float], key: tuple[object, ...], n_bootstrap: int = N_BOOTSTRAP
+) -> tuple[int, float, float, float, float]:
     """Mean, standard error, and percentile bootstrap confidence interval.
 
     The simulation seed is the resampling unit.  Every group obtains a stable
@@ -262,7 +305,9 @@ def _bootstrap_interval(values: Iterable[float], key: tuple[object, ...], n_boot
     se = float(vals.std(ddof=1) / np.sqrt(n)) if n > 1 else 0.0
     if n == 1:
         return n, mean, se, mean, mean
-    rng = np.random.default_rng(_stable_int("seed_percentile_bootstrap", *key, int(n_bootstrap)))
+    rng = np.random.default_rng(
+        _stable_int("seed_percentile_bootstrap", *key, int(n_bootstrap))
+    )
     draws = vals[rng.integers(0, n, size=(int(n_bootstrap), n))].mean(axis=1)
     alpha = (1.0 - float(CI_LEVEL)) / 2.0
     lo, hi = np.quantile(draws, [alpha, 1.0 - alpha])
@@ -271,21 +316,45 @@ def _bootstrap_interval(values: Iterable[float], key: tuple[object, ...], n_boot
 
 def _write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True, default=str), encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True, default=str), encoding="utf-8"
+    )
 
 
 def _clean_output_root(root: Path) -> None:
     if root.exists():
         shutil.rmtree(root)
-    for sub in ("raw", "processed", "summaries", "tables", "metadata", "checks", "legacy", "figures/data", "figures/png", "figures/pdf", "figures/metadata"):
+    for sub in (
+        "raw",
+        "processed",
+        "summaries",
+        "tables",
+        "metadata",
+        "checks",
+        "legacy",
+        "figures/data",
+        "figures/png",
+        "figures/pdf",
+        "figures/metadata",
+    ):
         (root / sub).mkdir(parents=True, exist_ok=True)
 
 
 def _write_run_state(root: Path, status: str, **kwargs: Any) -> None:
-    _write_json(root / "run_log.json", {"project_id": PROJECT_ID, "status": status, "updated_at": _utc_now(), **kwargs})
+    _write_json(
+        root / "run_log.json",
+        {
+            "project_id": PROJECT_ID,
+            "status": status,
+            "updated_at": _utc_now(),
+            **kwargs,
+        },
+    )
 
 
-def _assignment_metrics(agent, true_arrivals: list[dict[str, Any]]) -> dict[str, list[float] | int]:
+def _assignment_metrics(
+    agent, true_arrivals: list[dict[str, Any]]
+) -> dict[str, list[float] | int]:
     soft_mass: list[float] = []
     top1: list[float] = []
     entropy: list[float] = []
@@ -309,7 +378,13 @@ def _assignment_metrics(agent, true_arrivals: list[dict[str, Any]]) -> dict[str,
         soft_mass.append(mass)
         top1.append(float(int(candidates[int(np.argmax(posterior))] == source_t)))
         entropy.append(float(event.get("assignment_entropy", np.nan)))
-    return {"soft_mass": soft_mass, "top1": top1, "entropy": entropy, "labelled": labelled, "unlabelled": unlabelled}
+    return {
+        "soft_mass": soft_mass,
+        "top1": top1,
+        "entropy": entropy,
+        "labelled": labelled,
+        "unlabelled": unlabelled,
+    }
 
 
 def _run_one(
@@ -321,15 +396,35 @@ def _run_one(
     raw_writers: dict[str, csv.DictWriter] | None = None,
 ) -> dict[str, Any]:
     trace = _trace_cached(int(horizon), int(seed), str(setting))
-    env = ToyDelayedEnv(T=horizon, K=K, D_max=D_MAX, trace=trace, env_seed=_stable_int("env", seed, setting, method))
+    env = ToyDelayedEnv(
+        T=horizon,
+        K=K,
+        D_max=D_MAX,
+        trace=trace,
+        env_seed=_stable_int("env", seed, setting, method),
+    )
     # Proxy-quality settings share the learner random tape within a seed/regime.
     # Their only intended exogenous difference is proxy observation quality.
-    learner_setting = "proxy_quality_shared" if (method == "proxy" and setting in {"state_structural_matched_15", "proxy_good_matched_15", "proxy_bad_matched_15"}) else setting
+    learner_setting = (
+        "proxy_quality_shared"
+        if (
+            method == "proxy"
+            and setting
+            in {
+                "state_structural_matched_15",
+                "proxy_good_matched_15",
+                "proxy_bad_matched_15",
+            }
+        )
+        else setting
+    )
     _set_global_seed(_stable_int("learner", seed, learner_setting, regime, method))
     agent = _make_agent(method, trace, horizon)
     agent.reset()
     # Visibility is exogenous and method-invariant for a seed × setting × regime.
-    label_rng = np.random.default_rng(_stable_int("label_visibility", seed, setting, regime))
+    label_rng = np.random.default_rng(
+        _stable_int("label_visibility", seed, setting, regime)
+    )
 
     actions: list[int] = []
     cumulative_regret = 0.0
@@ -363,7 +458,16 @@ def _run_one(
         if bool(schedule["is_censored"]):
             n_censored += 1
         if raw_writers and "schedule" in raw_writers:
-            raw_writers["schedule"].writerow({"run_id": f"seed{seed}_{setting}_{regime}_{method}", "seed": seed, "delay_setting": setting, "regime": regime, "method": method, **schedule})
+            raw_writers["schedule"].writerow(
+                {
+                    "run_id": f"seed{seed}_{setting}_{regime}_{method}",
+                    "seed": seed,
+                    "delay_setting": setting,
+                    "regime": regime,
+                    "method": method,
+                    **schedule,
+                }
+            )
 
         true_arrivals = env.pop_arrivals(t)
         visible_arrivals = _observed_arrivals(true_arrivals, regime, label_rng)
@@ -380,13 +484,20 @@ def _run_one(
             src_t = int(original["src_t"])
             source_state_diffs.append(abs(float(original["src_s"]) - state))
             source_context_diffs.append(abs(float(original["src_x"]) - context))
-            loss_map_mismatch = float(int(env.optimal_action_from_context(float(original["src_x"])) != env.optimal_action_from_context(context)))
+            loss_map_mismatch = float(
+                int(
+                    env.optimal_action_from_context(float(original["src_x"]))
+                    != env.optimal_action_from_context(context)
+                )
+            )
             ranking_reversals.append(loss_map_mismatch)
             loss_map_mismatches.append(loss_map_mismatch)
             # Counterfactual attribution distortion for assigning the source loss
             # to the current arrival-time action.  It is an event-level diagnostic,
             # not an additional learner loss.
-            arrival_action_loss = float(env.loss_true(int(action), float(original["src_s"])))
+            arrival_action_loss = float(
+                env.loss_true(int(action), float(original["src_s"]))
+            )
             attribution_gap = arrival_action_loss - float(original["loss"])
             attribution_gaps.append(attribution_gap)
             absolute_attribution_gaps.append(abs(attribution_gap))
@@ -395,29 +506,63 @@ def _run_one(
             else:
                 n_unlabelled_arrivals += 1
             if raw_writers and "arrival" in raw_writers:
-                raw_writers["arrival"].writerow({
-                    "run_id": f"seed{seed}_{setting}_{regime}_{method}", "seed": seed, "delay_setting": setting,
-                    "regime": regime, "method": method, "clock_t": t, "arrival_t": int(original["arrival_t"]),
-                    "source_t": src_t, "source_action": int(original["src_a"]), "source_state": float(original["src_s"]),
-                    "source_context": float(original["src_x"]), "arrival_context": context,
-                    "loss": float(original["loss"]), "delay_tau": int(original["delay_tau"]), "label_observed": int("src_a" in visible),
-                })
+                raw_writers["arrival"].writerow(
+                    {
+                        "run_id": f"seed{seed}_{setting}_{regime}_{method}",
+                        "seed": seed,
+                        "delay_setting": setting,
+                        "regime": regime,
+                        "method": method,
+                        "clock_t": t,
+                        "arrival_t": int(original["arrival_t"]),
+                        "source_t": src_t,
+                        "source_action": int(original["src_a"]),
+                        "source_state": float(original["src_s"]),
+                        "source_context": float(original["src_x"]),
+                        "arrival_context": context,
+                        "loss": float(original["loss"]),
+                        "delay_tau": int(original["delay_tau"]),
+                        "label_observed": int("src_a" in visible),
+                    }
+                )
         estimate = agent.proxy_state_estimate()
         if estimate is not None:
             proxy_errors.append(abs(float(estimate) - state))
-        if raw_writers and "step" in raw_writers and (t % trace_every == 0 or t == horizon - 1):
-            raw_writers["step"].writerow({
-                "run_id": f"seed{seed}_{setting}_{regime}_{method}", "seed": seed, "delay_setting": setting,
-                "regime": regime, "method": method, "t": t, "state": state, "context": context,
-                "action_selected": action, "instantaneous_contextual_regret": regret,
-                "cumulative_contextual_regret": cumulative_regret, "arrivals_observed": len(true_arrivals),
-            })
+        if (
+            raw_writers
+            and "step" in raw_writers
+            and (t % trace_every == 0 or t == horizon - 1)
+        ):
+            raw_writers["step"].writerow(
+                {
+                    "run_id": f"seed{seed}_{setting}_{regime}_{method}",
+                    "seed": seed,
+                    "delay_setting": setting,
+                    "regime": regime,
+                    "method": method,
+                    "t": t,
+                    "state": state,
+                    "context": context,
+                    "action_selected": action,
+                    "instantaneous_contextual_regret": regret,
+                    "cumulative_contextual_regret": cumulative_regret,
+                    "arrivals_observed": len(true_arrivals),
+                }
+            )
 
     family, role = _family_and_role(setting)
-    counts = np.bincount(np.asarray(actions, dtype=int), minlength=K) if actions else np.zeros(K, dtype=int)
+    counts = (
+        np.bincount(np.asarray(actions, dtype=int), minlength=K)
+        if actions
+        else np.zeros(K, dtype=int)
+    )
     probs = counts / max(1, counts.sum())
     action_entropy = float(-np.sum(probs[probs > 0] * np.log(probs[probs > 0])))
-    action_switch = float(np.mean(np.asarray(actions[1:]) != np.asarray(actions[:-1]))) if len(actions) > 1 else 0.0
+    action_switch = (
+        float(np.mean(np.asarray(actions[1:]) != np.asarray(actions[:-1])))
+        if len(actions) > 1
+        else 0.0
+    )
     source_acc = _safe_mean(soft_top1)
     true_mass = _safe_mean(soft_masses)
     if method == "causal_labeled" and regime == "labelled":
@@ -427,7 +572,8 @@ def _run_one(
     em_delay_likelihood = getattr(agent, "delay_likelihood_name", "not_applicable")
     labelled_feature_alignment_max = (
         float(agent.labelled_feature_alignment_max())
-        if hasattr(agent, "labelled_feature_alignment_max") else float("nan")
+        if hasattr(agent, "labelled_feature_alignment_max")
+        else float("nan")
     )
     return {
         "experiment_id": PROJECT_ID,
@@ -446,8 +592,14 @@ def _run_one(
         "regret_comparator": "context_information_oracle",
         "final_Rc": float(cumulative_regret),
         "mean_delay": _safe_mean(observed_delays),
-        "median_delay": float(np.median(observed_delays)) if observed_delays else float("nan"),
-        "p90_delay": float(np.quantile(observed_delays, 0.9)) if observed_delays else float("nan"),
+        "median_delay": (
+            float(np.median(observed_delays)) if observed_delays else float("nan")
+        ),
+        "p90_delay": (
+            float(np.quantile(observed_delays, 0.9))
+            if observed_delays
+            else float("nan")
+        ),
         "trace_observed_mean_delay": float(trace.observed_mean_delay),
         "delay_calibration_target": trace.calibration_target,
         "delay_calibration_metric": trace.calibration_metric,
@@ -466,7 +618,9 @@ def _run_one(
         "soft_attribution_top1_accuracy": source_acc,
         "source_assignment_accuracy": source_acc,
         "assignment_entropy": _safe_mean(assignment_entropy),
-        "attribution_error": float(1.0 - true_mass) if np.isfinite(true_mass) else float("nan"),
+        "attribution_error": (
+            float(1.0 - true_mass) if np.isfinite(true_mass) else float("nan")
+        ),
         "n_soft_assignment_events": int(len(soft_masses)),
         "n_labelled_arrivals": int(n_labelled_arrivals),
         "n_unlabelled_arrivals": int(n_unlabelled_arrivals),
@@ -474,8 +628,21 @@ def _run_one(
         "effective_feedback_units": float(agent.feedback_units),
         "action_switching_rate": action_switch,
         "action_entropy": action_entropy,
-        "delay_path_id": f"shared_{seed}_{setting}" if not trace.policy_dependent_delay else f"policy_dependent_{seed}_{setting}_{method}",
-        "config_hash": compute_config_hash({"setting": setting, "regime": regime, "method": method, "T": horizon, "K": K, "Dmax": D_MAX}),
+        "delay_path_id": (
+            f"shared_{seed}_{setting}"
+            if not trace.policy_dependent_delay
+            else f"policy_dependent_{seed}_{setting}_{method}"
+        ),
+        "config_hash": compute_config_hash(
+            {
+                "setting": setting,
+                "regime": regime,
+                "method": method,
+                "T": horizon,
+                "K": K,
+                "Dmax": D_MAX,
+            }
+        ),
     }
 
 
@@ -492,7 +659,9 @@ TRAJECTORY_SETTINGS = (
 TRAJECTORY_METHODS = ("oracle", "naive", "delayed_exp3", "causal_labeled")
 
 
-def _collect_selected_trajectory_points(options: RunOptions, force: bool = False) -> Path:
+def _collect_selected_trajectory_points(
+    options: RunOptions, force: bool = False
+) -> Path:
     """Generate compact, seed-resolved appendix trajectories.
 
     This intentionally stores only selected labelled-regime configurations and
@@ -510,9 +679,18 @@ def _collect_selected_trajectory_points(options: RunOptions, force: bool = False
         except Exception:
             pass
     fields = [
-        "run_id", "seed", "delay_setting", "regime", "method", "t", "state",
-        "context", "action_selected", "instantaneous_contextual_regret",
-        "cumulative_contextual_regret", "arrivals_observed",
+        "run_id",
+        "seed",
+        "delay_setting",
+        "regime",
+        "method",
+        "t",
+        "state",
+        "context",
+        "action_selected",
+        "instantaneous_contextual_regret",
+        "cumulative_contextual_regret",
+        "arrivals_observed",
     ]
     handle, writer = _open_writer(output_path, fields)
     try:
@@ -520,7 +698,11 @@ def _collect_selected_trajectory_points(options: RunOptions, force: bool = False
             for setting in TRAJECTORY_SETTINGS:
                 for method in TRAJECTORY_METHODS:
                     _run_one(
-                        int(seed), setting, "labelled", method, options.horizon,
+                        int(seed),
+                        setting,
+                        "labelled",
+                        method,
+                        options.horizon,
                         {"step": writer},
                     )
     finally:
@@ -541,7 +723,13 @@ def _enrich_seed_schema(seed: pd.DataFrame, options: RunOptions) -> pd.DataFrame
         method = str(row["method"])
         learner_setting = (
             "proxy_quality_shared"
-            if method == "proxy" and setting in {"state_structural_matched_15", "proxy_good_matched_15", "proxy_bad_matched_15"}
+            if method == "proxy"
+            and setting
+            in {
+                "state_structural_matched_15",
+                "proxy_good_matched_15",
+                "proxy_bad_matched_15",
+            }
             else setting
         )
         row.update(
@@ -558,7 +746,9 @@ def _enrich_seed_schema(seed: pd.DataFrame, options: RunOptions) -> pd.DataFrame
                 "metric_id": PRIMARY_METRIC,
                 "metric_formula_id": PRIMARY_METRIC_FORMULA,
                 "primary_metric": PRIMARY_METRIC,
-                "primary_horizon": PRIMARY_HORIZON if int(row["T"]) == int(T) else f"T_{int(row['T'])}",
+                "primary_horizon": (
+                    PRIMARY_HORIZON if int(row["T"]) == int(T) else f"T_{int(row['T'])}"
+                ),
                 "primary_outcome_id": PRIMARY_OUTCOME_ID,
                 "state_path_id": f"state_context_{seed_value}_{setting}",
                 "label_mask_id": f"label_mask_{seed_value}_{setting}_{regime}",
@@ -572,7 +762,9 @@ def _enrich_seed_schema(seed: pd.DataFrame, options: RunOptions) -> pd.DataFrame
     return pd.DataFrame(rows)
 
 
-def _bootstrap_row(values: Iterable[float], key: tuple[object, ...]) -> dict[str, float | int]:
+def _bootstrap_row(
+    values: Iterable[float], key: tuple[object, ...]
+) -> dict[str, float | int]:
     n, mean, se, lo, hi = _bootstrap_interval(values, key)
     return {
         "n_seeds": int(n),
@@ -593,7 +785,9 @@ def _write_latex_table(frame: pd.DataFrame, path: Path, columns: list[str]) -> N
     out = frame.loc[:, available].copy()
     for col in out.columns:
         if pd.api.types.is_float_dtype(out[col]):
-            out[col] = out[col].map(lambda value: "" if not np.isfinite(value) else f"{float(value):.4f}")
+            out[col] = out[col].map(
+                lambda value: "" if not np.isfinite(value) else f"{float(value):.4f}"
+            )
     path.write_text(out.to_latex(index=False, escape=True), encoding="utf-8")
 
 
@@ -604,17 +798,34 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
     seed.to_csv(root / "summaries" / "seed_summary.csv", index=False)
 
     keys = [
-        "experiment_id", "subexperiment_id", "setting_id", "delay_setting",
-        "delay_family", "setting_role", "policy_dependent_delay", "regime",
-        "method", "method_id", "method_display_name", "information_interface",
-        "reference_role", "diagnostic_only", "deployable", "run_mode",
-        "paper_result", "input_data_status",
+        "experiment_id",
+        "subexperiment_id",
+        "setting_id",
+        "delay_setting",
+        "delay_family",
+        "setting_role",
+        "policy_dependent_delay",
+        "regime",
+        "method",
+        "method_id",
+        "method_display_name",
+        "information_interface",
+        "reference_role",
+        "diagnostic_only",
+        "deployable",
+        "run_mode",
+        "paper_result",
+        "input_data_status",
     ]
     rows: list[dict[str, Any]] = []
     diagnostic_rows: list[dict[str, Any]] = []
     for group_keys, frame in seed.groupby(keys, dropna=False, sort=False):
-        base = dict(zip(keys, group_keys if isinstance(group_keys, tuple) else (group_keys,)))
-        regret = pd.to_numeric(frame["final_Rc"], errors="coerce") / pd.to_numeric(frame["T"], errors="coerce")
+        base = dict(
+            zip(keys, group_keys if isinstance(group_keys, tuple) else (group_keys,))
+        )
+        regret = pd.to_numeric(frame["final_Rc"], errors="coerce") / pd.to_numeric(
+            frame["T"], errors="coerce"
+        )
         summary = _bootstrap_row(regret, ("method_summary", *group_keys))
         rows.append(
             {
@@ -633,7 +844,9 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
                 "n_seeds": summary["n_seeds"],
                 "mean_final_Rc": _safe_mean(frame["final_Rc"]),
                 "mean_delay": _safe_mean(frame["mean_delay"]),
-                "trace_observed_mean_delay": _safe_mean(frame["trace_observed_mean_delay"]),
+                "trace_observed_mean_delay": _safe_mean(
+                    frame["trace_observed_mean_delay"]
+                ),
                 "arrival_rate": _safe_mean(frame["arrival_rate"]),
                 "censor_ratio": _safe_mean(frame["censor_ratio"]),
             }
@@ -641,13 +854,24 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
         diagnostics = {
             col: _safe_mean(frame[col])
             for col in (
-                "mean_delay", "trace_observed_mean_delay", "arrival_rate", "censor_ratio",
-                "ranking_reversal_rate", "loss_map_mismatch_rate",
-                "delta_attr_event_per_arrival", "abs_delta_attr_event_per_arrival",
-                "source_state_mismatch_mean", "source_context_mismatch_mean",
-                "proxy_state_error_mean", "soft_attribution_true_mass",
-                "soft_attribution_top1_accuracy", "assignment_entropy", "attribution_error",
-                "effective_feedback_units", "n_observed_arrivals", "n_soft_assignment_events",
+                "mean_delay",
+                "trace_observed_mean_delay",
+                "arrival_rate",
+                "censor_ratio",
+                "ranking_reversal_rate",
+                "loss_map_mismatch_rate",
+                "delta_attr_event_per_arrival",
+                "abs_delta_attr_event_per_arrival",
+                "source_state_mismatch_mean",
+                "source_context_mismatch_mean",
+                "proxy_state_error_mean",
+                "soft_attribution_true_mass",
+                "soft_attribution_top1_accuracy",
+                "assignment_entropy",
+                "attribution_error",
+                "effective_feedback_units",
+                "n_observed_arrivals",
+                "n_soft_assignment_events",
             )
             if col in frame.columns
         }
@@ -667,12 +891,18 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
     method_df.to_csv(root / "summaries" / "method_summary.csv", index=False)
     method_df.to_csv(root / "summaries" / "method_comparison_summary.csv", index=False)
     diag_df.to_csv(root / "summaries" / "diagnostic_summary.csv", index=False)
-    matched = method_df[method_df["delay_setting"].isin(PRIMARY_MATCHED_SETTINGS)].copy()
+    matched = method_df[
+        method_df["delay_setting"].isin(PRIMARY_MATCHED_SETTINGS)
+    ].copy()
     matched.to_csv(root / "summaries" / "matched_mean_delay_summary.csv", index=False)
 
     paired_rows: list[dict[str, Any]] = []
-    for (setting, regime), frame in seed.groupby(["delay_setting", "regime"], sort=False):
-        pivot = frame.pivot_table(index="seed", columns="method", values="final_Rc", aggfunc="first")
+    for (setting, regime), frame in seed.groupby(
+        ["delay_setting", "regime"], sort=False
+    ):
+        pivot = frame.pivot_table(
+            index="seed", columns="method", values="final_Rc", aggfunc="first"
+        )
         for baseline in ("naive", "delayed_ucb", "delayed_exp3"):
             if baseline not in pivot.columns:
                 continue
@@ -680,7 +910,9 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
                 if method == baseline or method not in pivot.columns:
                     continue
                 delta = (pivot[baseline] - pivot[method]) / float(frame["T"].iloc[0])
-                n, mean, se, lo, hi = _bootstrap_interval(delta.dropna(), ("paired", setting, regime, baseline, method))
+                n, mean, se, lo, hi = _bootstrap_interval(
+                    delta.dropna(), ("paired", setting, regime, baseline, method)
+                )
                 paired_rows.append(
                     {
                         "experiment_id": PROJECT_ID,
@@ -705,9 +937,15 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
     paired_df.to_csv(root / "summaries" / "paired_tests.csv", index=False)
 
     bootstrap_rows: list[dict[str, Any]] = []
-    for (setting, regime, method), frame in seed.groupby(["delay_setting", "regime", "method"], sort=False):
-        regret = pd.to_numeric(frame["final_Rc"], errors="coerce") / pd.to_numeric(frame["T"], errors="coerce")
-        n, mean, se, lo, hi = _bootstrap_interval(regret, ("bootstrap_ci", setting, regime, method))
+    for (setting, regime, method), frame in seed.groupby(
+        ["delay_setting", "regime", "method"], sort=False
+    ):
+        regret = pd.to_numeric(frame["final_Rc"], errors="coerce") / pd.to_numeric(
+            frame["T"], errors="coerce"
+        )
+        n, mean, se, lo, hi = _bootstrap_interval(
+            regret, ("bootstrap_ci", setting, regime, method)
+        )
         bootstrap_rows.append(
             {
                 "experiment_id": PROJECT_ID,
@@ -726,7 +964,9 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
                 "n": n,
             }
         )
-    pd.DataFrame(bootstrap_rows).to_csv(root / "summaries" / "bootstrap_ci.csv", index=False)
+    pd.DataFrame(bootstrap_rows).to_csv(
+        root / "summaries" / "bootstrap_ci.csv", index=False
+    )
 
     method_df.to_csv(root / "tables" / "table_exp1_results.csv", index=False)
     diag_df.to_csv(root / "tables" / "table_exp1_diagnostics.csv", index=False)
@@ -735,13 +975,41 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
     _write_latex_table(
         method_df,
         root / "tables" / "tbl_app_exp1_all_method_results.tex",
-        ["delay_setting", "regime", "method_display_name", "mean_causal_regret_per_round", "ci_lower", "ci_upper", "n_seeds"],
+        [
+            "delay_setting",
+            "regime",
+            "method_display_name",
+            "mean_causal_regret_per_round",
+            "ci_lower",
+            "ci_upper",
+            "n_seeds",
+        ],
     )
-    scenario = seed[["setting_id", "delay_family", "setting_role", "policy_dependent_delay", "delay_calibration_target", "delay_calibration_metric"]].drop_duplicates().sort_values("setting_id")
+    scenario = (
+        seed[
+            [
+                "setting_id",
+                "delay_family",
+                "setting_role",
+                "policy_dependent_delay",
+                "delay_calibration_target",
+                "delay_calibration_metric",
+            ]
+        ]
+        .drop_duplicates()
+        .sort_values("setting_id")
+    )
     _write_latex_table(
         scenario,
         root / "tables" / "tbl_app_exp1_simulation_settings.tex",
-        ["setting_id", "delay_family", "setting_role", "policy_dependent_delay", "delay_calibration_target", "delay_calibration_metric"],
+        [
+            "setting_id",
+            "delay_family",
+            "setting_role",
+            "policy_dependent_delay",
+            "delay_calibration_target",
+            "delay_calibration_metric",
+        ],
     )
     interface = pd.DataFrame(
         [
@@ -759,28 +1027,54 @@ def _make_summaries(seed: pd.DataFrame, root: Path) -> None:
     _write_latex_table(
         interface,
         root / "tables" / "tbl_app_exp1_information_interfaces.tex",
-        ["method", "information_interface", "reference_role", "diagnostic_only", "deployable"],
+        [
+            "method",
+            "information_interface",
+            "reference_role",
+            "diagnostic_only",
+            "deployable",
+        ],
     )
 
 
 def _artifact_rows(root: Path) -> list[dict[str, Any]]:
     required = [
-        "metadata/run_manifest.json", "metadata/design_manifest.csv", "metadata/scenario_trace_manifest.csv", "metadata/environment.txt",
-        "raw/seed_level_results.csv", "processed/selected_trajectory_points.csv",
-        "summaries/seed_summary.csv", "summaries/method_summary.csv", "summaries/diagnostic_summary.csv",
-        "summaries/paired_tests.csv", "summaries/bootstrap_ci.csv", "summaries/matched_mean_delay_summary.csv",
-        "tables/table_exp1_results.csv", "tables/table_exp1_diagnostics.csv", "tables/table_exp1_matched_delay.csv",
-        "tables/tbl_app_exp1_all_method_results.tex", "tables/tbl_app_exp1_simulation_settings.tex", "tables/tbl_app_exp1_information_interfaces.tex",
+        "metadata/run_manifest.json",
+        "metadata/design_manifest.csv",
+        "metadata/scenario_trace_manifest.csv",
+        "metadata/environment.txt",
+        "raw/seed_level_results.csv",
+        "processed/selected_trajectory_points.csv",
+        "summaries/seed_summary.csv",
+        "summaries/method_summary.csv",
+        "summaries/diagnostic_summary.csv",
+        "summaries/paired_tests.csv",
+        "summaries/bootstrap_ci.csv",
+        "summaries/matched_mean_delay_summary.csv",
+        "tables/table_exp1_results.csv",
+        "tables/table_exp1_diagnostics.csv",
+        "tables/table_exp1_matched_delay.csv",
+        "tables/tbl_app_exp1_all_method_results.tex",
+        "tables/tbl_app_exp1_simulation_settings.tex",
+        "tables/tbl_app_exp1_information_interfaces.tex",
     ]
     figures = [
-        "fig_exp1_validity_boundary", "fig_exp1_same_mean_delay", "fig_exp1_attribution_diagnostics",
-        "fig_exp1_proxy_quality", "fig_app_exp1_selected_trajectories", "fig_app_exp1_mismatch_diagnostics",
+        "fig_exp1_validity_boundary",
+        "fig_exp1_same_mean_delay",
+        "fig_exp1_attribution_diagnostics",
+        "fig_exp1_proxy_quality",
+        "fig_app_exp1_selected_trajectories",
+        "fig_app_exp1_mismatch_diagnostics",
     ]
     for name in figures:
-        required.extend([
-            f"figures/data/{name}_data.csv", f"figures/metadata/{name}_metadata.json",
-            f"figures/png/{name}.png", f"figures/pdf/{name}.pdf",
-        ])
+        required.extend(
+            [
+                f"figures/data/{name}_data.csv",
+                f"figures/metadata/{name}_metadata.json",
+                f"figures/png/{name}.png",
+                f"figures/pdf/{name}.pdf",
+            ]
+        )
     return [
         {
             "relative_path": rel,
@@ -804,11 +1098,22 @@ def _write_metadata(
     root = options.output_root
     expected = len(options.seeds) * len(SETTINGS) * len(REGIMES) * len(METHODS)
     payload = {
-        "project_id": PROJECT_ID, "status": "PASSED" if status == "completed" else "FAILED", "backend_status": status,
-        "error": error, "mode": options.mode, "run_mode": options.mode, "is_smoke": bool(options.smoke), "paper_result": False,
+        "project_id": PROJECT_ID,
+        "status": "PASSED" if status == "completed" else "FAILED",
+        "backend_status": status,
+        "error": error,
+        "mode": options.mode,
+        "run_mode": options.mode,
+        "is_smoke": bool(options.smoke),
+        "paper_result": False,
         "paper_result_gate": "Run finalize_paper_outputs.py only after a completed full run and successful self-check.",
-        "n_seeds": len(options.seeds), "horizon": options.horizon, "expected_runs": expected, "completed_runs": len(seed_df),
-        "settings": list(SETTINGS), "methods": list(METHODS), "regimes": list(REGIMES),
+        "n_seeds": len(options.seeds),
+        "horizon": options.horizon,
+        "expected_runs": expected,
+        "completed_runs": len(seed_df),
+        "settings": list(SETTINGS),
+        "methods": list(METHODS),
+        "regimes": list(REGIMES),
         "primary_metric": PRIMARY_METRIC,
         "primary_metric_formula": PRIMARY_METRIC_FORMULA,
         "ci_level": CI_LEVEL,
@@ -825,13 +1130,21 @@ def _write_metadata(
     }
     _write_json(root / "metadata" / "run_manifest.json", payload)
     design_df.to_csv(root / "metadata" / "design_manifest.csv", index=False)
-    pd.DataFrame(trace_rows).to_csv(root / "metadata" / "scenario_trace_manifest.csv", index=False)
+    pd.DataFrame(trace_rows).to_csv(
+        root / "metadata" / "scenario_trace_manifest.csv", index=False
+    )
     with (root / "metadata" / "environment.txt").open("w", encoding="utf-8") as fh:
-        fh.write(f"python={sys.version}\nplatform={platform.platform()}\nnumpy={np.__version__}\n")
+        fh.write(
+            f"python={sys.version}\nplatform={platform.platform()}\nnumpy={np.__version__}\n"
+        )
         fh.write("estimand=context-information oracle excess conditional risk\n")
         fh.write("primary paths=pre-generated and shared across methods\n")
-        fh.write(f"ci=percentile bootstrap; level={CI_LEVEL}; resamples={N_BOOTSTRAP}\n")
-        fh.write(f"raw_log_mode={runtime_meta.get('raw_log_mode_effective', 'summary_only')}\n")
+        fh.write(
+            f"ci=percentile bootstrap; level={CI_LEVEL}; resamples={N_BOOTSTRAP}\n"
+        )
+        fh.write(
+            f"raw_log_mode={runtime_meta.get('raw_log_mode_effective', 'summary_only')}\n"
+        )
     rows = _artifact_rows(root)
     pd.DataFrame(rows).to_csv(root / "metadata" / "artifacts_manifest.csv", index=False)
     pd.DataFrame(rows).to_csv(root / "manifest.csv", index=False)
@@ -846,11 +1159,18 @@ def _open_writer(path: Path, fields: list[str]) -> tuple[Any, csv.DictWriter]:
     return handle, writer
 
 
-def run(mode: str, raw_log_mode: str | None = None, smoke: bool = False, output_tag: str | None = None) -> int:
+def run(
+    mode: str,
+    raw_log_mode: str | None = None,
+    smoke: bool = False,
+    output_tag: str | None = None,
+) -> int:
     if mode not in {"fast", "full"}:
         raise ValueError("mode must be fast or full")
     raw_log_mode = raw_log_mode or "summary_only"
-    options = RunOptions(mode=mode, raw_log_mode=raw_log_mode, smoke=smoke, output_tag=output_tag)
+    options = RunOptions(
+        mode=mode, raw_log_mode=raw_log_mode, smoke=smoke, output_tag=output_tag
+    )
     root = options.output_root
 
     trace_rows: list[dict[str, Any]] = []
@@ -858,10 +1178,25 @@ def run(mode: str, raw_log_mode: str | None = None, smoke: bool = False, output_
     for seed in options.seeds:
         for setting in SETTINGS:
             trace = _trace_cached(options.horizon, int(seed), setting)
-            trace_rows.append({"seed": seed, "delay_setting": setting, "delay_path_id": f"shared_{seed}_{setting}" if not trace.policy_dependent_delay else f"policy_dependent_{seed}_{setting}",
-                               "policy_dependent_delay": trace.policy_dependent_delay, "observed_mean_delay": trace.observed_mean_delay,
-                               "observed_count": trace.observed_count, "calibration_target": trace.calibration_target,
-                               "calibration_metric": trace.calibration_metric, "delay_cfg": json.dumps(trace.delay_cfg, default=lambda x: np.asarray(x).tolist())})
+            trace_rows.append(
+                {
+                    "seed": seed,
+                    "delay_setting": setting,
+                    "delay_path_id": (
+                        f"shared_{seed}_{setting}"
+                        if not trace.policy_dependent_delay
+                        else f"policy_dependent_{seed}_{setting}"
+                    ),
+                    "policy_dependent_delay": trace.policy_dependent_delay,
+                    "observed_mean_delay": trace.observed_mean_delay,
+                    "observed_count": trace.observed_count,
+                    "calibration_target": trace.calibration_target,
+                    "calibration_metric": trace.calibration_metric,
+                    "delay_cfg": json.dumps(
+                        trace.delay_cfg, default=lambda x: np.asarray(x).tolist()
+                    ),
+                }
+            )
             for regime in REGIMES:
                 for method in METHODS:
                     tasks.append((int(seed), setting, regime, method))
@@ -885,15 +1220,81 @@ def run(mode: str, raw_log_mode: str | None = None, smoke: bool = False, output_
         "detailed_trace_logs": bool(raw_log_mode == "full"),
         "selected_trajectory_trace": True,
     }
-    _write_run_state(root, "RUNNING", mode=mode, is_smoke=smoke, expected_runs=expected, completed_runs=0, **runtime_meta)
+    _write_run_state(
+        root,
+        "RUNNING",
+        mode=mode,
+        is_smoke=smoke,
+        expected_runs=expected,
+        completed_runs=0,
+        **runtime_meta,
+    )
     print(f"[runtime] workers={workers}, tasks={expected}", flush=True)
 
     handles: list[Any] = []
     writers: dict[str, csv.DictWriter] = {}
     if raw_log_mode == "full":
-        h, writers["schedule"] = _open_writer(root / "raw" / "delay_schedule.csv", ["run_id", "seed", "delay_setting", "regime", "method", "source_t", "source_state", "source_context", "source_action", "source_loss", "source_optimal_action", "delay_tau", "delay_hazard", "arrival_t", "is_censored", "censor_reason"]); handles.append(h)
-        h, writers["arrival"] = _open_writer(root / "raw" / "arrival_log.csv", ["run_id", "seed", "delay_setting", "regime", "method", "clock_t", "arrival_t", "source_t", "source_action", "source_state", "source_context", "arrival_context", "loss", "delay_tau", "label_observed"]); handles.append(h)
-        h, writers["step"] = _open_writer(root / "raw" / "step_log.csv", ["run_id", "seed", "delay_setting", "regime", "method", "t", "state", "context", "action_selected", "instantaneous_contextual_regret", "cumulative_contextual_regret", "arrivals_observed"]); handles.append(h)
+        h, writers["schedule"] = _open_writer(
+            root / "raw" / "delay_schedule.csv",
+            [
+                "run_id",
+                "seed",
+                "delay_setting",
+                "regime",
+                "method",
+                "source_t",
+                "source_state",
+                "source_context",
+                "source_action",
+                "source_loss",
+                "source_optimal_action",
+                "delay_tau",
+                "delay_hazard",
+                "arrival_t",
+                "is_censored",
+                "censor_reason",
+            ],
+        )
+        handles.append(h)
+        h, writers["arrival"] = _open_writer(
+            root / "raw" / "arrival_log.csv",
+            [
+                "run_id",
+                "seed",
+                "delay_setting",
+                "regime",
+                "method",
+                "clock_t",
+                "arrival_t",
+                "source_t",
+                "source_action",
+                "source_state",
+                "source_context",
+                "arrival_context",
+                "loss",
+                "delay_tau",
+                "label_observed",
+            ],
+        )
+        handles.append(h)
+        h, writers["step"] = _open_writer(
+            root / "raw" / "step_log.csv",
+            [
+                "run_id",
+                "seed",
+                "delay_setting",
+                "regime",
+                "method",
+                "t",
+                "state",
+                "context",
+                "action_selected",
+                "instantaneous_contextual_regret",
+                "cumulative_contextual_regret",
+                "arrivals_observed",
+            ],
+        )
+        handles.append(h)
 
     seed_rows: list[dict[str, Any]] = []
     design_rows: list[dict[str, Any]] = []
@@ -903,48 +1304,154 @@ def run(mode: str, raw_log_mode: str | None = None, smoke: bool = False, output_
                 seed, setting, regime, method = task
                 idx = len(seed_rows) + 1
                 try:
-                    row = _run_one(int(seed), setting, regime, method, options.horizon, writers if writers else None)
+                    row = _run_one(
+                        int(seed),
+                        setting,
+                        regime,
+                        method,
+                        options.horizon,
+                        writers if writers else None,
+                    )
                     seed_rows.append(row)
-                    design_rows.append({"seed": seed, "scenario": setting, "condition": regime, "method": method, "horizon": options.horizon, "status": "completed", "failure_reason": ""})
+                    design_rows.append(
+                        {
+                            "seed": seed,
+                            "scenario": setting,
+                            "condition": regime,
+                            "method": method,
+                            "horizon": options.horizon,
+                            "status": "completed",
+                            "failure_reason": "",
+                        }
+                    )
                 except Exception as exc:
-                    design_rows.append({"seed": seed, "scenario": setting, "condition": regime, "method": method, "horizon": options.horizon, "status": "failed", "failure_reason": f"{type(exc).__name__}: {exc}"})
+                    design_rows.append(
+                        {
+                            "seed": seed,
+                            "scenario": setting,
+                            "condition": regime,
+                            "method": method,
+                            "horizon": options.horizon,
+                            "status": "failed",
+                            "failure_reason": f"{type(exc).__name__}: {exc}",
+                        }
+                    )
                     raise
                 if idx % max(1, min(12, expected)) == 0 or idx == expected:
-                    pd.DataFrame(seed_rows).to_csv(root / "raw" / "seed_level_results.csv", index=False)
-                    _write_run_state(root, "RUNNING", mode=mode, is_smoke=smoke, expected_runs=expected, completed_runs=idx, **runtime_meta)
-                    print(f"[EXP1 {options.output_name}] completed {idx}/{expected} runs", flush=True)
+                    pd.DataFrame(seed_rows).to_csv(
+                        root / "raw" / "seed_level_results.csv", index=False
+                    )
+                    _write_run_state(
+                        root,
+                        "RUNNING",
+                        mode=mode,
+                        is_smoke=smoke,
+                        expected_runs=expected,
+                        completed_runs=idx,
+                        **runtime_meta,
+                    )
+                    print(
+                        f"[EXP1 {options.output_name}] completed {idx}/{expected} runs",
+                        flush=True,
+                    )
         else:
             if writers:
-                print("[runtime] detailed raw logs are written only when workers=1; seed-level outputs remain complete", flush=True)
+                print(
+                    "[runtime] detailed raw logs are written only when workers=1; seed-level outputs remain complete",
+                    flush=True,
+                )
             with ProcessPoolExecutor(max_workers=workers) as executor:
-                for idx, (task, row) in enumerate(zip(tasks, executor.map(partial(_run_task, horizon=options.horizon), tasks)), start=1):
+                for idx, (task, row) in enumerate(
+                    zip(
+                        tasks,
+                        executor.map(
+                            partial(_run_task, horizon=options.horizon), tasks
+                        ),
+                    ),
+                    start=1,
+                ):
                     seed, setting, regime, method = task
                     seed_rows.append(row)
-                    design_rows.append({"seed": seed, "scenario": setting, "condition": regime, "method": method, "horizon": options.horizon, "status": "completed", "failure_reason": ""})
+                    design_rows.append(
+                        {
+                            "seed": seed,
+                            "scenario": setting,
+                            "condition": regime,
+                            "method": method,
+                            "horizon": options.horizon,
+                            "status": "completed",
+                            "failure_reason": "",
+                        }
+                    )
                     if idx % max(1, min(12, expected)) == 0 or idx == expected:
-                        pd.DataFrame(seed_rows).to_csv(root / "raw" / "seed_level_results.csv", index=False)
-                        _write_run_state(root, "RUNNING", mode=mode, is_smoke=smoke, expected_runs=expected, completed_runs=idx, **runtime_meta)
-                        print(f"[EXP1 {options.output_name}] completed {idx}/{expected} runs", flush=True)
+                        pd.DataFrame(seed_rows).to_csv(
+                            root / "raw" / "seed_level_results.csv", index=False
+                        )
+                        _write_run_state(
+                            root,
+                            "RUNNING",
+                            mode=mode,
+                            is_smoke=smoke,
+                            expected_runs=expected,
+                            completed_runs=idx,
+                            **runtime_meta,
+                        )
+                        print(
+                            f"[EXP1 {options.output_name}] completed {idx}/{expected} runs",
+                            flush=True,
+                        )
         seed_df = _enrich_seed_schema(pd.DataFrame(seed_rows), options)
         design_df = pd.DataFrame(design_rows)
         seed_df.to_csv(root / "raw" / "seed_level_results.csv", index=False)
         _make_summaries(seed_df, root)
         _collect_selected_trajectory_points(options)
         plot_exp1_bundles(seed_df, root)
-        _write_metadata(options, seed_df, design_df, trace_rows, "completed", runtime_meta)
-        _write_run_state(root, "PASSED", mode=mode, is_smoke=smoke, expected_runs=expected, completed_runs=expected, **runtime_meta)
+        _write_metadata(
+            options, seed_df, design_df, trace_rows, "completed", runtime_meta
+        )
+        _write_run_state(
+            root,
+            "PASSED",
+            mode=mode,
+            is_smoke=smoke,
+            expected_runs=expected,
+            completed_runs=expected,
+            **runtime_meta,
+        )
     except Exception as exc:
         seed_df = pd.DataFrame(seed_rows)
         design_df = pd.DataFrame(design_rows)
         if not seed_df.empty:
             seed_df.to_csv(root / "raw" / "seed_level_results.csv", index=False)
-        _write_metadata(options, seed_df, design_df, trace_rows, "failed", runtime_meta, "".join(traceback.format_exception_only(type(exc), exc)).strip())
-        _write_run_state(root, "FAILED", mode=mode, is_smoke=smoke, expected_runs=expected, completed_runs=len(seed_rows), error=repr(exc), **runtime_meta)
-        print(f"[EXP1 {options.output_name}] FAILED after {len(seed_rows)}/{expected}: {type(exc).__name__}: {exc}", file=sys.stderr, flush=True)
+        _write_metadata(
+            options,
+            seed_df,
+            design_df,
+            trace_rows,
+            "failed",
+            runtime_meta,
+            "".join(traceback.format_exception_only(type(exc), exc)).strip(),
+        )
+        _write_run_state(
+            root,
+            "FAILED",
+            mode=mode,
+            is_smoke=smoke,
+            expected_runs=expected,
+            completed_runs=len(seed_rows),
+            error=repr(exc),
+            **runtime_meta,
+        )
+        print(
+            f"[EXP1 {options.output_name}] FAILED after {len(seed_rows)}/{expected}: {type(exc).__name__}: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
         return 1
     finally:
         for h in handles:
             h.close()
 
     from self_check import check_project
+
     return 0 if check_project(mode=mode, output_tag=options.output_name) else 1

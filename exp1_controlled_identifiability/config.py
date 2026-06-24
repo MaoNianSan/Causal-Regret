@@ -4,6 +4,7 @@ The experiment definition itself lives in ``src.delay.scenario_definitions`` so
 that the declared information structure and finite-horizon delay calibration
 are executable rather than duplicated constants.
 """
+
 K = 10
 T = 5000
 SEEDS = list(range(30))

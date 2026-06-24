@@ -17,7 +17,6 @@ import numpy as np
 from src.delay import CONTEXT_NOISE_SD, RHO, STATE_NOISE_SD, sigmoid
 from src.utils import eps_schedule
 
-
 CONTEXT_MIN = -3.8
 CONTEXT_MAX = 3.8
 N_CONTEXT_BINS = 21
@@ -85,12 +84,20 @@ class ContextualTable:
         values = np.where(global_count > 0.0, values, 0.0)
         return np.asarray(values, dtype=float)
 
-    def batch_update(self, features: np.ndarray, actions: np.ndarray, loss: float, weights: np.ndarray) -> None:
+    def batch_update(
+        self,
+        features: np.ndarray,
+        actions: np.ndarray,
+        loss: float,
+        weights: np.ndarray,
+    ) -> None:
         """Vectorized weighted updates that preserve one feedback-unit mass."""
         xs = np.asarray(features, dtype=float)
         aa = np.asarray(actions, dtype=int)
         ww = np.asarray(weights, dtype=float)
-        valid = np.isfinite(xs) & np.isfinite(ww) & (ww > 0.0) & (aa >= 0) & (aa < self.K)
+        valid = (
+            np.isfinite(xs) & np.isfinite(ww) & (ww > 0.0) & (aa >= 0) & (aa < self.K)
+        )
         if not np.any(valid):
             return
         xs = xs[valid]
@@ -124,13 +131,17 @@ class BaseAgent:
     def reset(self) -> None:
         self.feedback_units = 0.0
 
-    def observe_context(self, context: float, t: int, proxy_observation: float | None = None) -> None:
+    def observe_context(
+        self, context: float, t: int, proxy_observation: float | None = None
+    ) -> None:
         del context, t, proxy_observation
 
     def act(self, env, t: int, context: float) -> int:
         raise NotImplementedError
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t, a_t, context_t, arrived
 
     def pop_assignment_events(self) -> list[dict[str, Any]]:
@@ -157,7 +168,9 @@ class ContextualArrivalAgent(BaseAgent):
         del env
         return self.table.choose(context, t, exploration=True)
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t
         for item in arrived:
             self.table.update(context_t, int(a_t), _loss(item), 1.0)
@@ -192,7 +205,9 @@ class NaiveEWMAAgent(ContextualArrivalAgent):
         values = self.ema_sum[b] / np.maximum(counts, 1e-12)
         return int(np.random.choice(np.flatnonzero(np.isclose(values, values.min()))))
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t
         b, a = self.table.bin(context_t), int(a_t)
         for item in arrived:
@@ -219,10 +234,14 @@ class DelayedUCBAgent(ContextualArrivalAgent):
         if len(unseen):
             return int(np.random.choice(unseen))
         mean = self.table.estimate(context)
-        bonus = np.sqrt(2.0 * np.log(max(2, self.total_updates + 1)) / np.maximum(counts, 1e-12))
+        bonus = np.sqrt(
+            2.0 * np.log(max(2, self.total_updates + 1)) / np.maximum(counts, 1e-12)
+        )
         return int(np.argmin(mean - bonus))
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t
         for item in arrived:
             self.table.update(context_t, int(a_t), _loss(item), 1.0)
@@ -246,11 +265,15 @@ class DelayedEXP3Agent(BaseAgent):
     def act(self, env, t: int, context: float) -> int:
         del env, t
         b = self.table.bin(context)
-        probs = (1.0 - self.gamma) * self.weights[b] / max(1e-12, self.weights[b].sum()) + self.gamma / self.K
+        probs = (1.0 - self.gamma) * self.weights[b] / max(
+            1e-12, self.weights[b].sum()
+        ) + self.gamma / self.K
         self.last_probs[b] = probs
         return int(np.random.choice(self.K, p=probs))
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t
         b, a = self.table.bin(context_t), int(a_t)
         for item in arrived:
@@ -284,7 +307,9 @@ class SlidingWindowAgent(BaseAgent):
         self._rebuild(t)
         return self.table.choose(context, t, exploration=True)
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env
         for item in arrived:
             self.records.append((int(t), float(context_t), int(a_t), _loss(item)))
@@ -294,7 +319,9 @@ class SlidingWindowAgent(BaseAgent):
 class AnonymousDelayedAgent(ContextualArrivalAgent):
     """Each arrival contributes one total feedback unit, distributed uniformly."""
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t, a_t
         for item in arrived:
             y = _loss(item)
@@ -314,11 +341,15 @@ class CausalLabeledAgent(BaseAgent):
         del env
         return self.table.choose(context, t, exploration=True)
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env, t, a_t, context_t
         for item in arrived:
             if "src_a" in item and "src_x" in item:
-                self.table.update(float(item["src_x"]), int(item["src_a"]), _loss(item), 1.0)
+                self.table.update(
+                    float(item["src_x"]), int(item["src_a"]), _loss(item), 1.0
+                )
                 self.feedback_units += 1.0
 
 
@@ -404,7 +435,10 @@ class CausalEMAgent(BaseAgent):
     def delay_likelihood_name(self) -> str:
         if self.misspecified_delay_model:
             return "stationary_geometric_ablation"
-        if str(self.delay_cfg.get("name", "")) in {"state_structural", "action_structural"}:
+        if str(self.delay_cfg.get("name", "")) in {
+            "state_structural",
+            "action_structural",
+        }:
             return "gaussian_observable_state_integrated_quadrature"
         return "known_exogenous_delay_law"
 
@@ -428,7 +462,9 @@ class CausalEMAgent(BaseAgent):
         gain = state_var / (state_var + noise_var)
         return float(gain * float(decision_feature)), float(state_var * (1.0 - gain))
 
-    def _history_record(self, t: int, action: int, context: float) -> dict[str, float | int]:
+    def _history_record(
+        self, t: int, action: int, context: float
+    ) -> dict[str, float | int]:
         feature = float(self._decision_feature(context))
         state_mean, state_var = self._observable_state_moments(feature)
         return {
@@ -450,12 +486,21 @@ class CausalEMAgent(BaseAgent):
         fallback = float(self.history[max(0, src_t)]["x"])
         return float(item.get("src_x", fallback))
 
-    def _binned_delay_state_moments(self, feature: float, state_mean: float, state_var: float) -> tuple[float, float]:
+    def _binned_delay_state_moments(
+        self, feature: float, state_mean: float, state_var: float
+    ) -> tuple[float, float]:
         """Posterior moments conditional on the learner's binned feature."""
         del state_mean, state_var
         return self._observable_state_moments(self._feature_bin_center(float(feature)))
 
-    def _integrated_structural_weight(self, lag: int, feature: float, state_mean: float, state_var: float, alpha: float = 0.0) -> float:
+    def _integrated_structural_weight(
+        self,
+        lag: int,
+        feature: float,
+        state_mean: float,
+        state_var: float,
+        alpha: float = 0.0,
+    ) -> float:
         """Approximate ``P(D=lag | observable feature)`` with cached quadrature.
 
         The observable feature is deliberately binned because the learning table
@@ -463,11 +508,19 @@ class CausalEMAgent(BaseAgent):
         cost while retaining the correct conditioning object ``P(D|Z_s)`` rather
         than the old plug-in ``P(D|X_s=s)`` shortcut.
         """
-        mean, var = self._binned_delay_state_moments(float(feature), float(state_mean), float(state_var))
+        mean, var = self._binned_delay_state_moments(
+            float(feature), float(state_mean), float(state_var)
+        )
         mean_key = int(np.round(float(mean) * 1000.0))
         var_key = int(np.round(max(float(var), 0.0) * 10000.0))
         alpha_key = int(np.round(float(alpha) * 1000.0))
-        key = (int(lag), mean_key, var_key, alpha_key, int(self.misspecified_delay_model))
+        key = (
+            int(lag),
+            mean_key,
+            var_key,
+            alpha_key,
+            int(self.misspecified_delay_model),
+        )
         cached = self._delay_weight_cache.get(key)
         if cached is not None:
             return float(cached)
@@ -478,7 +531,11 @@ class CausalEMAgent(BaseAgent):
             states = mean + np.sqrt(2.0 * float(var)) * self._GH_NODES
             weights = self._GH_WEIGHTS / np.sqrt(np.pi)
         beta = float(self.delay_cfg.get("beta", 1.0))
-        p = np.clip(np.asarray(sigmoid(beta * states + float(alpha)), dtype=float), 1e-8, 1.0 - 1e-8)
+        p = np.clip(
+            np.asarray(sigmoid(beta * states + float(alpha)), dtype=float),
+            1e-8,
+            1.0 - 1e-8,
+        )
         value = float(np.sum(weights * p * np.power(1.0 - p, int(lag))))
         value = max(value, 1e-300)
         self._delay_weight_cache[key] = value
@@ -506,16 +563,24 @@ class CausalEMAgent(BaseAgent):
             w = float(self.delay_cfg["w"])
             pf = float(self.delay_cfg["p_fast"])
             ps = float(self.delay_cfg["p_slow"])
-            weights = w * pf * np.power(1.0 - pf, lags) + (1.0 - w) * ps * np.power(1.0 - ps, lags)
+            weights = w * pf * np.power(1.0 - pf, lags) + (1.0 - w) * ps * np.power(
+                1.0 - ps, lags
+            )
         elif name in {"state_structural", "action_structural"}:
             alpha = np.zeros_like(lags, dtype=float)
             if name == "action_structural":
-                alpha_values = np.asarray(self.delay_cfg.get("alpha", np.zeros(self.K)), dtype=float)
+                alpha_values = np.asarray(
+                    self.delay_cfg.get("alpha", np.zeros(self.K)), dtype=float
+                )
                 alpha = alpha_values[np.asarray(actions, dtype=int)]
             weights = np.asarray(
                 [
-                    self._integrated_structural_weight(int(d), float(f), float(m), float(v), float(a))
-                    for d, f, m, v, a in zip(lags, features, state_means, state_vars, alpha)
+                    self._integrated_structural_weight(
+                        int(d), float(f), float(m), float(v), float(a)
+                    )
+                    for d, f, m, v, a in zip(
+                        lags, features, state_means, state_vars, alpha
+                    )
                 ],
                 dtype=float,
             )
@@ -535,8 +600,12 @@ class CausalEMAgent(BaseAgent):
         source_times = np.asarray([int(r["t"]) for r in records], dtype=int)
         actions = np.asarray([int(r["a"]) for r in records], dtype=int)
         features = np.asarray([float(r["x"]) for r in records], dtype=float)
-        state_means = np.asarray([float(r["delay_state_mean"]) for r in records], dtype=float)
-        state_vars = np.asarray([float(r["delay_state_var"]) for r in records], dtype=float)
+        state_means = np.asarray(
+            [float(r["delay_state_mean"]) for r in records], dtype=float
+        )
+        state_vars = np.asarray(
+            [float(r["delay_state_var"]) for r in records], dtype=float
+        )
         lags = int(now_t) - source_times
         return source_times, actions, features, state_means, state_vars, lags
 
@@ -546,8 +615,12 @@ class CausalEMAgent(BaseAgent):
         q = q / q.sum()
         return float(-np.sum(q * np.log(q)))
 
-    def _posterior(self, y: float, now_t: int) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
-        source_times, actions, features, state_means, state_vars, lags = self._candidate_records(now_t)
+    def _posterior(
+        self, y: float, now_t: int
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        source_times, actions, features, state_means, state_vars, lags = (
+            self._candidate_records(now_t)
+        )
         if len(source_times) == 0:
             return source_times, actions, features, np.zeros(0, dtype=float)
         prior = self._delay_prior(lags, features, state_means, state_vars, actions)
@@ -561,7 +634,9 @@ class CausalEMAgent(BaseAgent):
         posterior = posterior / np.sum(posterior)
         return source_times, actions, features, posterior
 
-    def observe(self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]) -> None:
+    def observe(
+        self, env, t: int, a_t: int, context_t: float, arrived: list[dict[str, Any]]
+    ) -> None:
         del env
         self.history.append(self._history_record(int(t), int(a_t), float(context_t)))
         self._assignment_events = []
@@ -572,11 +647,15 @@ class CausalEMAgent(BaseAgent):
                 source_feature = float(self._labelled_source_feature(item))
                 if 0 <= src_t < len(self.history):
                     expected_feature = float(self.history[src_t]["x"])
-                    self.labelled_feature_alignment_errors.append(abs(source_feature - expected_feature))
+                    self.labelled_feature_alignment_errors.append(
+                        abs(source_feature - expected_feature)
+                    )
                 self.table.update(source_feature, int(item["src_a"]), y, 1.0)
                 self.feedback_units += 1.0
                 self._assignment_events.append(
-                    AssignmentEvent(idx, True, np.asarray([src_t]), np.asarray([1.0]), 0.0)
+                    AssignmentEvent(
+                        idx, True, np.asarray([src_t]), np.asarray([1.0]), 0.0
+                    )
                 )
                 continue
             src_times, actions, features, posterior = self._posterior(y, int(t))
@@ -587,7 +666,9 @@ class CausalEMAgent(BaseAgent):
             entropy = self._entropy(posterior)
             self.assignment_entropy_sum += entropy
             self.assignment_entropy_n += 1
-            self._assignment_events.append(AssignmentEvent(idx, False, src_times, posterior, entropy))
+            self._assignment_events.append(
+                AssignmentEvent(idx, False, src_times, posterior, entropy)
+            )
 
     def pop_assignment_events(self) -> list[dict[str, Any]]:
         out = [event.as_dict() for event in self._assignment_events]
@@ -595,7 +676,11 @@ class CausalEMAgent(BaseAgent):
         return out
 
     def labelled_feature_alignment_max(self) -> float:
-        return float(max(self.labelled_feature_alignment_errors)) if self.labelled_feature_alignment_errors else 0.0
+        return (
+            float(max(self.labelled_feature_alignment_errors))
+            if self.labelled_feature_alignment_errors
+            else 0.0
+        )
 
 
 class KalmanStateProxy:
@@ -644,7 +729,9 @@ class ProxyAgent(CausalEMAgent):
         self.filter = KalmanStateProxy(self.observation_noise_sd)
         self.current_proxy_state = 0.0
 
-    def observe_context(self, context: float, t: int, proxy_observation: float | None = None) -> None:
+    def observe_context(
+        self, context: float, t: int, proxy_observation: float | None = None
+    ) -> None:
         del context, t
         value = float(proxy_observation if proxy_observation is not None else context)
         self.current_proxy_state = self.filter.update(value)
@@ -653,7 +740,9 @@ class ProxyAgent(CausalEMAgent):
         del context
         return float(self.current_proxy_state)
 
-    def _history_record(self, t: int, action: int, context: float) -> dict[str, float | int]:
+    def _history_record(
+        self, t: int, action: int, context: float
+    ) -> dict[str, float | int]:
         del context
         # The Kalman mean/variance are exactly the proxy learner's decision-time
         # state representation.  Saving them makes labelled and unlabelled
@@ -666,7 +755,9 @@ class ProxyAgent(CausalEMAgent):
             "delay_state_var": float(self.filter.var),
         }
 
-    def _binned_delay_state_moments(self, feature: float, state_mean: float, state_var: float) -> tuple[float, float]:
+    def _binned_delay_state_moments(
+        self, feature: float, state_mean: float, state_var: float
+    ) -> tuple[float, float]:
         # Here the decision feature is itself a Kalman posterior mean.  Binning
         # that mean (while retaining its saved posterior variance) keeps the
         # delay prior and outcome table in the same proxy feature geometry.
@@ -676,7 +767,9 @@ class ProxyAgent(CausalEMAgent):
     def _labelled_source_feature(self, item: dict[str, Any]) -> float:
         src_t = int(item["src_t"])
         if src_t < 0 or src_t >= len(self.history):
-            raise IndexError(f"labelled source time {src_t} is unavailable in proxy history")
+            raise IndexError(
+                f"labelled source time {src_t} is unavailable in proxy history"
+            )
         # Never use item['src_x'] here.  It belongs to the ordinary contextual
         # feature space and would reintroduce the train/decision mismatch.
         return float(self.history[src_t]["x"])

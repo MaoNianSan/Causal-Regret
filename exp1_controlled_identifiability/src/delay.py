@@ -14,7 +14,6 @@ from typing import Any
 
 import numpy as np
 
-
 RHO = 0.98
 STATE_NOISE_SD = 0.25
 STATE_CLIP = 2.5
@@ -249,6 +248,7 @@ def _build_policy_independent_delays(
         probs = np.ones(T, dtype=float)
         return delays, probs, {"name": name, "delay_value": d}
     if name == "geometric":
+
         def draw(p: float) -> np.ndarray:
             return _geom0_from_uniform(u_len, p)
 
@@ -279,12 +279,16 @@ def _build_policy_independent_delays(
         )
         delays = draw(w)
         p_effective = w * p_fast + (1.0 - w) * p_slow
-        return delays, np.full(T, p_effective, dtype=float), {
-            "name": name,
-            "w": float(w),
-            "p_fast": p_fast,
-            "p_slow": p_slow,
-        }
+        return (
+            delays,
+            np.full(T, p_effective, dtype=float),
+            {
+                "name": name,
+                "w": float(w),
+                "p_fast": p_fast,
+                "p_slow": p_slow,
+            },
+        )
     if name == "state_structural":
         beta = float(cfg["beta"])
 
@@ -304,7 +308,9 @@ def _build_policy_independent_delays(
     raise ValueError(f"Unsupported policy-independent delay: {name}")
 
 
-def build_scenario_trace(setting: str, seed: int, T: int, D_max: int, K: int) -> ScenarioTrace:
+def build_scenario_trace(
+    setting: str, seed: int, T: int, D_max: int, K: int
+) -> ScenarioTrace:
     definitions = scenario_definitions()
     if setting not in definitions:
         raise KeyError(f"Unknown scenario setting: {setting}")
@@ -315,7 +321,9 @@ def build_scenario_trace(setting: str, seed: int, T: int, D_max: int, K: int) ->
         state_process=str(cfg.get("state_process", "ar1")),
         fixed_state=cfg.get("fixed_state"),
         context_noise_sd=float(cfg.get("context_noise_sd", CONTEXT_NOISE_SD)),
-        proxy_extra_noise_sd=float(cfg.get("proxy_extra_noise_sd", PROXY_EXTRA_NOISE_DEFAULT)),
+        proxy_extra_noise_sd=float(
+            cfg.get("proxy_extra_noise_sd", PROXY_EXTRA_NOISE_DEFAULT)
+        ),
     )
 
     policy_dependent = bool(cfg.get("policy_dependent_delay", False))
@@ -332,7 +340,10 @@ def build_scenario_trace(setting: str, seed: int, T: int, D_max: int, K: int) ->
         target = float(cfg.get("target_observed_delay", TARGET_OBSERVED_DELAY))
 
         def ref_draw(c: float) -> np.ndarray:
-            p = np.asarray(sigmoid(alpha[reference_actions] + beta * states + float(c)), dtype=float)
+            p = np.asarray(
+                sigmoid(alpha[reference_actions] + beta * states + float(c)),
+                dtype=float,
+            )
             return _geom0_from_uniform(u_len, p)
 
         c = _calibrate_monotone(
@@ -369,7 +380,9 @@ def build_scenario_trace(setting: str, seed: int, T: int, D_max: int, K: int) ->
             fixed_state=cfg.get("fixed_state"),
         )
 
-    delays, probs, delay_cfg = _build_policy_independent_delays(cfg, states, T, D_max, seed)
+    delays, probs, delay_cfg = _build_policy_independent_delays(
+        cfg, states, T, D_max, seed
+    )
     observed_mean, observed_n = _observed_delay_mean(delays, T, D_max)
     return ScenarioTrace(
         setting=setting,
@@ -390,14 +403,22 @@ def build_scenario_trace(setting: str, seed: int, T: int, D_max: int, K: int) ->
     )
 
 
-def action_dependent_delay(trace: ScenarioTrace, t: int, action: int, rng: np.random.Generator) -> tuple[int, float]:
+def action_dependent_delay(
+    trace: ScenarioTrace, t: int, action: int, rng: np.random.Generator
+) -> tuple[int, float]:
     """Sample a delay for the explicitly policy-dependent stress test."""
 
     if not trace.policy_dependent_delay:
         raise ValueError("action_dependent_delay called for a shared-path trace")
     cfg = trace.delay_cfg
     alpha = np.asarray(cfg["alpha"], dtype=float)
-    p = float(sigmoid(float(alpha[int(action)]) + float(cfg["beta"]) * float(trace.states[int(t)]) + float(cfg["c"])))
+    p = float(
+        sigmoid(
+            float(alpha[int(action)])
+            + float(cfg["beta"]) * float(trace.states[int(t)])
+            + float(cfg["c"])
+        )
+    )
     p = float(np.clip(p, 1e-6, 1.0 - 1e-8))
     d = int(rng.geometric(p)) - 1
     return max(0, d), p
@@ -421,7 +442,9 @@ def make_delay_sampler(delay_cfg: dict, D_max: int, K: int):
     name = str(delay_cfg.get("name", "geometric"))
     if name == "geometric":
         return GeometricDelay(float(delay_cfg["p"]))
-    raise ValueError("The revised EXP1 runner uses build_scenario_trace rather than make_delay_sampler.")
+    raise ValueError(
+        "The revised EXP1 runner uses build_scenario_trace rather than make_delay_sampler."
+    )
 
 
 def delay_configs(K: int, T: int, D_max: int, seeds: list[int]):

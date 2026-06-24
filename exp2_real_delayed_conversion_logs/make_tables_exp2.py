@@ -6,8 +6,14 @@ from pathlib import Path
 import pandas as pd
 
 from attribution_engine import ROUTE_DISPLAY
-from src.common import ensure_output_dirs, load_config, make_output_manifest, out_dir, save_run_metadata, write_csv
-
+from src.common import (
+    ensure_output_dirs,
+    load_config,
+    make_output_manifest,
+    out_dir,
+    save_run_metadata,
+    write_csv,
+)
 
 ARRIVAL_TV = "credit_allocation_tv_distance_vs_arrival_anchor"
 ARRIVAL_OVERLAP = "top_k_decision_cell_overlap_vs_arrival_anchor"
@@ -20,7 +26,9 @@ def _read(path: Path) -> pd.DataFrame:
     return pd.read_csv(path)
 
 
-def _write_table(frame: pd.DataFrame, root: Path, table_id: str, caption: str, label: str) -> None:
+def _write_table(
+    frame: pd.DataFrame, root: Path, table_id: str, caption: str, label: str
+) -> None:
     write_csv(frame, root / f"{table_id}.csv")
     try:
         md = frame.to_markdown(index=False)
@@ -41,7 +49,9 @@ def _write_table(frame: pd.DataFrame, root: Path, table_id: str, caption: str, l
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Write Exp2 tables aligned with logged source-time attribution sensitivity.")
+    parser = argparse.ArgumentParser(
+        description="Write Exp2 tables aligned with logged source-time attribution sensitivity."
+    )
     parser.add_argument("--config", default="config_exp2.yaml")
     args = parser.parse_args()
     cfg = load_config(args.config)
@@ -63,14 +73,34 @@ def main() -> None:
         "time_span_days",
         "configured_observation_window_days",
     ]
-    dataset = dataset[dataset["metric"].isin(keep)].rename(columns={"metric": "Metric", "value": "Value"})
-    _write_table(dataset, tables, "tbl_app_exp2_dataset_summary", "Raw-log and analysis-window summary.", "tab:app_exp2_dataset_summary")
+    dataset = dataset[dataset["metric"].isin(keep)].rename(
+        columns={"metric": "Metric", "value": "Value"}
+    )
+    _write_table(
+        dataset,
+        tables,
+        "tbl_app_exp2_dataset_summary",
+        "Raw-log and analysis-window summary.",
+        "tab:app_exp2_dataset_summary",
+    )
 
     candidate = _read(summaries / "exp2_candidate_set_summary.csv")
-    _write_table(candidate, tables, "tbl_app_exp2_candidate_set_summary", "Main and source-linked audit cohort composition.", "tab:app_exp2_candidate_set_summary")
+    _write_table(
+        candidate,
+        tables,
+        "tbl_app_exp2_candidate_set_summary",
+        "Main and source-linked audit cohort composition.",
+        "tab:app_exp2_candidate_set_summary",
+    )
 
     route_spec = _read(processed / "exp2_attribution_route_specification.csv")
-    _write_table(route_spec, tables, "tbl_app_exp2_attribution_routes", "Attribution route definitions and information interfaces.", "tab:app_exp2_attribution_routes")
+    _write_table(
+        route_spec,
+        tables,
+        "tbl_app_exp2_attribution_routes",
+        "Attribution route definitions and information interfaces.",
+        "tab:app_exp2_attribution_routes",
+    )
 
     main = _read(summaries / "exp2_route_sensitivity_summary.csv")
     main = main[main["route"].isin(main_routes)].copy()
@@ -107,7 +137,11 @@ def main() -> None:
 
     audit = _read(summaries / "exp2_source_linked_audit.csv")
     candidate_summary = _read(summaries / "exp2_candidate_set_summary.csv")
-    audit_cohort = candidate_summary[candidate_summary["cohort_id"].eq(str(cfg["subsets"]["source_linked_audit_cohort_id"]))]
+    audit_cohort = candidate_summary[
+        candidate_summary["cohort_id"].eq(
+            str(cfg["subsets"]["source_linked_audit_cohort_id"])
+        )
+    ]
     candidate_decision_cell_count_p90 = (
         float(audit_cohort["candidate_decision_cell_count_p90"].iloc[0])
         if not audit_cohort.empty
@@ -162,9 +196,19 @@ def main() -> None:
     )
 
     top_k_sensitivity = _read(summaries / "exp2_pairwise_top_k_overlap.csv")
-    top_k_sensitivity["Route left"] = top_k_sensitivity["route_left"].map(ROUTE_DISPLAY).fillna(top_k_sensitivity["route_left"])
-    top_k_sensitivity["Route right"] = top_k_sensitivity["route_right"].map(ROUTE_DISPLAY).fillna(top_k_sensitivity["route_right"])
-    pairwise_table = top_k_sensitivity[["top_k", "Route left", "Route right", "pairwise_top_k_overlap"]]
+    top_k_sensitivity["Route left"] = (
+        top_k_sensitivity["route_left"]
+        .map(ROUTE_DISPLAY)
+        .fillna(top_k_sensitivity["route_left"])
+    )
+    top_k_sensitivity["Route right"] = (
+        top_k_sensitivity["route_right"]
+        .map(ROUTE_DISPLAY)
+        .fillna(top_k_sensitivity["route_right"])
+    )
+    pairwise_table = top_k_sensitivity[
+        ["top_k", "Route left", "Route right", "pairwise_top_k_overlap"]
+    ]
     pairwise_table.columns = ["Top-k", "Route left", "Route right", "Pairwise overlap"]
     _write_table(
         pairwise_table,

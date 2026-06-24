@@ -1,4 +1,5 @@
 """Artifact names used by the self-contained runner and strict self-check."""
+
 from __future__ import annotations
 
 ARTIFACTS = (

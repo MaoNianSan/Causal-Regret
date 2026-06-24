@@ -1,4 +1,5 @@
 """Appendix-table builders for Exp3 evidence-boundary diagnostics."""
+
 from __future__ import annotations
 
 import numpy as np
@@ -6,7 +7,6 @@ import pandas as pd
 
 from config import DEFAULT_CONFIG, ExperimentConfig
 from recoverability import METHOD_META
-
 
 PLOT_LABELS = {
     "arrival_time_naive": "Carrier",
@@ -23,12 +23,16 @@ PLOT_LABELS = {
 
 
 def _metric_row(summary: pd.DataFrame, condition: str, method: str) -> pd.Series | None:
-    hit = summary[(summary["delay_condition"] == condition) & (summary["method_id"] == method)]
+    hit = summary[
+        (summary["delay_condition"] == condition) & (summary["method_id"] == method)
+    ]
     return None if hit.empty else hit.iloc[0]
 
 
 def _effect_row(effects: pd.DataFrame, condition: str, method: str) -> pd.Series | None:
-    hit = effects[(effects["delay_condition"] == condition) & (effects["method_id"] == method)]
+    hit = effects[
+        (effects["delay_condition"] == condition) & (effects["method_id"] == method)
+    ]
     return None if hit.empty else hit.iloc[0]
 
 
@@ -64,30 +68,32 @@ def build_partial_label_sensitivity_table(
                 reduction = float(effect["point_estimate"])
                 effect_lo = float(effect["ci_lower"])
                 effect_hi = float(effect["ci_upper"])
-            rows.append({
-                "experiment_id": "exp3_long_term_recoverability",
-                "delay_condition": condition,
-                "source_label_rate_q": q,
-                "method_id": method,
-                "method_display_name": meta.get("method_display_name", method),
-                "plot_label": PLOT_LABELS.get(method, method),
-                "route_role": route_role,
-                "n_valid_source_outcomes": n_valid,
-                "expected_source_labelled_outcomes": int(round(q * n_valid)),
-                "expected_source_labelled_share": q,
-                "ranking_regret_per_time_bin": float(metric["point_estimate"]),
-                "ranking_regret_ci_lower": float(metric["ci_lower"]),
-                "ranking_regret_ci_upper": float(metric["ci_upper"]),
-                "regret_reduction_vs_carrier": reduction,
-                "reduction_ci_lower": effect_lo,
-                "reduction_ci_upper": effect_hi,
-                "ci_level": float(metric["ci_level"]),
-                "n_bootstrap": int(metric["n_bootstrap"]),
-                "interpretation_note": (
-                    "Positive reduction means lower regret than Carrier. This is a high-volume sensitivity table; "
-                    "it makes no monotonicity or sparse-label-sufficiency claim."
-                ),
-            })
+            rows.append(
+                {
+                    "experiment_id": "exp3_long_term_recoverability",
+                    "delay_condition": condition,
+                    "source_label_rate_q": q,
+                    "method_id": method,
+                    "method_display_name": meta.get("method_display_name", method),
+                    "plot_label": PLOT_LABELS.get(method, method),
+                    "route_role": route_role,
+                    "n_valid_source_outcomes": n_valid,
+                    "expected_source_labelled_outcomes": int(round(q * n_valid)),
+                    "expected_source_labelled_share": q,
+                    "ranking_regret_per_time_bin": float(metric["point_estimate"]),
+                    "ranking_regret_ci_lower": float(metric["ci_lower"]),
+                    "ranking_regret_ci_upper": float(metric["ci_upper"]),
+                    "regret_reduction_vs_carrier": reduction,
+                    "reduction_ci_lower": effect_lo,
+                    "reduction_ci_upper": effect_hi,
+                    "ci_level": float(metric["ci_level"]),
+                    "n_bootstrap": int(metric["n_bootstrap"]),
+                    "interpretation_note": (
+                        "Positive reduction means lower regret than Carrier. This is a high-volume sensitivity table; "
+                        "it makes no monotonicity or sparse-label-sufficiency claim."
+                    ),
+                }
+            )
     return pd.DataFrame(rows)
 
 
@@ -116,25 +122,31 @@ def build_proxy_static_control_table(
         elif effect is None:
             delta, lo, hi = np.nan, np.nan, np.nan
         else:
-            delta, lo, hi = float(effect["point_estimate"]), float(effect["ci_lower"]), float(effect["ci_upper"])
-        rows.append({
-            "experiment_id": "exp3_long_term_recoverability",
-            "delay_condition": condition,
-            "method_id": method,
-            "method_display_name": meta.get("method_display_name", method),
-            "plot_label": PLOT_LABELS.get(method, method),
-            "comparator_method_id": "history_mean_static",
-            "ranking_regret_per_time_bin": float(metric["point_estimate"]),
-            "ranking_regret_ci_lower": float(metric["ci_lower"]),
-            "ranking_regret_ci_upper": float(metric["ci_upper"]),
-            "paired_regret_reduction_vs_history_mean": delta,
-            "paired_reduction_ci_lower": lo,
-            "paired_reduction_ci_upper": hi,
-            "ci_level": float(metric["ci_level"]),
-            "n_bootstrap": int(metric["n_bootstrap"]),
-            "interpretation_note": (
-                "Positive paired reduction favors the named route over the history-only static control. "
-                "A confidence interval spanning zero does not establish incremental dynamic proxy value."
-            ),
-        })
+            delta, lo, hi = (
+                float(effect["point_estimate"]),
+                float(effect["ci_lower"]),
+                float(effect["ci_upper"]),
+            )
+        rows.append(
+            {
+                "experiment_id": "exp3_long_term_recoverability",
+                "delay_condition": condition,
+                "method_id": method,
+                "method_display_name": meta.get("method_display_name", method),
+                "plot_label": PLOT_LABELS.get(method, method),
+                "comparator_method_id": "history_mean_static",
+                "ranking_regret_per_time_bin": float(metric["point_estimate"]),
+                "ranking_regret_ci_lower": float(metric["ci_lower"]),
+                "ranking_regret_ci_upper": float(metric["ci_upper"]),
+                "paired_regret_reduction_vs_history_mean": delta,
+                "paired_reduction_ci_lower": lo,
+                "paired_reduction_ci_upper": hi,
+                "ci_level": float(metric["ci_level"]),
+                "n_bootstrap": int(metric["n_bootstrap"]),
+                "interpretation_note": (
+                    "Positive paired reduction favors the named route over the history-only static control. "
+                    "A confidence interval spanning zero does not establish incremental dynamic proxy value."
+                ),
+            }
+        )
     return pd.DataFrame(rows)

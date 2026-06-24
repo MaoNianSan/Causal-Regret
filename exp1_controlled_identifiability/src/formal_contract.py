@@ -23,12 +23,10 @@ FORMAL_METHOD_ORDER = [
     "oracle_reference",
 ]
 FORMAL_METHOD_DISPLAY_NAME = {
-    spec.method_id: spec.method_display_name
-    for spec in METHOD_SPECS.values()
+    spec.method_id: spec.method_display_name for spec in METHOD_SPECS.values()
 }
 INTERNAL_METHOD_MAP = {
-    internal: spec.method_id
-    for internal, spec in METHOD_SPECS.items()
+    internal: spec.method_id for internal, spec in METHOD_SPECS.items()
 }
 METHOD_ROLES = {
     spec.method_id: {

@@ -14,7 +14,9 @@ def _fail(message: str) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Promote validated full-mode figure bundles to paper_result=true.")
+    parser = argparse.ArgumentParser(
+        description="Promote validated full-mode figure bundles to paper_result=true."
+    )
     parser.add_argument("--config", default="config_exp2.yaml")
     args = parser.parse_args()
     cfg = load_config(args.config)
@@ -48,10 +50,19 @@ def main() -> None:
         write_csv(data, data_path)
         payload["paper_result"] = True
         payload["finalized_after_semantic_self_check"] = True
-        meta_path.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+        meta_path.write_text(
+            json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
 
-    save_run_metadata(cfg, "paper_result_finalized", {"n_figure_bundles": len(meta_paths), "paper_result": True})
-    print(f"[finalize] promoted {len(meta_paths)} validated full-mode figure bundles", flush=True)
+    save_run_metadata(
+        cfg,
+        "paper_result_finalized",
+        {"n_figure_bundles": len(meta_paths), "paper_result": True},
+    )
+    print(
+        f"[finalize] promoted {len(meta_paths)} validated full-mode figure bundles",
+        flush=True,
+    )
 
 
 if __name__ == "__main__":

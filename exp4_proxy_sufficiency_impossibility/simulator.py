@@ -1,4 +1,5 @@
 """Controlled delayed-feedback simulator with matched mean delay and emitted proxies."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -51,7 +52,9 @@ def observed_measurement(trace: Trace, sigma: float) -> np.ndarray:
 
 def _action_centers() -> np.ndarray:
     grid = np.linspace(-1.45, 1.45, K_ACTIONS)
-    return np.stack([grid, 0.55 * np.sin(1.8 * grid), 0.35 * np.cos(1.3 * grid)], axis=1)
+    return np.stack(
+        [grid, 0.55 * np.sin(1.8 * grid), 0.35 * np.cos(1.3 * grid)], axis=1
+    )
 
 
 def deterministic_loss_map(states: np.ndarray, centers: np.ndarray) -> np.ndarray:
@@ -64,7 +67,9 @@ def deterministic_loss_map(states: np.ndarray, centers: np.ndarray) -> np.ndarra
     true_arm = np.argmin(dist2, axis=1)
     regime_floor = np.where((true_arm % 2) == 0, 0.035, 0.285)
     shape = 1.0 - np.exp(-dist2 / 0.24)
-    losses = np.clip(regime_floor[:, None] + (1.0 - regime_floor[:, None]) * shape, 0.0, 1.0)
+    losses = np.clip(
+        regime_floor[:, None] + (1.0 - regime_floor[:, None]) * shape, 0.0, 1.0
+    )
     return losses
 
 
@@ -78,7 +83,10 @@ def measurement_diagnostics(trace: Trace, sigma: float) -> tuple[float, float, f
     """
     proxy = observed_measurement(trace, sigma)
     error = float(np.mean(np.linalg.norm(proxy - trace.states, axis=1)))
-    proxy_action = np.argmin(((proxy[:, None, :] - trace.action_centers[None, :, :]) ** 2).sum(axis=2), axis=1)
+    proxy_action = np.argmin(
+        ((proxy[:, None, :] - trace.action_centers[None, :, :]) ** 2).sum(axis=2),
+        axis=1,
+    )
     true_action = np.argmin(trace.potential_losses, axis=1)
     reversal = float(np.mean(proxy_action != true_action))
     true_map = deterministic_loss_map(trace.states, trace.action_centers)
@@ -87,7 +95,9 @@ def measurement_diagnostics(trace: Trace, sigma: float) -> tuple[float, float, f
     return error, reversal, distortion
 
 
-def _generate_states(rng: np.random.Generator, T: int, centers: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+def _generate_states(
+    rng: np.random.Generator, T: int, centers: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
     """Piecewise-stable state with a pre-switch hazard used only for delay coupling."""
     states = np.zeros((T, STATE_DIM), dtype=float)
     hazard = np.zeros(T, dtype=float)
@@ -101,8 +111,10 @@ def _generate_states(rng: np.random.Generator, T: int, centers: np.ndarray) -> t
             h = max(0.0, (j - ((end - t) - hazard_width) + 1) / hazard_width)
             h = min(1.0, h)
             hazard[idx] = h
-            states[idx] = centers[mode] + np.array([0.0, 0.08 * h, -0.05 * h]) + rng.normal(
-                0.0, [0.055, 0.040, 0.035], size=STATE_DIM
+            states[idx] = (
+                centers[mode]
+                + np.array([0.0, 0.08 * h, -0.05 * h])
+                + rng.normal(0.0, [0.055, 0.040, 0.035], size=STATE_DIM)
             )
         t = end
         candidates = [a for a in range(len(centers)) if a != mode]
@@ -110,7 +122,9 @@ def _generate_states(rng: np.random.Generator, T: int, centers: np.ndarray) -> t
     return np.clip(states, -1.8, 1.8), hazard
 
 
-def _exact_matched_delays(rng: np.random.Generator, score: np.ndarray, beta: float) -> np.ndarray:
+def _exact_matched_delays(
+    rng: np.random.Generator, score: np.ndarray, beta: float
+) -> np.ndarray:
     """Integer delays with exactly ``TARGET_MEAN_DELAY`` for every seed × beta."""
     T = len(score)
     z = (score - score.mean()) / (score.std() + 1e-12)
@@ -149,7 +163,9 @@ def generate_trace(seed: int, T: int, beta: float) -> Trace:
     noise = rng.normal(0.0, 0.009, size=(T, K_ACTIONS))
     potential_losses = np.clip(base_losses + noise, 0.0, 1.0)
     coupling_score = (coupling_score > 0.0).astype(float)
-    delays = _exact_matched_delays(np.random.default_rng(200_003 + seed), coupling_score, beta)
+    delays = _exact_matched_delays(
+        np.random.default_rng(200_003 + seed), coupling_score, beta
+    )
     arrivals_lists: list[list[int]] = [[] for _ in range(T)]
     for source, delay in enumerate(delays):
         arrival = source + int(delay)
@@ -158,9 +174,14 @@ def generate_trace(seed: int, T: int, beta: float) -> Trace:
 
     # The complete proxy arrays are materialized by the environment but policies
     # access only indices at or before their current decision/arrival time.
-    measurement_noise = np.random.default_rng(400_003 + seed).normal(size=(T, STATE_DIM))
+    measurement_noise = np.random.default_rng(400_003 + seed).normal(
+        size=(T, STATE_DIM)
+    )
     proxy_scales = sorted({_proxy_key(x) for x in [*PROXY_SIGMAS, CONTEXT_PROXY_SIGMA]})
-    observed_proxy_bank = {_proxy_key(sigma): states + float(sigma) * measurement_noise for sigma in proxy_scales}
+    observed_proxy_bank = {
+        _proxy_key(sigma): states + float(sigma) * measurement_noise
+        for sigma in proxy_scales
+    }
     return Trace(
         seed=seed,
         T=T,
@@ -181,7 +202,9 @@ def trace_diagnostics(trace: Trace) -> dict[str, float]:
     best = np.argmin(trace.potential_losses, axis=1)
     for arrival_t, sources in enumerate(trace.arrivals):
         for source_t in sources:
-            mismatch.append(float(np.linalg.norm(trace.states[source_t] - trace.states[arrival_t])))
+            mismatch.append(
+                float(np.linalg.norm(trace.states[source_t] - trace.states[arrival_t]))
+            )
             reversal.append(float(best[source_t] != best[arrival_t]))
     pending = trace.pending_at_horizon
     return {

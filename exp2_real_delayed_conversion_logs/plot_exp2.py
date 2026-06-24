@@ -9,8 +9,14 @@ import numpy as np
 import pandas as pd
 
 from attribution_engine import ROUTE_DISPLAY, ROUTE_META
-from src.common import ensure_output_dirs, load_config, make_output_manifest, out_dir, save_run_metadata, write_csv
-
+from src.common import (
+    ensure_output_dirs,
+    load_config,
+    make_output_manifest,
+    out_dir,
+    save_run_metadata,
+    write_csv,
+)
 
 ARRIVAL_TV = "credit_allocation_tv_distance_vs_arrival_anchor"
 ARRIVAL_OVERLAP = "top_k_decision_cell_overlap_vs_arrival_anchor"
@@ -73,12 +79,18 @@ def _method_fields(route: str) -> dict:
     }
 
 
-def _base_row(cfg: dict, figure_id: str, panel_id: str, metric_id: str, cohort_id: str) -> dict:
+def _base_row(
+    cfg: dict, figure_id: str, panel_id: str, metric_id: str, cohort_id: str
+) -> dict:
     return {
         "figure_id": figure_id,
         "panel_id": panel_id,
         "experiment_id": cfg["experiment"]["experiment_id"],
-        "subexperiment_id": "main" if figure_id == "fig_exp2_attribution_sensitivity" else "appendix_diagnostic",
+        "subexperiment_id": (
+            "main"
+            if figure_id == "fig_exp2_attribution_sensitivity"
+            else "appendix_diagnostic"
+        ),
         "setting_id": "source_time_day_cells_top_k_10_window_30d",
         "cohort_id": cohort_id,
         "metric_id": metric_id,
@@ -138,7 +150,9 @@ def _write_bundle(
     }
     if extra_metadata:
         metadata.update(extra_metadata)
-    paths["metadata"].write_text(json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8")
+    paths["metadata"].write_text(
+        json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     plt.close(fig)
 
 
@@ -158,7 +172,11 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
     fig, axes = plt.subplots(1, 2, figsize=size)
 
     ordered = ["less_equal_1h", "h1_to_h6", "h6_to_h24", "d1_to_d7", "d7_to_d30"]
-    required_delay_columns = {"delay_bucket", "n_eligible_source_events", "source_event_share_percent"}
+    required_delay_columns = {
+        "delay_bucket",
+        "n_eligible_source_events",
+        "source_event_share_percent",
+    }
     missing_delay_columns = required_delay_columns.difference(delay.columns)
     if missing_delay_columns:
         raise RuntimeError(
@@ -168,7 +186,13 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
     bucket_col = "delay_bucket"
     share_col = "source_event_share_percent"
     count_col = "n_eligible_source_events"
-    profile = delay.set_index(bucket_col).reindex(ordered).fillna(0.0).reset_index().rename(columns={bucket_col: "delay_bucket"})
+    profile = (
+        delay.set_index(bucket_col)
+        .reindex(ordered)
+        .fillna(0.0)
+        .reset_index()
+        .rename(columns={bucket_col: "delay_bucket"})
+    )
     axes[0].bar([BUCKET_LABELS[value] for value in ordered], profile[share_col])
     axes[0].set_xlabel("Source-to-conversion delay")
     axes[0].set_ylabel("Share of eligible source events (%)")
@@ -177,7 +201,12 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
         "panel_a": "(a) Delay composition",
         "panel_b": "(b) Allocation and ranking displacement",
     }
-    axes[0].set_title(panel_titles["panel_a"], loc="left", fontweight="bold", fontsize=panel_title_font_size)
+    axes[0].set_title(
+        panel_titles["panel_a"],
+        loc="left",
+        fontweight="bold",
+        fontsize=panel_title_font_size,
+    )
     axes[0].grid(axis="y", alpha=0.20)
 
     routes = _figure_routes(cfg)
@@ -186,7 +215,9 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
     point = point.sort_values("route").reset_index(drop=True)
     missing = set(routes).difference(set(point["route"].astype(str)))
     if missing:
-        raise RuntimeError(f"Main figure is missing configured routes: {sorted(missing)}")
+        raise RuntimeError(
+            f"Main figure is missing configured routes: {sorted(missing)}"
+        )
 
     y_positions = np.arange(len(point), dtype=float)
     max_upper = 0.0
@@ -218,13 +249,17 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
                 zorder=3,
             )
         max_upper = max(max_upper, high)
-        row_plot_values.append({"route": route, "x": x, "y": float(y_pos), "low": low, "high": high})
+        row_plot_values.append(
+            {"route": route, "x": x, "y": float(y_pos), "low": low, "high": high}
+        )
     x_axis_max = max(1.03, max_upper + 0.18)
     x_padding = 0.025
     x_right_margin = 0.012
     annotation_positions: list[dict] = []
     for item in row_plot_values:
-        x_annotation = min(max(0.08, float(item["high"]) + x_padding), x_axis_max - x_right_margin)
+        x_annotation = min(
+            max(0.08, float(item["high"]) + x_padding), x_axis_max - x_right_margin
+        )
         axes[1].annotate(
             f"Top-10 overlap: {float(point.loc[point['route'].astype(str).eq(item['route']), ARRIVAL_OVERLAP].iloc[0]):.2f}",
             (float(item["x"]), float(item["y"])),
@@ -248,17 +283,27 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
     axes[1].axvline(0.0, linestyle="--", linewidth=0.8, alpha=0.5)
     axes[1].set_xlabel("Credit-allocation TV distance from arrival-bin anchor")
     axes[1].set_ylabel("")
-    axes[1].set_yticks(y_positions, [SHORT_LABELS.get(str(route), str(route)) for route in point["route"]])
+    axes[1].set_yticks(
+        y_positions,
+        [SHORT_LABELS.get(str(route), str(route)) for route in point["route"]],
+    )
     axes[1].invert_yaxis()
     axes[1].set_xlim(left=-0.03, right=x_axis_max)
-    axes[1].set_title(panel_titles["panel_b"], loc="left", fontweight="bold", fontsize=panel_title_font_size)
+    axes[1].set_title(
+        panel_titles["panel_b"],
+        loc="left",
+        fontweight="bold",
+        fontsize=panel_title_font_size,
+    )
     axes[1].grid(axis="x", alpha=0.20)
     fig.tight_layout(rect=(0.0, 0.0, 1.0, 0.96), w_pad=1.35)
     fig.subplots_adjust(top=0.84)
 
     rows: list[dict] = []
     for _, row in profile.iterrows():
-        record = _base_row(cfg, fig_id, "panel_a", "source_event_share_percent", cohort_id)
+        record = _base_row(
+            cfg, fig_id, "panel_a", "source_event_share_percent", cohort_id
+        )
         record.update(
             {
                 "x_id": "delay_bucket",
@@ -292,7 +337,9 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
                 "n_users": np.nan,
                 "filter_id": "all_conversion_candidates",
                 "filter_description": "Eligible campaign-source-day decision cells with a constructed arrival-bin diagnostic anchor.",
-                "top_k_credited_mass_per_1000_events": float(row["top_k_credited_mass_per_1000_events"]),
+                "top_k_credited_mass_per_1000_events": float(
+                    row["top_k_credited_mass_per_1000_events"]
+                ),
                 ARRIVAL_MASS_DIFF: float(row[ARRIVAL_MASS_DIFF]),
                 **_method_fields(route),
             }
@@ -304,7 +351,10 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
         cfg,
         fig_id,
         size,
-        ["summaries/exp2_route_sensitivity_summary.csv", "summaries/exp2_source_event_delay_profile.csv"],
+        [
+            "summaries/exp2_route_sensitivity_summary.csv",
+            "summaries/exp2_source_event_delay_profile.csv",
+        ],
         f"{ARRIVAL_TV};{ARRIVAL_OVERLAP}",
         "tv_distance_between_normalized_route_credit_allocation_and_arrival_anchor;top10_set_overlap_between_route_and_arrival_anchor",
         {
@@ -343,12 +393,28 @@ def pairwise_overlap_figure(cfg: dict, frame: pd.DataFrame) -> None:
     axes_flat = axes.ravel()
     data_rows: list[dict] = []
     panels = [
-        ("panel_a", "pairwise_credit_allocation_tv_distance", "(a) Pairwise allocation TV distance", 0.0, 1.0),
-        ("panel_b", "pairwise_top_k_overlap", "(b) Pairwise top-10 decision-cell overlap", 0.0, 1.0),
+        (
+            "panel_a",
+            "pairwise_credit_allocation_tv_distance",
+            "(a) Pairwise allocation TV distance",
+            0.0,
+            1.0,
+        ),
+        (
+            "panel_b",
+            "pairwise_top_k_overlap",
+            "(b) Pairwise top-10 decision-cell overlap",
+            0.0,
+            1.0,
+        ),
     ]
     for index, (panel_id, metric, title, vmin, vmax) in enumerate(panels):
         ax = axes_flat[index]
-        current = frame[frame["top_k"].eq(top_k)].copy() if "top_k" in frame.columns else frame.copy()
+        current = (
+            frame[frame["top_k"].eq(top_k)].copy()
+            if "top_k" in frame.columns
+            else frame.copy()
+        )
         matrix = (
             current.pivot(index="route_left", columns="route_right", values=metric)
             .reindex(index=routes, columns=routes)
@@ -363,7 +429,14 @@ def pairwise_overlap_figure(cfg: dict, frame: pd.DataFrame) -> None:
         ax.set_title(title)
         for row_index in range(len(routes)):
             for col_index in range(len(routes)):
-                ax.text(col_index, row_index, f"{matrix[row_index, col_index]:.2f}", ha="center", va="center", fontsize=5.8)
+                ax.text(
+                    col_index,
+                    row_index,
+                    f"{matrix[row_index, col_index]:.2f}",
+                    ha="center",
+                    va="center",
+                    fontsize=5.8,
+                )
         for _, row in current.iterrows():
             left = str(row["route_left"])
             right = str(row["route_right"])
@@ -404,7 +477,9 @@ def pairwise_overlap_figure(cfg: dict, frame: pd.DataFrame) -> None:
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Create Experiment 2 source-time attribution-sensitivity figures.")
+    parser = argparse.ArgumentParser(
+        description="Create Experiment 2 source-time attribution-sensitivity figures."
+    )
     parser.add_argument("--config", default="config_exp2.yaml")
     args = parser.parse_args()
     cfg = load_config(args.config)
@@ -415,7 +490,9 @@ def main() -> None:
         _read(summaries / "exp2_route_sensitivity_summary.csv"),
         _read(summaries / "exp2_source_event_delay_profile.csv"),
     )
-    pairwise_overlap_figure(cfg, _read(summaries / "exp2_source_route_pairwise_overlap.csv"))
+    pairwise_overlap_figure(
+        cfg, _read(summaries / "exp2_source_route_pairwise_overlap.csv")
+    )
     save_run_metadata(cfg, "plot_success")
     make_output_manifest(cfg)
     print("[plot] done", flush=True)

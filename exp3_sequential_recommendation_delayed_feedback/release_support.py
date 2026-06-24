@@ -3,6 +3,7 @@
 These helpers never rerun the experiment or alter numeric estimates.  They only
 assemble release-facing files after a successful full-data promotion.
 """
+
 from __future__ import annotations
 
 import csv
@@ -21,7 +22,10 @@ ROOT = Path(__file__).resolve().parent
 FULL = ROOT / "outputs" / "full"
 CODE_ZIP = ROOT / "exp3_long_term_recoverability_upload_ready_code.zip"
 REPRO_ZIP = ROOT / "exp3_long_term_recoverability_reproducibility_manifest.zip"
-ACTIVE_FIGURES = ("fig_exp3_long_term_recoverability", "fig_app_exp3_horizon_eligibility")
+ACTIVE_FIGURES = (
+    "fig_exp3_long_term_recoverability",
+    "fig_app_exp3_horizon_eligibility",
+)
 RETIRED_FIGURES = (
     "fig_app_exp3_arrival_mechanism_contrast",
     "fig_app_exp3_source_label_coverage",
@@ -100,16 +104,32 @@ def normalize_final_interfaces() -> None:
     """Add release-facing aliases without changing estimates or figures."""
     manifest = _read_manifest()
     write_json(FULL / "run_manifest.json", manifest)
-    save_dataframe(pd.DataFrame([{
-        "key": key,
-        "value": json.dumps(value, ensure_ascii=False, default=str) if isinstance(value, (dict, list)) else value,
-    } for key, value in manifest.items()]), FULL / "manifest.csv")
+    save_dataframe(
+        pd.DataFrame(
+            [
+                {
+                    "key": key,
+                    "value": (
+                        json.dumps(value, ensure_ascii=False, default=str)
+                        if isinstance(value, (dict, list))
+                        else value
+                    ),
+                }
+                for key, value in manifest.items()
+            ]
+        ),
+        FULL / "manifest.csv",
+    )
 
     effects_path = FULL / "summaries" / "paired_effect_vs_history_mean_static.csv"
     effects = pd.read_csv(effects_path)
-    effects["method_display_name"] = effects["method_id"].map(lambda x: METHOD_META.get(x, {}).get("method_display_name", x))
+    effects["method_display_name"] = effects["method_id"].map(
+        lambda x: METHOD_META.get(x, {}).get("method_display_name", x)
+    )
     effects["plot_label"] = effects["method_id"].map(lambda x: PLOT_LABELS.get(x, x))
-    effects["reference_method_id"] = effects.get("comparator_method_id", "history_mean_static")
+    effects["reference_method_id"] = effects.get(
+        "comparator_method_id", "history_mean_static"
+    )
     effects["effect_estimate"] = effects.get("point_estimate")
     effects["bootstrap_unit"] = "user_id"
     effects["run_mode"] = manifest.get("run_mode", "full")
@@ -123,7 +143,9 @@ def normalize_final_interfaces() -> None:
     label_path = FULL / "tables" / "tbl_app_exp3_source_label_sensitivity.csv"
     labels = pd.read_csv(label_path)
     labels["label_rate_q"] = labels.get("source_label_rate_q")
-    labels["expected_labelled_outcomes"] = labels.get("expected_source_labelled_outcomes")
+    labels["expected_labelled_outcomes"] = labels.get(
+        "expected_source_labelled_outcomes"
+    )
     labels["ranking_regret"] = labels.get("ranking_regret_per_time_bin")
     labels["ci_lower"] = labels.get("ranking_regret_ci_lower")
     labels["ci_upper"] = labels.get("ranking_regret_ci_upper")
@@ -136,8 +158,12 @@ def normalize_final_interfaces() -> None:
 
     dynamics_path = FULL / "summaries" / "oracle_action_dynamics_summary.csv"
     dynamics = pd.read_csv(dynamics_path)
-    dynamics["n_unique_oracle_top_actions"] = dynamics.get("oracle_top_action_unique_count")
-    dynamics["largest_oracle_top_action_share"] = dynamics.get("oracle_top_action_share")
+    dynamics["n_unique_oracle_top_actions"] = dynamics.get(
+        "oracle_top_action_unique_count"
+    )
+    dynamics["largest_oracle_top_action_share"] = dynamics.get(
+        "oracle_top_action_share"
+    )
     save_dataframe(dynamics, dynamics_path)
 
     proxy_quality_summary = FULL / "summaries" / "proxy_score_quality.csv"
@@ -159,16 +185,33 @@ def write_final_docs() -> None:
     manifest = _read_manifest()
     cfg = manifest.get("config", {})
     boot = pd.read_csv(FULL / "summaries" / "user_bootstrap_metric_summary.csv")
-    effects = pd.read_csv(FULL / "summaries" / "paired_effect_vs_history_mean_static.csv")
+    effects = pd.read_csv(
+        FULL / "summaries" / "paired_effect_vs_history_mean_static.csv"
+    )
     labels = pd.read_csv(FULL / "tables" / "tbl_app_exp3_source_label_sensitivity.csv")
     dynamics = pd.read_csv(FULL / "summaries" / "oracle_action_dynamics_summary.csv")
     quality = pd.read_csv(FULL / "summaries" / "proxy_score_quality.csv")
-    condition = cfg.get("primary_delay_condition", DEFAULT_CONFIG.primary_delay_condition)
-    st = boot[(boot["delay_condition"] == condition) & (boot["method_id"] == "short_term_ridge_proxy")].iloc[0]
-    hist = boot[(boot["delay_condition"] == condition) & (boot["method_id"] == "history_mean_static")].iloc[0]
-    eff = effects[(effects["delay_condition"] == condition) & (effects["method_id"] == "short_term_ridge_proxy")].iloc[0]
+    condition = cfg.get(
+        "primary_delay_condition", DEFAULT_CONFIG.primary_delay_condition
+    )
+    st = boot[
+        (boot["delay_condition"] == condition)
+        & (boot["method_id"] == "short_term_ridge_proxy")
+    ].iloc[0]
+    hist = boot[
+        (boot["delay_condition"] == condition)
+        & (boot["method_id"] == "history_mean_static")
+    ].iloc[0]
+    eff = effects[
+        (effects["delay_condition"] == condition)
+        & (effects["method_id"] == "short_term_ridge_proxy")
+    ].iloc[0]
     dyn = dynamics.iloc[0]
-    quality_text = quality.to_string(index=False) if not quality.empty else "proxy_score_quality.csv is empty"
+    quality_text = (
+        quality.to_string(index=False)
+        if not quality.empty
+        else "proxy_score_quality.csv is empty"
+    )
 
     (ROOT / "docs" / "final_full_result_summary.md").write_text(
         "# Final full result summary\n\n"
@@ -232,7 +275,9 @@ def write_final_docs() -> None:
         "- label coverage monotonically improves recoverability\n"
         "- causal regret, OPE, online policy improvement, or platform utility evaluation\n"
     )
-    (ROOT / "docs" / "latex_interface_experiments.md").write_text(latex, encoding="utf-8")
+    (ROOT / "docs" / "latex_interface_experiments.md").write_text(
+        latex, encoding="utf-8"
+    )
 
     (ROOT / "docs" / "experiment_specification.md").write_text(
         "# Experiment specification\n\n"
@@ -261,7 +306,10 @@ def _artifact_role(path: Path) -> str:
         return "summary_or_audit"
     if rel.startswith("outputs/full/checks/"):
         return "validation_report"
-    if rel.startswith("outputs/full/metadata/") or rel in {"outputs/full/run_manifest.json", "outputs/full/manifest.csv"}:
+    if rel.startswith("outputs/full/metadata/") or rel in {
+        "outputs/full/run_manifest.json",
+        "outputs/full/manifest.csv",
+    }:
         return "full_manifest"
     if rel.startswith("docs/"):
         return "documentation"
@@ -275,11 +323,18 @@ def _artifact_role(path: Path) -> str:
 def _excluded(path: Path) -> bool:
     text = path.as_posix()
     name = path.name
-    if any(part in path.parts for part in ("__pycache__", ".venv", ".ipynb_checkpoints")):
+    if any(
+        part in path.parts for part in ("__pycache__", ".venv", ".ipynb_checkpoints")
+    ):
         return True
-    if text.startswith("inputs/KuaiRand-1K/data/") or text.startswith("outputs/full/raw/"):
+    if text.startswith("inputs/KuaiRand-1K/data/") or text.startswith(
+        "outputs/full/raw/"
+    ):
         return True
-    if text.startswith("outputs/full/processed/") and "arrival_timeline_audit_sample" not in text:
+    if (
+        text.startswith("outputs/full/processed/")
+        and "arrival_timeline_audit_sample" not in text
+    ):
         return True
     if text.startswith("outputs/fast/") or text.startswith("runlogs/"):
         return True
@@ -287,9 +342,18 @@ def _excluded(path: Path) -> bool:
         return True
     if name.startswith("semi_synthetic_arrival_timeline_"):
         return True
-    if path.suffix.lower() == ".csv" and path.exists() and path.stat().st_size > 50 * 1024 * 1024:
+    if (
+        path.suffix.lower() == ".csv"
+        and path.exists()
+        and path.stat().st_size > 50 * 1024 * 1024
+    ):
         return True
-    if name in {CODE_ZIP.name, REPRO_ZIP.name, "artifact_sha256sums.txt", "full_result_inventory.csv"}:
+    if name in {
+        CODE_ZIP.name,
+        REPRO_ZIP.name,
+        "artifact_sha256sums.txt",
+        "full_result_inventory.csv",
+    }:
         return True
     if name.endswith(".zip.sha256"):
         return True
@@ -298,12 +362,23 @@ def _excluded(path: Path) -> bool:
 
 def _base_package_files() -> list[Path]:
     patterns = [
-        "*.py", "requirements.txt", "README.md", "docs/**", "notebooks/**", "src/**", "tests/**",
-        "outputs/full/figures/pdf/**/*", "outputs/full/figures/png/**/*",
-        "outputs/full/figures/data/**/*", "outputs/full/figures/metadata/**/*",
-        "outputs/full/tables/**/*", "outputs/full/summaries/**/*",
-        "outputs/full/checks/**/*", "outputs/full/metadata/**/*",
-        "outputs/full/run_manifest.json", "outputs/full/manifest.csv",
+        "*.py",
+        "requirements.txt",
+        "README.md",
+        "docs/**",
+        "notebooks/**",
+        "src/**",
+        "tests/**",
+        "outputs/full/figures/pdf/**/*",
+        "outputs/full/figures/png/**/*",
+        "outputs/full/figures/data/**/*",
+        "outputs/full/figures/metadata/**/*",
+        "outputs/full/tables/**/*",
+        "outputs/full/summaries/**/*",
+        "outputs/full/checks/**/*",
+        "outputs/full/metadata/**/*",
+        "outputs/full/run_manifest.json",
+        "outputs/full/manifest.csv",
     ]
     files: set[Path] = set()
     for pattern in patterns:
@@ -342,17 +417,32 @@ def write_release_manifest(manifested_files: Iterable[Path]) -> None:
             "outputs/full/tables/tbl_app_exp3_source_label_sensitivity.csv",
             "outputs/full/tables/tbl_app_exp3_proxy_score_quality.csv",
         }
-        rows.append({
-            "file_path": rel_text,
-            "file_size_bytes": path.stat().st_size,
-            "sha256": sha256_file(path),
-            "artifact_role": role,
-            "paper_facing": role == "paper_figure_bundle" or rel_text in paper_table_names or rel_text == "outputs/full/summaries/paired_effect_vs_history_mean_static.csv",
-            "required_for_reproduction": role in {"source_code", "tests", "documentation", "full_manifest", "release_support"},
-            "included_in_code_upload": True,
-        })
+        rows.append(
+            {
+                "file_path": rel_text,
+                "file_size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+                "artifact_role": role,
+                "paper_facing": role == "paper_figure_bundle"
+                or rel_text in paper_table_names
+                or rel_text
+                == "outputs/full/summaries/paired_effect_vs_history_mean_static.csv",
+                "required_for_reproduction": role
+                in {
+                    "source_code",
+                    "tests",
+                    "documentation",
+                    "full_manifest",
+                    "release_support",
+                },
+                "included_in_code_upload": True,
+            }
+        )
     save_dataframe(pd.DataFrame(rows), ROOT / "release_manifest.csv")
-    write_json(ROOT / "release_manifest.json", {"artifacts": rows, "self_reference_excluded": True})
+    write_json(
+        ROOT / "release_manifest.json",
+        {"artifacts": rows, "self_reference_excluded": True},
+    )
 
 
 def _write_zip(zip_path: Path, files: Iterable[Path]) -> None:
@@ -373,7 +463,13 @@ def _write_inventory(package_files: list[Path]) -> tuple[Path, Path]:
     rows = []
     for rel in sorted(set(package_files), key=lambda path: path.as_posix()):
         path = ROOT / rel
-        rows.append({"file_path": rel.as_posix(), "file_size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
+        rows.append(
+            {
+                "file_path": rel.as_posix(),
+                "file_size_bytes": path.stat().st_size,
+                "sha256": sha256_file(path),
+            }
+        )
     save_dataframe(pd.DataFrame(rows), inventory)
     checksum_files = [*package_files, Path("full_result_inventory.csv")]
     lines = []
@@ -406,7 +502,9 @@ def build_release_packages() -> None:
     final_ok, final_errors = verify_release_packages()
     write_release_reports([] if final_ok else final_errors)
     if not final_ok:
-        raise RuntimeError("Release package verification failed: " + " | ".join(final_errors))
+        raise RuntimeError(
+            "Release package verification failed: " + " | ".join(final_errors)
+        )
 
 
 def _verify_sha_sidecar(zip_path: Path) -> list[str]:
@@ -473,12 +571,14 @@ def _verify_artifact_checksum_index() -> list[str]:
 def _required_figure_members() -> set[str]:
     members: set[str] = set()
     for figure_id in ACTIVE_FIGURES:
-        members.update({
-            f"outputs/full/figures/pdf/{figure_id}.pdf",
-            f"outputs/full/figures/png/{figure_id}.png",
-            f"outputs/full/figures/data/{figure_id}_data.csv",
-            f"outputs/full/figures/metadata/{figure_id}_metadata.json",
-        })
+        members.update(
+            {
+                f"outputs/full/figures/pdf/{figure_id}.pdf",
+                f"outputs/full/figures/png/{figure_id}.png",
+                f"outputs/full/figures/data/{figure_id}_data.csv",
+                f"outputs/full/figures/metadata/{figure_id}_metadata.json",
+            }
+        )
     return members
 
 
@@ -496,7 +596,10 @@ def verify_release_packages() -> tuple[bool, list[str]]:
     errors.extend(_verify_release_manifest())
     errors.extend(_verify_artifact_checksum_index())
 
-    expected_code = {path.as_posix() for path in collect_code_package_files(include_release_manifests=True)}
+    expected_code = {
+        path.as_posix()
+        for path in collect_code_package_files(include_release_manifests=True)
+    }
     required_members = (
         _required_figure_members()
         | {path.as_posix() for path in REQUIRED_RELEASE_DOCS}
@@ -507,11 +610,21 @@ def verify_release_packages() -> tuple[bool, list[str]]:
         errors.append("figure release audit CSV is missing")
     else:
         audit = pd.read_csv(audit_path)
-        if audit.empty or not (audit.get("status", pd.Series(dtype=str)).astype(str) == "passed").all():
+        if (
+            audit.empty
+            or not (
+                audit.get("status", pd.Series(dtype=str)).astype(str) == "passed"
+            ).all()
+        ):
             errors.append("figure release audit CSV does not report passed")
     for zip_path, expected in [
         (CODE_ZIP, expected_code),
-        (REPRO_ZIP, expected_code | {path.as_posix() for path in REPRO_EXTRAS} | {"full_result_inventory.csv", "artifact_sha256sums.txt"}),
+        (
+            REPRO_ZIP,
+            expected_code
+            | {path.as_posix() for path in REPRO_EXTRAS}
+            | {"full_result_inventory.csv", "artifact_sha256sums.txt"},
+        ),
     ]:
         if not zip_path.exists():
             errors.append(f"missing zip: {zip_path.name}")
@@ -524,12 +637,19 @@ def verify_release_packages() -> tuple[bool, list[str]]:
             errors.append(f"zip test failed for {zip_path.name}: {bad_member}")
         missing = expected - names
         if missing:
-            errors.append(f"archive missing required members in {zip_path.name}: {sorted(missing)[:5]}")
+            errors.append(
+                f"archive missing required members in {zip_path.name}: {sorted(missing)[:5]}"
+            )
         missing_paper = required_members - names
         if missing_paper:
-            errors.append(f"archive missing paper-facing members in {zip_path.name}: {sorted(missing_paper)[:5]}")
+            errors.append(
+                f"archive missing paper-facing members in {zip_path.name}: {sorted(missing_paper)[:5]}"
+            )
         for name in names:
-            if name.startswith(("inputs/KuaiRand-1K/data/", "outputs/full/raw/")) or "legacy/retired_figures" in name:
+            if (
+                name.startswith(("inputs/KuaiRand-1K/data/", "outputs/full/raw/"))
+                or "legacy/retired_figures" in name
+            ):
                 errors.append(f"excluded artifact included in {zip_path.name}: {name}")
     return (not errors), errors
 
@@ -552,7 +672,9 @@ def write_release_reports(errors: list[str]) -> None:
         f"- Checks failed: {'none' if not errors else '; '.join(errors)}\n"
         "- Remaining manual user steps: obtain KuaiRand-1K separately and fill input hash templates before external reproduction.\n"
     )
-    (ROOT / "docs" / "final_release_checklist.md").write_text(checklist, encoding="utf-8")
+    (ROOT / "docs" / "final_release_checklist.md").write_text(
+        checklist, encoding="utf-8"
+    )
     report = (
         "# Final release completion report\n\n"
         "The release packaging step validates promoted full outputs, generates release manifests, builds upload archives, and checks archive integrity. No full experiment rerun is performed.\n\n"
@@ -561,7 +683,9 @@ def write_release_reports(errors: list[str]) -> None:
         "- SHA-256 sidecars are required for both archives.\n"
         f"- Final verification status: {status}\n"
     )
-    (ROOT / "docs" / "final_release_completion_report.md").write_text(report, encoding="utf-8")
+    (ROOT / "docs" / "final_release_completion_report.md").write_text(
+        report, encoding="utf-8"
+    )
 
 
 def read_csv_rows(path: Path) -> list[dict[str, str]]:

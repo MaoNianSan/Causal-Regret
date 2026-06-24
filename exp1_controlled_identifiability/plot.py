@@ -9,7 +9,9 @@ from src.plot_utils import plot_exp1_bundles
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Regenerate EXP1 figure bundle from a completed run.")
+    parser = argparse.ArgumentParser(
+        description="Regenerate EXP1 figure bundle from a completed run."
+    )
     parser.add_argument("--mode", choices=("fast", "full"), default="fast")
     parser.add_argument("--output-tag", default=None)
     args = parser.parse_args()

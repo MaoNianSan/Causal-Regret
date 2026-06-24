@@ -1,4 +1,5 @@
 """Construct split-consistent future-engagement targets for Exp3."""
+
 from __future__ import annotations
 
 from concurrent.futures import ThreadPoolExecutor
@@ -97,15 +98,28 @@ def add_future_engagement_targets(
     for label in cfg.horizons_ms:
         valid = out[f"valid_for_{label}"].eq(1)
         values = out.loc[valid, f"y_long_value_log_{label}"]
-        summary_rows.append({
-            "horizon": label,
-            "n_source_events": int(len(out)),
-            "n_valid_source_events": int(valid.sum()),
-            "right_censoring_rate": float(1.0 - valid.mean()) if len(out) else np.nan,
-            "target_mean": float(values.mean()) if len(values) else np.nan,
-            "target_sd": float(values.std(ddof=1)) if len(values) > 1 else np.nan,
-            "context_streams": "main_standard_only" if prefix == "main_standard" else "history_standard_only",
-        })
-    save_dataframe(pd.DataFrame(summary_rows), output_dir / "summaries" / f"{prefix}_horizon_target_summary.csv")
-    maybe_save_parquet(out, output_dir / "processed" / f"{prefix}_source_events_with_targets.parquet")
+        summary_rows.append(
+            {
+                "horizon": label,
+                "n_source_events": int(len(out)),
+                "n_valid_source_events": int(valid.sum()),
+                "right_censoring_rate": (
+                    float(1.0 - valid.mean()) if len(out) else np.nan
+                ),
+                "target_mean": float(values.mean()) if len(values) else np.nan,
+                "target_sd": float(values.std(ddof=1)) if len(values) > 1 else np.nan,
+                "context_streams": (
+                    "main_standard_only"
+                    if prefix == "main_standard"
+                    else "history_standard_only"
+                ),
+            }
+        )
+    save_dataframe(
+        pd.DataFrame(summary_rows),
+        output_dir / "summaries" / f"{prefix}_horizon_target_summary.csv",
+    )
+    maybe_save_parquet(
+        out, output_dir / "processed" / f"{prefix}_source_events_with_targets.parquet"
+    )
     return out

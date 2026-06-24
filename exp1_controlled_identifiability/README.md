@@ -1,8 +1,8 @@
-# EXP1: Controlled source-binding validity simulation
+# Experiment 1: Controlled Source-Binding Validity Simulation
 
 ## Scope
 
-EXP1 is a controlled contextual simulation for the source--intervention
+Experiment 1 is a controlled contextual simulation for the source--intervention
 binding validity claim. It is not an algorithm leaderboard and does not claim
 that a source-labelled learner uniformly dominates every delayed-feedback
 method. The experiment asks whether arrival-time evaluation remains
@@ -44,7 +44,7 @@ integrated EM is an observable-information approximation for state-dependent
 delay; `soft_attribution_em_stationary_ablation` is a deliberately simplified
 stationary-geometric diagnostic control.
 
-## Verification and rerun order
+## Verification and Reproduction Order
 
 ```powershell
 # Compile all modules, execute the complete 264-combination smoke design,
@@ -68,7 +68,7 @@ python finalize_paper_outputs.py --mode full
 `paper_result=false`; only `finalize_paper_outputs.py` can mark a verified full
 output bundle as paper eligible.
 
-## Output contract
+## Output Contract
 
 Standard fast and full runs use `summary_only` trace mode. They write complete
 seed-level records, summaries, tables, figure-data CSVs, figure metadata, and
@@ -108,7 +108,7 @@ Confidence intervals use percentile bootstrap over shared simulation seeds with
 `2000` resamples. Main figures use point ranges and keep methods in comparable
 information regimes; cross-regime method bars are not used as fairness claims.
 
-## Optional detailed trace audit
+## Optional Detailed Trace Audit
 
 Detailed schedule, arrival, and step traces are intentionally disabled during
 parallel production runs because multi-worker writers would otherwise create
@@ -124,7 +124,7 @@ python self_check.py --mode fast --output-tag trace_smoke
 
 The command above is a trace audit, not a paper result.
 
-## Rebuilding outputs from completed raw results
+## Rebuilding Outputs From Completed Raw Results
 
 ```powershell
 python rebuild_outputs_from_raw.py --mode fast

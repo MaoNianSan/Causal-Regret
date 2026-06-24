@@ -3,7 +3,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 DELAYED_SETTINGS = [
     "geom_0.15",
     "mixed_geom_0.6+0.1_w0.2",
@@ -116,12 +115,9 @@ def load_ranking_reversal(
         "source_state_distance_mean",
     }
     if summary_columns.issubset(seed.columns):
-        result = (
-            seed.groupby("delay_setting", as_index=True)
-            .agg(
-                ranking_reversal_rate=("ranking_reversal_rate", "mean"),
-                mean_source_state_distance=("source_state_distance_mean", "mean"),
-            )
+        result = seed.groupby("delay_setting", as_index=True).agg(
+            ranking_reversal_rate=("ranking_reversal_rate", "mean"),
+            mean_source_state_distance=("source_state_distance_mean", "mean"),
         )
         return result, f"`outputs/{mode}/summary/toy_seed_summary.csv`"
 
@@ -132,12 +128,19 @@ def load_ranking_reversal(
         arrival = pd.read_csv(preferred)
         dedupe_columns = ["delay_setting", "seed", "clock_t", "source_t", "delay_tau"]
         diagnostic = arrival.drop_duplicates(subset=dedupe_columns)
-        return pd.DataFrame(
-            {
-                "ranking_reversal_rate": diagnostic.groupby("delay_setting")["ranking_reversal"].mean(),
-                "mean_source_state_distance": diagnostic.groupby("delay_setting")["source_state_distance"].mean(),
-            }
-        ), "`outputs/fast/raw/arrival_log.csv` (legacy fallback)"
+        return (
+            pd.DataFrame(
+                {
+                    "ranking_reversal_rate": diagnostic.groupby("delay_setting")[
+                        "ranking_reversal"
+                    ].mean(),
+                    "mean_source_state_distance": diagnostic.groupby("delay_setting")[
+                        "source_state_distance"
+                    ].mean(),
+                }
+            ),
+            "`outputs/fast/raw/arrival_log.csv` (legacy fallback)",
+        )
     return None, "unavailable because the same-mode summary lacks diagnostics"
 
 
@@ -154,7 +157,9 @@ def build_report(
     delays = mean_delay_table(seed)
     ordering = curve_ordering_table(trajectory)
 
-    zero_gap = abs(final.loc["0_delay", "naive"] - final.loc["0_delay", "causal_labelled"])
+    zero_gap = abs(
+        final.loc["0_delay", "naive"] - final.loc["0_delay", "causal_labelled"]
+    )
     delayed_rows = []
     for setting in DELAYED_SETTINGS:
         naive = final.loc[setting, "naive"]
@@ -210,16 +215,13 @@ def build_report(
                     fmt(ranking.loc[setting, "mean_source_state_distance"], 4),
                 ]
             )
-        ranking_section = (
-            f"Source: {ranking_source}.\n\n"
-            + markdown_table(
-                [
-                    "Delay setting",
-                    "Ranking-reversal rate",
-                    "Mean source-state distance",
-                ],
-                ranking_rows,
-            )
+        ranking_section = f"Source: {ranking_source}.\n\n" + markdown_table(
+            [
+                "Delay setting",
+                "Ranking-reversal rate",
+                "Mean source-state distance",
+            ],
+            ranking_rows,
         )
         delayed_ranking = ranking.reindex(DELAYED_SETTINGS)["ranking_reversal_rate"]
         ranking_summary = (

@@ -1,4 +1,5 @@
 """Stable active figure identifiers used by code, outputs, and LaTeX."""
+
 from __future__ import annotations
 
 PRIMARY_FIGURES = ("fig_exp3_long_term_recoverability",)

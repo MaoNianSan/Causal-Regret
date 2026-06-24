@@ -1,10 +1,10 @@
-# Experiment 2: Source-time Attribution Sensitivity in Delayed Conversion Logs
+# Experiment 2: Source-Time Attribution Sensitivity in Delayed Conversion Logs
 
 Experiment 2 is a **logged attribution-sensitivity diagnostic** on the Criteo Attribution Modeling for Bidding conversion log. It asks whether assigning an arriving conversion to different recorded **source-time decision cells** changes (i) the allocation of logged conversion credit and (ii) the induced top-10 decision-cell ranking.
 
 It is **not** online policy evaluation, off-policy value estimation, causal-regret estimation, randomized causal identification, or an economic ROI analysis.
 
-## Why the action unit is a source-time cell
+## Why the Action Unit Is a Source-Time Cell
 
 The early campaign-only implementation was scientifically degenerate: retained conversion journeys could contain multiple touches but only one campaign. First, last, linear, time-decay, and EM then became mathematically indistinguishable at the campaign level. More bootstrap replicates could not repair that information collapse.
 
@@ -16,7 +16,7 @@ campaign_source_day_cell = (mapped campaign, source calendar day)
 
 Only candidate impressions carrying the same `conversion_id` are used. The code does not add arbitrary historical exposures from other journeys. This preserves the public log's recorded conversion-path semantics while retaining source time.
 
-## Valid claim and evidence role
+## Valid Claim and Evidence Role
 
 The four-experiment evidence chain is:
 
@@ -27,13 +27,13 @@ source binding validity
   -> recoverability boundary
 ```
 
-The valid Experiment 2 conclusion is:
+The supported Experiment 2 conclusion is:
 
 > On a common cohort of observed conversion journeys, different rules for assigning an arriving conversion to recorded source-time decision cells can change logged credit allocation and top-10 decision-cell ranking support.
 
 The result is conditional on the observed cohort. It does not imply that a new online policy would obtain the reported credit mass.
 
-## Primary action, routes, and outcome
+## Primary Action, Routes, and Outcome
 
 - **Arrival-bin anchor (diagnostic):** a constructed arrival-bin credit anchor; it is `diagnostic_only=true` and `deployable=false`.
 - **First click or touch:** earliest clicked source cell, otherwise earliest source touch.
@@ -45,7 +45,7 @@ The result is conditional on the observed cohort. It does not imply that a new o
 
 The primary outcome is **binary credited-conversion mass**. Decision cells are ranked by credited mass per eligible cell impression. Criteo's transformed `cost` field appears only in an appendix robustness table and is never interpreted as profit or ROI.
 
-## Main figure
+## Main Figure
 
 `fig_exp2_attribution_sensitivity` has two panels:
 
@@ -54,7 +54,7 @@ The primary outcome is **binary credited-conversion mass**. Decision cells are r
 
 This avoids treating route-specific top-k credited mass as a policy utility comparison.
 
-## Appendix outputs
+## Appendix Outputs
 
 - `fig_app_exp2_source_route_pairwise_overlap`: source-route pairwise TV and top-10 decision-cell overlap heatmaps.
 - `tbl_app_exp2_source_linked_audit`: bookkeeping audit for the unique-labelled subset; it may be attribution-nondiscriminative.
@@ -63,7 +63,7 @@ This avoids treating route-specific top-k credited mass as a policy utility comp
 - `tbl_app_exp2_em_assignment_diagnostic`: EM entropy/concentration audit table.
 - `tbl_app_exp2_cost_adjusted_credit_score`: transformed-cost robustness table only.
 
-## Scientific gates
+## Scientific Gates
 
 A fast or full run must fail semantic validation when any of the following fails:
 
@@ -85,7 +85,7 @@ inputs/pcb_dataset_final.tsv
 
 The repository excludes the protected input and large processed intermediates. Lightweight saved summaries, figures, tables, checks, metadata, and notebooks are retained for GitHub inspection.
 
-## Run commands
+## Run Commands
 
 ```powershell
 # Fast audit: 200 UID bootstrap replicates, always paper_result=false
@@ -101,7 +101,7 @@ python code_check.py --mode full
 
 Full-mode figure bundles remain `paper_result=false` until the semantic check passes; `finalize_exp2.py` then promotes them to `paper_result=true`.
 
-## Key outputs
+## Key Outputs
 
 ```text
 outputs/<mode>/processed/exp2_action_cell_mapping.csv
@@ -118,7 +118,7 @@ outputs/<mode>/checks/exp2_self_check_report.md
 
 Read `EXP2_MODIFICATION_RATIONALE_zh.md`, `REPAIR_NOTES.md`, `REPAIR_VALIDATION.md`, and `EXECUTION_GUIDE.md` before launching full mode.
 
-## GitHub packaging notes
+## GitHub Packaging Notes
 
 ### Purpose
 
@@ -132,35 +132,35 @@ Logged delayed-conversion attribution sensitivity diagnostic using externally ob
 - `outputs/`: committed lightweight summaries, figures, tables, checks, metadata, and precheck previews; processed/raw intermediates are ignored.
 - `docs/`: metric and paper-interface documentation.
 
-### Input data requirement
+### Input Data Requirement
 
 Full reproduction requires `inputs/pcb_dataset_final.tsv` or the documented Criteo attribution source file, obtained under the original data license. The data file is not redistributed.
 
-### How to run fast validation
+### How to Run Fast Validation
 
 Use `python reproduce_fast.py`, `python self_check.py --mode fast`, and `python code_check.py --mode fast` after placing required data or using the project-supported fixture path.
 
-### How to run full reproduction
+### How to Run Full Reproduction
 
 Use `python reproduce_full.py`, then `python self_check.py --mode full` and `python code_check.py --mode full`. Full mode requires the external raw Criteo data and was not run during final packaging.
 
-### How to inspect existing results
+### How to Inspect Existing Results
 
 Open `ipy/exp2_result_check.ipynb` or inspect `outputs/full/summaries/`, `outputs/full/figures/`, `outputs/full/tables/`, `outputs/full/checks/`, and `output_manifest.md`.
 
-### Expected outputs
+### Expected Outputs
 
 Expected GitHub-facing outputs are route summaries, precheck summaries, attribution figures, appendix tables, validation checks, metadata, and output manifests.
 
-### What is committed to GitHub
+### What Is Committed to GitHub
 
 Source code, README/docs, notebooks, run logs when present, manifests, lightweight summaries, figures, tables, checks, metadata, and precheck reports.
 
-### What remains local and why
+### What Remains Local and Why
 
 Criteo raw files, downloaded archives, processed timelines, route assignment intermediates, raw outputs, and cache/runtime state remain local because of size and data-license constraints.
 
-## Clean-rerun safeguards
+## Clean-Rerun Safeguards
 
 A clean run does not require a historical figure/table hash snapshot. The display-only SHA256 regression is enforced only when `outputs/<mode>/checks/figure_table_repair_core_hashes_before.csv` is deliberately supplied for a replot-only audit.
 
@@ -176,7 +176,6 @@ python tests\run_synthetic_integration.py
 
 This verifies the current fixture contract and identical UID-bootstrap output under `--n-jobs=1` and `--n-jobs=4`.
 
-## Candidate-window diagnostic runtime contract
+## Candidate-Window Diagnostic Runtime Contract
 
 Candidate-window sensitivity is an appendix-only common-cohort point-estimate diagnostic. It does not run a separate nested UID bootstrap for every window. The main route-sensitivity summary remains the sole inferential Exp2 object and reports the configured UID-bootstrap confidence intervals. Candidate-window outputs record `window_bootstrap_replicates=0` and `window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic`.
-

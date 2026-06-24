@@ -9,6 +9,5 @@ os.environ.setdefault("NUMEXPR_NUM_THREADS", "1")
 
 from src.runner import run
 
-
 if __name__ == "__main__":
     raise SystemExit(run("fast", raw_log_mode="summary_only"))

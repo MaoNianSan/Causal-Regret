@@ -1,8 +1,15 @@
 """Run Exp4 in isolated directories with seed × condition multiprocessing."""
+
 from __future__ import annotations
 
 import os
-for _thread_env in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+
+for _thread_env in (
+    "OMP_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+):
     os.environ[_thread_env] = "1"
 
 import argparse
@@ -22,24 +29,43 @@ def build_tasks(seeds: list[int], T: int) -> list[dict]:
     tasks: list[dict] = []
     for seed in seeds:
         tasks.append({"kind": "proxy_diagnostic", "seed": seed, "T": T})
-        tasks.extend({"kind": "source_label_sweep", "seed": seed, "T": T, "q": q} for q in config.Q_GRID)
+        tasks.extend(
+            {"kind": "source_label_sweep", "seed": seed, "T": T, "q": q}
+            for q in config.Q_GRID
+        )
         tasks.extend(
             {"kind": "phase_grid", "seed": seed, "T": T, "q": q, "sigma": sigma}
             for q in config.Q_GRID
             for sigma in config.PROXY_SIGMAS
         )
-        tasks.extend({"kind": "delay_coupling", "seed": seed, "T": T, "beta": beta} for beta in config.BETA_GRID)
+        tasks.extend(
+            {"kind": "delay_coupling", "seed": seed, "T": T, "beta": beta}
+            for beta in config.BETA_GRID
+        )
     return tasks
 
 
 def create_run_dir(mode: str, run_id: str | None) -> Path:
-    suffix = run_id or f"{mode}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{uuid.uuid4().hex[:8]}"
+    suffix = (
+        run_id
+        or f"{mode}_{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}_{uuid.uuid4().hex[:8]}"
+    )
     path = config.OUTPUT_ROOT / suffix
     if path.exists():
         raise FileExistsError(f"run directory already exists: {path}")
     for name in [
-        "raw", "processed", "summaries", "tables", "figures/pdf", "figures/png",
-        "figures/data", "figures/metadata", "checks", "logs", "reports", "legacy",
+        "raw",
+        "processed",
+        "summaries",
+        "tables",
+        "figures/pdf",
+        "figures/png",
+        "figures/data",
+        "figures/metadata",
+        "checks",
+        "logs",
+        "reports",
+        "legacy",
     ]:
         (path / name).mkdir(parents=True, exist_ok=False)
     return path
@@ -50,22 +76,32 @@ def run(mode: str, n_jobs: int | None = None, run_id: str | None = None) -> Path
     requested_workers = n_jobs or config.auto_workers(mode)
     if requested_workers < 1:
         raise ValueError("n_jobs must be >= 1")
-    workers = max(1, min(int(requested_workers), os.cpu_count() or 1, config.auto_workers(mode)))
+    workers = max(
+        1, min(int(requested_workers), os.cpu_count() or 1, config.auto_workers(mode))
+    )
     run_dir = create_run_dir(mode, run_id)
     tasks = build_tasks(seeds, T)
     rows: list[dict] = []
 
-    print(f"[EXP4] mode={mode}; T={T}; seeds={len(seeds)}; tasks={len(tasks)}; workers={workers}", flush=True)
+    print(
+        f"[EXP4] mode={mode}; T={T}; seeds={len(seeds)}; tasks={len(tasks)}; workers={workers}",
+        flush=True,
+    )
     with ProcessPoolExecutor(max_workers=workers) as executor:
         futures = {executor.submit(run_task, task): task for task in tasks}
         for completed, future in enumerate(as_completed(futures), start=1):
             task = futures[future]
             rows.extend(future.result())
-            print(f"[EXP4] completed {completed}/{len(tasks)}: {task['kind']} seed={task['seed']}", flush=True)
+            print(
+                f"[EXP4] completed {completed}/{len(tasks)}: {task['kind']} seed={task['seed']}",
+                flush=True,
+            )
 
-    seed_df = pd.DataFrame(rows).sort_values(
-        ["subexperiment_id", "seed", "setting_id", "method_id"]
-    ).reset_index(drop=True)
+    seed_df = (
+        pd.DataFrame(rows)
+        .sort_values(["subexperiment_id", "seed", "setting_id", "method_id"])
+        .reset_index(drop=True)
+    )
     seed_df.to_csv(run_dir / "raw" / "seed_level_results.csv", index=False)
     for subexperiment_id, filename in {
         "proxy_distortion_diagnostic": "proxy_distortion_diagnostic_results.csv",
@@ -73,7 +109,9 @@ def run(mode: str, n_jobs: int | None = None, run_id: str | None = None) -> Path
         "recoverability_phase_map": "recoverability_phase_map_results.csv",
         "delay_state_coupling_diagnostic": "delay_state_coupling_results.csv",
     }.items():
-        seed_df.loc[seed_df["subexperiment_id"].eq(subexperiment_id)].to_csv(run_dir / "raw" / filename, index=False)
+        seed_df.loc[seed_df["subexperiment_id"].eq(subexperiment_id)].to_csv(
+            run_dir / "raw" / filename, index=False
+        )
 
     run_config = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
@@ -104,7 +142,9 @@ def run(mode: str, n_jobs: int | None = None, run_id: str | None = None) -> Path
         "interpretation_boundary": "controlled source-label sufficiency and proxy-only recovery limitation stress test; not a logged-data study, online RCT, or information-theoretic impossibility theorem",
         "proxy_route_specification": "proxy_label_recovery uses a fixed bounded-window RBF similarity rule with recency prior over stored observable proxy history; results do not establish optimality or impossibility for all proxy-only algorithms",
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(run_config, indent=2), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(run_config, indent=2), encoding="utf-8"
+    )
     return run_dir
 
 

@@ -22,7 +22,9 @@ from src.delay import (
 
 
 class ToyDelayedEnv:
-    def __init__(self, T: int, K: int, D_max: int, trace: ScenarioTrace, env_seed: int = 0):
+    def __init__(
+        self, T: int, K: int, D_max: int, trace: ScenarioTrace, env_seed: int = 0
+    ):
         self.T = int(T)
         self.K = int(K)
         self.D_max = int(D_max)

@@ -1,4 +1,5 @@
 """Backward-compatible programmatic runner for the self-contained Toy experiment."""
+
 from __future__ import annotations
 
 from pathlib import Path

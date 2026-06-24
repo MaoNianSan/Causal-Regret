@@ -6,6 +6,7 @@ metadata alone. It rejects skipped backends, incomplete designs, nonfinite
 summaries, inconsistent source--arrival records, unshared state/delay paths,
 and failed zero-delay invariants.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -29,7 +30,15 @@ EXPECTED_DELAY_SETTINGS = {
     "mixture": "mixed_geom_0.6+0.1_w0.2",
 }
 NONFINITE_LITERALS = {
-    "nan", "+nan", "-nan", "inf", "+inf", "-inf", "infinity", "+infinity", "-infinity",
+    "nan",
+    "+nan",
+    "-nan",
+    "inf",
+    "+inf",
+    "-inf",
+    "infinity",
+    "+infinity",
+    "-infinity",
 }
 TOL = 1e-9
 
@@ -43,7 +52,9 @@ def parse_args() -> argparse.Namespace:
 
 def resolve_output_root(base: Path, output_dir: str, mode: str) -> Path:
     candidate = Path(output_dir)
-    return ((candidate if candidate.is_absolute() else base / candidate) / mode).resolve()
+    return (
+        (candidate if candidate.is_absolute() else base / candidate) / mode
+    ).resolve()
 
 
 def read_rows(path: Path) -> list[dict[str, str]]:
@@ -90,14 +101,21 @@ def check_numeric_csv(path: Path, errors: list[str]) -> None:
         with path.open("r", encoding="utf-8", newline="") as handle:
             for line_no, row in enumerate(csv.DictReader(handle), start=2):
                 for key, value in row.items():
-                    if value is not None and value.strip().lower() in NONFINITE_LITERALS:
-                        errors.append(f"Nonfinite literal in {path.name}:{line_no}:{key}={value!r}")
+                    if (
+                        value is not None
+                        and value.strip().lower() in NONFINITE_LITERALS
+                    ):
+                        errors.append(
+                            f"Nonfinite literal in {path.name}:{line_no}:{key}={value!r}"
+                        )
                         return
     except Exception as exc:
         errors.append(f"Cannot scan {path}: {exc}")
 
 
-def require_columns(rows: list[dict[str, str]], required: set[str], label: str, errors: list[str]) -> bool:
+def require_columns(
+    rows: list[dict[str, str]], required: set[str], label: str, errors: list[str]
+) -> bool:
     if not rows:
         errors.append(f"{label} has no data rows")
         return False
@@ -135,50 +153,110 @@ def check_fast_raw(
         "diagnostic step log": diagnostic_rows,
     }.items():
         if len(rows) != expected_count:
-            errors.append(f"{label} row count mismatch: got {len(rows)}, expected {expected_count}")
+            errors.append(
+                f"{label} row count mismatch: got {len(rows)}, expected {expected_count}"
+            )
 
     required_delay = {
-        "run_id", "seed", "source_t", "delay_setting", "method", "source_state", "source_action",
-        "source_optimal_action", "source_loss", "delay_tau", "arrival_t", "is_censored", "censor_reason",
+        "run_id",
+        "seed",
+        "source_t",
+        "delay_setting",
+        "method",
+        "source_state",
+        "source_action",
+        "source_optimal_action",
+        "source_loss",
+        "delay_tau",
+        "arrival_t",
+        "is_censored",
+        "censor_reason",
     }
     required_step = {
-        "run_id", "seed", "t", "delay_setting", "method", "action_selected", "optimal_action_current",
-        "loss_selected_current", "loss_optimal_current", "instant_causal_regret", "cumulative_causal_regret",
-        "delay_tau", "arrival_t", "is_censored", "current_state",
+        "run_id",
+        "seed",
+        "t",
+        "delay_setting",
+        "method",
+        "action_selected",
+        "optimal_action_current",
+        "loss_selected_current",
+        "loss_optimal_current",
+        "instant_causal_regret",
+        "cumulative_causal_regret",
+        "delay_tau",
+        "arrival_t",
+        "is_censored",
+        "current_state",
     }
     required_arrival = {
-        "run_id", "seed", "clock_t", "source_t", "delay_tau", "arrival_t", "method", "delay_setting",
-        "observed_loss", "source_action", "current_action", "current_state", "source_state",
-        "source_state_distance", "source_optimal_action", "current_optimal_action", "ranking_reversal",
+        "run_id",
+        "seed",
+        "clock_t",
+        "source_t",
+        "delay_tau",
+        "arrival_t",
+        "method",
+        "delay_setting",
+        "observed_loss",
+        "source_action",
+        "current_action",
+        "current_state",
+        "source_state",
+        "source_state_distance",
+        "source_optimal_action",
+        "current_optimal_action",
+        "ranking_reversal",
     }
     required_diagnostic = {
-        "run_id", "seed", "t", "delay_setting", "method", "arrival_batch_size", "current_state",
-        "optimal_action_current", "arrival_rate_so_far", "cumulative_causal_regret",
+        "run_id",
+        "seed",
+        "t",
+        "delay_setting",
+        "method",
+        "arrival_batch_size",
+        "current_state",
+        "optimal_action_current",
+        "arrival_rate_so_far",
+        "cumulative_causal_regret",
     }
     if not (
         require_columns(delay_rows, required_delay, "delay_schedule.csv", errors)
         and require_columns(step_rows, required_step, "step_log.csv", errors)
         and require_columns(arrival_rows, required_arrival, "arrival_log.csv", errors)
-        and require_columns(diagnostic_rows, required_diagnostic, "diagnostic_step_log.csv", errors)
+        and require_columns(
+            diagnostic_rows, required_diagnostic, "diagnostic_step_log.csv", errors
+        )
     ):
         return
 
-    expected_run_keys = {(seed, delay, method) for seed in seeds for delay in delay_settings for method in EXPECTED_METHODS}
-    expected_event_keys = {(seed, delay, method, t) for seed, delay, method in expected_run_keys for t in range(1, T + 1)}
+    expected_run_keys = {
+        (seed, delay, method)
+        for seed in seeds
+        for delay in delay_settings
+        for method in EXPECTED_METHODS
+    }
+    expected_event_keys = {
+        (seed, delay, method, t)
+        for seed, delay, method in expected_run_keys
+        for t in range(1, T + 1)
+    }
 
     delay_by_run_t: dict[tuple[str, int], dict[str, str]] = {}
     delay_event_keys: set[tuple[int, str, str, int]] = set()
     shared_delay: dict[tuple[int, str, int], set[int]] = defaultdict(set)
     shared_state: dict[tuple[int, str, int], set[tuple[float, int]]] = defaultdict(set)
     noncensored_events: set[tuple[str, int]] = set()
-    summary_from_raw: dict[str, dict[str, float]] = defaultdict(lambda: {
-        "delay_sum": 0.0,
-        "scheduled": 0.0,
-        "censored": 0.0,
-        "arrived": 0.0,
-        "ranking_sum": 0.0,
-        "ranking_n": 0.0,
-    })
+    summary_from_raw: dict[str, dict[str, float]] = defaultdict(
+        lambda: {
+            "delay_sum": 0.0,
+            "scheduled": 0.0,
+            "censored": 0.0,
+            "arrived": 0.0,
+            "ranking_sum": 0.0,
+            "ranking_n": 0.0,
+        }
+    )
 
     for row in delay_rows:
         try:
@@ -206,15 +284,23 @@ def check_fast_raw(
                 errors.append(f"invalid source time or delay in {event_key}")
                 break
             if arrival_t != t + delay_tau:
-                errors.append(f"delay arithmetic fails for {event_key}: arrival_t != source_t + delay_tau")
+                errors.append(
+                    f"delay arithmetic fails for {event_key}: arrival_t != source_t + delay_tau"
+                )
                 break
             should_be_censored = delay_tau > D_max or arrival_t > T
             if censored != should_be_censored:
                 errors.append(f"incorrect censoring flag for {event_key}")
                 break
-            expected_reason = "delay_exceeds_Dmax" if delay_tau > D_max else ("arrival_out_of_horizon" if arrival_t > T else "none")
+            expected_reason = (
+                "delay_exceeds_Dmax"
+                if delay_tau > D_max
+                else ("arrival_out_of_horizon" if arrival_t > T else "none")
+            )
             if row["censor_reason"] != expected_reason:
-                errors.append(f"incorrect censor reason for {event_key}: {row['censor_reason']!r}")
+                errors.append(
+                    f"incorrect censor reason for {event_key}: {row['censor_reason']!r}"
+                )
                 break
             state_clip = float(config.get("state_clip", 1.0))
             if abs(source_state) > state_clip + TOL:
@@ -237,11 +323,17 @@ def check_fast_raw(
             break
 
     if delay_event_keys != expected_event_keys:
-        errors.append("delay schedule does not cover the exact seed-delay-method-time design")
+        errors.append(
+            "delay schedule does not cover the exact seed-delay-method-time design"
+        )
     if any(len(values) != 1 for values in shared_delay.values()):
-        errors.append("delay paths are not shared across methods for a seed/delay/timestep")
+        errors.append(
+            "delay paths are not shared across methods for a seed/delay/timestep"
+        )
     if any(len(values) != 1 for values in shared_state.values()):
-        errors.append("latent state paths are not shared across methods for a seed/delay/timestep")
+        errors.append(
+            "latent state paths are not shared across methods for a seed/delay/timestep"
+        )
 
     step_by_run_t: dict[tuple[str, int], dict[str, str]] = {}
     step_event_keys: set[tuple[int, str, str, int]] = set()
@@ -265,29 +357,55 @@ def check_fast_raw(
             if delay_row is None:
                 errors.append(f"step event has no matching source event: {event_key}")
                 break
-            for name in ["action_selected", "optimal_action_current", "delay_tau", "arrival_t"]:
+            for name in [
+                "action_selected",
+                "optimal_action_current",
+                "delay_tau",
+                "arrival_t",
+            ]:
                 as_int(row[name])
-            for name in ["loss_selected_current", "loss_optimal_current", "instant_causal_regret", "cumulative_causal_regret", "current_state", "arrival_rate_so_far"]:
+            for name in [
+                "loss_selected_current",
+                "loss_optimal_current",
+                "instant_causal_regret",
+                "cumulative_causal_regret",
+                "current_state",
+                "arrival_rate_so_far",
+            ]:
                 as_float(row[name])
-            if as_float(row["loss_selected_current"]) < -TOL or as_float(row["loss_optimal_current"]) < -TOL:
+            if (
+                as_float(row["loss_selected_current"]) < -TOL
+                or as_float(row["loss_optimal_current"]) < -TOL
+            ):
                 errors.append(f"negative loss in step log for {event_key}")
                 break
             if as_float(row["instant_causal_regret"]) < -TOL:
                 errors.append(f"negative causal regret in step log for {event_key}")
                 break
-            if not almost_equal(as_float(row["current_state"]), as_float(delay_row["source_state"])):
+            if not almost_equal(
+                as_float(row["current_state"]), as_float(delay_row["source_state"])
+            ):
                 errors.append(f"source state and step state disagree for {event_key}")
                 break
             if as_int(row["action_selected"]) != as_int(delay_row["source_action"]):
                 errors.append(f"source action and step action disagree for {event_key}")
                 break
-            if as_int(row["optimal_action_current"]) != as_int(delay_row["source_optimal_action"]):
-                errors.append(f"source optimum and step optimum disagree for {event_key}")
+            if as_int(row["optimal_action_current"]) != as_int(
+                delay_row["source_optimal_action"]
+            ):
+                errors.append(
+                    f"source optimum and step optimum disagree for {event_key}"
+                )
                 break
-            if not almost_equal(as_float(row["loss_selected_current"]), as_float(delay_row["source_loss"])):
+            if not almost_equal(
+                as_float(row["loss_selected_current"]),
+                as_float(delay_row["source_loss"]),
+            ):
                 errors.append(f"source loss and step loss disagree for {event_key}")
                 break
-            if as_int(row["delay_tau"]) != as_int(delay_row["delay_tau"]) or as_int(row["arrival_t"]) != as_int(delay_row["arrival_t"]):
+            if as_int(row["delay_tau"]) != as_int(delay_row["delay_tau"]) or as_int(
+                row["arrival_t"]
+            ) != as_int(delay_row["arrival_t"]):
                 errors.append(f"delay schedule and step log disagree for {event_key}")
                 break
             if is_truthy(row["is_censored"]) != is_truthy(delay_row["is_censored"]):
@@ -315,11 +433,19 @@ def check_fast_raw(
                 break
             for field in ["action_selected", "optimal_action_current"]:
                 if as_int(naive[field]) != as_int(causal[field]):
-                    errors.append(f"zero-delay action mismatch for seed={seed}, t={t}, field={field}")
+                    errors.append(
+                        f"zero-delay action mismatch for seed={seed}, t={t}, field={field}"
+                    )
                     break
-            for field in ["instant_causal_regret", "cumulative_causal_regret", "current_state"]:
+            for field in [
+                "instant_causal_regret",
+                "cumulative_causal_regret",
+                "current_state",
+            ]:
                 if not almost_equal(as_float(naive[field]), as_float(causal[field])):
-                    errors.append(f"zero-delay trajectory mismatch for seed={seed}, t={t}, field={field}")
+                    errors.append(
+                        f"zero-delay trajectory mismatch for seed={seed}, t={t}, field={field}"
+                    )
                     break
 
     arrival_keys: set[tuple[str, int]] = set()
@@ -337,26 +463,44 @@ def check_fast_raw(
                 errors.append(f"arrival log references unknown source event: {key}")
                 break
             if is_truthy(delay_row["is_censored"]):
-                errors.append(f"censored source event incorrectly appears in arrival log: {key}")
+                errors.append(
+                    f"censored source event incorrectly appears in arrival log: {key}"
+                )
                 break
             if as_int(row["clock_t"]) != as_int(delay_row["arrival_t"]):
                 errors.append(f"arrival clock mismatch for {key}")
                 break
-            for field in ["delay_tau", "arrival_t", "source_action", "source_optimal_action"]:
+            for field in [
+                "delay_tau",
+                "arrival_t",
+                "source_action",
+                "source_optimal_action",
+            ]:
                 if as_int(row[field]) != as_int(delay_row[field]):
                     errors.append(f"arrival/source mismatch for {key}, field={field}")
                     break
-            if not almost_equal(as_float(row["observed_loss"]), as_float(delay_row["source_loss"])):
+            if not almost_equal(
+                as_float(row["observed_loss"]), as_float(delay_row["source_loss"])
+            ):
                 errors.append(f"arrival/source loss mismatch for {key}")
                 break
-            if not almost_equal(as_float(row["source_state"]), as_float(delay_row["source_state"])):
+            if not almost_equal(
+                as_float(row["source_state"]), as_float(delay_row["source_state"])
+            ):
                 errors.append(f"arrival/source state mismatch for {key}")
                 break
-            if as_int(row["ranking_reversal"]) != int(as_int(row["source_optimal_action"]) != as_int(row["current_optimal_action"])):
+            if as_int(row["ranking_reversal"]) != int(
+                as_int(row["source_optimal_action"])
+                != as_int(row["current_optimal_action"])
+            ):
                 errors.append(f"incorrect ranking-reversal flag for {key}")
                 break
-            actual_distance = abs(as_float(row["current_state"]) - as_float(row["source_state"]))
-            if not almost_equal(as_float(row["source_state_distance"]), actual_distance):
+            actual_distance = abs(
+                as_float(row["current_state"]) - as_float(row["source_state"])
+            )
+            if not almost_equal(
+                as_float(row["source_state_distance"]), actual_distance
+            ):
                 errors.append(f"incorrect source-state distance for {key}")
                 break
             metrics = summary_from_raw[run_id]
@@ -368,12 +512,19 @@ def check_fast_raw(
             break
 
     if arrival_keys != noncensored_events:
-        errors.append("arrival log does not contain exactly the uncensored source events")
+        errors.append(
+            "arrival log does not contain exactly the uncensored source events"
+        )
 
     diagnostic_event_keys: set[tuple[int, str, str, int]] = set()
     for row in diagnostic_rows:
         try:
-            event_key = (as_int(row["seed"]), row["delay_setting"], row["method"], as_int(row["t"]))
+            event_key = (
+                as_int(row["seed"]),
+                row["delay_setting"],
+                row["method"],
+                as_int(row["t"]),
+            )
             if event_key in diagnostic_event_keys:
                 errors.append(f"duplicate diagnostic event: {event_key}")
                 break
@@ -384,13 +535,19 @@ def check_fast_raw(
             if as_int(row["arrival_batch_size"]) < 0:
                 errors.append(f"negative arrival batch size in {event_key}")
                 break
-            for field in ["current_state", "arrival_rate_so_far", "cumulative_causal_regret"]:
+            for field in [
+                "current_state",
+                "arrival_rate_so_far",
+                "cumulative_causal_regret",
+            ]:
                 as_float(row[field])
         except Exception as exc:
             errors.append(f"invalid diagnostic row: {exc}")
             break
     if diagnostic_event_keys != expected_event_keys:
-        errors.append("diagnostic step log does not cover the exact seed-delay-method-time design")
+        errors.append(
+            "diagnostic step log does not cover the exact seed-delay-method-time design"
+        )
 
     summary_by_run_id = {row["run_id"]: row for row in seed_rows}
     for (run_id, t), step_row in step_by_run_t.items():
@@ -401,17 +558,42 @@ def check_fast_raw(
             errors.append(f"missing seed summary for run_id={run_id}")
             continue
         metrics = summary_from_raw[run_id]
-        if not almost_equal(as_float(summary_row["final_Rc"]), as_float(step_row["cumulative_causal_regret"])):
-            errors.append(f"final regret summary disagrees with step log for run_id={run_id}")
-        if not almost_equal(as_float(summary_row["arrival_rate"]), metrics["arrived"] / T):
-            errors.append(f"arrival-rate summary disagrees with raw logs for run_id={run_id}")
-        if not almost_equal(as_float(summary_row["censor_rate"]), metrics["censored"] / T):
-            errors.append(f"censor-rate summary disagrees with raw logs for run_id={run_id}")
-        if not almost_equal(as_float(summary_row["mean_delay"]), metrics["delay_sum"] / T):
-            errors.append(f"mean-delay summary disagrees with raw logs for run_id={run_id}")
-        expected_ranking = metrics["ranking_sum"] / metrics["ranking_n"] if metrics["ranking_n"] else 0.0
-        if not almost_equal(as_float(summary_row["ranking_reversal_rate"]), expected_ranking):
-            errors.append(f"ranking-reversal summary disagrees with raw logs for run_id={run_id}")
+        if not almost_equal(
+            as_float(summary_row["final_Rc"]),
+            as_float(step_row["cumulative_causal_regret"]),
+        ):
+            errors.append(
+                f"final regret summary disagrees with step log for run_id={run_id}"
+            )
+        if not almost_equal(
+            as_float(summary_row["arrival_rate"]), metrics["arrived"] / T
+        ):
+            errors.append(
+                f"arrival-rate summary disagrees with raw logs for run_id={run_id}"
+            )
+        if not almost_equal(
+            as_float(summary_row["censor_rate"]), metrics["censored"] / T
+        ):
+            errors.append(
+                f"censor-rate summary disagrees with raw logs for run_id={run_id}"
+            )
+        if not almost_equal(
+            as_float(summary_row["mean_delay"]), metrics["delay_sum"] / T
+        ):
+            errors.append(
+                f"mean-delay summary disagrees with raw logs for run_id={run_id}"
+            )
+        expected_ranking = (
+            metrics["ranking_sum"] / metrics["ranking_n"]
+            if metrics["ranking_n"]
+            else 0.0
+        )
+        if not almost_equal(
+            as_float(summary_row["ranking_reversal_rate"]), expected_ranking
+        ):
+            errors.append(
+                f"ranking-reversal summary disagrees with raw logs for run_id={run_id}"
+            )
 
 
 def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
@@ -437,12 +619,14 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
         figures_dir / "toy_full_trajectories.png",
     ]
     if mode == "fast":
-        required.extend([
-            raw_dir / "delay_schedule.csv",
-            raw_dir / "arrival_log.csv",
-            raw_dir / "step_log.csv",
-            raw_dir / "diagnostic_step_log.csv",
-        ])
+        required.extend(
+            [
+                raw_dir / "delay_schedule.csv",
+                raw_dir / "arrival_log.csv",
+                raw_dir / "step_log.csv",
+                raw_dir / "diagnostic_step_log.csv",
+            ]
+        )
     if not all(require_nonempty_file(path, errors) for path in required):
         return False, errors
 
@@ -452,20 +636,28 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
         if not isinstance(config, dict):
             raise ValueError("config snapshot is not a mapping")
         if config.get("run_mode") != mode:
-            errors.append(f"config snapshot mode mismatch: expected {mode}, found {config.get('run_mode')!r}")
+            errors.append(
+                f"config snapshot mode mismatch: expected {mode}, found {config.get('run_mode')!r}"
+            )
         seeds = [int(x) for x in config.get("seeds", [])]
         if len(seeds) != len(set(seeds)):
             errors.append("config snapshot repeats seeds")
         if mode == "fast" and len(seeds) != 3:
             errors.append(f"fast mode must contain exactly 3 seeds; found {len(seeds)}")
         if mode == "full" and len(seeds) < 3:
-            errors.append(f"full mode must contain at least 3 seeds; found {len(seeds)}")
-        expected_delay_settings = {EXPECTED_DELAY_SETTINGS[group] for group in config.get("delay_settings", [])}
+            errors.append(
+                f"full mode must contain at least 3 seeds; found {len(seeds)}"
+            )
+        expected_delay_settings = {
+            EXPECTED_DELAY_SETTINGS[group] for group in config.get("delay_settings", [])
+        }
         if not expected_delay_settings:
             errors.append("config snapshot contains no selected delay settings")
         configured_methods = set(config.get("methods", []))
         if configured_methods != EXPECTED_METHODS:
-            errors.append(f"configured methods mismatch: expected {sorted(EXPECTED_METHODS)}, found {sorted(configured_methods)}")
+            errors.append(
+                f"configured methods mismatch: expected {sorted(EXPECTED_METHODS)}, found {sorted(configured_methods)}"
+            )
         if config.get("state_clip", 1.0) <= 0 or config.get("state_sigma", 0.10) <= 0:
             errors.append("state-process configuration is invalid")
         if not (-1.0 < float(config.get("state_rho", 0.98)) < 1.0):
@@ -476,20 +668,32 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
         return False, errors
 
     try:
-        metadata = json.loads((logs_dir / "run_metadata.json").read_text(encoding="utf-8"))
+        metadata = json.loads(
+            (logs_dir / "run_metadata.json").read_text(encoding="utf-8")
+        )
         if metadata.get("status") != "success":
-            errors.append(f"run metadata status is not success: {metadata.get('status')!r}")
+            errors.append(
+                f"run metadata status is not success: {metadata.get('status')!r}"
+            )
         if metadata.get("backend_status") != "executed":
-            errors.append(f"run backend was not executed: {metadata.get('backend_status')!r}")
+            errors.append(
+                f"run backend was not executed: {metadata.get('backend_status')!r}"
+            )
         if metadata.get("mode") != mode:
-            errors.append(f"run metadata mode mismatch: expected {mode}, found {metadata.get('mode')!r}")
+            errors.append(
+                f"run metadata mode mismatch: expected {mode}, found {metadata.get('mode')!r}"
+            )
         if metadata.get("config_hash") != config_hash:
-            errors.append("run metadata config hash does not match the saved configuration")
+            errors.append(
+                "run metadata config hash does not match the saved configuration"
+            )
         if metadata.get("feedback_timing") != "post_decision":
             errors.append("run metadata does not declare post-decision feedback timing")
         state_process = metadata.get("state_process", {})
         if state_process.get("type") != "clipped_ar1":
-            errors.append("run metadata does not declare the clipped AR(1) state process")
+            errors.append(
+                "run metadata does not declare the clipped AR(1) state process"
+            )
     except Exception as exc:
         errors.append(f"Invalid run metadata: {exc}")
 
@@ -503,24 +707,42 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
         check_numeric_csv(path, errors)
 
     try:
-        registry_methods = {row["method"] for row in read_rows(logs_dir / "method_registry.csv")}
+        registry_methods = {
+            row["method"] for row in read_rows(logs_dir / "method_registry.csv")
+        }
         if registry_methods != EXPECTED_METHODS:
-            errors.append(f"method registry mismatch: expected {sorted(EXPECTED_METHODS)}, found {sorted(registry_methods)}")
+            errors.append(
+                f"method registry mismatch: expected {sorted(EXPECTED_METHODS)}, found {sorted(registry_methods)}"
+            )
     except Exception as exc:
         errors.append(f"Cannot validate method registry: {exc}")
 
     try:
         run_rows = read_rows(logs_dir / "run_manifest.csv")
-        expected_run_count = len(seeds) * len(expected_delay_settings) * len(EXPECTED_METHODS)
-        expected_keys = {(seed, delay, method) for seed in seeds for delay in expected_delay_settings for method in EXPECTED_METHODS}
-        run_keys = {(as_int(row["seed"]), row["delay_setting"], row["method"]) for row in run_rows}
+        expected_run_count = (
+            len(seeds) * len(expected_delay_settings) * len(EXPECTED_METHODS)
+        )
+        expected_keys = {
+            (seed, delay, method)
+            for seed in seeds
+            for delay in expected_delay_settings
+            for method in EXPECTED_METHODS
+        }
+        run_keys = {
+            (as_int(row["seed"]), row["delay_setting"], row["method"])
+            for row in run_rows
+        }
         if len(run_rows) != expected_run_count or run_keys != expected_keys:
-            errors.append("run manifest does not cover exactly the effective seed-delay-method design")
+            errors.append(
+                "run manifest does not cover exactly the effective seed-delay-method design"
+            )
         if len(run_keys) != len(run_rows):
             errors.append("run manifest contains duplicate seed-delay-method rows")
         for row in run_rows:
             if row.get("mode") != mode or row.get("config_hash") != config_hash:
-                errors.append(f"run manifest metadata mismatch in run_id={row.get('run_id')}")
+                errors.append(
+                    f"run manifest metadata mismatch in run_id={row.get('run_id')}"
+                )
                 break
     except Exception as exc:
         errors.append(f"Cannot validate run manifest: {exc}")
@@ -528,17 +750,44 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
     seed_rows: list[dict[str, str]] = []
     try:
         seed_rows = read_rows(summary_dir / "toy_seed_summary.csv")
-        expected_keys = {(seed, delay, method) for seed in seeds for delay in expected_delay_settings for method in EXPECTED_METHODS}
-        keys = {(as_int(row["seed"]), row["delay_setting"], row["method"]) for row in seed_rows}
-        if len(seed_rows) != len(expected_keys) or keys != expected_keys:
-            errors.append("seed summary does not cover exactly the configured seed-delay-method design")
-        required_numeric = {
-            "mean_delay", "median_delay", "p90_delay", "max_delay", "arrival_rate", "censor_rate",
-            "ranking_reversal_rate", "source_state_distance_mean", "source_state_distance_sum",
-            "source_state_distance_p90", "final_Rc", "normalized_final_Rc", "auc_causal_regret",
-            "mean_instant_causal_regret", "runtime_seconds",
+        expected_keys = {
+            (seed, delay, method)
+            for seed in seeds
+            for delay in expected_delay_settings
+            for method in EXPECTED_METHODS
         }
-        if not require_columns(seed_rows, required_numeric | {"run_id", "seed", "delay_setting", "method", "mode", "config_hash"}, "seed summary", errors):
+        keys = {
+            (as_int(row["seed"]), row["delay_setting"], row["method"])
+            for row in seed_rows
+        }
+        if len(seed_rows) != len(expected_keys) or keys != expected_keys:
+            errors.append(
+                "seed summary does not cover exactly the configured seed-delay-method design"
+            )
+        required_numeric = {
+            "mean_delay",
+            "median_delay",
+            "p90_delay",
+            "max_delay",
+            "arrival_rate",
+            "censor_rate",
+            "ranking_reversal_rate",
+            "source_state_distance_mean",
+            "source_state_distance_sum",
+            "source_state_distance_p90",
+            "final_Rc",
+            "normalized_final_Rc",
+            "auc_causal_regret",
+            "mean_instant_causal_regret",
+            "runtime_seconds",
+        }
+        if not require_columns(
+            seed_rows,
+            required_numeric
+            | {"run_id", "seed", "delay_setting", "method", "mode", "config_hash"},
+            "seed summary",
+            errors,
+        ):
             return False, errors
         for row in seed_rows:
             if row.get("mode") != mode or row.get("config_hash") != config_hash:
@@ -551,13 +800,28 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
                     errors.append(f"{rate_field} falls outside [0,1]")
                     break
             state_clip = float(config.get("state_clip", 1.0))
-            if not 0.0 <= as_float(row["source_state_distance_mean"]) <= 2.0 * state_clip + TOL:
-                errors.append("source-state distance mean lies outside the bounded state support")
+            if (
+                not 0.0
+                <= as_float(row["source_state_distance_mean"])
+                <= 2.0 * state_clip + TOL
+            ):
+                errors.append(
+                    "source-state distance mean lies outside the bounded state support"
+                )
                 break
-            if not 0.0 <= as_float(row["source_state_distance_p90"]) <= 2.0 * state_clip + TOL:
-                errors.append("source-state distance p90 lies outside the bounded state support")
+            if (
+                not 0.0
+                <= as_float(row["source_state_distance_p90"])
+                <= 2.0 * state_clip + TOL
+            ):
+                errors.append(
+                    "source-state distance p90 lies outside the bounded state support"
+                )
                 break
-            if as_float(row["final_Rc"]) < -TOL or as_float(row["mean_instant_causal_regret"]) < -TOL:
+            if (
+                as_float(row["final_Rc"]) < -TOL
+                or as_float(row["mean_instant_causal_regret"]) < -TOL
+            ):
                 errors.append("seed summary contains negative structural causal regret")
                 break
             if row["method"] == "oracle" and abs(as_float(row["final_Rc"])) > TOL:
@@ -566,9 +830,13 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
 
         by_seed_delay: dict[tuple[int, str], dict[str, float]] = defaultdict(dict)
         for row in seed_rows:
-            by_seed_delay[(as_int(row["seed"]), row["delay_setting"])][row["method"]] = as_float(row["final_Rc"])
+            by_seed_delay[(as_int(row["seed"]), row["delay_setting"])][
+                row["method"]
+            ] = as_float(row["final_Rc"])
         for (seed, delay), values in by_seed_delay.items():
-            if delay == "0_delay" and not almost_equal(values["naive"], values["causal_labelled"]):
+            if delay == "0_delay" and not almost_equal(
+                values["naive"], values["causal_labelled"]
+            ):
                 errors.append(f"zero-delay naive/causal mismatch for seed={seed}")
                 break
     except Exception as exc:
@@ -582,18 +850,30 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
         for row in trajectory_rows:
             t = as_int(row["t"])
             trajectories[(row["delay_setting"], row["method"])].add(t)
-            for key in ["mean_cumulative_Rc", "se_cumulative_Rc", "ci95_low", "ci95_high"]:
+            for key in [
+                "mean_cumulative_Rc",
+                "se_cumulative_Rc",
+                "ci95_low",
+                "ci95_high",
+            ]:
                 as_float(row[key])
             if as_float(row["mean_cumulative_Rc"]) < -TOL:
                 errors.append("trajectory summary contains negative cumulative regret")
                 break
-            values_by_key[(row["delay_setting"], row["method"], t)] = as_float(row["mean_cumulative_Rc"])
+            values_by_key[(row["delay_setting"], row["method"], t)] = as_float(
+                row["mean_cumulative_Rc"]
+            )
         for delay in expected_delay_settings:
             for method in EXPECTED_METHODS:
                 if trajectories[(delay, method)] != expected_t:
-                    errors.append(f"trajectory coverage is incomplete for delay={delay}, method={method}")
+                    errors.append(
+                        f"trajectory coverage is incomplete for delay={delay}, method={method}"
+                    )
         for t in expected_t:
-            if not almost_equal(values_by_key[("0_delay", "naive", t)], values_by_key[("0_delay", "causal_labelled", t)]):
+            if not almost_equal(
+                values_by_key[("0_delay", "naive", t)],
+                values_by_key[("0_delay", "causal_labelled", t)],
+            ):
                 errors.append(f"zero-delay trajectory mismatch at t={t}")
                 break
     except Exception as exc:
@@ -602,15 +882,25 @@ def check_mode(output_root: Path, mode: str) -> tuple[bool, list[str]]:
     try:
         selected = read_rows(figures_dir / "toy_selected_trajectories_data.csv")
         full = read_rows(figures_dir / "toy_full_trajectories_data.csv")
-        if {row["delay_setting"] for row in selected} != {"0_delay", "geom_0.15", "piece_0.6to0.15"}:
-            errors.append("selected figure source does not contain the required three settings")
+        if {row["delay_setting"] for row in selected} != {
+            "0_delay",
+            "geom_0.15",
+            "piece_0.6to0.15",
+        }:
+            errors.append(
+                "selected figure source does not contain the required three settings"
+            )
         if {row["delay_setting"] for row in full} != expected_delay_settings:
-            errors.append("full figure source does not cover exactly the configured delay settings")
+            errors.append(
+                "full figure source does not cover exactly the configured delay settings"
+            )
     except Exception as exc:
         errors.append(f"Cannot validate figure-source tables: {exc}")
 
     if mode == "fast" and seed_rows:
-        check_fast_raw(raw_dir, seed_rows, seeds, expected_delay_settings, config, errors)
+        check_fast_raw(
+            raw_dir, seed_rows, seeds, expected_delay_settings, config, errors
+        )
 
     return not errors, errors
 

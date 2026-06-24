@@ -31,17 +31,69 @@ class MethodSpec:
 
 
 METHOD_SPECS: Mapping[str, MethodSpec] = {
-    "oracle": MethodSpec("oracle_reference", "Context oracle reference", "oracle_reference", "oracle_reference", False, False),
-    "naive": MethodSpec("arrival_time_naive", "Arrival time", "arrival_time", "none", False, True),
-    "naive_ewma": MethodSpec("arrival_time_ewma", "Arrival time with EWMA", "arrival_time", "none", False, True),
-    "delayed_ucb": MethodSpec("delayed_ucb", "Delayed UCB", "unlabelled_delayed", "none", False, True),
-    "delayed_exp3": MethodSpec("delayed_exp3", "Delayed EXP3", "unlabelled_delayed", "none", False, True),
-    "sliding_window_W250": MethodSpec("arrival_time_sliding_window_w250", "Arrival time sliding window", "arrival_time", "none", False, True),
-    "anonymous_delayed": MethodSpec("anonymous_delayed", "Anonymous delayed", "unlabelled_delayed", "none", False, True),
-    "causal_labeled": MethodSpec("source_labelled", "Source labelled", "source_labelled", "none", False, True),
-    "causal_em": MethodSpec("soft_attribution_em", "Soft attribution EM", "partial_attribution", "none", False, True),
-    "causal_em_misspecified": MethodSpec("soft_attribution_em_stationary_ablation", "Stationary geometric EM ablation", "partial_attribution", "diagnostic_control", True, False),
-    "proxy": MethodSpec("proxy_state", "Filtered state proxy", "proxy_state", "none", False, True),
+    "oracle": MethodSpec(
+        "oracle_reference",
+        "Context oracle reference",
+        "oracle_reference",
+        "oracle_reference",
+        False,
+        False,
+    ),
+    "naive": MethodSpec(
+        "arrival_time_naive", "Arrival time", "arrival_time", "none", False, True
+    ),
+    "naive_ewma": MethodSpec(
+        "arrival_time_ewma",
+        "Arrival time with EWMA",
+        "arrival_time",
+        "none",
+        False,
+        True,
+    ),
+    "delayed_ucb": MethodSpec(
+        "delayed_ucb", "Delayed UCB", "unlabelled_delayed", "none", False, True
+    ),
+    "delayed_exp3": MethodSpec(
+        "delayed_exp3", "Delayed EXP3", "unlabelled_delayed", "none", False, True
+    ),
+    "sliding_window_W250": MethodSpec(
+        "arrival_time_sliding_window_w250",
+        "Arrival time sliding window",
+        "arrival_time",
+        "none",
+        False,
+        True,
+    ),
+    "anonymous_delayed": MethodSpec(
+        "anonymous_delayed",
+        "Anonymous delayed",
+        "unlabelled_delayed",
+        "none",
+        False,
+        True,
+    ),
+    "causal_labeled": MethodSpec(
+        "source_labelled", "Source labelled", "source_labelled", "none", False, True
+    ),
+    "causal_em": MethodSpec(
+        "soft_attribution_em",
+        "Soft attribution EM",
+        "partial_attribution",
+        "none",
+        False,
+        True,
+    ),
+    "causal_em_misspecified": MethodSpec(
+        "soft_attribution_em_stationary_ablation",
+        "Stationary geometric EM ablation",
+        "partial_attribution",
+        "diagnostic_control",
+        True,
+        False,
+    ),
+    "proxy": MethodSpec(
+        "proxy_state", "Filtered state proxy", "proxy_state", "none", False, True
+    ),
 }
 
 SETTING_DISPLAY_NAMES: Mapping[str, str] = {
@@ -69,4 +121,6 @@ def method_spec(internal_method: str) -> MethodSpec:
     try:
         return METHOD_SPECS[str(internal_method)]
     except KeyError as exc:
-        raise KeyError(f"No EXP1 contract mapping for internal method {internal_method!r}.") from exc
+        raise KeyError(
+            f"No EXP1 contract mapping for internal method {internal_method!r}."
+        ) from exc

@@ -1,6 +1,6 @@
-# EXP4 — Source-label sufficiency and proxy-only recovery limitation
+# Experiment 4: Source-Label Sufficiency and Proxy-Only Recovery Limitation
 
-EXP4 is a **controlled synthetic stress test**. It is not logged-data evidence, a real-world RCT, a platform-utility study, a leaderboard of proxy algorithms, or an information-theoretic impossibility theorem.
+Experiment 4 is a **controlled synthetic stress test**. It is not logged-data evidence, a real-world RCT, a platform-utility study, a leaderboard of proxy algorithms, or an information-theoretic impossibility theorem.
 
 Its narrow evidence chain is:
 
@@ -12,7 +12,7 @@ Its narrow evidence chain is:
 \text{limits of replacing source binding with a fixed proxy-only recovery rule}.
 \]
 
-## Information protocol
+## Information Protocol
 
 At round \(u\), each route chooses \(A_u\) before processing feedback arriving at \(u\). A source outcome from \(s\) arrives at \(u=s+\tau_s\). Within each seed × setting, methods share the latent-state path, potential-loss path, delay path, and coarse observable decision-time context.
 
@@ -26,7 +26,7 @@ The proxy-recovery route is deliberately transparent rather than optimized: its 
 
 The source-ID retention indicator is generated at source time and revealed only on arrival. At \(q=1\), `proxy_label_recovery` and `source_labelled_reference` must have identical complete action traces; this is checked by a per-seed SHA-256 action-trace audit in both the source-label sweep and every \(q=1\) cell of the \(q\times\sigma\) phase grid.
 
-## Primary outcome
+## Primary Outcome
 
 The primary outcome is post-warmup structural causal regret:
 
@@ -51,7 +51,7 @@ python reproduce_all.py --mode full --n-jobs 32
 
 Each invocation creates `outputs/runs/<mode>_<UTC timestamp>_<id>/`.
 
-## Paper-facing figures
+## Paper-Facing Figures
 
 - `fig_exp4_recoverability_boundary.pdf`
   - (a) diagnostic proxy-state error versus loss-map distortion;
@@ -75,13 +75,13 @@ The appendix table `tbl_app_exp4_source_labelled_recovery.csv` reports
 
 for which \(q=1\) is one when the action-trace audit passes.
 
-## Fast/full boundary
+## Fast/Full Boundary
 
 Fast mode executes the complete condition grid with three shared seeds and produces point estimates only. Full mode uses 30 shared seeds and 2,000 seed-level percentile-bootstrap resamples. Full comparisons report paired confidence intervals only; no p-values are produced.
 
 Only a passed full run with complete figure bundles, `self_check`, and `code_check` can set `paper_result=true`.
 
-## GitHub packaging notes
+## GitHub Packaging Notes
 
 ### Purpose
 
@@ -94,30 +94,30 @@ Synthetic proxy-sufficiency and source-label recoverability stress test.
 - `outputs/runs/`: saved lightweight run outputs, figures, tables, summaries, checks, metadata, logs, and reports.
 - `input/`: optional local-only placement holder.
 
-### Input data requirement
+### Input Data Requirement
 
 No external raw dataset is required. The experiment is synthetic and configured from repository code.
 
-### How to run fast validation
+### How to Run Fast Validation
 
 Use `python reproduce_all.py --mode fast --n-jobs 16`.
 
-### How to run full reproduction
+### How to Run Full Reproduction
 
 Use `python reproduce_all.py --mode full --n-jobs 32`. This is a full experiment rerun and was not executed during final packaging.
 
-### How to inspect existing results
+### How to Inspect Existing Results
 
 Open `ipy/exp4_result_check.ipynb` or inspect the newest saved run under `outputs/runs/`, especially `figures/`, `tables/`, `summaries/`, `checks/`, `logs/`, and `reports/`.
 
-### Expected outputs
+### Expected Outputs
 
 Expected GitHub-facing outputs are run-specific figure bundles, summary CSV files, appendix tables, validation checks, metadata, logs, and audit reports.
 
-### What is committed to GitHub
+### What Is Committed to GitHub
 
 Source code, README, notebook, lightweight saved run outputs, figures, tables, summaries, checks, metadata, logs, and reports.
 
-### What remains local and why
+### What Remains Local and Why
 
 Runtime caches, raw/intermediate folders, and temporary files remain local because they are reproducible support artifacts rather than GitHub-facing results.

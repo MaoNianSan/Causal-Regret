@@ -1,4 +1,5 @@
 """Refresh promoted full figure interfaces without rerunning Exp3."""
+
 from __future__ import annotations
 
 import json
@@ -22,7 +23,9 @@ def main() -> int:
     if manifest.get("input_data_status") != "real_kuairand_1k":
         raise RuntimeError("full figure refresh requires real_kuairand_1k input status")
     if manifest.get("status") not in {"complete_pending_external_checks", "complete"}:
-        raise RuntimeError(f"full run status is not refreshable: {manifest.get('status')!r}")
+        raise RuntimeError(
+            f"full run status is not refreshable: {manifest.get('status')!r}"
+        )
 
     plot_all(
         OUTPUT_DIR,

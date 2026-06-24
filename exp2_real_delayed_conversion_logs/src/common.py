@@ -36,7 +36,9 @@ def normalise_identifier(
     result = values.astype("string").str.strip()
     tokens = set(_MISSING_IDENTIFIER_TOKENS)
     if additional_missing_tokens:
-        tokens.update(str(token).strip().casefold() for token in additional_missing_tokens)
+        tokens.update(
+            str(token).strip().casefold() for token in additional_missing_tokens
+        )
     missing = result.isna() | result.str.casefold().isin(tokens)
     return result.mask(missing, pd.NA)
 
@@ -61,7 +63,9 @@ def normalise_conversion_identifier(values: pd.Series) -> pd.Series:
     return normalise_identifier(values, _SENTINEL_MINUS_ONE_TOKENS)
 
 
-def identifier_mask(values: pd.Series, additional_missing_tokens: Iterable[str] | None = None) -> pd.Series:
+def identifier_mask(
+    values: pd.Series, additional_missing_tokens: Iterable[str] | None = None
+) -> pd.Series:
     """Boolean validity mask corresponding to :func:`normalise_identifier`."""
     return normalise_identifier(values, additional_missing_tokens).notna()
 
@@ -81,9 +85,13 @@ def validate_exp2_config(cfg: Dict[str, Any]) -> None:
     core = list(map(str, reporting.get("core_source_routes", [])))
     pairwise = list(map(str, reporting.get("pairwise_overlap_routes", [])))
     if str(action.get("action_unit", "")) != "campaign_source_day_cell":
-        raise ValueError("Exp2 configuration requires action.action_unit=campaign_source_day_cell.")
+        raise ValueError(
+            "Exp2 configuration requires action.action_unit=campaign_source_day_cell."
+        )
     if "arrival_bin_anchor" not in main:
-        raise ValueError("Exp2 configuration requires attribution_routes.main to contain arrival_bin_anchor.")
+        raise ValueError(
+            "Exp2 configuration requires attribution_routes.main to contain arrival_bin_anchor."
+        )
     stale_locations = {
         "attribution_routes.main": main,
         "attribution_routes.route_order": route_order,
@@ -91,24 +99,40 @@ def validate_exp2_config(cfg: Dict[str, Any]) -> None:
         "reporting.core_source_routes": core,
         "reporting.pairwise_overlap_routes": pairwise,
     }
-    stale = [name for name, values in stale_locations.items() if "arrival_time_naive" in values]
+    stale = [
+        name
+        for name, values in stale_locations.items()
+        if "arrival_time_naive" in values
+    ]
     if stale:
         raise ValueError(
             "Stale Exp2 route identifier arrival_time_naive is not supported. "
             "Use arrival_bin_anchor. Found in: " + ", ".join(stale)
         )
     if not main_figure or main_figure[0] != "arrival_bin_anchor":
-        raise ValueError("reporting.main_figure_routes must start with arrival_bin_anchor.")
+        raise ValueError(
+            "reporting.main_figure_routes must start with arrival_bin_anchor."
+        )
     if "soft_attribution_em" in main_figure:
-        raise ValueError("soft_attribution_em is appendix-only and must not appear in reporting.main_figure_routes.")
+        raise ValueError(
+            "soft_attribution_em is appendix-only and must not appear in reporting.main_figure_routes."
+        )
     if not set(main_figure).issubset(set(main)):
-        raise ValueError("reporting.main_figure_routes must be a subset of attribution_routes.main.")
+        raise ValueError(
+            "reporting.main_figure_routes must be a subset of attribution_routes.main."
+        )
     if not core or not set(core).issubset(set(main)):
-        raise ValueError("reporting.core_source_routes must be a nonempty subset of attribution_routes.main.")
+        raise ValueError(
+            "reporting.core_source_routes must be a nonempty subset of attribution_routes.main."
+        )
     if "arrival_bin_anchor" in core:
-        raise ValueError("reporting.core_source_routes must exclude arrival_bin_anchor.")
+        raise ValueError(
+            "reporting.core_source_routes must exclude arrival_bin_anchor."
+        )
     if not pairwise or not set(pairwise).issubset(set(core)):
-        raise ValueError("reporting.pairwise_overlap_routes must contain only configured core source routes.")
+        raise ValueError(
+            "reporting.pairwise_overlap_routes must contain only configured core source routes."
+        )
     required_gates = {
         "min_decision_cell_ambiguity_rate",
         "min_core_pairwise_tv",
@@ -117,10 +141,14 @@ def validate_exp2_config(cfg: Dict[str, Any]) -> None:
     }
     missing_gates = sorted(required_gates.difference(gates))
     if missing_gates:
-        raise ValueError("Exp2 scientific_gates is missing: " + ", ".join(missing_gates))
+        raise ValueError(
+            "Exp2 scientific_gates is missing: " + ", ".join(missing_gates)
+        )
 
 
-def input_file_identity(path: str | Path, sample_bytes: int = 1_048_576) -> Dict[str, Any]:
+def input_file_identity(
+    path: str | Path, sample_bytes: int = 1_048_576
+) -> Dict[str, Any]:
     """Return a lightweight reproducibility identity without hashing a huge raw log in full."""
     source = Path(path).resolve()
     stat = source.stat()
@@ -134,10 +162,13 @@ def input_file_identity(path: str | Path, sample_bytes: int = 1_048_576) -> Dict
     return {
         "path": str(source),
         "size_bytes": int(stat.st_size),
-        "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(timespec="seconds"),
+        "modified_at": datetime.fromtimestamp(stat.st_mtime).isoformat(
+            timespec="seconds"
+        ),
         "partial_sha256": digest.hexdigest(),
         "partial_sha256_scheme": f"sha256(first_{sample_bytes}_bytes_plus_last_{sample_bytes}_bytes)",
     }
+
 
 def load_config(path: str | Path = "config_exp2.yaml") -> Dict[str, Any]:
     path = Path(path)
@@ -148,7 +179,11 @@ def load_config(path: str | Path = "config_exp2.yaml") -> Dict[str, Any]:
     cfg["_config_path"] = str(path.resolve())
     runtime = cfg.get("runtime", {}) if isinstance(cfg.get("runtime", {}), dict) else {}
     declared_root = runtime.get("project_root")
-    project_root = (path.resolve().parent / declared_root).resolve() if declared_root else path.resolve().parent
+    project_root = (
+        (path.resolve().parent / declared_root).resolve()
+        if declared_root
+        else path.resolve().parent
+    )
     cfg["_project_root"] = str(project_root)
     cfg["_config_hash"] = hashlib.sha256(path.read_bytes()).hexdigest()[:16]
     validate_exp2_config(cfg)
@@ -169,7 +204,19 @@ def out_dir(cfg: Dict[str, Any], key: str) -> Path:
 
 
 def ensure_output_dirs(cfg: Dict[str, Any]) -> None:
-    required = ["root", "metadata", "precheck", "raw", "processed", "summaries", "tables", "figures", "checks", "legacy", "self_check"]
+    required = [
+        "root",
+        "metadata",
+        "precheck",
+        "raw",
+        "processed",
+        "summaries",
+        "tables",
+        "figures",
+        "checks",
+        "legacy",
+        "self_check",
+    ]
     for key in required:
         out_dir(cfg, key).mkdir(parents=True, exist_ok=True)
     root = out_dir(cfg, "root")
@@ -180,10 +227,14 @@ def ensure_output_dirs(cfg: Dict[str, Any]) -> None:
 def save_config_snapshot(cfg: Dict[str, Any]) -> None:
     ensure_output_dirs(cfg)
     source = Path(cfg["_config_path"])
-    (out_dir(cfg, "metadata") / "config_snapshot.yaml").write_text(source.read_text(encoding="utf-8"), encoding="utf-8")
+    (out_dir(cfg, "metadata") / "config_snapshot.yaml").write_text(
+        source.read_text(encoding="utf-8"), encoding="utf-8"
+    )
 
 
-def save_run_metadata(cfg: Dict[str, Any], status: str, extra: Optional[Dict[str, Any]] = None) -> None:
+def save_run_metadata(
+    cfg: Dict[str, Any], status: str, extra: Optional[Dict[str, Any]] = None
+) -> None:
     ensure_output_dirs(cfg)
     payload: Dict[str, Any] = {
         "experiment_id": cfg["experiment"]["experiment_id"],
@@ -201,19 +252,23 @@ def save_run_metadata(cfg: Dict[str, Any], status: str, extra: Optional[Dict[str
     }
     if extra:
         payload.update(extra)
-    (out_dir(cfg, "metadata") / "run_metadata.json").write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    (out_dir(cfg, "metadata") / "run_metadata.json").write_text(
+        json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
 
 
-def read_chunks(cfg: Dict[str, Any], usecols: Optional[list[str]] = None, nrows: Optional[int] = None) -> Iterable[pd.DataFrame]:
+def read_chunks(
+    cfg: Dict[str, Any],
+    usecols: Optional[list[str]] = None,
+    nrows: Optional[int] = None,
+) -> Iterable[pd.DataFrame]:
     path = resolve_path(cfg, cfg["data"]["raw_file"])
     if not path.exists():
         raise FileNotFoundError(f"Raw data file not found: {path}")
     remaining = nrows
     identifier_keys = ("uid", "campaign", "conversion_id")
     identifier_dtypes = {
-        get_col(cfg, key): "string"
-        for key in identifier_keys
-        if get_col(cfg, key)
+        get_col(cfg, key): "string" for key in identifier_keys if get_col(cfg, key)
     }
     for chunk in pd.read_csv(
         path,
@@ -234,7 +289,18 @@ def read_chunks(cfg: Dict[str, Any], usecols: Optional[list[str]] = None, nrows:
 
 
 def normalize_numeric_columns(frame: pd.DataFrame, cfg: Dict[str, Any]) -> pd.DataFrame:
-    numeric = ["timestamp", "conversion", "conversion_timestamp", "attribution", "click", "click_pos", "click_nb", "time_since_last_click", "cost", "cpo"]
+    numeric = [
+        "timestamp",
+        "conversion",
+        "conversion_timestamp",
+        "attribution",
+        "click",
+        "click_pos",
+        "click_nb",
+        "time_since_last_click",
+        "cost",
+        "cpo",
+    ]
     for key in numeric:
         column = get_col(cfg, key)
         if column in frame.columns:
@@ -243,15 +309,23 @@ def normalize_numeric_columns(frame: pd.DataFrame, cfg: Dict[str, Any]) -> pd.Da
 
 
 def add_time_columns(frame: pd.DataFrame, cfg: Dict[str, Any]) -> pd.DataFrame:
-    ts, cts, conversion = get_col(cfg, "timestamp"), get_col(cfg, "conversion_timestamp"), get_col(cfg, "conversion")
+    ts, cts, conversion = (
+        get_col(cfg, "timestamp"),
+        get_col(cfg, "conversion_timestamp"),
+        get_col(cfg, "conversion"),
+    )
     if ts in frame:
-        frame["day_index"] = np.floor(pd.to_numeric(frame[ts], errors="coerce") / SECONDS_PER_DAY).astype("Int64")
+        frame["day_index"] = np.floor(
+            pd.to_numeric(frame[ts], errors="coerce") / SECONDS_PER_DAY
+        ).astype("Int64")
     if all(column in frame for column in (ts, cts, conversion)):
         valid = frame[conversion].eq(1) & frame[cts].gt(frame[ts])
         frame["valid_conversion_flag"] = valid.astype(int)
         frame["delay_seconds"] = np.where(valid, frame[cts] - frame[ts], np.nan)
         frame["delay_days"] = frame["delay_seconds"] / SECONDS_PER_DAY
-        frame["conversion_day_index"] = np.where(valid, np.floor(frame[cts] / SECONDS_PER_DAY), np.nan)
+        frame["conversion_day_index"] = np.where(
+            valid, np.floor(frame[cts] / SECONDS_PER_DAY), np.nan
+        )
     return frame
 
 
@@ -273,7 +347,9 @@ def ci_from_values(values: np.ndarray, level: float = 0.95) -> tuple[float, floa
     if values.size == 0:
         return float("nan"), float("nan")
     alpha = 1.0 - float(level)
-    return float(np.quantile(values, alpha / 2.0)), float(np.quantile(values, 1.0 - alpha / 2.0))
+    return float(np.quantile(values, alpha / 2.0)), float(
+        np.quantile(values, 1.0 - alpha / 2.0)
+    )
 
 
 def make_output_manifest(cfg: Dict[str, Any]) -> None:
@@ -292,13 +368,17 @@ def make_output_manifest(cfg: Dict[str, Any]) -> None:
                     n_rows = max(sum(1 for _ in handle) - 1, 0)
             except Exception as exc:
                 description = f"manifest read warning: {exc}"
-        rows.append({
-            "file_path": str(path.relative_to(Path(cfg["_project_root"]))),
-            "file_type": path.suffix.lower().lstrip("."),
-            "description": description,
-            "created_at": datetime.fromtimestamp(path.stat().st_mtime).isoformat(timespec="seconds"),
-            "n_rows": n_rows,
-            "n_columns": n_columns,
-            "required_for_paper": "",
-        })
+        rows.append(
+            {
+                "file_path": str(path.relative_to(Path(cfg["_project_root"]))),
+                "file_type": path.suffix.lower().lstrip("."),
+                "description": description,
+                "created_at": datetime.fromtimestamp(path.stat().st_mtime).isoformat(
+                    timespec="seconds"
+                ),
+                "n_rows": n_rows,
+                "n_columns": n_columns,
+                "required_for_paper": "",
+            }
+        )
     write_csv(pd.DataFrame(rows), out_dir(cfg, "metadata") / "output_manifest.csv")

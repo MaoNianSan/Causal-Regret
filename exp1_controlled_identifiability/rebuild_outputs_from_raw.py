@@ -37,7 +37,12 @@ def main() -> int:
     if missing:
         raise SystemExit(f"raw seed-level CSV is incompatible; missing {missing}")
 
-    options = RunOptions(mode=args.mode, raw_log_mode="summary_only", smoke=False, output_tag=args.output_tag)
+    options = RunOptions(
+        mode=args.mode,
+        raw_log_mode="summary_only",
+        smoke=False,
+        output_tag=args.output_tag,
+    )
     if "method_id" not in seed.columns:
         seed = _enrich_seed_schema(seed, options)
         seed.to_csv(raw_path, index=False)
@@ -49,11 +54,17 @@ def main() -> int:
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["reused_raw_outputs"] = True
     manifest["paper_result"] = False
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
     artifacts = _artifact_rows(root)
-    pd.DataFrame(artifacts).to_csv(root / "metadata" / "artifacts_manifest.csv", index=False)
+    pd.DataFrame(artifacts).to_csv(
+        root / "metadata" / "artifacts_manifest.csv", index=False
+    )
     pd.DataFrame(artifacts).to_csv(root / "manifest.csv", index=False)
-    (root / "manifest.json").write_text(json.dumps({"artifacts": artifacts}, indent=2), encoding="utf-8")
+    (root / "manifest.json").write_text(
+        json.dumps({"artifacts": artifacts}, indent=2), encoding="utf-8"
+    )
     print(f"Rebuilt outputs under {root}")
     return 0
 

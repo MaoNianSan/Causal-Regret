@@ -1,4 +1,5 @@
 """Named artifacts required by the Exp3 output contract."""
+
 from __future__ import annotations
 
 ARTIFACTS = {

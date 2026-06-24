@@ -30,7 +30,9 @@ def rebuild(output_root: str | Path) -> Path:
     raw = root / "raw" / "seed_level_results.csv"
     manifest_path = root / "metadata" / "run_manifest.json"
     if not raw.exists() or not manifest_path.exists():
-        raise FileNotFoundError(f"Missing current raw provenance: {raw} or {manifest_path}")
+        raise FileNotFoundError(
+            f"Missing current raw provenance: {raw} or {manifest_path}"
+        )
 
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     mode = str(manifest.get("mode") or manifest.get("run_mode") or "")
@@ -44,7 +46,12 @@ def rebuild(output_root: str | Path) -> Path:
         raise ValueError(f"Raw seed-level CSV is incompatible; missing {missing}")
 
     output_tag = root.name if root.parent.name == "outputs" else None
-    options = RunOptions(mode=mode, raw_log_mode="summary_only", smoke=bool(manifest.get("is_smoke", False)), output_tag=output_tag)
+    options = RunOptions(
+        mode=mode,
+        raw_log_mode="summary_only",
+        smoke=bool(manifest.get("is_smoke", False)),
+        output_tag=output_tag,
+    )
     if "method_id" not in seed.columns:
         seed = _enrich_seed_schema(seed, options)
         seed.to_csv(raw, index=False)
@@ -55,11 +62,17 @@ def rebuild(output_root: str | Path) -> Path:
 
     manifest["reused_raw_outputs"] = True
     manifest["paper_result"] = False
-    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8")
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
+    )
     artifacts = _artifact_rows(root)
-    pd.DataFrame(artifacts).to_csv(root / "metadata" / "artifacts_manifest.csv", index=False)
+    pd.DataFrame(artifacts).to_csv(
+        root / "metadata" / "artifacts_manifest.csv", index=False
+    )
     pd.DataFrame(artifacts).to_csv(root / "manifest.csv", index=False)
-    (root / "manifest.json").write_text(json.dumps({"artifacts": artifacts}, indent=2), encoding="utf-8")
+    (root / "manifest.json").write_text(
+        json.dumps({"artifacts": artifacts}, indent=2), encoding="utf-8"
+    )
     return root
 
 

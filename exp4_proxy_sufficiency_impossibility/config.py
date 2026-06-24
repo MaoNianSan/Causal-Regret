@@ -1,4 +1,5 @@
 """Configuration for Experiment 4: a controlled recoverability-boundary stress test."""
+
 from __future__ import annotations
 
 import os

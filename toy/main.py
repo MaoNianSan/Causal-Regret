@@ -4,6 +4,7 @@
 `fast` uses the first three configured seeds and preserves raw diagnostic logs.
 `full` uses all configured seeds and writes lightweight summaries and figures.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -24,7 +25,6 @@ from core import CausalLearner, NaiveLearner, OracleLearner, run_one_seed
 from delay import DelaySetting, build_delay_settings
 from io_utils import compute_config_hash, ensure_dir, now_timestamp, write_rows_csv
 from plot import generate_figures
-
 
 DELAY_GROUP_TO_NAME = {
     "zero": "0_delay",
@@ -53,48 +53,139 @@ METHOD_REGISTRY = [
 
 RAW_FIELDNAMES = {
     "run_manifest": [
-        "run_id", "created_time", "experiment_id", "mode", "config_hash", "seed",
-        "delay_setting", "method", "T", "K", "D_max", "delay_meta_type",
-        "delay_meta_p", "delay_meta_w", "delay_meta_p_fast", "delay_meta_p_slow",
+        "run_id",
+        "created_time",
+        "experiment_id",
+        "mode",
+        "config_hash",
+        "seed",
+        "delay_setting",
+        "method",
+        "T",
+        "K",
+        "D_max",
+        "delay_meta_type",
+        "delay_meta_p",
+        "delay_meta_w",
+        "delay_meta_p_fast",
+        "delay_meta_p_slow",
         "delay_meta_switch_t",
     ],
     "delay_schedule": [
-        "run_id", "seed", "source_t", "delay_setting", "method", "source_state",
-        "source_action", "source_optimal_action", "source_loss", "delay_tau", "arrival_t",
-        "is_censored", "censor_reason",
+        "run_id",
+        "seed",
+        "source_t",
+        "delay_setting",
+        "method",
+        "source_state",
+        "source_action",
+        "source_optimal_action",
+        "source_loss",
+        "delay_tau",
+        "arrival_t",
+        "is_censored",
+        "censor_reason",
     ],
     "arrival_log": [
-        "run_id", "seed", "clock_t", "source_t", "delay_tau", "arrival_t", "method",
-        "delay_setting", "batch_size_at_clock_t", "observed_loss", "source_action",
-        "current_action", "current_state", "source_state", "source_state_distance",
-        "source_optimal_action", "current_optimal_action", "ranking_reversal",
+        "run_id",
+        "seed",
+        "clock_t",
+        "source_t",
+        "delay_tau",
+        "arrival_t",
+        "method",
+        "delay_setting",
+        "batch_size_at_clock_t",
+        "observed_loss",
+        "source_action",
+        "current_action",
+        "current_state",
+        "source_state",
+        "source_state_distance",
+        "source_optimal_action",
+        "current_optimal_action",
+        "ranking_reversal",
     ],
     "step_log": [
-        "run_id", "seed", "t", "T", "K", "delay_setting", "method", "action_selected",
-        "optimal_action_current", "loss_selected_current", "loss_optimal_current",
-        "instant_causal_regret", "cumulative_causal_regret", "delay_tau", "arrival_t",
-        "is_censored", "scheduled_count_so_far", "arrived_count_so_far", "arrival_rate_so_far",
-        "current_state", "epsilon_used",
+        "run_id",
+        "seed",
+        "t",
+        "T",
+        "K",
+        "delay_setting",
+        "method",
+        "action_selected",
+        "optimal_action_current",
+        "loss_selected_current",
+        "loss_optimal_current",
+        "instant_causal_regret",
+        "cumulative_causal_regret",
+        "delay_tau",
+        "arrival_t",
+        "is_censored",
+        "scheduled_count_so_far",
+        "arrived_count_so_far",
+        "arrival_rate_so_far",
+        "current_state",
+        "epsilon_used",
     ],
     "diagnostic_step_log": [
-        "run_id", "seed", "t", "delay_setting", "method", "arrival_batch_size",
-        "mean_source_state_distance", "ranking_reversal_rate_at_t", "current_state",
-        "optimal_action_current", "arrival_rate_so_far", "cumulative_causal_regret",
+        "run_id",
+        "seed",
+        "t",
+        "delay_setting",
+        "method",
+        "arrival_batch_size",
+        "mean_source_state_distance",
+        "ranking_reversal_rate_at_t",
+        "current_state",
+        "optimal_action_current",
+        "arrival_rate_so_far",
+        "cumulative_causal_regret",
     ],
 }
 
 SEED_SUMMARY_FIELDNAMES = [
-    "experiment_id", "mode", "config_hash", "run_id", "seed", "delay_setting", "method",
-    "T", "K", "D_max", "mean_delay", "median_delay", "p90_delay", "max_delay",
-    "arrival_rate", "censor_rate", "ranking_reversal_rate", "source_state_distance_mean",
-    "source_state_distance_sum", "source_state_distance_p90", "final_Rc", "normalized_final_Rc",
-    "auc_causal_regret", "mean_instant_causal_regret", "gain_vs_naive", "gain_vs_naive_pct",
+    "experiment_id",
+    "mode",
+    "config_hash",
+    "run_id",
+    "seed",
+    "delay_setting",
+    "method",
+    "T",
+    "K",
+    "D_max",
+    "mean_delay",
+    "median_delay",
+    "p90_delay",
+    "max_delay",
+    "arrival_rate",
+    "censor_rate",
+    "ranking_reversal_rate",
+    "source_state_distance_mean",
+    "source_state_distance_sum",
+    "source_state_distance_p90",
+    "final_Rc",
+    "normalized_final_Rc",
+    "auc_causal_regret",
+    "mean_instant_causal_regret",
+    "gain_vs_naive",
+    "gain_vs_naive_pct",
     "runtime_seconds",
 ]
 
 TRAJECTORY_FIELDNAMES = [
-    "experiment_id", "mode", "config_hash", "delay_setting", "method", "t",
-    "mean_cumulative_Rc", "se_cumulative_Rc", "ci95_low", "ci95_high",
+    "experiment_id",
+    "mode",
+    "config_hash",
+    "delay_setting",
+    "method",
+    "t",
+    "mean_cumulative_Rc",
+    "se_cumulative_Rc",
+    "ci95_low",
+    "ci95_high",
 ]
 
 
@@ -140,7 +231,11 @@ class ToyCausalEnv:
     def step(self, t: int) -> None:
         del t
         innovation = float(self.rng.normal(0.0, self.sigma_state))
-        self.S = float(np.clip(self.rho_state * self.S + innovation, -self.state_clip, self.state_clip))
+        self.S = float(
+            np.clip(
+                self.rho_state * self.S + innovation, -self.state_clip, self.state_clip
+            )
+        )
 
     def true_loss(self, a: int, S_t: float) -> float:
         if a not in self.mu:
@@ -153,8 +248,12 @@ class ToyCausalEnv:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Run the Toy delayed-feedback diagnostic.")
-    parser.add_argument("--config", default="config.yaml", help="YAML configuration path.")
+    parser = argparse.ArgumentParser(
+        description="Run the Toy delayed-feedback diagnostic."
+    )
+    parser.add_argument(
+        "--config", default="config.yaml", help="YAML configuration path."
+    )
     parser.add_argument("--mode", choices=["fast", "full"], default="full")
     return parser.parse_args()
 
@@ -169,15 +268,27 @@ def load_config(path: Path) -> dict[str, Any]:
 
 def validate_config(config: dict[str, Any]) -> None:
     required = {
-        "experiment_id", "T", "K", "D_max", "seeds", "delay_settings", "methods",
-        "output_dir", "save_raw_trajectories", "save_summary", "save_figures",
-        "figure_format", "dpi",
+        "experiment_id",
+        "T",
+        "K",
+        "D_max",
+        "seeds",
+        "delay_settings",
+        "methods",
+        "output_dir",
+        "save_raw_trajectories",
+        "save_summary",
+        "save_figures",
+        "figure_format",
+        "dpi",
     }
     missing = sorted(required.difference(config))
     if missing:
         raise ValueError(f"config.yaml is missing required keys: {missing}")
     if int(config["T"]) <= 0 or int(config["K"]) < 2 or int(config["D_max"]) < 0:
-        raise ValueError("T must be positive, K must be >= 2, and D_max must be nonnegative")
+        raise ValueError(
+            "T must be positive, K must be >= 2, and D_max must be nonnegative"
+        )
     if not isinstance(config["seeds"], list) or not config["seeds"]:
         raise ValueError("seeds must be a nonempty list")
     seeds = [int(seed) for seed in config["seeds"]]
@@ -197,21 +308,35 @@ def validate_config(config: dict[str, Any]) -> None:
     if state_clip <= 0.0:
         raise ValueError("state_clip must be positive")
     if not bool(config["save_summary"]) or not bool(config["save_figures"]):
-        raise ValueError("Toy artifact contract requires save_summary=true and save_figures=true")
+        raise ValueError(
+            "Toy artifact contract requires save_summary=true and save_figures=true"
+        )
     requested_formats = set(config["figure_format"])
     if not {"pdf", "png"}.issubset(requested_formats):
         raise ValueError("figure_format must include both 'pdf' and 'png'")
     if set(config["delay_settings"]) != set(DELAY_GROUP_TO_NAME):
-        raise ValueError("Toy requires exactly zero, geometric, piecewise, and mixture delay settings")
-    invalid_groups = [name for name in config["delay_settings"] if name not in DELAY_GROUP_TO_NAME]
+        raise ValueError(
+            "Toy requires exactly zero, geometric, piecewise, and mixture delay settings"
+        )
+    invalid_groups = [
+        name for name in config["delay_settings"] if name not in DELAY_GROUP_TO_NAME
+    ]
     if invalid_groups:
-        raise ValueError(f"Unsupported delay groups: {invalid_groups}; supported={sorted(DELAY_GROUP_TO_NAME)}")
+        raise ValueError(
+            f"Unsupported delay groups: {invalid_groups}; supported={sorted(DELAY_GROUP_TO_NAME)}"
+        )
     expected_methods = {row["method"] for row in METHOD_REGISTRY}
-    invalid_methods = [name for name in config["methods"] if name not in expected_methods]
+    invalid_methods = [
+        name for name in config["methods"] if name not in expected_methods
+    ]
     if invalid_methods:
-        raise ValueError(f"Unsupported methods: {invalid_methods}; supported={sorted(expected_methods)}")
+        raise ValueError(
+            f"Unsupported methods: {invalid_methods}; supported={sorted(expected_methods)}"
+        )
     if set(config["methods"]) != expected_methods:
-        raise ValueError("Toy requires exactly oracle, naive, and causal_labelled for its checked comparisons")
+        raise ValueError(
+            "Toy requires exactly oracle, naive, and causal_labelled for its checked comparisons"
+        )
 
 
 def resolve_output_dir(root: Path, configured_output_dir: str, mode: str) -> Path:
@@ -220,7 +345,9 @@ def resolve_output_dir(root: Path, configured_output_dir: str, mode: str) -> Pat
     return (output_base / mode).resolve()
 
 
-def build_shared_delay_sequence(T: int, delay_setting: DelaySetting, seed: int) -> list[int]:
+def build_shared_delay_sequence(
+    T: int, delay_setting: DelaySetting, seed: int
+) -> list[int]:
     """Generate one deterministic path reused by all methods in a seed/scenario."""
     prior_state = random.getstate()
     try:
@@ -238,7 +365,13 @@ def prepare_directories(output_root: Path, save_raw: bool) -> dict[str, Path]:
     summary_dir = ensure_dir(output_root / "summary")
     figures_dir = ensure_dir(output_root / "figures")
     logs_dir = ensure_dir(output_root / "logs")
-    return {"root": output_root, "raw": raw_dir, "summary": summary_dir, "figures": figures_dir, "logs": logs_dir}
+    return {
+        "root": output_root,
+        "raw": raw_dir,
+        "summary": summary_dir,
+        "figures": figures_dir,
+        "logs": logs_dir,
+    }
 
 
 def write_yaml(path: Path, value: dict[str, Any]) -> None:
@@ -305,11 +438,19 @@ def _method_summary_rows(seed_rows: list[dict[str, Any]]) -> list[dict[str, Any]
         std = float(final.std(ddof=1)) if n > 1 else 0.0
         se = std / math.sqrt(n) if n else 0.0
         gains = np.asarray(
-            [float(row["gain_vs_naive_pct"]) for row in group if row["gain_vs_naive_pct"] is not None],
+            [
+                float(row["gain_vs_naive_pct"])
+                for row in group
+                if row["gain_vs_naive_pct"] is not None
+            ],
             dtype=float,
         )
         gain_mean = float(gains.mean()) if len(gains) else None
-        gain_se = float(gains.std(ddof=1) / math.sqrt(len(gains))) if len(gains) > 1 else (0.0 if len(gains) == 1 else None)
+        gain_se = (
+            float(gains.std(ddof=1) / math.sqrt(len(gains)))
+            if len(gains) > 1
+            else (0.0 if len(gains) == 1 else None)
+        )
         rows.append(
             {
                 "experiment_id": group[0]["experiment_id"],
@@ -324,8 +465,16 @@ def _method_summary_rows(seed_rows: list[dict[str, Any]]) -> list[dict[str, Any]
                 "ci95_low": mean - 1.96 * se,
                 "ci95_high": mean + 1.96 * se,
                 "mean_gain_vs_naive_pct": gain_mean,
-                "gain_ci95_low": (gain_mean - 1.96 * gain_se) if gain_mean is not None and gain_se is not None else None,
-                "gain_ci95_high": (gain_mean + 1.96 * gain_se) if gain_mean is not None and gain_se is not None else None,
+                "gain_ci95_low": (
+                    (gain_mean - 1.96 * gain_se)
+                    if gain_mean is not None and gain_se is not None
+                    else None
+                ),
+                "gain_ci95_high": (
+                    (gain_mean + 1.96 * gain_se)
+                    if gain_mean is not None and gain_se is not None
+                    else None
+                ),
             }
         )
     return rows
@@ -340,13 +489,19 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
     validate_config(config)
 
     mode = str(mode)
-    seeds = [int(seed) for seed in config["seeds"][:3]] if mode == "fast" else [int(seed) for seed in config["seeds"]]
+    seeds = (
+        [int(seed) for seed in config["seeds"][:3]]
+        if mode == "fast"
+        else [int(seed) for seed in config["seeds"]]
+    )
     if mode == "fast" and len(seeds) != 3:
         raise ValueError("fast mode requires at least three configured seeds")
     save_raw = mode == "fast"
 
     effective_config = dict(config)
-    effective_config.update({"run_mode": mode, "seeds": seeds, "save_raw_trajectories": save_raw})
+    effective_config.update(
+        {"run_mode": mode, "seeds": seeds, "save_raw_trajectories": save_raw}
+    )
     config_hash = compute_config_hash(effective_config)
     output_root = resolve_output_dir(root, str(config["output_dir"]), mode)
     dirs = prepare_directories(output_root, save_raw)
@@ -376,11 +531,20 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
     write_json(metadata_path, metadata)
 
     try:
-        delay_map = {setting.name: setting for setting in build_delay_settings(switch_t=int(config["T"]) // 2)}
-        selected_delay_names = [DELAY_GROUP_TO_NAME[group] for group in config["delay_settings"]]
-        missing_delay_settings = [name for name in selected_delay_names if name not in delay_map]
+        delay_map = {
+            setting.name: setting
+            for setting in build_delay_settings(switch_t=int(config["T"]) // 2)
+        }
+        selected_delay_names = [
+            DELAY_GROUP_TO_NAME[group] for group in config["delay_settings"]
+        ]
+        missing_delay_settings = [
+            name for name in selected_delay_names if name not in delay_map
+        ]
         if missing_delay_settings:
-            raise RuntimeError(f"Delay builder did not provide expected settings: {missing_delay_settings}")
+            raise RuntimeError(
+                f"Delay builder did not provide expected settings: {missing_delay_settings}"
+            )
 
         write_rows_csv(
             dirs["logs"] / "method_registry.csv",
@@ -459,10 +623,30 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
                         trajectory_values[(delay_name, method, t)].append(float(regret))
 
                     if save_raw:
-                        write_rows_csv(dirs["raw"] / "delay_schedule.csv", result.delay_rows, RAW_FIELDNAMES["delay_schedule"], append=True)
-                        write_rows_csv(dirs["raw"] / "arrival_log.csv", result.arrival_rows, RAW_FIELDNAMES["arrival_log"], append=True)
-                        write_rows_csv(dirs["raw"] / "step_log.csv", result.step_rows, RAW_FIELDNAMES["step_log"], append=True)
-                        write_rows_csv(dirs["raw"] / "diagnostic_step_log.csv", result.diagnostic_rows, RAW_FIELDNAMES["diagnostic_step_log"], append=True)
+                        write_rows_csv(
+                            dirs["raw"] / "delay_schedule.csv",
+                            result.delay_rows,
+                            RAW_FIELDNAMES["delay_schedule"],
+                            append=True,
+                        )
+                        write_rows_csv(
+                            dirs["raw"] / "arrival_log.csv",
+                            result.arrival_rows,
+                            RAW_FIELDNAMES["arrival_log"],
+                            append=True,
+                        )
+                        write_rows_csv(
+                            dirs["raw"] / "step_log.csv",
+                            result.step_rows,
+                            RAW_FIELDNAMES["step_log"],
+                            append=True,
+                        )
+                        write_rows_csv(
+                            dirs["raw"] / "diagnostic_step_log.csv",
+                            result.diagnostic_rows,
+                            RAW_FIELDNAMES["diagnostic_step_log"],
+                            append=True,
+                        )
 
                     summary = result.seed_summary
                     seed_summary_rows.append(
@@ -484,13 +668,21 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
                             "arrival_rate": summary["arrival_rate_final"],
                             "censor_rate": summary["censor_rate"],
                             "ranking_reversal_rate": summary["ranking_reversal_rate"],
-                            "source_state_distance_mean": summary["source_state_distance_mean"],
-                            "source_state_distance_sum": summary["source_state_distance_sum"],
-                            "source_state_distance_p90": summary["source_state_distance_p90"],
+                            "source_state_distance_mean": summary[
+                                "source_state_distance_mean"
+                            ],
+                            "source_state_distance_sum": summary[
+                                "source_state_distance_sum"
+                            ],
+                            "source_state_distance_p90": summary[
+                                "source_state_distance_p90"
+                            ],
                             "final_Rc": summary["final_causal_regret"],
                             "normalized_final_Rc": summary["normalized_final_regret"],
                             "auc_causal_regret": summary["auc_causal_regret"],
-                            "mean_instant_causal_regret": summary["mean_instant_causal_regret"],
+                            "mean_instant_causal_regret": summary[
+                                "mean_instant_causal_regret"
+                            ],
                             "gain_vs_naive": None,
                             "gain_vs_naive_pct": None,
                             "runtime_seconds": runtime_seconds,
@@ -502,11 +694,27 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
                     if row["method"] == "causal_labelled":
                         gain = naive_final - float(row["final_Rc"])
                         row["gain_vs_naive"] = gain
-                        row["gain_vs_naive_pct"] = 100.0 * gain / abs(naive_final) if naive_final else 0.0
+                        row["gain_vs_naive_pct"] = (
+                            100.0 * gain / abs(naive_final) if naive_final else 0.0
+                        )
 
-        write_rows_csv(dirs["logs"] / "run_manifest.csv", run_manifest_rows, RAW_FIELDNAMES["run_manifest"], append=False)
-        write_rows_csv(dirs["summary"] / "toy_seed_summary.csv", seed_summary_rows, SEED_SUMMARY_FIELDNAMES, append=False)
-        write_rows_csv(dirs["summary"] / "toy_method_summary.csv", _method_summary_rows(seed_summary_rows), append=False)
+        write_rows_csv(
+            dirs["logs"] / "run_manifest.csv",
+            run_manifest_rows,
+            RAW_FIELDNAMES["run_manifest"],
+            append=False,
+        )
+        write_rows_csv(
+            dirs["summary"] / "toy_seed_summary.csv",
+            seed_summary_rows,
+            SEED_SUMMARY_FIELDNAMES,
+            append=False,
+        )
+        write_rows_csv(
+            dirs["summary"] / "toy_method_summary.csv",
+            _method_summary_rows(seed_summary_rows),
+            append=False,
+        )
         write_rows_csv(
             dirs["summary"] / "toy_trajectory_summary.csv",
             _trajectory_rows(trajectory_values, experiment_id, mode, config_hash),
@@ -515,12 +723,25 @@ def run_experiment(mode: str, config_path: str | Path = "config.yaml") -> int:
         )
         generate_figures(output_root)
 
-        metadata.update({"status": "success", "backend_status": "executed", "end_time": now_timestamp()})
+        metadata.update(
+            {
+                "status": "success",
+                "backend_status": "executed",
+                "end_time": now_timestamp(),
+            }
+        )
         write_json(metadata_path, metadata)
         print(f"Toy {mode} run completed: {output_root}")
         return 0
     except Exception as exc:
-        metadata.update({"status": "failed", "backend_status": "failed", "end_time": now_timestamp(), "error": repr(exc)})
+        metadata.update(
+            {
+                "status": "failed",
+                "backend_status": "failed",
+                "end_time": now_timestamp(),
+                "error": repr(exc),
+            }
+        )
         write_json(metadata_path, metadata)
         raise
 

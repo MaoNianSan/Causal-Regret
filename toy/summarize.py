@@ -5,6 +5,7 @@ The runner already writes all summary files. This utility is retained for
 post-processing and preserves the same schema when rebuilding fast-mode
 trajectories from raw step logs.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -21,7 +22,9 @@ from plot import generate_figures
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Regenerate Toy summaries and figures.")
+    parser = argparse.ArgumentParser(
+        description="Regenerate Toy summaries and figures."
+    )
     parser.add_argument("--output-dir", default="outputs")
     parser.add_argument("--mode", choices=["fast", "full"], default="full")
     return parser.parse_args()
@@ -29,12 +32,16 @@ def parse_args() -> argparse.Namespace:
 
 def resolve_output_dir(base: Path, output_dir: str, mode: str) -> Path:
     candidate = Path(output_dir)
-    return ((candidate if candidate.is_absolute() else base / candidate) / mode).resolve()
+    return (
+        (candidate if candidate.is_absolute() else base / candidate) / mode
+    ).resolve()
 
 
 def main() -> None:
     args = parse_args()
-    root = resolve_output_dir(Path(__file__).resolve().parent, args.output_dir, args.mode)
+    root = resolve_output_dir(
+        Path(__file__).resolve().parent, args.output_dir, args.mode
+    )
     summary_dir = ensure_dir(root / "summary")
     seed_path = summary_dir / "toy_seed_summary.csv"
     if not seed_path.exists() or seed_path.stat().st_size == 0:
@@ -43,7 +50,9 @@ def main() -> None:
     seed_df = pd.read_csv(seed_path)
     seed_rows = seed_df.to_dict(orient="records")
     method_rows = _method_summary_rows(seed_rows)
-    pd.DataFrame(method_rows).to_csv(summary_dir / "toy_method_summary.csv", index=False)
+    pd.DataFrame(method_rows).to_csv(
+        summary_dir / "toy_method_summary.csv", index=False
+    )
 
     step_path = root / "raw" / "step_log.csv"
     if step_path.exists() and step_path.stat().st_size > 0:
@@ -55,7 +64,9 @@ def main() -> None:
         experiment_id = str(seed_df["experiment_id"].iloc[0])
         mode = str(seed_df["mode"].iloc[0])
         config_hash = str(seed_df["config_hash"].iloc[0])
-        grouped = step_df.groupby(["delay_setting", "method", "t"])["cumulative_causal_regret"]
+        grouped = step_df.groupby(["delay_setting", "method", "t"])[
+            "cumulative_causal_regret"
+        ]
         trajectory_rows = []
         for (delay_setting, method, t), series in grouped:
             values = series.to_numpy(dtype=float)
@@ -76,7 +87,9 @@ def main() -> None:
                     "ci95_high": mean + 1.96 * se,
                 }
             )
-        pd.DataFrame(trajectory_rows).to_csv(summary_dir / "toy_trajectory_summary.csv", index=False)
+        pd.DataFrame(trajectory_rows).to_csv(
+            summary_dir / "toy_trajectory_summary.csv", index=False
+        )
 
     trajectory_path = summary_dir / "toy_trajectory_summary.csv"
     if not trajectory_path.exists() or trajectory_path.stat().st_size == 0:

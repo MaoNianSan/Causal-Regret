@@ -1,4 +1,5 @@
 """Regenerate figures from a completed Exp3 output directory."""
+
 from __future__ import annotations
 
 import argparse
@@ -22,7 +23,13 @@ def main() -> int:
         input_data_status = json.loads(manifest_path.read_text(encoding="utf-8")).get(
             "input_data_status", input_data_status
         )
-    plot_all(output_dir, args.mode, False, DEFAULT_CONFIG, input_data_status=input_data_status)
+    plot_all(
+        output_dir,
+        args.mode,
+        False,
+        DEFAULT_CONFIG,
+        input_data_status=input_data_status,
+    )
     return 0
 
 

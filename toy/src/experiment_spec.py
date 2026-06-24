@@ -1,4 +1,5 @@
 """Lightweight experiment metadata retained for compatibility with importers."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -19,6 +20,7 @@ BASE_SPEC = {
 
 def resolve_experiment_spec(mode: str) -> dict:
     from config import resolve_experiment_spec as _resolve
+
     return _resolve(mode)
 
 

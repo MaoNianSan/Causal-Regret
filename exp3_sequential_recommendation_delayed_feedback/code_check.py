@@ -1,4 +1,5 @@
 """Static source checks for the Exp3 v5.2 contract."""
+
 from __future__ import annotations
 
 import ast
@@ -41,16 +42,21 @@ REQUIRED_TOKENS = [
 
 def source_files() -> list[Path]:
     return [
-        path for path in ROOT.rglob("*")
-        if path.is_file() and path.suffix.lower() in TEXT_EXTENSIONS
-        and "outputs" not in path.parts and "__pycache__" not in path.parts
+        path
+        for path in ROOT.rglob("*")
+        if path.is_file()
+        and path.suffix.lower() in TEXT_EXTENSIONS
+        and "outputs" not in path.parts
+        and "__pycache__" not in path.parts
     ]
 
 
 def main() -> int:
     errors: list[str] = []
     files = [path for path in source_files() if path.name != "code_check.py"]
-    all_text = "\n".join(path.read_text(encoding="utf-8", errors="ignore") for path in files)
+    all_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore") for path in files
+    )
     for token in FORBIDDEN_TOKENS:
         if token in all_text:
             errors.append(f"forbidden legacy or misleading token found: {token}")
@@ -67,24 +73,36 @@ def main() -> int:
             errors.append(f"syntax error in {path.relative_to(ROOT)}: {exc}")
 
     proxy_source = (ROOT / "proxy_models.py").read_text(encoding="utf-8")
-    if "global_composite = float(main_proxy" in proxy_source or "global_mean = float(proxy_cells" in proxy_source:
+    if (
+        "global_composite = float(main_proxy" in proxy_source
+        or "global_mean = float(proxy_cells" in proxy_source
+    ):
         errors.append("proxy fallback still uses a forbidden full-main aggregate")
     if "def history_mean_static_scores" not in proxy_source:
         errors.append("history-only static control is missing")
 
     bootstrap_source = (ROOT / "bootstrap_analysis.py").read_text(encoding="utf-8")
-    for token in ["shared_bootstrap_weights", "paired_mechanism_contrast", "paired_effect_vs_history_mean_static"]:
+    for token in [
+        "shared_bootstrap_weights",
+        "paired_mechanism_contrast",
+        "paired_effect_vs_history_mean_static",
+    ]:
         if token not in bootstrap_source:
             errors.append(f"bootstrap contract missing: {token}")
 
     plot_source = (ROOT / "plot_results.py").read_text(encoding="utf-8")
-    if "def plot_delay_mechanism_appendix" in plot_source or "def plot_label_coverage_appendix" in plot_source:
+    if (
+        "def plot_delay_mechanism_appendix" in plot_source
+        or "def plot_label_coverage_appendix" in plot_source
+    ):
         errors.append("retired appendix plots are still active")
     if "def plot_horizon_eligibility" not in plot_source:
         errors.append("horizon eligibility diagnostic is missing")
     for token in ['label="Identity"', "History EWMA ridge proxy", "fig.text("]:
         if token in plot_source:
-            errors.append(f"plot_results.py contains forbidden final figure interface token: {token}")
+            errors.append(
+                f"plot_results.py contains forbidden final figure interface token: {token}"
+            )
     for token in [
         "Required main-figure methods missing",
         "Carrier baseline",
@@ -92,7 +110,9 @@ def main() -> int:
         "history_mean_static",
     ]:
         if token not in plot_source:
-            errors.append(f"plot_results.py lacks required final figure interface token: {token}")
+            errors.append(
+                f"plot_results.py lacks required final figure interface token: {token}"
+            )
     if not (ROOT / "notebooks" / "exp3_figure_release_audit.ipynb").exists():
         errors.append("notebooks/exp3_figure_release_audit.ipynb is missing")
 
@@ -107,7 +127,10 @@ def main() -> int:
         errors.append("runner lacks stale-output protection")
 
     release_source = (ROOT / "release_support.py").read_text(encoding="utf-8")
-    if "release manifest must not include itself" not in release_source or "artifact_sha256sums.txt must not include itself" not in release_source:
+    if (
+        "release manifest must not include itself" not in release_source
+        or "artifact_sha256sums.txt must not include itself" not in release_source
+    ):
         errors.append("release checks do not prevent recursive checksum manifests")
     build_source = (ROOT / "build_upload_packages.py").read_text(encoding="utf-8")
     package_contract_text = release_source + "\n" + build_source
@@ -117,18 +140,26 @@ def main() -> int:
         "outputs/full/checks/figure_release_audit.md",
     ]:
         if token not in package_contract_text:
-            errors.append(f"release archive contract missing notebook audit member: {token}")
+            errors.append(
+                f"release archive contract missing notebook audit member: {token}"
+            )
 
     for output_dir in [ROOT / "outputs" / "fast", ROOT / "outputs" / "full"]:
         if output_dir.exists():
             checks_dir = output_dir / "checks"
             checks_dir.mkdir(parents=True, exist_ok=True)
-            pd.DataFrame([{
-                "check_id": "code_check",
-                "status": "failed" if errors else "passed",
-                "n_errors": len(errors),
-                "details": " | ".join(errors) if errors else "CODE CHECK PASSED",
-            }]).to_csv(checks_dir / "code_check_report.csv", index=False)
+            pd.DataFrame(
+                [
+                    {
+                        "check_id": "code_check",
+                        "status": "failed" if errors else "passed",
+                        "n_errors": len(errors),
+                        "details": (
+                            " | ".join(errors) if errors else "CODE CHECK PASSED"
+                        ),
+                    }
+                ]
+            ).to_csv(checks_dir / "code_check_report.csv", index=False)
 
     if errors:
         print("CODE CHECK FAILED")
@@ -137,8 +168,12 @@ def main() -> int:
         return 1
 
     print("CODE CHECK PASSED")
-    print("[PASS] chronology, history-only static control, and paired uncertainty contracts are present")
-    print("[PASS] source-label sensitivity is table-only; unsupported active contrast plots are retired")
+    print(
+        "[PASS] chronology, history-only static control, and paired uncertainty contracts are present"
+    )
+    print(
+        "[PASS] source-label sensitivity is table-only; unsupported active contrast plots are retired"
+    )
     print("[PASS] explanatory labels and eligibility diagnostic interfaces are present")
     print("[PASS] all Python modules parse")
     return 0

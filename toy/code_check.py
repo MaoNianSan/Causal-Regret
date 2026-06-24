@@ -16,7 +16,6 @@ import re
 from pathlib import Path
 from typing import Dict, List, Tuple
 
-
 # File and directory patterns to flag as backup/legacy
 BACKUP_PATTERNS = {
     r".*\.(bak|old|backup|orig|copy|new|final|tmp|temp)$",
@@ -76,7 +75,7 @@ class CodeChecker:
                 if re.match(pattern, name):
                     backup_files.append(path.relative_to(self.root))
                     break
-        
+
         if backup_files:
             self.report("FAIL", f"Backup/legacy files found: {backup_files}")
         else:
@@ -86,20 +85,20 @@ class CodeChecker:
         """Check for required scripts and config files."""
         missing_scripts = []
         missing_config = []
-        
+
         for script in REQUIRED_SCRIPTS:
             if not (self.root / script).exists():
                 missing_scripts.append(script)
-        
+
         for config in REQUIRED_CONFIG:
             if not (self.root / config).exists():
                 missing_config.append(config)
-        
+
         if missing_scripts:
             self.report("FAIL", f"Missing required scripts: {missing_scripts}")
         else:
             self.report("PASS", "All required scripts present")
-        
+
         if missing_config:
             self.report("FAIL", f"Missing required config files: {missing_config}")
         else:
@@ -109,7 +108,7 @@ class CodeChecker:
         """Check for hardcoded absolute local paths in Python files."""
         absolute_path_pattern = re.compile(r"['\"]([a-zA-Z]:)?/.*?['\"]")
         found_paths = []
-        
+
         for py_file in self.root.glob("*.py"):
             try:
                 with py_file.open("r", encoding="utf-8") as f:
@@ -122,7 +121,7 @@ class CodeChecker:
                             found_paths.append(f"{py_file.name}:{line_no}")
             except Exception:
                 pass
-        
+
         if found_paths:
             self.report("FAIL", f"Hardcoded absolute paths found: {found_paths[:5]}")
         else:
@@ -134,21 +133,21 @@ class CodeChecker:
         if not readme_path.exists():
             self.report("FAIL", "README.md not found")
             return
-        
+
         with readme_path.open("r", encoding="utf-8") as f:
             readme_content = f.read()
-        
+
         required_mentions = {
             "reproduce_fast.py": False,
             "reproduce_paper.py": False,
             "self_check.py": False,
             "code_check.py": False,
         }
-        
+
         for script in required_mentions:
             if script in readme_content:
                 required_mentions[script] = True
-        
+
         missing = [s for s, found in required_mentions.items() if not found]
         if missing:
             self.report("FAIL", f"README.md missing mentions of: {missing}")
@@ -161,7 +160,7 @@ class CodeChecker:
         if not manifest_path.exists():
             self.report("FAIL", "output_manifest.md not found")
             return
-        
+
         if manifest_path.stat().st_size < 100:
             self.report("FAIL", "output_manifest.md is empty or too short")
         else:
@@ -176,7 +175,7 @@ class CodeChecker:
             ".open.*outputs",
         }
         found_issues = []
-        
+
         # Scripts that legitimately reference outputs/ (analysis, checking, plotting)
         exempt_scripts = {
             "code_check.py",
@@ -185,7 +184,7 @@ class CodeChecker:
             "summarize.py",
             "plot.py",
         }
-        
+
         for py_file in self.root.glob("*.py"):
             if py_file.name in exempt_scripts:
                 continue
@@ -201,7 +200,7 @@ class CodeChecker:
                             break
             except Exception:
                 pass
-        
+
         if found_issues:
             self.report("FAIL", f"Scripts may depend on stale outputs: {found_issues}")
         else:
@@ -212,22 +211,26 @@ class CodeChecker:
         main_py = self.root / "main.py"
         if not main_py.exists():
             return
-        
+
         with main_py.open("r", encoding="utf-8") as f:
             content = f.read()
-        
-        has_seed = "seed" in content.lower() and ("random.seed" in content or "getstate" in content)
+
+        has_seed = "seed" in content.lower() and (
+            "random.seed" in content or "getstate" in content
+        )
         if has_seed:
             self.report("PASS", "Random seed control is explicit in main.py")
         else:
-            self.report("FAIL", "Random seed control appears weak or missing in main.py")
+            self.report(
+                "FAIL", "Random seed control appears weak or missing in main.py"
+            )
 
     def run_all_checks(self) -> bool:
         """Run all checks and return overall pass/fail."""
         print(f"\n{'='*70}")
         print("CODE_CHECK.PY - Toy Experiment Code Quality Validation")
         print(f"{'='*70}\n")
-        
+
         self.check_required_files()
         self.check_backup_files()
         self.check_absolute_paths()
@@ -235,11 +238,11 @@ class CodeChecker:
         self.check_output_manifest()
         self.check_old_output_dependency()
         self.check_random_seed_control()
-        
+
         print(f"\n{'='*70}")
         print(f"Summary: {len(self.passed)} passed, {len(self.failed)} failed")
         print(f"{'='*70}\n")
-        
+
         if self.failed:
             print("FAILED CHECKS:")
             for msg in self.failed:

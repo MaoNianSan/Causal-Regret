@@ -1,0 +1,20 @@
+# Normalize text files across platforms.
+* text=auto
+
+# Source and documentation files use LF in the repository.
+*.py text eol=lf
+*.md text eol=lf
+*.txt text eol=lf
+*.toml text eol=lf
+*.yaml text eol=lf
+*.yml text eol=lf
+*.json text eol=lf
+*.csv text eol=lf
+*.tex text eol=lf
+
+# Binary artifacts.
+*.png binary
+*.pdf binary
+*.ipynb text eol=lf
+*.gz binary
+*.parquet binary

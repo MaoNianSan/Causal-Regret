@@ -1,4 +1,5 @@
 """Sequential delayed-feedback engine and Exp4 task definitions."""
+
 from __future__ import annotations
 
 from typing import Any
@@ -6,7 +7,13 @@ import hashlib
 import numpy as np
 
 import config
-from simulator import Trace, generate_trace, measurement_diagnostics, observed_measurement, trace_diagnostics
+from simulator import (
+    Trace,
+    generate_trace,
+    measurement_diagnostics,
+    observed_measurement,
+    trace_diagnostics,
+)
 from policies import (
     ArrivalTimeNaiveUCB,
     NoisyOracleProxyDiagnostic,
@@ -25,7 +32,10 @@ def nested_label_mask(trace: Trace, q: float) -> np.ndarray:
 def _context_history(trace: Trace) -> np.ndarray:
     context_proxy = observed_measurement(trace, config.CONTEXT_PROXY_SIGMA)
     return np.argmin(
-        ((context_proxy[:, None, :] - trace.action_centers[None, :, :]) ** 2).sum(axis=2), axis=1
+        ((context_proxy[:, None, :] - trace.action_centers[None, :, :]) ** 2).sum(
+            axis=2
+        ),
+        axis=1,
     ).astype(int)
 
 
@@ -44,7 +54,9 @@ def _policy(method_id: str, trace: Trace, proxy_sigma: float, n_contexts: int):
     if method_id == "observable_history_surrogate":
         return ObservableHistorySurrogate(config.K_ACTIONS, n_contexts)
     if method_id == "proxy_noisy_oracle_diagnostic":
-        return NoisyOracleProxyDiagnostic(trace.action_centers, observed_measurement(trace, proxy_sigma))
+        return NoisyOracleProxyDiagnostic(
+            trace.action_centers, observed_measurement(trace, proxy_sigma)
+        )
     if method_id == "proxy_oracle_diagnostic":
         return ProxyOracleDiagnostic(trace.action_centers, trace.states)
     raise ValueError(f"unknown method id {method_id}")
@@ -94,22 +106,43 @@ def run_online_policy(
         losses_t = trace.potential_losses[t]
         regrets[t] = float(losses_t[action] - np.min(losses_t))
 
-        full_events = [(source, float(trace.potential_losses[source, actions[source]])) for source in trace.arrivals[t]]
+        full_events = [
+            (source, float(trace.potential_losses[source, actions[source]]))
+            for source in trace.arrivals[t]
+        ]
         total_arrivals += len(full_events)
         anonymous_losses = [loss for _, loss in full_events]
 
         if method_id == "arrival_time_naive":
-            wrong_assignment_events += sum(int(actions[source] != action) for source, _ in full_events)
-            policy.observe(current_action=action, current_context=context, anonymous_losses=anonymous_losses)
+            wrong_assignment_events += sum(
+                int(actions[source] != action) for source, _ in full_events
+            )
+            policy.observe(
+                current_action=action,
+                current_context=context,
+                anonymous_losses=anonymous_losses,
+            )
         elif method_id == "source_labelled_reference":
             labelled_arrivals += len(full_events)
             event_time_gaps.extend(t - source for source, _ in full_events)
-            policy.observe(labelled_events=full_events, action_history=actions, context_history=contexts)
+            policy.observe(
+                labelled_events=full_events,
+                action_history=actions,
+                context_history=contexts,
+            )
         elif method_id == "observable_history_surrogate":
-            policy.observe(current_action=action, current_context=context, anonymous_losses=anonymous_losses)
+            policy.observe(
+                current_action=action,
+                current_context=context,
+                anonymous_losses=anonymous_losses,
+            )
         elif method_id == "proxy_label_recovery":
-            labelled_events = [(source, loss) for source, loss in full_events if retention_mask[source]]
-            anonymous = [loss for source, loss in full_events if not retention_mask[source]]
+            labelled_events = [
+                (source, loss) for source, loss in full_events if retention_mask[source]
+            ]
+            anonymous = [
+                loss for source, loss in full_events if not retention_mask[source]
+            ]
             labelled_arrivals += len(labelled_events)
             anonymous_arrivals += len(anonymous)
             event_time_gaps.extend(t - source for source, _ in labelled_events)
@@ -128,13 +161,15 @@ def run_online_policy(
     proxy_reversal = np.nan
     proxy_distortion = np.nan
     if method_id in {"proxy_noisy_oracle_diagnostic", "proxy_label_recovery"}:
-        proxy_error, proxy_reversal, proxy_distortion = measurement_diagnostics(trace, proxy_sigma)
+        proxy_error, proxy_reversal, proxy_distortion = measurement_diagnostics(
+            trace, proxy_sigma
+        )
     elif method_id == "proxy_oracle_diagnostic":
         proxy_error = 0.0
         proxy_reversal = 0.0
         proxy_distortion = 0.0
 
-    eval_regrets = regrets[config.WARMUP_T:]
+    eval_regrets = regrets[config.WARMUP_T :]
     diagnostics = trace_diagnostics(trace)
     result: dict[str, Any] = {
         "experiment_id": config.EXPERIMENT_ID,
@@ -148,22 +183,42 @@ def run_online_policy(
         "labelled_arrivals": int(labelled_arrivals),
         "anonymous_arrivals": int(anonymous_arrivals),
         "total_arrivals": int(total_arrivals),
-        "labelled_arrival_fraction": float(labelled_arrivals / total_arrivals) if total_arrivals else 0.0,
-        "min_label_arrival_gap": int(min(event_time_gaps)) if event_time_gaps else np.nan,
-        "wrong_assignment_rate": float(wrong_assignment_events / total_arrivals) if total_arrivals else 0.0,
+        "labelled_arrival_fraction": (
+            float(labelled_arrivals / total_arrivals) if total_arrivals else 0.0
+        ),
+        "min_label_arrival_gap": (
+            int(min(event_time_gaps)) if event_time_gaps else np.nan
+        ),
+        "wrong_assignment_rate": (
+            float(wrong_assignment_events / total_arrivals) if total_arrivals else 0.0
+        ),
         "proxy_state_error_per_round": proxy_error,
         "proxy_ranking_reversal_rate": proxy_reversal,
         "absolute_proxy_distortion_per_round": proxy_distortion,
-        "context_misclassification_rate": float(np.mean(contexts != np.argmin(trace.potential_losses, axis=1))),
+        "context_misclassification_rate": float(
+            np.mean(contexts != np.argmin(trace.potential_losses, axis=1))
+        ),
         "action_trace_sha256": hashlib.sha256(actions.tobytes()).hexdigest(),
-        "proxy_observation_interface": "simulator_emitted" if method_id != "proxy_oracle_diagnostic" else "latent_diagnostic_only",
+        "proxy_observation_interface": (
+            "simulator_emitted"
+            if method_id != "proxy_oracle_diagnostic"
+            else "latent_diagnostic_only"
+        ),
         **_method_fields(method_id),
         **diagnostics,
     }
     return result
 
 
-def _row(trace: Trace, subexperiment_id: str, setting_id: str, result: dict[str, Any], *, beta: float, notes: str = "") -> dict[str, Any]:
+def _row(
+    trace: Trace,
+    subexperiment_id: str,
+    setting_id: str,
+    result: dict[str, Any],
+    *,
+    beta: float,
+    notes: str = "",
+) -> dict[str, Any]:
     return {
         "subexperiment_id": subexperiment_id,
         "setting_id": setting_id,
@@ -183,12 +238,40 @@ def run_task(task: dict[str, Any]) -> list[dict[str, Any]]:
         trace = generate_trace(seed, T, config.DEFAULT_BETA)
         rows: list[dict[str, Any]] = []
         for sigma in config.PROXY_SIGMAS:
-            result = run_online_policy(trace, "proxy_noisy_oracle_diagnostic", proxy_sigma=sigma)
-            rows.append(_row(trace, "proxy_distortion_diagnostic", f"sigma_{sigma:.2f}", result, beta=config.DEFAULT_BETA))
+            result = run_online_policy(
+                trace, "proxy_noisy_oracle_diagnostic", proxy_sigma=sigma
+            )
+            rows.append(
+                _row(
+                    trace,
+                    "proxy_distortion_diagnostic",
+                    f"sigma_{sigma:.2f}",
+                    result,
+                    beta=config.DEFAULT_BETA,
+                )
+            )
         result = run_online_policy(trace, "proxy_oracle_diagnostic", proxy_sigma=0.0)
-        rows.append(_row(trace, "proxy_distortion_diagnostic", "proxy_oracle", result, beta=config.DEFAULT_BETA))
-        result = run_online_policy(trace, "arrival_time_naive", proxy_sigma=config.DEFAULT_PROXY_SIGMA)
-        rows.append(_row(trace, "baseline_reference", "arrival_time_baseline", result, beta=config.DEFAULT_BETA))
+        rows.append(
+            _row(
+                trace,
+                "proxy_distortion_diagnostic",
+                "proxy_oracle",
+                result,
+                beta=config.DEFAULT_BETA,
+            )
+        )
+        result = run_online_policy(
+            trace, "arrival_time_naive", proxy_sigma=config.DEFAULT_PROXY_SIGMA
+        )
+        rows.append(
+            _row(
+                trace,
+                "baseline_reference",
+                "arrival_time_baseline",
+                result,
+                beta=config.DEFAULT_BETA,
+            )
+        )
         return rows
 
     if kind == "source_label_sweep":
@@ -196,19 +279,52 @@ def run_task(task: dict[str, Any]) -> list[dict[str, Any]]:
         trace = generate_trace(seed, T, config.DEFAULT_BETA)
         rows = []
         for method_id in ["observable_history_surrogate", "proxy_label_recovery"]:
-            result = run_online_policy(trace, method_id, q=q, proxy_sigma=config.DEFAULT_PROXY_SIGMA)
-            rows.append(_row(trace, "source_label_sweep", f"q_{q:.2f}_sigma_{config.DEFAULT_PROXY_SIGMA:.2f}", result, beta=config.DEFAULT_BETA))
+            result = run_online_policy(
+                trace, method_id, q=q, proxy_sigma=config.DEFAULT_PROXY_SIGMA
+            )
+            rows.append(
+                _row(
+                    trace,
+                    "source_label_sweep",
+                    f"q_{q:.2f}_sigma_{config.DEFAULT_PROXY_SIGMA:.2f}",
+                    result,
+                    beta=config.DEFAULT_BETA,
+                )
+            )
         if np.isclose(q, 1.0):
-            result = run_online_policy(trace, "source_labelled_reference", q=1.0, proxy_sigma=config.DEFAULT_PROXY_SIGMA)
-            rows.append(_row(trace, "source_label_sweep", "q_1.00_source_labelled_reference", result, beta=config.DEFAULT_BETA))
+            result = run_online_policy(
+                trace,
+                "source_labelled_reference",
+                q=1.0,
+                proxy_sigma=config.DEFAULT_PROXY_SIGMA,
+            )
+            rows.append(
+                _row(
+                    trace,
+                    "source_label_sweep",
+                    "q_1.00_source_labelled_reference",
+                    result,
+                    beta=config.DEFAULT_BETA,
+                )
+            )
         return rows
 
     if kind == "phase_grid":
         q = float(task["q"])
         sigma = float(task["sigma"])
         trace = generate_trace(seed, T, config.DEFAULT_BETA)
-        result = run_online_policy(trace, "proxy_label_recovery", q=q, proxy_sigma=sigma)
-        return [_row(trace, "recoverability_phase_map", f"q_{q:.2f}_sigma_{sigma:.2f}", result, beta=config.DEFAULT_BETA)]
+        result = run_online_policy(
+            trace, "proxy_label_recovery", q=q, proxy_sigma=sigma
+        )
+        return [
+            _row(
+                trace,
+                "recoverability_phase_map",
+                f"q_{q:.2f}_sigma_{sigma:.2f}",
+                result,
+                beta=config.DEFAULT_BETA,
+            )
+        ]
 
     if kind == "delay_coupling":
         beta = float(task["beta"])
@@ -220,8 +336,18 @@ def run_task(task: dict[str, Any]) -> list[dict[str, Any]]:
             ("proxy_label_recovery", 0.0),
             ("source_labelled_reference", 1.0),
         ]:
-            result = run_online_policy(trace, method_id, q=q, proxy_sigma=config.DEFAULT_PROXY_SIGMA)
-            rows.append(_row(trace, "delay_state_coupling_diagnostic", f"beta_{beta:.2f}", result, beta=beta))
+            result = run_online_policy(
+                trace, method_id, q=q, proxy_sigma=config.DEFAULT_PROXY_SIGMA
+            )
+            rows.append(
+                _row(
+                    trace,
+                    "delay_state_coupling_diagnostic",
+                    f"beta_{beta:.2f}",
+                    result,
+                    beta=beta,
+                )
+            )
         return rows
 
     raise ValueError(f"unknown task kind {kind}")

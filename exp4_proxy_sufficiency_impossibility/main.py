@@ -1,8 +1,15 @@
 """One-command Exp4 pipeline.  Every invocation creates an isolated run directory."""
+
 from __future__ import annotations
 
 import os
-for _thread_env in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS", "NUMEXPR_NUM_THREADS"):
+
+for _thread_env in (
+    "OMP_NUM_THREADS",
+    "OPENBLAS_NUM_THREADS",
+    "MKL_NUM_THREADS",
+    "NUMEXPR_NUM_THREADS",
+):
     os.environ[_thread_env] = "1"
 
 import argparse

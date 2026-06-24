@@ -4,6 +4,7 @@ All main-period features are built from completed history and earlier main bins.
 No aggregate statistic from future main bins is used as a fallback, imputation
 constant, or score component.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass
@@ -61,7 +62,11 @@ class ProxyPriors:
 
     @property
     def composite_mean(self) -> float:
-        return self.composite_sum / self.composite_count if self.composite_count > 0 else 0.0
+        return (
+            self.composite_sum / self.composite_count
+            if self.composite_count > 0
+            else 0.0
+        )
 
 
 def decision_bin(values: np.ndarray | pd.Series, width: int) -> np.ndarray:
@@ -127,10 +132,14 @@ def history_mean_static_scores(
     total_count = float(cells["target_count"].sum())
     fallback = total_sum / total_count if total_count > 0 else 0.0
     scores = np.full(len(actions), fallback, dtype=float)
-    grouped = cells.groupby("action_idx", sort=False).agg(target_sum=("target_sum", "sum"), target_count=("target_count", "sum"))
+    grouped = cells.groupby("action_idx", sort=False).agg(
+        target_sum=("target_sum", "sum"), target_count=("target_count", "sum")
+    )
     for action_idx, record in grouped.iterrows():
         if float(record.target_count) > 0:
-            scores[int(action_idx)] = float(record.target_sum) / float(record.target_count)
+            scores[int(action_idx)] = float(record.target_sum) / float(
+                record.target_count
+            )
     return scores
 
 
@@ -178,7 +187,10 @@ def _feature_state_by_bin(
     the completed history split when scoring main. This prevents the former
     full-main-period look-ahead through global proxy means.
     """
-    by_bin = {int(bin_id): frame for bin_id, frame in proxy_cells.groupby("source_bin", sort=False)}
+    by_bin = {
+        int(bin_id): frame
+        for bin_id, frame in proxy_cells.groupby("source_bin", sort=False)
+    }
     if initial_ewma is None:
         ewma_mean = np.zeros(n_actions, dtype=float)
         ewma_updates = np.zeros(n_actions, dtype=float)
@@ -194,11 +206,17 @@ def _feature_state_by_bin(
     for bin_id in sorted(map(int, bins)):
         previous = by_bin.get(bin_id - width)
         if previous is not None and not previous.empty:
-            ewma_mean, ewma_updates = _state_update(ewma_mean, ewma_updates, previous, cfg.ewma_alpha)
+            ewma_mean, ewma_updates = _state_update(
+                ewma_mean, ewma_updates, previous, cfg.ewma_alpha
+            )
             completed_proxy_sum += float(previous["proxy_sum"].sum())
             completed_proxy_count += float(previous["proxy_count"].sum())
 
-        fallback_mean = completed_proxy_sum / completed_proxy_count if completed_proxy_count > 0 else 0.0
+        fallback_mean = (
+            completed_proxy_sum / completed_proxy_count
+            if completed_proxy_count > 0
+            else 0.0
+        )
         lag_mean = np.full(n_actions, fallback_mean, dtype=float)
         lag_count = np.zeros(n_actions, dtype=float)
         if previous is not None and not previous.empty:
@@ -231,8 +249,12 @@ def _final_ewma(
 ) -> tuple[np.ndarray, np.ndarray]:
     ewma_mean = np.zeros(n_actions, dtype=float)
     ewma_updates = np.zeros(n_actions, dtype=float)
-    for _, frame in proxy_cells.sort_values("source_bin").groupby("source_bin", sort=True):
-        ewma_mean, ewma_updates = _state_update(ewma_mean, ewma_updates, frame, cfg.ewma_alpha)
+    for _, frame in proxy_cells.sort_values("source_bin").groupby(
+        "source_bin", sort=True
+    ):
+        ewma_mean, ewma_updates = _state_update(
+            ewma_mean, ewma_updates, frame, cfg.ewma_alpha
+        )
     return ewma_mean, ewma_updates
 
 
@@ -272,7 +294,9 @@ def make_design_matrix(
     if name == "short_term_ridge_proxy":
         return np.column_stack([intercept, one_hot, lag_mean, lag_count])
     if name == "history_ewma_ridge_proxy":
-        return np.column_stack([intercept, one_hot, lag_mean, lag_count, ewma_mean, ewma_count])
+        return np.column_stack(
+            [intercept, one_hot, lag_mean, lag_count, ewma_mean, ewma_count]
+        )
     raise ValueError(f"Unknown ridge proxy: {name}")
 
 
@@ -298,20 +322,31 @@ def fit_ridge_proxy(
     for record in targets.itertuples(index=False):
         bin_id, action_index = int(record.source_bin), int(record.action_idx)
         lag_mean, lag_count, ewma_mean, ewma_count = states[bin_id]
-        rows.append((
-            action_index,
-            float(lag_mean[action_index]),
-            float(lag_count[action_index]),
-            float(ewma_mean[action_index]),
-            float(ewma_count[action_index]),
-            float(record.observed_target),
-        ))
+        rows.append(
+            (
+                action_index,
+                float(lag_mean[action_index]),
+                float(lag_count[action_index]),
+                float(ewma_mean[action_index]),
+                float(ewma_count[action_index]),
+                float(record.observed_target),
+            )
+        )
     train = pd.DataFrame(
         rows,
-        columns=["action_idx", "lag_mean", "lag_count", "ewma_mean", "ewma_count", "target"],
+        columns=[
+            "action_idx",
+            "lag_mean",
+            "lag_count",
+            "ewma_mean",
+            "ewma_count",
+            "target",
+        ],
     )
     if len(train) < max(10, n_actions):
-        raise ValueError("Insufficient valid historical action-bin cells to fit ridge proxy.")
+        raise ValueError(
+            "Insufficient valid historical action-bin cells to fit ridge proxy."
+        )
 
     design = make_design_matrix(
         model_name,
@@ -327,10 +362,17 @@ def fit_ridge_proxy(
     penalty[0, 0] = 0.0
     beta = np.linalg.pinv(design.T @ design + penalty) @ (design.T @ outcome)
 
-    feature_names = ["intercept", *[f"action_{action}" for action in actions], "lag_proxy_mean", "log1p_lag_proxy_count"]
+    feature_names = [
+        "intercept",
+        *[f"action_{action}" for action in actions],
+        "lag_proxy_mean",
+        "log1p_lag_proxy_count",
+    ]
     if model_name == "history_ewma_ridge_proxy":
         feature_names += ["ewma_proxy_mean", "log1p_ewma_updates"]
-    return RidgeProxyModel(model_name, beta, n_actions, feature_names, float(cfg.ridge_alpha))
+    return RidgeProxyModel(
+        model_name, beta, n_actions, feature_names, float(cfg.ridge_alpha)
+    )
 
 
 def predict_ridge_proxy(
@@ -366,15 +408,23 @@ def build_main_proxy_scores(
         initial_proxy_totals=(priors.proxy_sum, priors.proxy_count),
     )
     models = {
-        "short_term_ridge_proxy": fit_ridge_proxy(history_events, actions, "short_term_ridge_proxy", cfg),
-        "history_ewma_ridge_proxy": fit_ridge_proxy(history_events, actions, "history_ewma_ridge_proxy", cfg),
+        "short_term_ridge_proxy": fit_ridge_proxy(
+            history_events, actions, "short_term_ridge_proxy", cfg
+        ),
+        "history_ewma_ridge_proxy": fit_ridge_proxy(
+            history_events, actions, "history_ewma_ridge_proxy", cfg
+        ),
     }
 
     static_scores = history_mean_static_scores(history_events, actions, cfg)
     score_map: dict[str, dict[int, np.ndarray]] = {
-        method: {} for method in [*models, "short_term_composite_surrogate", "history_mean_static"]
+        method: {}
+        for method in [*models, "short_term_composite_surrogate", "history_mean_static"]
     }
-    proxy_by_bin = {int(bin_id): frame for bin_id, frame in main_proxy.groupby("source_bin", sort=False)}
+    proxy_by_bin = {
+        int(bin_id): frame
+        for bin_id, frame in main_proxy.groupby("source_bin", sort=False)
+    }
     completed_composite_sum = priors.composite_sum
     completed_composite_count = priors.composite_count
     last_bin: int | None = None
@@ -419,20 +469,24 @@ def build_main_proxy_scores(
     coefficient_rows: list[dict[str, object]] = []
     for method, model in models.items():
         for feature, coefficient in zip(model.feature_names, model.beta):
-            coefficient_rows.append({
-                "method_id": method,
-                "feature": feature,
-                "coefficient": float(coefficient),
-                "ridge_alpha": model.alpha,
-                "fit_split": "history_standard_only",
-                "main_feature_fallback": "completed_history_plus_earlier_main_bins_only",
-            })
-    coefficient_rows.append({
-        "method_id": "history_mean_static",
-        "feature": "history_action_target_mean",
-        "coefficient": 1.0,
-        "ridge_alpha": np.nan,
-        "fit_split": "history_standard_only",
-        "main_feature_fallback": "not_applicable_history_static_control",
-    })
+            coefficient_rows.append(
+                {
+                    "method_id": method,
+                    "feature": feature,
+                    "coefficient": float(coefficient),
+                    "ridge_alpha": model.alpha,
+                    "fit_split": "history_standard_only",
+                    "main_feature_fallback": "completed_history_plus_earlier_main_bins_only",
+                }
+            )
+    coefficient_rows.append(
+        {
+            "method_id": "history_mean_static",
+            "feature": "history_action_target_mean",
+            "coefficient": 1.0,
+            "ridge_alpha": np.nan,
+            "fit_split": "history_standard_only",
+            "main_feature_fallback": "not_applicable_history_static_control",
+        }
+    )
     return score_map, models, pd.DataFrame(coefficient_rows)

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run and validate the full Toy experiment."""
+
 from __future__ import annotations
 import subprocess
 import sys

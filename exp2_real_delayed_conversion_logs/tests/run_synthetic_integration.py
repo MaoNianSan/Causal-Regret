@@ -5,6 +5,7 @@ clean fast outputs.  It validates current configuration aliases, UID ``-1``
 filtering, source-event delay semantics, semantic checks, and deterministic
 UID bootstrap output across one and four workers.
 """
+
 from __future__ import annotations
 
 import hashlib
@@ -53,11 +54,15 @@ def main() -> None:
     _run([PYTHON, "tests/generate_synthetic_fixture.py", "--output", str(FIXTURE)])
 
     _run(_fast_command(1))
-    _run([PYTHON, "tests/check_decision_cell_smoke.py", "--output-root", "outputs/fast"])
+    _run(
+        [PYTHON, "tests/check_decision_cell_smoke.py", "--output-root", "outputs/fast"]
+    )
     hash_jobs_1 = _sha256(BOOTSTRAP)
 
     _run(_fast_command(4))
-    _run([PYTHON, "tests/check_decision_cell_smoke.py", "--output-root", "outputs/fast"])
+    _run(
+        [PYTHON, "tests/check_decision_cell_smoke.py", "--output-root", "outputs/fast"]
+    )
     hash_jobs_4 = _sha256(BOOTSTRAP)
     if hash_jobs_1 != hash_jobs_4:
         raise RuntimeError(

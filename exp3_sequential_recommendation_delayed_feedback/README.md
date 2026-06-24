@@ -1,6 +1,6 @@
-# Experiment 3 — Offline recoverability of a constructed 6h target in KuaiRand logs
+# Experiment 3: Offline Recoverability of a Constructed 6h Target in KuaiRand Logs
 
-## Scope and interpretation boundary
+## Scope and Interpretation Boundary
 
 Experiment 3 is an **offline logged-support recoverability diagnostic**, not an online recommendation-policy evaluation. A source event is a standard-feed user--video exposure. For an eligible event at time \(t\), the constructed future-engagement target is
 
@@ -18,7 +18,7 @@ Y^{(6h)}_{u,t}=\log\{1+V^{(6h)}_{u,t}\}.
 
 The target is constructed from later engagement in the same standard-log split. It is **not** an official platform utility, native delayed-conversion label, identified causal effect, off-policy estimate, or online policy value.
 
-## Fixed protocol
+## Fixed Protocol
 
 - **History split:** `log_standard_4_08_to_4_21_1k.csv`
 - **Held-out main split:** `log_standard_4_22_to_5_08_1k.csv`
@@ -30,7 +30,7 @@ The target is constructed from later engagement in the same standard-log split. 
 
 The standard history split alone defines the action vocabulary and fits the ridge proxy. Main-split proxy features use completed history and earlier main bins only. The carrier route assigns an arriving outcome to the most recent same-user standard exposure at or before arrival.
 
-## Required raw inputs
+## Required Raw Inputs
 
 Place the following files under `inputs/KuaiRand-1K/data/`:
 
@@ -42,7 +42,7 @@ video_features_basic_1k.csv
 
 The random-exposure log is optional and is not used in the primary Exp3 target construction.
 
-## Before every rerun
+## Before Every Rerun
 
 Run the static and temporal checks first:
 
@@ -53,7 +53,7 @@ python tests/test_temporal_contracts.py
 
 The runner refuses to mix a new run with stale active outputs. When rerunning a mode, pass `--clean-output`; this removes only active artifacts for that mode and preserves `outputs/<mode>/legacy/`.
 
-## Fast run
+## Fast Run
 
 ```bash
 python reproduce_fast.py --n-jobs 12 --clean-output
@@ -62,7 +62,7 @@ python self_check.py --mode fast
 
 When original KuaiRand files are absent, fast mode creates a deterministic synthetic fixture solely for software and figure-contract testing. Such output is always `paper_result=false` and cannot be cited in the paper.
 
-## Full run
+## Full Run
 
 ```bash
 python reproduce_full.py --n-jobs 24 --clean-output
@@ -81,7 +81,7 @@ python refresh_full_figures.py
 
 This reads existing `outputs/full` summaries and metadata, rewrites only active figure bundles and the artifact manifest, and does not rerun `reproduce_full.py`.
 
-## Output contract
+## Output Contract
 
 Each run writes to `outputs/<mode>/`:
 
@@ -134,11 +134,11 @@ The arrival-mechanism contrast and source-label coverage curve are audit-only; t
 
 The main figure visual contract fixes Panel A to `short_term_ridge_proxy` (`ST ridge`) and Panel B to seven routes in this order: `source_aware_reference`, `partial_source_label_q50`, `partial_source_label_q30`, `partial_source_label_q10`, `history_mean_static`, `short_term_ridge_proxy`, `short_term_composite_surrogate`. The horizon figure marks `6h (primary)` as the prespecified primary horizon and reports right-censoring availability only.
 
-## Result boundary
+## Result Boundary
 
 The permitted conclusion is that a history-fitted short-term proxy can show held-out alignment with the constructed 6h target. A lower point estimate than `history_mean_static` does **not** establish an incremental dynamic decision-level gain when its paired confidence interval spans zero. Do not claim online policy improvement, OPE, causal regret, platform utility evaluation, label sufficiency, or monotonic label-rate recovery.
 
-## Release packaging
+## Release Packaging
 
 After a promoted full run:
 

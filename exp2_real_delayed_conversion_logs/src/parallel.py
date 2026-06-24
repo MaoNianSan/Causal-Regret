@@ -32,7 +32,9 @@ def available_cpus() -> int:
     return max(1, int(os.cpu_count() or 1))
 
 
-def resolve_n_jobs(cfg: dict, task_count: int | None = None, purpose: str = "analysis") -> int:
+def resolve_n_jobs(
+    cfg: dict, task_count: int | None = None, purpose: str = "analysis"
+) -> int:
     """Resolve a portable worker count from configuration and current hardware.
 
     Rules:
@@ -77,19 +79,29 @@ def parallel_map(
     workers = resolve_n_jobs(cfg, len(sequence), purpose=purpose)
     if workers <= 1:
         return [fn(item) for item in sequence]
-    with ThreadPoolExecutor(max_workers=workers, thread_name_prefix=f"exp2-{purpose}") as pool:
+    with ThreadPoolExecutor(
+        max_workers=workers, thread_name_prefix=f"exp2-{purpose}"
+    ) as pool:
         # executor.map preserves input order, which keeps emitted artifacts stable.
         return list(pool.map(fn, sequence))
 
 
-def parallel_runtime_metadata(cfg: dict, *, analysis_tasks: int | None = None, bootstrap_tasks: int | None = None) -> dict:
+def parallel_runtime_metadata(
+    cfg: dict, *, analysis_tasks: int | None = None, bootstrap_tasks: int | None = None
+) -> dict:
     parallel = cfg.get("parallel", {}) if isinstance(cfg.get("parallel"), dict) else {}
     return {
         "parallel_backend": "ThreadPoolExecutor",
         "host_logical_cpus": available_cpus(),
-        "configured_n_jobs": cfg.get("runtime", {}).get("n_jobs", parallel.get("n_jobs", "auto")),
+        "configured_n_jobs": cfg.get("runtime", {}).get(
+            "n_jobs", parallel.get("n_jobs", "auto")
+        ),
         "reserve_cores": int(parallel.get("reserve_cores", 2)),
-        "resolved_analysis_workers": resolve_n_jobs(cfg, analysis_tasks, purpose="analysis"),
-        "resolved_bootstrap_workers": resolve_n_jobs(cfg, bootstrap_tasks, purpose="bootstrap"),
+        "resolved_analysis_workers": resolve_n_jobs(
+            cfg, analysis_tasks, purpose="analysis"
+        ),
+        "resolved_bootstrap_workers": resolve_n_jobs(
+            cfg, bootstrap_tasks, purpose="bootstrap"
+        ),
         "blas_threads_per_worker": int(parallel.get("blas_threads_per_worker", 1)),
     }

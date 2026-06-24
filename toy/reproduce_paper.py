@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Alias for the full Toy reproduction pipeline."""
+
 from reproduce_full import run, ROOT
 import sys
 

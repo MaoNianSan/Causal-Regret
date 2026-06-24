@@ -6,7 +6,9 @@ from src.runner import run
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Reproduce Experiment 2 paper-grade full outputs.")
+    parser = argparse.ArgumentParser(
+        description="Reproduce Experiment 2 paper-grade full outputs."
+    )
     parser.add_argument("--config", default=None)
     parser.add_argument("--n-bootstrap", type=int, default=None)
     parser.add_argument("--n-jobs", default="auto")
