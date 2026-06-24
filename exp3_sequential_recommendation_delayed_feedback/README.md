@@ -1,92 +1,38 @@
 # Experiment 3 — Offline recoverability of a constructed 6h target in KuaiRand logs
 
-## Scope and claim boundary
+## Scope and interpretation boundary
 
-Experiment 3 is an **offline logged-support diagnostic**, not an online
-recommendation-policy evaluation.  A source event is a standard-feed video
-exposure.  Its target is the same user's observed engagement in the subsequent
-six hours of the **same standard-log stream**:
+Experiment 3 is an **offline logged-support recoverability diagnostic**, not an online recommendation-policy evaluation. A source event is a standard-feed user--video exposure. For an eligible event at time \(t\), the constructed future-engagement target is
 
 \[
-V_{u,t}^{(6h)}=0.5\,\mathrm{long\_view}+1.0\,\mathrm{like}+1.0\,\mathrm{comment}+1.0\,\mathrm{forward}+1.5\,\mathrm{follow},\qquad
-Y_{u,t}=\log(1+V_{u,t}^{(6h)}).
+V^{(6h)}_{u,t}
+=
+0.5\,\mathrm{long\_view}
++1.0\,\mathrm{like}
++1.0\,\mathrm{comment}
++1.0\,\mathrm{forward}
++1.5\,\mathrm{follow},
+\qquad
+Y^{(6h)}_{u,t}=\log\{1+V^{(6h)}_{u,t}\}.
 \]
 
-This target is deliberately a constructed predictive outcome.  It is **not**
-an official KuaiRand utility, a native delayed-feedback label, an identified
-causal effect of the source exposure, or an off-policy policy value.
+The target is constructed from later engagement in the same standard-log split. It is **not** an official platform utility, native delayed-conversion label, identified causal effect, off-policy estimate, or online policy value.
 
-KuaiRand includes randomly exposed videos as a separate intervention regime.
-This protocol does not add the main-period random stream to the target because
-there is no matched historical random stream used for proxy fitting; adding it
-only at evaluation would alter the target between history and main splits.
+## Fixed protocol
 
-## Chronology and information interfaces
+- **History split:** `log_standard_4_08_to_4_21_1k.csv`
+- **Held-out main split:** `log_standard_4_22_to_5_08_1k.csv`
+- **Primary horizon:** 6h
+- **Action vocabulary:** 20 most frequent non-missing history tags; residual tags are retained in update accounting but excluded from candidate actions.
+- **Decision aggregation:** 1 day.
+- **Primary ranking metric:** offline 6h ranking regret under a support-restricted daily action set.
+- **Bootstrap:** user-cluster bootstrap; fast uses 100 draws and 3 label-mask trajectories, full uses 1,000 draws and 30 label-mask trajectories.
 
-- `history standard` is used to construct the history target, define the fixed
-  category vocabulary, and fit ridge coefficients.
-- `main standard` supplies held-out source events, lagged short-term features,
-  the constructed 6h target, and evaluation support. Main-period proxy features are restricted to completed history and earlier main bins; no full-main fallback statistic is used.
-- The category vocabulary contains the 20 most frequent non-missing history
-  tags.  The residual `other` bucket is retained in update accounting but is
-  never a candidate action.
-- The action set available in a daily evaluation bin is support restricted to
-  history-defined categories with sufficient main-log target observations in
-  that bin.  This is an **evaluation support restriction**, not a claimed
-  platform candidate set.
-- A pseudo-arrival delay lies in `[6h, 10h]`, after the full 6h outcome window.
-  The coupled condition uses only an action-level history target score to rank
-  the fixed delay pool.
-- At feedback arrival, the carrier action is the **most recent same-user
-  standard exposure at or before arrival**.  No future exposure can be used as
-  a carrier.
+The standard history split alone defines the action vocabulary and fits the ridge proxy. Main-split proxy features use completed history and earlier main bins only. The carrier route assigns an arriving outcome to the most recent same-user standard exposure at or before arrival.
 
-## Methods
+## Required raw inputs
 
-| Method id | Information interface | Role in this diagnostic |
-|---|---|---|
-| `arrival_time_naive` | arrival-time carrier | Operational mismatch baseline |
-| `partial_source_label_q10/q30/q50` | partial source labels + carrier fallback | Recoverability regimes |
-| `short_term_ridge_proxy` | history-fitted ridge over lagged short-term signals | Main proxy route |
-| `short_term_composite_surrogate` | lagged fixed composite | Main surrogate route |
-| `history_ewma_ridge_proxy` | history EWMA plus lagged signals | Appendix proxy robustness check |
-| `history_mean_static` | completed-history action mean only | Diagnostic control for stable category persistence |
-| `source_aware_reference` | current source-bin target | Offline reference only |
-
-The `q` routes use deterministic event-level masks.  A labelled outcome updates
-its source action, while an unlabelled outcome updates its arrival-time carrier.
-Thus `q=0` equals the arrival-carrier route and `q=1` equals source-labelled
-empirical updating.
-
-## Evaluation and uncertainty
-
-At each daily epoch, a route ranks the same support-restricted category set.
-The primary metric is:
-
-\[
-\mathrm{ranking\_regret}_b =
-\max_{a\in\mathcal A_b^{\mathrm{support}}} \bar Y_{b,a}
-- \bar Y_{b,\hat a_b}.
-\]
-
-The source-aware route is a reference that sees the current source-bin target
-means; it is never interpreted as deployable.
-
-Uncertainty uses user-cluster resampling conditional on the observed calendar
-window. The procedure replays arrival/carrier updates under sampled user
-weights. Partial-label routes pair each draw with one event-level mask
-trajectory sampled from a finite bank (3 in fast mode; 30 in full mode).
-History-fitted ridge coefficients, proxy score paths, and support masks remain
-fixed. This is a conditional diagnostic interval, not a full-retraining or OPE
-confidence interval. The paired arrival-mechanism CSV audit uses the same
-user-bootstrap weights across independent and coupled conditions. The run also
-reports oracle top-action diversity and switch frequency, and a paired
-`ST ridge` versus `History mean` comparison; the latter is the required control
-for claims about incremental dynamic proxy information.
-
-## Input files
-
-Place the required original files under `inputs/KuaiRand-1K/data/`:
+Place the following files under `inputs/KuaiRand-1K/data/`:
 
 ```text
 log_standard_4_08_to_4_21_1k.csv
@@ -94,126 +40,101 @@ log_standard_4_22_to_5_08_1k.csv
 video_features_basic_1k.csv
 ```
 
-The random log and other feature files are optional audit inputs and are not
-required by the primary v5 run.
+The random-exposure log is optional and is not used in the primary Exp3 target construction.
 
-## Run
+## Before every rerun
+
+Run the static and temporal checks first:
 
 ```bash
 python code_check.py
-python reproduce_fast.py --n-jobs 12
+python tests/test_temporal_contracts.py
+```
+
+The runner refuses to mix a new run with stale active outputs. When rerunning a mode, pass `--clean-output`; this removes only active artifacts for that mode and preserves `outputs/<mode>/legacy/`.
+
+## Fast run
+
+```bash
+python reproduce_fast.py --n-jobs 12 --clean-output
 python self_check.py --mode fast
 ```
 
-Without the original KuaiRand files, fast mode creates a deterministic synthetic
-fixture for interface testing only.  Such output is always `paper_result=false`.
+When original KuaiRand files are absent, fast mode creates a deterministic synthetic fixture solely for software and figure-contract testing. Such output is always `paper_result=false` and cannot be cited in the paper.
+
+## Full run
 
 ```bash
-python reproduce_full.py --n-jobs 24
+python reproduce_full.py --n-jobs 24 --clean-output
 python self_check.py --mode full
 python self_check.py --mode full --promote-paper-result
+python self_check.py --mode full
+```
+
+Full mode is blocked if the three required raw inputs are absent. Do not run `build_upload_packages.py` until the final full self-check passes and the manifest reports `paper_result=true`.
+
+## Output contract
+
+Each run writes to `outputs/<mode>/`:
+
+```text
+raw/
+  sequential_decision_raw.csv
+  user_bootstrap_draws.csv
+  proxy_calibration_cells_raw.csv
+  proxy_calibration_bootstrap_draws.csv
+processed/
+  action_vocabulary.csv
+  fixed_action_bucket_map.csv
+  *_processed.parquet or *_processed.csv
+  *_source_events_with_targets.parquet or *_source_events_with_targets.csv
+  arrival_timeline_audit_sample_<condition>.csv
+summaries/
+  user_bootstrap_metric_summary.csv
+  paired_effect_vs_arrival_time.csv
+  paired_effect_vs_history_mean_static.csv
+  paired_mechanism_contrast.csv
+  oracle_action_dynamics_summary.csv
+  proxy_calibration_summary.csv
+  arrival_mechanism_summary.csv
+tables/
+  tbl_app_exp3_proxy_score_quality.csv
+  tbl_app_exp3_proxy_static_control.csv
+  tbl_app_exp3_source_label_sensitivity.csv
+figures/pdf/, figures/png/, figures/data/, figures/metadata/
+metadata/
+  run_manifest.json
+  run_config_snapshot.json
+  input_data_manifest.csv
+  artifacts_manifest.csv
+checks/
+  input_schema_report.csv
+  code_check_report.csv
+  self_check_report.csv
+reports/
+  experiment_refactor_completion_report.md
+```
+
+Every active figure has four synchronized members: PDF, PNG, source-data CSV, and metadata JSON. The only active paper interfaces are:
+
+```text
+fig_exp3_long_term_recoverability
+fig_app_exp3_horizon_eligibility
+```
+
+The arrival-mechanism contrast and source-label coverage curve are audit-only; they are not active paper figures.
+
+## Result boundary
+
+The permitted conclusion is that a history-fitted short-term proxy can show held-out alignment with the constructed 6h target. A lower point estimate than `history_mean_static` does **not** establish an incremental dynamic decision-level gain when its paired confidence interval spans zero. Do not claim online policy improvement, OPE, causal regret, platform utility evaluation, label sufficiency, or monotonic label-rate recovery.
+
+## Release packaging
+
+After a promoted full run:
+
+```bash
 python build_upload_packages.py
 python verify_release_package.py
 ```
 
-Full mode is blocked when the required real inputs are absent.
-
-## Outputs
-
-```text
-outputs/<mode>/
-  raw/
-  processed/
-  summaries/
-  tables/
-  figures/pdf/
-  figures/png/
-  figures/data/
-  figures/metadata/
-  metadata/
-  checks/
-  reports/
-```
-
-Every figure has PDF, PNG, source CSV, and metadata JSON. Input SHA-256 hashes,
-config hash, run id, and artifact checksums are retained in the output manifest.
-A successful full-data promotion regenerates every active figure bundle with
-`paper_result=true`. Active figures are the main recoverability figure and the
-appendix horizon-eligibility diagnostic. Source-label sensitivity is emitted as
-`tbl_app_exp3_source_label_sensitivity.csv`, including the absolute expected
-number of labelled outcomes; it is intentionally not a monotonicity-looking
-curve. The matched-mechanism contrast remains an audit CSV only. Additional
-audit summaries include `paired_mechanism_contrast.csv`,
-`paired_effect_vs_history_mean_static.csv`, and
-`oracle_action_dynamics_summary.csv`.
-
-Fast outputs are never paper results. Only promoted full outputs with
-`paper_result=true` may be cited from LaTeX.
-
-Paper-facing outputs are limited to:
-
-```text
-outputs/full/figures/pdf/fig_exp3_long_term_recoverability.pdf
-outputs/full/figures/pdf/fig_app_exp3_horizon_eligibility.pdf
-outputs/full/tables/tbl_app_exp3_proxy_static_control.csv
-outputs/full/tables/tbl_app_exp3_source_label_sensitivity.csv
-outputs/full/tables/tbl_app_exp3_proxy_score_quality.csv
-
-## GitHub packaging notes
-
-### Purpose
-
-Offline recoverability diagnostic for constructed delayed targets in sequential recommendation logs.
-
-### Directory layout
-
-- `src/`: shared artifact and runner support.
-- `inputs/`: local-only KuaiRand placement notes; raw data files and archives are ignored.
-- `ipy/`: GitHub-facing result-check notebook.
-- `outputs/`: committed lightweight summaries, figures, tables, checks, metadata, reports, and manifests; processed/raw intermediates are ignored.
-- `docs/`: experiment specification, metric specification, and paper-interface notes.
-- `tests/`: lightweight temporal contract checks.
-
-### Input data requirement
-
-Full reproduction requires the KuaiRand-1K files listed above under `inputs/KuaiRand-1K/data/`, obtained from the official source under the dataset license. These files are not redistributed.
-
-### How to run fast validation
-
-Use `python reproduce_fast.py --n-jobs 12`, then `python self_check.py --mode fast`. Fast mode may use a deterministic synthetic fixture when real data is absent and is not paper-eligible.
-
-### How to run full reproduction
-
-Use `python reproduce_full.py --n-jobs 24`, then the documented full self-check and promotion commands. Full mode requires external KuaiRand files and was not run during final packaging.
-
-### How to inspect existing results
-
-Open `ipy/exp3_result_check.ipynb` or inspect `outputs/full/summaries/`, `outputs/full/figures/`, `outputs/full/tables/`, `outputs/full/checks/`, and `release_manifest.*`.
-
-### Expected outputs
-
-Expected GitHub-facing outputs are recoverability figures, appendix tables, summary CSV files, bootstrap/audit summaries, checks, metadata, reports, and release manifests.
-
-### What is committed to GitHub
-
-Source code, README/docs, notebooks, tests, manifests, lightweight summaries, figures, tables, checks, metadata, and reports.
-
-### What remains local and why
-
-KuaiRand raw files, downloaded archives, processed parquet files, raw outputs, and large audit intermediates remain local because of size and dataset-license constraints.
-outputs/full/summaries/paired_effect_vs_history_mean_static.csv
-```
-
-Retired/audit-only figure interfaces are:
-
-```text
-fig_app_exp3_arrival_mechanism_contrast
-fig_app_exp3_source_label_coverage
-fig_app_exp3_horizon_saturation
-```
-
-The upload archives exclude raw KuaiRand inputs, user-level raw logs, full raw
-event-level outputs, large temporary CSVs, cache directories, legacy synthetic
-fixture outputs, and retired figure bundles. The reproducibility archive instead
-includes input-path and SHA-256 templates plus instructions for obtaining the
-KuaiRand data separately.
+The release verifier checks active figure bundles, release-manifest hashes, checksum-index hashes, archive sidecars, and exclusion of raw KuaiRand inputs and full raw event-level outputs.

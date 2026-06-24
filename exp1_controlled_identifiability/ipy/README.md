@@ -1,9 +1,10 @@
-# Result-inspection notebooks
+# Result-inspection notebook
 
-No executed result notebook is shipped with this clean source package. This
-prevents historical fast/full outputs from being mistaken for a new rerun.
+`exp1_result_check.ipynb` is a read-only inspection notebook for an existing
+Exp1 output bundle. It is intentionally stored without executed outputs so that
+historical fast/full results are not mistaken for a fresh rerun.
 
-After a completed run, inspect:
+After a completed run, the notebook inspects:
 
 ```text
 outputs/<mode>/checks/self_check_report.csv

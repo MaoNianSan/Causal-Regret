@@ -6,6 +6,8 @@ from pathlib import Path
 
 import pandas as pd
 
+from utils import save_dataframe
+
 ROOT = Path(__file__).resolve().parent
 TEXT_EXTENSIONS = {".py", ".md", ".txt", ".json", ".yaml", ".yml"}
 FORBIDDEN_TOKENS = [
@@ -31,6 +33,9 @@ REQUIRED_TOKENS = [
     "history_standard_only",
     "completed_history_plus_earlier_main_bins_only",
     "write_artifact_manifest",
+    "utf8_safe_text",
+    "clean_output",
+    "self_reference_excluded",
 ]
 
 
@@ -81,6 +86,16 @@ def main() -> int:
     self_check = (ROOT / "self_check.py").read_text(encoding="utf-8")
     if "retired figure remains active" not in self_check:
         errors.append("self-check does not guard against stale active retired figures")
+    if "promotion_status" not in self_check:
+        errors.append("self-check report does not preserve promotion status")
+
+    runner_source = (ROOT / "src" / "runner.py").read_text(encoding="utf-8")
+    if "Existing active output detected" not in runner_source:
+        errors.append("runner lacks stale-output protection")
+
+    release_source = (ROOT / "release_support.py").read_text(encoding="utf-8")
+    if "release manifest must not include itself" not in release_source or "artifact_sha256sums.txt must not include itself" not in release_source:
+        errors.append("release checks do not prevent recursive checksum manifests")
 
     for output_dir in [ROOT / "outputs" / "fast", ROOT / "outputs" / "full"]:
         if output_dir.exists():

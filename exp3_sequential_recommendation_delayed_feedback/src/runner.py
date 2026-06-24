@@ -4,6 +4,7 @@ from __future__ import annotations
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 import os
+import shutil
 from pathlib import Path
 import platform
 import sys
@@ -19,7 +20,9 @@ from plot_results import plot_all
 from recoverability import run_recoverability_experiment
 from synthetic_data import create_fast_fixture
 from utils import (
+    logical_path,
     sha256_file,
+    utf8_safe_text,
     save_dataframe,
     stable_json_hash,
     write_artifact_manifest,
@@ -62,6 +65,43 @@ def _output_dir(mode: str) -> Path:
     return ROOT / "outputs" / mode
 
 
+ACTIVE_OUTPUT_CHILDREN = (
+    "raw", "processed", "summaries", "tables", "checks", "logs", "metadata",
+    "reports", "figures", "_synthetic_input", "run_manifest.json", "manifest.csv",
+)
+
+
+def _active_output_exists(output_dir: Path) -> bool:
+    """Return whether a prior run could contaminate a new active output tree."""
+    return any((output_dir / name).exists() for name in ACTIVE_OUTPUT_CHILDREN)
+
+
+def _clear_active_output_tree(output_dir: Path) -> None:
+    """Remove only active run artifacts before an explicitly requested rerun.
+
+    ``legacy/`` is deliberately preserved.  A user must opt in via
+    ``--clean-output`` rather than silently mixing new and stale artifacts.
+    """
+    for name in ACTIVE_OUTPUT_CHILDREN:
+        path = output_dir / name
+        if path.is_dir():
+            shutil.rmtree(path)
+        elif path.exists():
+            path.unlink()
+
+
+def _prepare_output_dir(output_dir: Path, clean_output: bool) -> None:
+    output_dir.mkdir(parents=True, exist_ok=True)
+    if _active_output_exists(output_dir):
+        if not clean_output:
+            raise RuntimeError(
+                f"Existing active output detected at {logical_path(output_dir, ROOT)}. "
+                "Use --clean-output to start a fresh run and prevent stale-artifact mixing."
+            )
+        _clear_active_output_tree(output_dir)
+    ensure_output_dirs(output_dir)
+
+
 def _write_environment(output_dir: Path, n_jobs: int) -> None:
     ensure_output_dirs(output_dir)
     payload = (
@@ -78,8 +118,8 @@ def _input_manifest(root: Path, cfg: ExperimentConfig) -> pd.DataFrame:
     rows: list[dict[str, object]] = []
     for path in required_input_paths(root, cfg):
         rows.append({
-            "input_path": str(path),
-            "file_name": path.name,
+            "input_path": logical_path(path, root),
+            "file_name": utf8_safe_text(path.name),
             "required_for_primary": True,
             "size_bytes": path.stat().st_size,
             "sha256": sha256_file(path),
@@ -88,7 +128,7 @@ def _input_manifest(root: Path, cfg: ExperimentConfig) -> pd.DataFrame:
     if not optional.exists():
         optional = root / cfg.random_log
     rows.append({
-        "input_path": str(optional),
+        "input_path": logical_path(optional, root),
         "file_name": cfg.random_log,
         "required_for_primary": False,
         "size_bytes": optional.stat().st_size if optional.exists() else np.nan,
@@ -171,26 +211,20 @@ The package evaluates offline recoverability of a constructed 6h target on logge
     (output_dir / "reports" / "experiment_refactor_completion_report.md").write_text(text, encoding="utf-8")
 
 
-def run(mode: str, n_jobs: int | None = None) -> int:
-    """Execute one reproducible Exp3 run."""
+def run(mode: str, n_jobs: int | None = None, *, clean_output: bool = False) -> int:
+    """Execute one reproducible Exp3 run with an explicit stale-output guard."""
     cfg = _mode_config(mode)
     workers = resolve_n_jobs(mode, n_jobs)
     output_dir = _output_dir(mode)
-    _write_environment(output_dir, workers)
-
     real_root = find_real_input_root(cfg)
     if mode == "full" and real_root is None:
-        manifest = {
-            "project_id": "exp3_long_term_recoverability",
-            "run_mode": mode,
-            "status": "blocked_missing_input",
-            "input_data_status": "missing",
-            "paper_result": False,
-            "error": "Full mode requires standard KuaiRand-1K input files; no synthetic fallback is allowed.",
-        }
-        write_json(output_dir / "metadata" / "run_manifest.json", manifest)
+        # Never clear or overwrite a prior full result merely because a caller
+        # invoked full mode before restoring the raw input files.
         print("[BLOCKED] full mode requires real KuaiRand-1K standard logs under inputs/KuaiRand-1K/data/.")
         return 2
+
+    _prepare_output_dir(output_dir, clean_output=clean_output)
+    _write_environment(output_dir, workers)
 
     if real_root is None:
         input_root = create_fast_fixture(output_dir / "_synthetic_input", cfg)
@@ -221,8 +255,16 @@ def run(mode: str, n_jobs: int | None = None) -> int:
         "carrier_rule": "most_recent_same_user_standard_exposure_at_or_before_arrival",
         "main_feature_information": "completed_history_plus_earlier_main_bins_only",
         "config": config_payload,
+        "clean_output_requested": bool(clean_output),
     }
     write_json(output_dir / "metadata" / "run_manifest.json", manifest)
+    write_json(output_dir / "metadata" / "run_config_snapshot.json", {
+        "project_id": manifest["project_id"],
+        "run_id": run_id,
+        "config_hash": config_hash,
+        "config": config_payload,
+        "n_jobs": workers,
+    })
 
     try:
         save_dataframe(_input_manifest(input_root, cfg), output_dir / "metadata" / "input_data_manifest.csv")

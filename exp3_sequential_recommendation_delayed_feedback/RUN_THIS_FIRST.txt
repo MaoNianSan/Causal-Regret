@@ -1,0 +1,8 @@
+1. Put the three required KuaiRand files under inputs/KuaiRand-1K/data/.
+2. Run: python code_check.py
+3. Run: python tests/test_temporal_contracts.py
+4. Run real fast: python reproduce_fast.py --n-jobs 12 --clean-output
+5. Inspect outputs/fast/metadata/run_manifest.json and outputs/fast/checks/self_check_report.csv.
+6. Only after validating real fast, run: python reproduce_full.py --n-jobs 24 --clean-output
+
+Read README.md and docs/rerun_output_guide.md before running full.

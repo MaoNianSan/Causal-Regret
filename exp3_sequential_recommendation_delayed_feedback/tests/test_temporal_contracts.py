@@ -77,11 +77,22 @@ def test_static_control_table_reports_paired_effect() -> None:
     assert np.isclose(row["paired_regret_reduction_vs_history_mean"], .02)
 
 
+# This protects the storage-recovery case where a zip extraction leaves a
+# surrogate code point in a directory name.
+def test_utf8_safe_output_text() -> None:
+    from utils import utf8_safe_text
+
+    recovered = utf8_safe_text("broken_\udca9_path")
+    recovered.encode("utf-8")
+    assert "\\udca9" in recovered
+
+
 def main() -> int:
     test_carrier_never_uses_future_exposure()
     test_main_feature_state_ignores_future_bins()
     test_history_static_control_uses_history_only()
     test_static_control_table_reports_paired_effect()
+    test_utf8_safe_output_text()
     print("TEMPORAL CONTRACT TESTS PASSED")
     return 0
 

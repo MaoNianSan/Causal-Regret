@@ -14,7 +14,7 @@ import numpy as np
 import pandas as pd
 
 from config import DEFAULT_CONFIG, ExperimentConfig
-from utils import EPS, coerce_binary, coerce_numeric, maybe_save_parquet, parse_primary_tag, read_csv_checked, require_columns, save_dataframe
+from utils import EPS, coerce_binary, coerce_numeric, logical_path, maybe_save_parquet, parse_primary_tag, read_csv_checked, require_columns, save_dataframe, utf8_safe_text
 
 
 @dataclass
@@ -123,14 +123,14 @@ def write_precheck(root: Path, output_dir: Path, cfg: ExperimentConfig) -> None:
     rows = []
     for filename in [cfg.main_log, cfg.history_log, cfg.video_basic_file, cfg.random_log, cfg.user_feature_file, cfg.video_stat_file]:
         path = resolve_input_path(root, filename)
-        row = {"file_name": filename, "path": str(path), "required_for_primary": filename in {cfg.main_log, cfg.history_log, cfg.video_basic_file}, "exists": path.exists(), "n_columns": 0, "columns": ""}
+        row = {"file_name": filename, "path": logical_path(path, root), "required_for_primary": filename in {cfg.main_log, cfg.history_log, cfg.video_basic_file}, "exists": path.exists(), "n_columns": 0, "columns": ""}
         if path.exists():
             try:
                 head = pd.read_csv(path, nrows=3)
                 row["n_columns"] = len(head.columns)
                 row["columns"] = ";".join(head.columns.astype(str))
             except Exception as exc:
-                row["columns"] = f"READ_ERROR: {exc}"
+                row["columns"] = utf8_safe_text(f"READ_ERROR: {exc}")
         rows.append(row)
     save_dataframe(pd.DataFrame(rows), output_dir / "checks" / "input_schema_report.csv")
 

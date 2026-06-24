@@ -4,7 +4,7 @@
       "relative_path": "metadata/run_manifest.json",
       "required": true,
       "exists": true,
-      "bytes": 2514
+      "bytes": 2563
     },
     {
       "relative_path": "metadata/design_manifest.csv",
@@ -28,7 +28,7 @@
       "relative_path": "raw/seed_level_results.csv",
       "required": true,
       "exists": true,
-      "bytes": 7584330
+      "bytes": 7565955
     },
     {
       "relative_path": "processed/selected_trajectory_points.csv",
@@ -40,55 +40,55 @@
       "relative_path": "summaries/seed_summary.csv",
       "required": true,
       "exists": true,
-      "bytes": 7573875
+      "bytes": 7565534
     },
     {
       "relative_path": "summaries/method_summary.csv",
       "required": true,
       "exists": true,
-      "bytes": 138819
+      "bytes": 138551
     },
     {
       "relative_path": "summaries/diagnostic_summary.csv",
       "required": true,
       "exists": true,
-      "bytes": 133528
+      "bytes": 133264
     },
     {
       "relative_path": "summaries/paired_tests.csv",
       "required": true,
       "exists": true,
-      "bytes": 186559
+      "bytes": 186569
     },
     {
       "relative_path": "summaries/bootstrap_ci.csv",
       "required": true,
       "exists": true,
-      "bytes": 59587
+      "bytes": 59583
     },
     {
       "relative_path": "summaries/matched_mean_delay_summary.csv",
       "required": true,
       "exists": true,
-      "bytes": 53044
+      "bytes": 52941
     },
     {
       "relative_path": "tables/table_exp1_results.csv",
       "required": true,
       "exists": true,
-      "bytes": 138819
+      "bytes": 138551
     },
     {
       "relative_path": "tables/table_exp1_diagnostics.csv",
       "required": true,
       "exists": true,
-      "bytes": 133528
+      "bytes": 133264
     },
     {
       "relative_path": "tables/table_exp1_matched_delay.csv",
       "required": true,
       "exists": true,
-      "bytes": 53044
+      "bytes": 52941
     },
     {
       "relative_path": "tables/tbl_app_exp1_all_method_results.tex",
@@ -112,13 +112,13 @@
       "relative_path": "figures/data/fig_exp1_validity_boundary_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 13836
+      "bytes": 13805
     },
     {
       "relative_path": "figures/metadata/fig_exp1_validity_boundary_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 745
+      "bytes": 744
     },
     {
       "relative_path": "figures/png/fig_exp1_validity_boundary.png",
@@ -136,13 +136,13 @@
       "relative_path": "figures/data/fig_exp1_same_mean_delay_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 5582
+      "bytes": 5570
     },
     {
       "relative_path": "figures/metadata/fig_exp1_same_mean_delay_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 710
+      "bytes": 709
     },
     {
       "relative_path": "figures/png/fig_exp1_same_mean_delay.png",
@@ -160,13 +160,13 @@
       "relative_path": "figures/data/fig_exp1_attribution_diagnostics_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 53708
+      "bytes": 53612
     },
     {
       "relative_path": "figures/metadata/fig_exp1_attribution_diagnostics_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 774
+      "bytes": 773
     },
     {
       "relative_path": "figures/png/fig_exp1_attribution_diagnostics.png",
@@ -184,13 +184,13 @@
       "relative_path": "figures/data/fig_exp1_proxy_quality_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 1287
+      "bytes": 1285
     },
     {
       "relative_path": "figures/metadata/fig_exp1_proxy_quality_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 706
+      "bytes": 705
     },
     {
       "relative_path": "figures/png/fig_exp1_proxy_quality.png",
@@ -208,13 +208,13 @@
       "relative_path": "figures/data/fig_app_exp1_selected_trajectories_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 1130335
+      "bytes": 1127923
     },
     {
       "relative_path": "figures/metadata/fig_app_exp1_selected_trajectories_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 762
+      "bytes": 761
     },
     {
       "relative_path": "figures/png/fig_app_exp1_selected_trajectories.png",
@@ -232,13 +232,13 @@
       "relative_path": "figures/data/fig_app_exp1_mismatch_diagnostics_data.csv",
       "required": true,
       "exists": true,
-      "bytes": 5252
+      "bytes": 5242
     },
     {
       "relative_path": "figures/metadata/fig_app_exp1_mismatch_diagnostics_metadata.json",
       "required": true,
       "exists": true,
-      "bytes": 774
+      "bytes": 773
     },
     {
       "relative_path": "figures/png/fig_app_exp1_mismatch_diagnostics.png",

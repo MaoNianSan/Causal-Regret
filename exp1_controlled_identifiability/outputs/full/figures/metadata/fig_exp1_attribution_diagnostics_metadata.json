@@ -10,7 +10,7 @@
     5.3
   ],
   "figure_status": "paper_eligible",
-  "generated_at_utc": "2026-06-24T07:21:41.101395+00:00",
+  "generated_at_utc": "2026-06-24T07:32:09.830438+00:00",
   "input_data_status": "synthetic_complete",
   "metric_formula_id": "posterior_attribution_diagnostic",
   "metric_id": "posterior_attribution_diagnostic",

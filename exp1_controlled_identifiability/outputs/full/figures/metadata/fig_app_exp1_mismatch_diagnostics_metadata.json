@@ -10,7 +10,7 @@
     2.55
   ],
   "figure_status": "paper_eligible",
-  "generated_at_utc": "2026-06-24T07:21:42.166713+00:00",
+  "generated_at_utc": "2026-06-24T07:32:10.641129+00:00",
   "input_data_status": "synthetic_complete",
   "metric_formula_id": "source_binding_mismatch_diagnostic",
   "metric_id": "source_binding_mismatch_diagnostic",

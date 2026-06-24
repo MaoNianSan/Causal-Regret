@@ -1,7 +1,7 @@
-"""Final release artifact helpers for Exp3.
+"""Release packaging and integrity verification for promoted Exp3 full outputs.
 
-These helpers only normalize interfaces, document fixed full outputs, and
-package artifacts. They do not rerun the experiment or alter numeric results.
+These helpers never rerun the experiment or alter numeric estimates.  They only
+assemble release-facing files after a successful full-data promotion.
 """
 from __future__ import annotations
 
@@ -9,7 +9,7 @@ import csv
 import json
 import zipfile
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterable
 
 import pandas as pd
 
@@ -26,6 +26,19 @@ RETIRED_FIGURES = (
     "fig_app_exp3_arrival_mechanism_contrast",
     "fig_app_exp3_source_label_coverage",
     "fig_app_exp3_horizon_saturation",
+)
+RELEASE_MANIFEST_FILES = (Path("release_manifest.csv"), Path("release_manifest.json"))
+REPRO_EXTRAS = (
+    Path("input_manifest_template.csv"),
+    Path("input_sha256_template.txt"),
+    Path("instructions_for_obtaining_kuairand_data.md"),
+    Path("expected_input_paths.md"),
+)
+REQUIRED_RELEASE_DOCS = (
+    Path("docs/final_release_checklist.md"),
+    Path("docs/final_release_completion_report.md"),
+    Path("docs/final_full_result_summary.md"),
+    Path("docs/latex_interface_experiments.md"),
 )
 PLOT_LABELS = {
     "source_aware_reference": "Reference",
@@ -77,7 +90,7 @@ def _write_template_files() -> None:
 
 
 def normalize_final_interfaces() -> None:
-    """Add release-facing columns and aliases without changing estimates."""
+    """Add release-facing aliases without changing estimates or figures."""
     manifest = _read_manifest()
     write_json(FULL / "run_manifest.json", manifest)
     save_dataframe(pd.DataFrame([{
@@ -135,7 +148,7 @@ def _fmt(value: Any, digits: int = 4) -> str:
 
 
 def write_final_docs() -> None:
-    """Generate final release-facing documentation from full CSV outputs."""
+    """Generate release-facing documentation from final full CSV outputs."""
     manifest = _read_manifest()
     cfg = manifest.get("config", {})
     boot = pd.read_csv(FULL / "summaries" / "user_bootstrap_metric_summary.csv")
@@ -214,21 +227,18 @@ def write_final_docs() -> None:
         "Fast outputs are never paper results. Only full outputs with `paper_result=true` may be cited in LaTeX.\n",
         encoding="utf-8",
     )
-
-    completion = (
+    (ROOT / "docs" / "experiment_refactor_completion_report.md").write_text(
         "# Experiment refactor completion report\n\n"
         "- Scope, target, split, action vocabulary, partial-label assignment, carrier assignment, proxy fitting, and bootstrap logic were not changed during final release packaging.\n"
         "- Active figures are `fig_exp3_long_term_recoverability` and `fig_app_exp3_horizon_eligibility`.\n"
         "- Retired figures remain audit-only and are excluded from active LaTeX paths.\n"
-        "- Fast outputs are never paper results. Only full outputs with `paper_result=true` may be cited in LaTeX.\n"
+        "- Fast outputs are never paper results. Only full outputs with `paper_result=true` may be cited in LaTeX.\n",
+        encoding="utf-8",
     )
-    (ROOT / "docs" / "experiment_refactor_completion_report.md").write_text(completion, encoding="utf-8")
 
 
 def _artifact_role(path: Path) -> str:
     rel = path.as_posix()
-    if rel.endswith(".zip"):
-        return "release_archive"
     if rel.startswith("outputs/full/figures/"):
         return "paper_figure_bundle"
     if rel.startswith("outputs/full/tables/"):
@@ -265,35 +275,52 @@ def _excluded(path: Path) -> bool:
         return True
     if path.suffix.lower() == ".csv" and path.exists() and path.stat().st_size > 50 * 1024 * 1024:
         return True
-    if name in {CODE_ZIP.name, REPRO_ZIP.name} or name.endswith(".zip.sha256"):
+    if name in {CODE_ZIP.name, REPRO_ZIP.name, "artifact_sha256sums.txt", "full_result_inventory.csv"}:
+        return True
+    if name.endswith(".zip.sha256"):
         return True
     return False
 
 
-def collect_code_package_files() -> list[Path]:
-    roots = [
+def _base_package_files() -> list[Path]:
+    patterns = [
         "*.py", "requirements.txt", "README.md", "docs/**", "src/**", "tests/**",
         "outputs/full/figures/pdf/**/*", "outputs/full/figures/png/**/*",
         "outputs/full/figures/data/**/*", "outputs/full/figures/metadata/**/*",
         "outputs/full/tables/**/*", "outputs/full/summaries/**/*",
         "outputs/full/checks/**/*", "outputs/full/metadata/**/*",
         "outputs/full/run_manifest.json", "outputs/full/manifest.csv",
-        "release_manifest.json", "release_manifest.csv",
     ]
     files: set[Path] = set()
-    for pattern in roots:
+    for pattern in patterns:
         for path in ROOT.glob(pattern):
             if path.is_file():
                 rel = path.relative_to(ROOT)
                 if not _excluded(rel):
                     files.add(rel)
-    return sorted(files, key=lambda p: p.as_posix())
+    return sorted(files, key=lambda path: path.as_posix())
 
 
-def write_release_manifest(code_files: list[Path]) -> None:
+def collect_code_package_files(include_release_manifests: bool = True) -> list[Path]:
+    """Collect code-upload members without recursively hashing manifest files."""
+    files = set(_base_package_files())
+    if include_release_manifests:
+        for rel in RELEASE_MANIFEST_FILES:
+            if (ROOT / rel).exists():
+                files.add(rel)
+    return sorted(files, key=lambda path: path.as_posix())
+
+
+def write_release_manifest(manifested_files: Iterable[Path]) -> None:
+    """Write an integrity manifest that intentionally excludes its own files."""
     rows = []
-    for rel in code_files:
+    forbidden_self = {path.as_posix() for path in RELEASE_MANIFEST_FILES}
+    for rel in sorted(set(manifested_files), key=lambda path: path.as_posix()):
+        if rel.as_posix() in forbidden_self:
+            raise ValueError("release manifest must not include itself")
         path = ROOT / rel
+        if not path.exists():
+            raise FileNotFoundError(path)
         role = _artifact_role(rel)
         rel_text = rel.as_posix()
         paper_table_names = {
@@ -301,108 +328,189 @@ def write_release_manifest(code_files: list[Path]) -> None:
             "outputs/full/tables/tbl_app_exp3_source_label_sensitivity.csv",
             "outputs/full/tables/tbl_app_exp3_proxy_score_quality.csv",
         }
-        paper_facing = (
-            role == "paper_figure_bundle"
-            or rel_text in paper_table_names
-            or rel_text == "outputs/full/summaries/paired_effect_vs_history_mean_static.csv"
-        )
         rows.append({
-            "file_path": rel.as_posix(),
+            "file_path": rel_text,
             "file_size_bytes": path.stat().st_size,
             "sha256": sha256_file(path),
             "artifact_role": role,
-            "paper_facing": paper_facing,
+            "paper_facing": role == "paper_figure_bundle" or rel_text in paper_table_names or rel_text == "outputs/full/summaries/paired_effect_vs_history_mean_static.csv",
             "required_for_reproduction": role in {"source_code", "tests", "documentation", "full_manifest", "release_support"},
             "included_in_code_upload": True,
         })
     save_dataframe(pd.DataFrame(rows), ROOT / "release_manifest.csv")
-    write_json(ROOT / "release_manifest.json", {"artifacts": rows})
+    write_json(ROOT / "release_manifest.json", {"artifacts": rows, "self_reference_excluded": True})
 
 
-def _write_zip(zip_path: Path, files: list[Path]) -> None:
+def _write_zip(zip_path: Path, files: Iterable[Path]) -> None:
     if zip_path.exists():
         zip_path.unlink()
-    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as zf:
-        for rel in files:
-            zf.write(ROOT / rel, arcname=rel.as_posix())
+    with zipfile.ZipFile(zip_path, "w", compression=zipfile.ZIP_DEFLATED) as archive:
+        for rel in sorted(set(files), key=lambda path: path.as_posix()):
+            archive.write(ROOT / rel, arcname=rel.as_posix())
     (zip_path.with_suffix(zip_path.suffix + ".sha256")).write_text(
         f"{sha256_file(zip_path)}  {zip_path.name}\n",
         encoding="utf-8",
     )
 
 
+def _write_inventory(package_files: list[Path]) -> tuple[Path, Path]:
+    inventory = ROOT / "full_result_inventory.csv"
+    checksum = ROOT / "artifact_sha256sums.txt"
+    rows = []
+    for rel in sorted(set(package_files), key=lambda path: path.as_posix()):
+        path = ROOT / rel
+        rows.append({"file_path": rel.as_posix(), "file_size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
+    save_dataframe(pd.DataFrame(rows), inventory)
+    checksum_files = [*package_files, Path("full_result_inventory.csv")]
+    lines = []
+    for rel in sorted(set(checksum_files), key=lambda path: path.as_posix()):
+        lines.append(f"{sha256_file(ROOT / rel)}  {rel.as_posix()}\n")
+    checksum.write_text("".join(lines), encoding="utf-8")
+    return inventory.relative_to(ROOT), checksum.relative_to(ROOT)
+
+
+def _build_archives_once() -> None:
+    base_files = _base_package_files()
+    write_release_manifest(base_files)
+    code_files = collect_code_package_files(include_release_manifests=True)
+    _write_zip(CODE_ZIP, code_files)
+    repro_files = [*code_files, *REPRO_EXTRAS]
+    inventory, checksum = _write_inventory(repro_files)
+    _write_zip(REPRO_ZIP, [*repro_files, inventory, checksum])
+
+
 def build_release_packages() -> None:
+    """Build final archives twice so final verification reports are included."""
     normalize_final_interfaces()
     _write_template_files()
     write_final_docs()
-    code_files = collect_code_package_files()
-    write_release_manifest(code_files)
-    code_files = collect_code_package_files()
-    _write_zip(CODE_ZIP, code_files)
-    repro_extras = [
-        Path("input_manifest_template.csv"),
-        Path("input_sha256_template.txt"),
-        Path("instructions_for_obtaining_kuairand_data.md"),
-        Path("expected_input_paths.md"),
-    ]
-    inventory_rows = []
-    for rel in code_files + repro_extras:
-        path = ROOT / rel
-        inventory_rows.append({"file_path": rel.as_posix(), "file_size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
-    save_dataframe(pd.DataFrame(inventory_rows), ROOT / "full_result_inventory.csv")
-    (ROOT / "artifact_sha256sums.txt").write_text(
-        "".join(f"{row['sha256']}  {row['file_path']}\n" for row in inventory_rows),
-        encoding="utf-8",
-    )
-    _write_zip(REPRO_ZIP, code_files + repro_extras + [Path("full_result_inventory.csv"), Path("artifact_sha256sums.txt")])
+    write_release_reports(["release package verification pending"])
+    _build_archives_once()
     ok, errors = verify_release_packages()
     write_release_reports([] if ok else errors)
-    code_files = collect_code_package_files()
-    write_release_manifest(code_files)
-    code_files = collect_code_package_files()
-    _write_zip(CODE_ZIP, code_files)
-    inventory_rows = []
-    for rel in code_files + repro_extras:
+    _build_archives_once()
+    final_ok, final_errors = verify_release_packages()
+    write_release_reports([] if final_ok else final_errors)
+    if not final_ok:
+        raise RuntimeError("Release package verification failed: " + " | ".join(final_errors))
+
+
+def _verify_sha_sidecar(zip_path: Path) -> list[str]:
+    errors: list[str] = []
+    sidecar = zip_path.with_suffix(zip_path.suffix + ".sha256")
+    if not sidecar.exists():
+        return [f"missing checksum sidecar: {sidecar.name}"]
+    tokens = sidecar.read_text(encoding="utf-8").strip().split()
+    if len(tokens) != 2 or tokens[1] != zip_path.name:
+        return [f"malformed checksum sidecar: {sidecar.name}"]
+    if tokens[0] != sha256_file(zip_path):
+        errors.append(f"checksum sidecar does not match archive: {zip_path.name}")
+    return errors
+
+
+def _verify_release_manifest() -> list[str]:
+    errors: list[str] = []
+    csv_path = ROOT / "release_manifest.csv"
+    json_path = ROOT / "release_manifest.json"
+    if not csv_path.exists() or not json_path.exists():
+        return ["release manifest files missing"]
+    rows = read_csv_rows(csv_path)
+    forbidden_self = {path.as_posix() for path in RELEASE_MANIFEST_FILES}
+    for row in rows:
+        rel = Path(row["file_path"])
+        if rel.as_posix() in forbidden_self:
+            errors.append("release manifest incorrectly includes itself")
+            continue
         path = ROOT / rel
-        inventory_rows.append({"file_path": rel.as_posix(), "file_size_bytes": path.stat().st_size, "sha256": sha256_file(path)})
-    save_dataframe(pd.DataFrame(inventory_rows), ROOT / "full_result_inventory.csv")
-    (ROOT / "artifact_sha256sums.txt").write_text(
-        "".join(f"{row['sha256']}  {row['file_path']}\n" for row in inventory_rows),
-        encoding="utf-8",
-    )
-    _write_zip(REPRO_ZIP, code_files + repro_extras + [Path("full_result_inventory.csv"), Path("artifact_sha256sums.txt")])
+        if not path.exists():
+            errors.append(f"release manifest lists missing file: {rel.as_posix()}")
+        elif sha256_file(path) != row["sha256"]:
+            errors.append(f"release manifest hash mismatch: {rel.as_posix()}")
+    payload = json.loads(json_path.read_text(encoding="utf-8"))
+    if payload.get("self_reference_excluded") is not True:
+        errors.append("release manifest JSON lacks self-reference exclusion flag")
+    return errors
+
+
+def _verify_artifact_checksum_index() -> list[str]:
+    errors: list[str] = []
+    path = ROOT / "artifact_sha256sums.txt"
+    if not path.exists():
+        return ["artifact_sha256sums.txt missing"]
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        tokens = line.split(maxsplit=1)
+        if len(tokens) != 2:
+            errors.append(f"malformed checksum index row: {line}")
+            continue
+        digest, rel_text = tokens
+        if rel_text == "artifact_sha256sums.txt":
+            errors.append("artifact_sha256sums.txt must not include itself")
+            continue
+        artifact = ROOT / rel_text
+        if not artifact.exists():
+            errors.append(f"checksum index lists missing file: {rel_text}")
+        elif sha256_file(artifact) != digest:
+            errors.append(f"checksum index hash mismatch: {rel_text}")
+    return errors
+
+
+def _required_figure_members() -> set[str]:
+    members: set[str] = set()
+    for figure_id in ACTIVE_FIGURES:
+        members.update({
+            f"outputs/full/figures/pdf/{figure_id}.pdf",
+            f"outputs/full/figures/png/{figure_id}.png",
+            f"outputs/full/figures/data/{figure_id}_data.csv",
+            f"outputs/full/figures/metadata/{figure_id}_metadata.json",
+        })
+    return members
 
 
 def verify_release_packages() -> tuple[bool, list[str]]:
+    """Verify promoted full artifacts, checksum indices, and both archives."""
     errors: list[str] = []
-    manifest = _read_manifest()
+    try:
+        manifest = _read_manifest()
+    except FileNotFoundError as exc:
+        return False, [f"missing full manifest: {exc}"]
     if manifest.get("paper_result") is not True:
         errors.append("full manifest is not paper_result=true")
     if manifest.get("status") != "complete":
         errors.append("full manifest status is not complete")
-    package_members = {path.as_posix() for path in collect_code_package_files()}
-    for figure_id in ACTIVE_FIGURES:
-        for kind, suffix in [("pdf", ".pdf"), ("png", ".png")]:
-            member = f"outputs/full/figures/{kind}/{figure_id}{suffix}"
-            if member not in package_members:
-                errors.append(f"active figure missing from code upload manifest: {member}")
-    for zip_path in [CODE_ZIP, REPRO_ZIP]:
+    errors.extend(_verify_release_manifest())
+    errors.extend(_verify_artifact_checksum_index())
+
+    expected_code = {path.as_posix() for path in collect_code_package_files(include_release_manifests=True)}
+    required_members = _required_figure_members() | {path.as_posix() for path in REQUIRED_RELEASE_DOCS}
+    for zip_path, expected in [
+        (CODE_ZIP, expected_code),
+        (REPRO_ZIP, expected_code | {path.as_posix() for path in REPRO_EXTRAS} | {"full_result_inventory.csv", "artifact_sha256sums.txt"}),
+    ]:
         if not zip_path.exists():
             errors.append(f"missing zip: {zip_path.name}")
             continue
-        with zipfile.ZipFile(zip_path) as zf:
-            bad = zf.testzip()
-            names = set(zf.namelist())
-        if bad:
-            errors.append(f"zip test failed for {zip_path.name}: {bad}")
-        forbidden_prefixes = ("inputs/KuaiRand-1K/data/", "outputs/full/raw/")
+        errors.extend(_verify_sha_sidecar(zip_path))
+        with zipfile.ZipFile(zip_path) as archive:
+            bad_member = archive.testzip()
+            names = set(archive.namelist())
+        if bad_member:
+            errors.append(f"zip test failed for {zip_path.name}: {bad_member}")
+        missing = expected - names
+        if missing:
+            errors.append(f"archive missing required members in {zip_path.name}: {sorted(missing)[:5]}")
+        missing_paper = required_members - names
+        if missing_paper:
+            errors.append(f"archive missing paper-facing members in {zip_path.name}: {sorted(missing_paper)[:5]}")
         for name in names:
-            if name.startswith(forbidden_prefixes) or "legacy/retired_figures" in name:
+            if name.startswith(("inputs/KuaiRand-1K/data/", "outputs/full/raw/")) or "legacy/retired_figures" in name:
                 errors.append(f"excluded artifact included in {zip_path.name}: {name}")
     return (not errors), errors
 
 
 def write_release_reports(errors: list[str]) -> None:
+    """Write stable human-readable release reports; no experiment is rerun."""
     manifest = _read_manifest()
     status = "passed" if not errors else "failed"
     checklist = (
@@ -411,7 +519,7 @@ def write_release_reports(errors: list[str]) -> None:
         f"- Promotion status: paper_result={manifest.get('paper_result')}, status={manifest.get('status')}\n"
         f"- Active figures: {', '.join(ACTIVE_FIGURES)}\n"
         f"- Retired figures: {', '.join(RETIRED_FIGURES)}\n"
-        "- Paper-facing tables: `tbl_app_exp3_proxy_static_control.csv`, `tbl_app_exp3_source_label_sensitivity.csv`\n"
+        "- Paper-facing tables: `tbl_app_exp3_proxy_static_control.csv`, `tbl_app_exp3_source_label_sensitivity.csv`, `tbl_app_exp3_proxy_score_quality.csv`\n"
         f"- Upload archive contents: `{CODE_ZIP.name}`, `{REPRO_ZIP.name}`\n"
         "- Excluded raw inputs: `inputs/KuaiRand-1K/data/`, user-level raw logs, full raw event-level outputs, retired figure bundles\n"
         f"- Checks passed: {'yes' if not errors else 'no'}\n"
@@ -421,11 +529,10 @@ def write_release_reports(errors: list[str]) -> None:
     (ROOT / "docs" / "final_release_checklist.md").write_text(checklist, encoding="utf-8")
     report = (
         "# Final release completion report\n\n"
-        "The release packaging step validated the promoted full outputs, generated release manifests, "
-        "built upload archives, and verified archive integrity. No full experiment rerun was performed.\n\n"
+        "The release packaging step validates promoted full outputs, generates release manifests, builds upload archives, and checks archive integrity. No full experiment rerun is performed.\n\n"
         f"- Code upload package: `{CODE_ZIP.name}`\n"
         f"- Reproducibility manifest package: `{REPRO_ZIP.name}`\n"
-        "- SHA-256 sidecars were generated for both archives.\n"
+        "- SHA-256 sidecars are required for both archives.\n"
         f"- Final verification status: {status}\n"
     )
     (ROOT / "docs" / "final_release_completion_report.md").write_text(report, encoding="utf-8")

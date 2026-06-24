@@ -69,3 +69,17 @@ tables/tbl_app_exp3_source_label_sensitivity.csv
 The main-figure metadata must record the paired `ST ridge` versus `History mean`
 effect and an explicit guide to points, intervals, the carrier baseline, and the
 offline reference.
+
+## Rerun integrity
+
+A run does not append to an existing active output tree. If `outputs/<mode>/` contains active artifacts, use the corresponding runner with `--clean-output`; otherwise the runner exits before writing a new manifest. This prevents stale summaries or figure bundles from being mixed with a fresh run.
+
+CSV and JSON artifacts are written atomically. Input paths in `input_data_manifest.csv` are logical paths relative to the detected KuaiRand root rather than machine-specific absolute paths.
+
+After a successful promotion, `checks/self_check_report.csv` must contain:
+
+```text
+status=passed
+paper_result=True
+promotion_status=already_promoted
+```

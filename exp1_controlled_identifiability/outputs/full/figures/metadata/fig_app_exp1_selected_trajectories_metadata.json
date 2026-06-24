@@ -10,7 +10,7 @@
     2.65
   ],
   "figure_status": "paper_eligible",
-  "generated_at_utc": "2026-06-24T07:21:55.365457+00:00",
+  "generated_at_utc": "2026-06-24T07:32:21.193941+00:00",
   "input_data_status": "synthetic_complete",
   "metric_formula_id": "cumulative_causal_regret",
   "metric_id": "cumulative_causal_regret",

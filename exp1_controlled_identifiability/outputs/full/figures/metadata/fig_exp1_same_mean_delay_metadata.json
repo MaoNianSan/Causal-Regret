@@ -10,7 +10,7 @@
     2.7
   ],
   "figure_status": "paper_eligible",
-  "generated_at_utc": "2026-06-24T07:21:39.553709+00:00",
+  "generated_at_utc": "2026-06-24T07:32:08.573869+00:00",
   "input_data_status": "synthetic_complete",
   "metric_formula_id": "R_T^c / T",
   "metric_id": "causal_regret_per_round",

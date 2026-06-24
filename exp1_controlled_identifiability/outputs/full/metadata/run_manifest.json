@@ -29,7 +29,7 @@
   "n_bootstrap": 2000,
   "n_seeds": 30,
   "paper_result": true,
-  "paper_result_finalized_at": "2026-06-24T07:22:00.524459+00:00",
+  "paper_result_finalized_at": "2026-06-24T07:32:26.121680+00:00",
   "paper_result_gate": "passed: completed full run plus self-check plus explicit finalization",
   "primary_delay_contract": "pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay",
   "primary_metric": "causal_regret_per_round",

@@ -26,6 +26,15 @@ REQUIRED_METHODS = {
 }
 
 
+def _as_bool(value: object) -> bool:
+    """Parse CSV/JSON boolean values without treating the string 'False' as true."""
+    if isinstance(value, bool):
+        return value
+    if value is None or (isinstance(value, float) and pd.isna(value)):
+        return False
+    return str(value).strip().lower() in {"1", "true", "t", "yes", "y"}
+
+
 def _figure_status_errors(output_dir: Path, figure_id: str, expected_paper_result: bool) -> list[str]:
     errors: list[str] = []
     paths = {
@@ -46,7 +55,7 @@ def _figure_status_errors(output_dir: Path, figure_id: str, expected_paper_resul
     data = pd.read_csv(paths["data"])
     if "paper_result" not in data.columns:
         errors.append(f"{figure_id} data lacks paper_result column")
-    elif not data.empty and bool(data["paper_result"].astype(bool).all()) != expected_paper_result:
+    elif not data.empty and bool(data["paper_result"].map(_as_bool).all()) != expected_paper_result:
         errors.append(f"{figure_id} data paper_result does not match run manifest")
     return errors
 
@@ -87,9 +96,9 @@ def _validate_output(mode: str, promote: bool) -> tuple[dict, list[str]]:
         if missing_methods:
             errors.append(f"required methods missing: {sorted(missing_methods)}")
         reference = raw[raw["method_id"] == "source_aware_reference"]
-        if reference.empty or not bool((reference["deployable"] == False).all()):
+        if reference.empty or bool(reference["deployable"].map(_as_bool).any()):
             errors.append("source_aware_reference must be non-deployable")
-        if bool(raw["deployable"].fillna(True).any()):
+        if bool(raw["deployable"].map(_as_bool).any()):
             errors.append("Exp3 routes must not be marked deployable under support-restricted offline evaluation")
 
     for required_summary in [
@@ -157,14 +166,19 @@ def _write_compatibility_manifests(output_dir: Path, manifest: dict) -> None:
     save_dataframe(pd.DataFrame(rows), output_dir / "manifest.csv")
 
 
-def _write_self_check_report(output_dir: Path, mode: str, errors: list[str]) -> None:
+def _write_self_check_report(output_dir: Path, mode: str, errors: list[str], manifest: dict | None = None) -> None:
+    """Write a report that remains consistent after a later promotion step."""
     checks_dir = output_dir / "checks"
     checks_dir.mkdir(parents=True, exist_ok=True)
+    paper_result = bool((manifest or {}).get("paper_result", False))
+    promotion_status = "already_promoted" if paper_result else "not_promoted"
     save_dataframe(pd.DataFrame([{
         "check_id": "self_check",
         "mode": mode,
         "status": "failed" if errors else "passed",
         "n_errors": len(errors),
+        "paper_result": paper_result,
+        "promotion_status": promotion_status,
         "details": " | ".join(errors) if errors else "SELF-CHECK PASSED",
     }]), checks_dir / "self_check_report.csv")
 
@@ -177,7 +191,7 @@ def main() -> int:
     output_dir = ROOT / "outputs" / args.mode
 
     manifest, errors = _validate_output(args.mode, args.promote_paper_result)
-    _write_self_check_report(output_dir, args.mode, errors)
+    _write_self_check_report(output_dir, args.mode, errors, manifest)
     if manifest:
         _write_compatibility_manifests(output_dir, manifest)
 
@@ -203,7 +217,7 @@ def main() -> int:
         write_artifact_manifest(output_dir)
         _, promotion_errors = _validate_output(args.mode, False)
         promoted_manifest = json.loads((output_dir / "metadata" / "run_manifest.json").read_text(encoding="utf-8"))
-        _write_self_check_report(output_dir, args.mode, promotion_errors)
+        _write_self_check_report(output_dir, args.mode, promotion_errors, promoted_manifest)
         _write_compatibility_manifests(output_dir, promoted_manifest)
         if promotion_errors:
             print("SELF-CHECK FAILED AFTER PROMOTION")
