@@ -14,7 +14,10 @@ from src.common import (
     get_col,
     load_config,
     make_output_manifest,
+    normalise_conversion_identifier,
     normalise_identifier,
+    normalise_uid_identifier,
+    sentinel_minus_one_mask,
     out_dir,
     read_chunks,
     save_run_metadata,
@@ -38,8 +41,14 @@ def _uid_integrity_filter(candidates: pd.DataFrame) -> tuple[pd.DataFrame, pd.Da
     """
     raw_rows = int(len(candidates))
     frame = candidates.copy()
-    frame["conversion_id"] = normalise_identifier(frame["conversion_id"])
-    frame["uid"] = normalise_identifier(frame["uid"])
+    frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
+    uid_sentinel = (
+        pd.to_numeric(frame.get("uid_sentinel_minus_one", 0), errors="coerce").fillna(0).astype(int).eq(1)
+        if "uid_sentinel_minus_one" in frame.columns
+        else sentinel_minus_one_mask(frame["uid"])
+    )
+    frame["uid_sentinel_minus_one"] = uid_sentinel.astype(int)
+    frame["uid"] = normalise_uid_identifier(frame["uid"])
     invalid_conversion_rows = int(frame["conversion_id"].isna().sum())
     frame = frame[frame["conversion_id"].notna()].copy()
     if frame.empty:
@@ -50,11 +59,13 @@ def _uid_integrity_filter(candidates: pd.DataFrame) -> tuple[pd.DataFrame, pd.Da
         [
             grouped.size().rename("n_candidate_rows"),
             frame["uid"].isna().groupby(frame["conversion_id"], sort=False).sum().rename("n_missing_uid_rows"),
+            frame["uid_sentinel_minus_one"].groupby(frame["conversion_id"], sort=False).sum().rename("n_uid_sentinel_minus_one_rows"),
             frame.loc[frame["uid"].notna()].groupby("conversion_id", sort=False)["uid"].nunique().rename("n_distinct_nonmissing_uid"),
         ],
         axis=1,
-    ).fillna({"n_missing_uid_rows": 0, "n_distinct_nonmissing_uid": 0}).reset_index()
+    ).fillna({"n_missing_uid_rows": 0, "n_uid_sentinel_minus_one_rows": 0, "n_distinct_nonmissing_uid": 0}).reset_index()
     audit["n_missing_uid_rows"] = audit["n_missing_uid_rows"].astype(int)
+    audit["n_uid_sentinel_minus_one_rows"] = audit["n_uid_sentinel_minus_one_rows"].astype(int)
     audit["n_distinct_nonmissing_uid"] = audit["n_distinct_nonmissing_uid"].astype(int)
     audit["uid_integrity_status"] = np.select(
         [audit["n_missing_uid_rows"].gt(0), audit["n_distinct_nonmissing_uid"].ne(1)],
@@ -76,6 +87,8 @@ def _uid_integrity_filter(candidates: pd.DataFrame) -> tuple[pd.DataFrame, pd.Da
             {"metric": "conversion_ids_total_with_valid_conversion_id", "value": int(len(audit))},
             {"metric": "conversion_ids_valid_one_uid", "value": int(audit["uid_integrity_status"].eq("valid_one_uid").sum())},
             {"metric": "conversion_ids_missing_uid", "value": int(audit["uid_integrity_status"].eq("missing_uid").sum())},
+            {"metric": "conversion_ids_uid_sentinel_minus_one", "value": int(audit["n_uid_sentinel_minus_one_rows"].gt(0).sum())},
+            {"metric": "candidate_rows_uid_sentinel_minus_one", "value": int(audit["n_uid_sentinel_minus_one_rows"].sum())},
             {"metric": "conversion_ids_cross_uid", "value": int(audit["uid_integrity_status"].eq("cross_uid").sum())},
             {"metric": "candidate_rows_retained_after_uid_integrity_filter", "value": int(len(retained))},
             {"metric": "conversion_id_retention_rate", "value": float(audit["uid_integrity_status"].eq("valid_one_uid").mean())},
@@ -229,19 +242,20 @@ def main() -> None:
         chunk.insert(0, "row_id", np.arange(row_offset, row_offset + len(chunk), dtype=np.int64))
         row_offset += len(chunk)
         rows_seen += len(chunk)
-        chunk[uid] = normalise_identifier(chunk[uid])
-        chunk[conversion_id] = normalise_identifier(chunk[conversion_id])
+        chunk["uid_sentinel_minus_one"] = sentinel_minus_one_mask(chunk[uid]).astype(int)
+        chunk[uid] = normalise_uid_identifier(chunk[uid])
+        chunk[conversion_id] = normalise_conversion_identifier(chunk[conversion_id])
         chunk["campaign_str"] = normalise_identifier(chunk[campaign])
         chunk["is_mapped_campaign"] = chunk["campaign_str"].astype("string").isin(campaign_set).astype(int)
-        keep = ["row_id", uid, ts, "day_index", campaign, "campaign_str", "is_mapped_campaign", conversion, conversion_ts, conversion_id, attribution, click, cost]
+        keep = ["row_id", uid, "uid_sentinel_minus_one", ts, "day_index", campaign, "campaign_str", "is_mapped_campaign", conversion, conversion_ts, conversion_id, attribution, click, cost]
         keep = [col for col in keep if col in chunk.columns]
         mapped = chunk.loc[chunk["is_mapped_campaign"].eq(1), keep].copy()
         if not mapped.empty:
             mapped = mapped.rename(columns={uid: "uid", ts: "timestamp", campaign: "campaign", conversion_id: "conversion_id", conversion_ts: "conversion_timestamp"})
             mapped["source_day_index"] = pd.to_numeric(mapped["day_index"], errors="coerce")
             mapped["cost"] = _safe_numeric(mapped, cost).fillna(0.0).clip(lower=0.0)
-            mapped["uid"] = normalise_identifier(mapped["uid"])
-            mapped["conversion_id"] = normalise_identifier(mapped["conversion_id"])
+            mapped["uid"] = normalise_uid_identifier(mapped["uid"])
+            mapped["conversion_id"] = normalise_conversion_identifier(mapped["conversion_id"])
             mapped.to_csv(raw_impressions, mode="a", index=False, header=not raw_impressions.exists())
 
         timestamps = _safe_numeric(chunk, ts)
@@ -252,14 +266,14 @@ def main() -> None:
         # future feedback into a source-time diagnostic.
         conversion_observed_within_analysis = conversion_with_valid_timing & conv_times.le(end)
         candidate_rows_after_analysis_end += int((conversion_with_valid_timing & ~conversion_observed_within_analysis).sum())
-        valid_conversion_id = chunk[conversion_id].notna() & chunk[conversion_id].ne("-1")
+        valid_conversion_id = chunk[conversion_id].notna()
         candidate_rows_missing_conversion_id += int((conversion_observed_within_analysis & ~valid_conversion_id).sum())
         candidate = chunk.loc[conversion_observed_within_analysis & valid_conversion_id & chunk["is_mapped_campaign"].eq(1), keep].copy()
         if not candidate.empty:
             candidate = candidate.rename(columns={uid: "uid", ts: "candidate_timestamp", campaign: "candidate_campaign", conversion_id: "conversion_id", conversion_ts: "conversion_timestamp"})
             candidate["source_day_index"] = pd.to_numeric(candidate["day_index"], errors="coerce")
-            candidate["uid"] = normalise_identifier(candidate["uid"])
-            candidate["conversion_id"] = normalise_identifier(candidate["conversion_id"])
+            candidate["uid"] = normalise_uid_identifier(candidate["uid"])
+            candidate["conversion_id"] = normalise_conversion_identifier(candidate["conversion_id"])
             candidate["delay_to_conversion_days"] = (_safe_numeric(candidate, "conversion_timestamp") - _safe_numeric(candidate, "candidate_timestamp")) / SECONDS_PER_DAY
             candidate["cost"] = _safe_numeric(candidate, cost).fillna(0.0).clip(lower=0.0)
             candidate.to_csv(raw_candidates, mode="a", index=False, header=not raw_candidates.exists())
@@ -324,6 +338,7 @@ def main() -> None:
             "action_unit": str(cfg["action"]["action_unit"]),
             "n_uid_valid_one_uid_conversion_ids": int(uid_audit["uid_integrity_status"].eq("valid_one_uid").sum()),
             "n_uid_missing_or_cross_uid_conversion_ids": int((~uid_audit["uid_integrity_status"].eq("valid_one_uid")).sum()),
+            "n_uid_sentinel_minus_one_candidate_rows": int(uid_audit["n_uid_sentinel_minus_one_rows"].sum()),
         },
     )
     make_output_manifest(cfg)

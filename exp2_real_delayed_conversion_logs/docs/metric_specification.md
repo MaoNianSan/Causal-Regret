@@ -22,3 +22,12 @@ These fields summarize logged credited mass concentration. They are not utility,
 ## Appendix Diagnostics
 
 Cost-adjusted scores are diagnostic appendix-only robustness summaries. Source-linked audit, top-k sensitivity, candidate-window sensitivity, and EM assignment diagnostics are table-only diagnostics.
+
+## Delay-composition denominator
+
+`exp2_source_event_delay_profile.csv` is defined over eligible source-event candidate rows in the all-conversion main cohort. The required fields are `n_eligible_source_events` and `source_event_share_percent`. A conversion journey may contribute multiple source events across different delay buckets, so this diagnostic must not be interpreted as a unique-conversion distribution.
+
+## Candidate-window diagnostic runtime contract
+
+Candidate-window sensitivity is an appendix-only common-cohort point-estimate diagnostic. It does not run a separate nested UID bootstrap for every window. The main route-sensitivity summary remains the sole inferential Exp2 object and reports the configured UID-bootstrap confidence intervals. Candidate-window outputs record `window_bootstrap_replicates=0` and `window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic`.
+

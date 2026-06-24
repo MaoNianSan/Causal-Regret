@@ -15,7 +15,8 @@ from src.common import (
     get_col,
     load_config,
     make_output_manifest,
-    normalise_identifier,
+    normalise_conversion_identifier,
+    normalise_uid_identifier,
     out_dir,
     read_chunks,
     save_config_snapshot,
@@ -84,8 +85,6 @@ def main() -> None:
         chunk = add_time_columns(chunk, cfg)
         n_rows += len(chunk)
         campaigns.update(chunk[campaign].dropna().astype(str).unique().tolist())
-        if uids is not None:
-            uids.update(chunk[uid].dropna().astype(str).unique().tolist())
 
         n_conversion_rows += int((chunk[conversion] == 1).sum())
         n_attributed_rows += int((chunk[attribution] == 1).sum())
@@ -104,9 +103,11 @@ def main() -> None:
             for k in d:
                 d[k] += int(row[k])
 
-        chunk[uid] = normalise_identifier(chunk[uid])
-        chunk[conv_id] = normalise_identifier(chunk[conv_id])
-        valid_conversion_id = chunk[conv_id].notna() & chunk[conv_id].ne("-1")
+        chunk[uid] = normalise_uid_identifier(chunk[uid])
+        chunk[conv_id] = normalise_conversion_identifier(chunk[conv_id])
+        if uids is not None:
+            uids.update(chunk[uid].dropna().astype(str).unique().tolist())
+        valid_conversion_id = chunk[conv_id].notna()
         valid = (chunk[conversion] == 1) & (chunk[conv_ts] > chunk[ts]) & valid_conversion_id
         if valid.any():
             vc = chunk.loc[valid, [uid, ts, conv_ts, conv_id, campaign, attribution, click]].copy()
@@ -122,8 +123,9 @@ def main() -> None:
                 cts_values = g[conv_ts].dropna().astype(float)
                 if len(cts_values):
                     st["conversion_timestamp"] = float(cts_values.max())
-                if st["uid"] is None and uid in g.columns:
-                    st["uid"] = str(g[uid].iloc[0])
+                valid_uids = g[uid].dropna().astype(str).unique()
+                if st["uid"] is None and len(valid_uids) == 1:
+                    st["uid"] = str(valid_uids[0])
                 st["campaigns"].update(g[campaign].dropna().astype(str).unique().tolist())
 
         print(f"[precheck] processed chunk {chunk_id + 1}, cumulative rows={n_rows:,}")

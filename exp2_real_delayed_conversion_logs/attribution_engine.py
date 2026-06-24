@@ -6,12 +6,11 @@ from typing import Iterable
 import numpy as np
 import pandas as pd
 
-from src.common import normalise_identifier
+from src.common import normalise_conversion_identifier, normalise_uid_identifier
 
 
 ROUTE_DISPLAY = {
     "arrival_bin_anchor": "Arrival-bin anchor (diagnostic)",
-    "arrival_time_naive": "Arrival-bin anchor (diagnostic)",
     "first_click": "First click or touch",
     "last_click": "Last click or touch",
     "linear_attribution": "Linear attribution",
@@ -25,7 +24,6 @@ ROUTE_DISPLAY = {
 
 ROUTE_META = {
     "arrival_bin_anchor": ("arrival_bin", "diagnostic_control", True, False, "constructed arrival-bin modal campaign-source-day anchor"),
-    "arrival_time_naive": ("arrival_time", "diagnostic_control", True, False, "constructed arrival-bin modal campaign-source-day anchor"),
     "first_click": ("source_candidate", "none", False, True, "first clicked source cell; first source event if no click"),
     "last_click": ("source_candidate", "none", False, True, "last clicked source cell; last source event if no click"),
     "linear_attribution": ("source_candidate", "none", False, True, "equal credit across unique candidate source-time decision cells"),
@@ -57,10 +55,10 @@ def _route_metadata(route: str) -> dict:
 
 
 def _prepare_candidates(candidates: pd.DataFrame, conversion_ids: Iterable[str], window_days: float) -> pd.DataFrame:
-    ids = set(normalise_identifier(pd.Series(list(conversion_ids), dtype="string")).dropna().astype(str))
+    ids = set(normalise_conversion_identifier(pd.Series(list(conversion_ids), dtype="string")).dropna().astype(str))
     frame = candidates.copy()
-    frame["conversion_id"] = normalise_identifier(frame["conversion_id"])
-    frame["uid"] = normalise_identifier(frame["uid"])
+    frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
+    frame["uid"] = normalise_uid_identifier(frame["uid"])
     frame = frame[frame["conversion_id"].notna() & frame["conversion_id"].astype(str).isin(ids)].copy()
     if frame["uid"].isna().any():
         raise RuntimeError("UID integrity contract violated: candidate rows with missing UID reached route assignment.")
@@ -162,12 +160,12 @@ def _em_weights(candidates: pd.DataFrame, action_exposure: pd.DataFrame, cfg: di
 
 
 def build_assignments(candidates: pd.DataFrame, conversions: pd.DataFrame, action_exposure: pd.DataFrame, cfg: dict, cohort_id: str, window_days: float, routes: list[str]) -> RouteBuildResult:
-    ids = normalise_identifier(conversions["conversion_id"])
+    ids = normalise_conversion_identifier(conversions["conversion_id"])
     c = _prepare_candidates(candidates, ids.dropna().astype(str), window_days)
     valid_ids = set(c["conversion_id"])
     conv = conversions.copy()
-    conv["conversion_id"] = normalise_identifier(conv["conversion_id"])
-    conv["uid"] = normalise_identifier(conv["uid"])
+    conv["conversion_id"] = normalise_conversion_identifier(conv["conversion_id"])
+    conv["uid"] = normalise_uid_identifier(conv["uid"])
     conv = conv[conv["conversion_id"].notna() & conv["conversion_id"].astype(str).isin(valid_ids)].copy()
     if conv["uid"].isna().any():
         raise RuntimeError("UID integrity contract violated: main conversion table contains missing UID after filtering.")
@@ -176,7 +174,7 @@ def build_assignments(candidates: pd.DataFrame, conversions: pd.DataFrame, actio
     frames: list[pd.DataFrame] = []
     em_diagnostic = pd.DataFrame()
     for route in routes:
-        if route in {"arrival_bin_anchor", "arrival_time_naive"}:
+        if route == "arrival_bin_anchor":
             frames.append(_hard_rows(conv, route, "arrival_time_action_id", cohort_id))
         elif route == "source_linked_reference":
             frames.append(_hard_rows(conv, route, "labelled_source_action_id", cohort_id))
@@ -212,8 +210,8 @@ def build_assignments(candidates: pd.DataFrame, conversions: pd.DataFrame, actio
     result = pd.concat([frame for frame in frames if not frame.empty], ignore_index=True)
     if result.empty:
         raise RuntimeError(f"No route assignments constructed for cohort={cohort_id}.")
-    result["conversion_id"] = normalise_identifier(result["conversion_id"])
-    result["uid"] = normalise_identifier(result["uid"])
+    result["conversion_id"] = normalise_conversion_identifier(result["conversion_id"])
+    result["uid"] = normalise_uid_identifier(result["uid"])
     if result["conversion_id"].isna().any() or result["uid"].isna().any():
         raise RuntimeError("UID/conversion identifier integrity contract violated in route assignments.")
     result["conversion_id"] = result["conversion_id"].astype(str)

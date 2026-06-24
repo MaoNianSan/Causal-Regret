@@ -8,7 +8,7 @@ from pathlib import Path
 import pandas as pd
 
 from config import DEFAULT_CONFIG
-from plot_results import plot_all
+from plot_results import HORIZON_VISUAL_CONTRACT, MAIN_FIGURE_METHOD_ORDER, MAIN_FIGURE_VISUAL_CONTRACT, plot_all
 from utils import save_dataframe, write_artifact_manifest, write_json
 
 ROOT = Path(__file__).resolve().parent
@@ -57,10 +57,65 @@ def _figure_status_errors(output_dir: Path, figure_id: str, expected_paper_resul
         errors.append(f"{figure_id} data lacks paper_result column")
     elif not data.empty and bool(data["paper_result"].map(_as_bool).all()) != expected_paper_result:
         errors.append(f"{figure_id} data paper_result does not match run manifest")
+    if figure_id == "fig_exp3_long_term_recoverability":
+        errors.extend(_main_figure_contract_errors(data, metadata))
+    if figure_id == "fig_app_exp3_horizon_eligibility":
+        errors.extend(_horizon_figure_contract_errors(data, metadata))
     return errors
 
 
-def _validate_output(mode: str, promote: bool) -> tuple[dict, list[str]]:
+def _main_figure_contract_errors(data: pd.DataFrame, metadata: dict) -> list[str]:
+    errors: list[str] = []
+    panel_a = data[data.get("panel_id", pd.Series(dtype=str)) == "panel_a"]
+    panel_b = data[data.get("panel_id", pd.Series(dtype=str)) == "panel_b"]
+    panel_a_methods = panel_a.get("method_id", pd.Series(dtype=str)).dropna().unique().tolist()
+    if panel_a_methods != ["short_term_ridge_proxy"]:
+        errors.append(f"main figure Panel A methods are {panel_a_methods}, expected only short_term_ridge_proxy")
+    panel_b_methods = panel_b.get("x_value", pd.Series(dtype=str)).astype(str).tolist()
+    if panel_b_methods != MAIN_FIGURE_METHOD_ORDER:
+        errors.append(f"main figure Panel B method order mismatch: {panel_b_methods}")
+    if panel_b_methods.count("history_mean_static") != 1:
+        errors.append("history_mean_static must appear exactly once in main figure Panel B")
+    history_rows = panel_b[panel_b.get("x_value", pd.Series(dtype=str)).astype(str) == "history_mean_static"]
+    if history_rows.empty or set(history_rows.get("plot_label", pd.Series(dtype=str)).astype(str)) != {"History mean"}:
+        errors.append("history_mean_static Panel B plot_label must be History mean")
+    reference_rows = panel_b[panel_b.get("x_value", pd.Series(dtype=str)).astype(str) == "source_aware_reference"]
+    if reference_rows.empty or bool(reference_rows.get("deployable", pd.Series(dtype=bool)).map(_as_bool).any()):
+        errors.append("source_aware_reference must be non-deployable in main Panel B data")
+    contract = metadata.get("visual_contract")
+    if not isinstance(contract, dict):
+        errors.append("main figure metadata lacks visual_contract")
+        return errors
+    for key, expected in MAIN_FIGURE_VISUAL_CONTRACT.items():
+        if contract.get(key) != expected:
+            errors.append(f"main figure visual_contract {key} mismatch")
+    required_text = json.dumps(contract, ensure_ascii=False)
+    for token in ["Reference (offline)", "Carrier baseline", "Whiskers: 95% user-bootstrap CI"]:
+        if token not in required_text:
+            errors.append(f"main figure visual_contract missing label: {token}")
+    return errors
+
+
+def _horizon_figure_contract_errors(data: pd.DataFrame, metadata: dict) -> list[str]:
+    errors: list[str] = []
+    contract = metadata.get("visual_contract")
+    if not isinstance(contract, dict):
+        errors.append("horizon figure metadata lacks visual_contract")
+        return errors
+    for key, expected in HORIZON_VISUAL_CONTRACT.items():
+        if contract.get(key) != expected:
+            errors.append(f"horizon figure visual_contract {key} mismatch")
+    for token in ["6h (primary)", "Prespecified primary horizon"]:
+        if token not in json.dumps(contract, ensure_ascii=False):
+            errors.append(f"horizon figure visual_contract missing label: {token}")
+    if contract.get("series_legend_removed") is not True:
+        errors.append("horizon figure series_legend_removed must be true")
+    if data.get("x_display_label", pd.Series(dtype=str)).astype(str).str.contains("saturation", case=False, na=False).any():
+        errors.append("horizon figure data must not use saturation wording")
+    return errors
+
+
+def _validate_output(mode: str, promote: bool, require_figure_audit: bool = True) -> tuple[dict, list[str]]:
     output_dir = ROOT / "outputs" / mode
     errors: list[str] = []
     manifest_path = output_dir / "metadata" / "run_manifest.json"
@@ -153,6 +208,13 @@ def _validate_output(mode: str, promote: bool) -> tuple[dict, list[str]]:
     expected_paper_result = bool(manifest.get("paper_result"))
     for figure_id in REQUIRED_FIGURES:
         errors.extend(_figure_status_errors(output_dir, figure_id, expected_paper_result))
+    if (
+        mode == "full"
+        and not promote
+        and require_figure_audit
+        and not (output_dir / "checks" / "figure_release_audit.csv").exists()
+    ):
+        errors.append("figure_release_audit.csv missing; run the notebook audit before final full self-check")
     return manifest, errors
 
 
@@ -215,7 +277,7 @@ def main() -> int:
             input_data_status=str(manifest.get("input_data_status", "unknown")),
         )
         write_artifact_manifest(output_dir)
-        _, promotion_errors = _validate_output(args.mode, False)
+        _, promotion_errors = _validate_output(args.mode, False, require_figure_audit=False)
         promoted_manifest = json.loads((output_dir / "metadata" / "run_manifest.json").read_text(encoding="utf-8"))
         _write_self_check_report(output_dir, args.mode, promotion_errors, promoted_manifest)
         _write_compatibility_manifests(output_dir, promoted_manifest)

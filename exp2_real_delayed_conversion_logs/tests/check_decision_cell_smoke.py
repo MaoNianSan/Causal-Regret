@@ -19,10 +19,17 @@ def main() -> None:
     assert float(summary["conversion_ids_missing_uid"]) >= 1
     assert float(summary["conversion_ids_cross_uid"]) >= 1
     assert float(summary["candidate_rows_missing_conversion_id_before_persistence"]) >= 1
+    assert float(summary["candidate_rows_uid_sentinel_minus_one"]) >= 1
+    assert float(summary["conversion_ids_uid_sentinel_minus_one"]) >= 1
 
     mapping = pd.read_csv(processed / "exp2_action_cell_mapping.csv")
     assert mapping["action_id"].nunique() > 50
     candidates = pd.read_csv(processed / "exp2_candidate_sources.csv")
+    assert not candidates["uid"].astype(str).isin({"-1", "-1.0"}).any()
+    delay_profile = pd.read_csv(summaries / "exp2_source_event_delay_profile.csv")
+    assert {"n_eligible_source_events", "source_event_share_percent"}.issubset(delay_profile.columns)
+    assert abs(float(delay_profile["source_event_share_percent"].sum()) - 100.0) < 1e-8
+    assert int(delay_profile["n_eligible_source_events"].sum()) == len(candidates)
     # At least one same-campaign path must still have two source-time cells.
     multi = candidates.groupby("conversion_id")["action_id"].nunique()
     assert (multi > 1).any()
@@ -55,6 +62,8 @@ def main() -> None:
 
     window = pd.read_csv(processed / "exp2_candidate_window_uid_integrity.csv")
     assert (window["missing_reference"] == 0).all() and (window["uid_mismatch"] == 0).all()
+    assert (pd.to_numeric(window["window_bootstrap_replicates"], errors="coerce") == 0).all()
+    assert window["window_uncertainty_status"].eq("not_computed_point_estimate_common_cohort_diagnostic").all()
     window_table = pd.read_csv(output_root / "tables" / "tbl_app_exp2_candidate_window_sensitivity.csv")
     assert "Common-cohort coverage" in window_table.columns
 
@@ -62,8 +71,9 @@ def main() -> None:
     assert float(em["nontrivial_assignment"].mean()) > 0.0
 
     source_audit = pd.read_csv(output_root / "tables" / "tbl_app_exp2_source_linked_audit.csv")
-    assert "Attribution nondiscriminative" in source_audit.columns
-    assert source_audit["Attribution nondiscriminative"].isin([True, False]).all()
+    assert "attribution_nondiscriminative" in source_audit.columns
+    assert "candidate_decision_cell_count_p90" in source_audit.columns
+    assert source_audit["attribution_nondiscriminative"].isin([True, False]).all()
 
     main_data = pd.read_csv(output_root / "figures" / "data" / "fig_exp2_attribution_sensitivity_data.csv")
     panel_b = main_data[main_data["panel_id"].eq("panel_b")]

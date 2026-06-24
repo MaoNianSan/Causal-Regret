@@ -66,3 +66,12 @@ This pass is limited to figure, table, metadata, check, and documentation repair
 - `docs/experiment_refactor_completion_report.md`
 
 Synthetic outputs are validation artifacts only. They must not be interpreted as Criteo empirical results or copied into paper-facing real-data outputs.
+
+## 2026-06-24 rerun-readiness repair
+
+The clean-run hash-regression contract, source-event delay-profile denominator, synthetic-fixture configuration, and UID `-1` handling were repaired. The synthetic integration runner executes the corrected fixture twice (`--n-jobs=1` and `--n-jobs=4`) and requires identical UID-bootstrap hashes before a real Criteo run is attempted.
+
+## Candidate-window diagnostic runtime contract
+
+Candidate-window sensitivity is an appendix-only common-cohort point-estimate diagnostic. It does not run a separate nested UID bootstrap for every window. The main route-sensitivity summary remains the sole inferential Exp2 object and reports the configured UID-bootstrap confidence intervals. Candidate-window outputs record `window_bootstrap_replicates=0` and `window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic`.
+

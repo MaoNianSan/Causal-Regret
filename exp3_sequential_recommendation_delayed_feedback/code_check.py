@@ -82,6 +82,19 @@ def main() -> int:
         errors.append("retired appendix plots are still active")
     if "def plot_horizon_eligibility" not in plot_source:
         errors.append("horizon eligibility diagnostic is missing")
+    for token in ['label="Identity"', "History EWMA ridge proxy", "fig.text("]:
+        if token in plot_source:
+            errors.append(f"plot_results.py contains forbidden final figure interface token: {token}")
+    for token in [
+        "Required main-figure methods missing",
+        "Carrier baseline",
+        "Prespecified primary horizon",
+        "history_mean_static",
+    ]:
+        if token not in plot_source:
+            errors.append(f"plot_results.py lacks required final figure interface token: {token}")
+    if not (ROOT / "notebooks" / "exp3_figure_release_audit.ipynb").exists():
+        errors.append("notebooks/exp3_figure_release_audit.ipynb is missing")
 
     self_check = (ROOT / "self_check.py").read_text(encoding="utf-8")
     if "retired figure remains active" not in self_check:
@@ -96,6 +109,15 @@ def main() -> int:
     release_source = (ROOT / "release_support.py").read_text(encoding="utf-8")
     if "release manifest must not include itself" not in release_source or "artifact_sha256sums.txt must not include itself" not in release_source:
         errors.append("release checks do not prevent recursive checksum manifests")
+    build_source = (ROOT / "build_upload_packages.py").read_text(encoding="utf-8")
+    package_contract_text = release_source + "\n" + build_source
+    for token in [
+        "notebooks/exp3_figure_release_audit.ipynb",
+        "outputs/full/checks/figure_release_audit.csv",
+        "outputs/full/checks/figure_release_audit.md",
+    ]:
+        if token not in package_contract_text:
+            errors.append(f"release archive contract missing notebook audit member: {token}")
 
     for output_dir in [ROOT / "outputs" / "fast", ROOT / "outputs" / "full"]:
         if output_dir.exists():

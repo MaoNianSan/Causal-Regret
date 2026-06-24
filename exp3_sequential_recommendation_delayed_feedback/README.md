@@ -73,6 +73,14 @@ python self_check.py --mode full
 
 Full mode is blocked if the three required raw inputs are absent. Do not run `build_upload_packages.py` until the final full self-check passes and the manifest reports `paper_result=true`.
 
+To refresh only the final full figure interfaces after a promoted or promotable full run, use:
+
+```bash
+python refresh_full_figures.py
+```
+
+This reads existing `outputs/full` summaries and metadata, rewrites only active figure bundles and the artifact manifest, and does not rerun `reproduce_full.py`.
+
 ## Output contract
 
 Each run writes to `outputs/<mode>/`:
@@ -124,6 +132,8 @@ fig_app_exp3_horizon_eligibility
 
 The arrival-mechanism contrast and source-label coverage curve are audit-only; they are not active paper figures.
 
+The main figure visual contract fixes Panel A to `short_term_ridge_proxy` (`ST ridge`) and Panel B to seven routes in this order: `source_aware_reference`, `partial_source_label_q50`, `partial_source_label_q30`, `partial_source_label_q10`, `history_mean_static`, `short_term_ridge_proxy`, `short_term_composite_surrogate`. The horizon figure marks `6h (primary)` as the prespecified primary horizon and reports right-censoring availability only.
+
 ## Result boundary
 
 The permitted conclusion is that a history-fitted short-term proxy can show held-out alignment with the constructed 6h target. A lower point estimate than `history_mean_static` does **not** establish an incremental dynamic decision-level gain when its paired confidence interval spans zero. Do not claim online policy improvement, OPE, causal regret, platform utility evaluation, label sufficiency, or monotonic label-rate recovery.
@@ -133,8 +143,9 @@ The permitted conclusion is that a history-fitted short-term proxy can show held
 After a promoted full run:
 
 ```bash
+jupyter nbconvert --to notebook --execute notebooks/exp3_figure_release_audit.ipynb --output exp3_figure_release_audit_executed.ipynb --output-dir outputs/full/checks/
 python build_upload_packages.py
 python verify_release_package.py
 ```
 
-The release verifier checks active figure bundles, release-manifest hashes, checksum-index hashes, archive sidecars, and exclusion of raw KuaiRand inputs and full raw event-level outputs.
+The release verifier checks active figure bundles, the notebook audit outputs, release-manifest hashes, checksum-index hashes, archive sidecars, and exclusion of raw KuaiRand inputs and full raw event-level outputs.

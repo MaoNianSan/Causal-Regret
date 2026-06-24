@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import time
 from dataclasses import dataclass
 from itertools import combinations
 
@@ -15,7 +16,8 @@ from src.common import (
     ensure_output_dirs,
     load_config,
     make_output_manifest,
-    normalise_identifier,
+    normalise_conversion_identifier,
+    normalise_uid_identifier,
     out_dir,
     save_run_metadata,
     write_csv,
@@ -204,8 +206,8 @@ def _user_credit_matrix(assignments: pd.DataFrame, conversions: pd.DataFrame, ro
     route_index = {route: index for index, route in enumerate(routes)}
     action_index = {int(action): index for index, action in enumerate(actions)}
     conversion_uid = conversions[["conversion_id", "uid"]].copy()
-    conversion_uid["conversion_id"] = normalise_identifier(conversion_uid["conversion_id"])
-    conversion_uid["uid"] = normalise_identifier(conversion_uid["uid"])
+    conversion_uid["conversion_id"] = normalise_conversion_identifier(conversion_uid["conversion_id"])
+    conversion_uid["uid"] = normalise_uid_identifier(conversion_uid["uid"])
     invalid = conversion_uid["conversion_id"].isna() | conversion_uid["uid"].isna()
     if invalid.any():
         raise RuntimeError(
@@ -222,8 +224,8 @@ def _user_credit_matrix(assignments: pd.DataFrame, conversions: pd.DataFrame, ro
     conversion_uid["uid"] = conversion_uid["uid"].astype(str)
 
     frame = assignments[assignments["route"].isin(routes)].copy()
-    frame["conversion_id"] = normalise_identifier(frame["conversion_id"])
-    frame["uid"] = normalise_identifier(frame["uid"])
+    frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
+    frame["uid"] = normalise_uid_identifier(frame["uid"])
     frame["candidate_action_id"] = pd.to_numeric(frame["candidate_action_id"], errors="coerce")
     bad = frame["conversion_id"].isna() | frame["uid"].isna() | frame["candidate_action_id"].isna()
     if bad.any():
@@ -485,27 +487,38 @@ def _audit_summary(
     return metrics.merge(_route_agreement(assignments, routes, "source_linked_reference"), on="route", how="left")
 
 
-def _delay_profile(candidates: pd.DataFrame, main_conversions: pd.DataFrame) -> pd.DataFrame:
-    ids = set(main_conversions["conversion_id"].astype(str))
-    frame = candidates[candidates["conversion_id"].astype(str).isin(ids)].copy()
+def _delay_profile(
+    candidates: pd.DataFrame,
+    main_conversions: pd.DataFrame,
+    candidate_window_days: float,
+) -> pd.DataFrame:
+    """Summarize source-to-conversion delay over eligible source-event rows.
+
+    A conversion journey can contain several source events in different delay
+    buckets.  Panel A is therefore a source-event composition, not a unique
+    conversion-journey distribution.
+    """
+    ids = set(normalise_conversion_identifier(main_conversions["conversion_id"]).dropna().astype(str))
+    frame = candidates.copy()
+    frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
+    frame = frame[frame["conversion_id"].notna() & frame["conversion_id"].astype(str).isin(ids)].copy()
     values = pd.to_numeric(frame["delay_to_conversion_days"], errors="coerce")
     labels = ["less_equal_1h", "h1_to_h6", "h6_to_h24", "d1_to_d7", "d7_to_d30"]
-    bins = [-np.inf, 1 / 24, 6 / 24, 1.0, 7.0, 30.0 + 1e-12]
-    frame["conversion_delay_bucket"] = pd.cut(values, bins=bins, labels=labels, include_lowest=True)
+    bins = [-np.inf, 1 / 24, 6 / 24, 1.0, 7.0, float(candidate_window_days) + 1e-12]
+    frame["delay_bucket"] = pd.cut(values, bins=bins, labels=labels, include_lowest=True)
+    frame = frame[frame["delay_bucket"].notna()].copy()
     result = (
-        frame.groupby("conversion_delay_bucket", observed=False)["conversion_id"]
-        .nunique()
-        .rename("n_conversion_events")
+        frame.groupby("delay_bucket", observed=False)
+        .size()
+        .rename("n_eligible_source_events")
         .reset_index()
     )
     result["cohort_id"] = "all_conversion_candidates"
-    result["candidate_window_days"] = 30
-    result["delay_bucket"] = result["conversion_delay_bucket"].astype(str)
-    result["conversion_event_share_percent"] = 100.0 * result["n_conversion_events"] / max(
-        int(result["n_conversion_events"].sum()), 1
-    )
-    result = result[["cohort_id", "n_conversion_events", "candidate_window_days", "delay_bucket", "conversion_event_share_percent"]]
-    return result
+    result["candidate_window_days"] = float(candidate_window_days)
+    result["delay_bucket"] = result["delay_bucket"].astype(str)
+    total = max(int(result["n_eligible_source_events"].sum()), 1)
+    result["source_event_share_percent"] = 100.0 * result["n_eligible_source_events"] / total
+    return result[["cohort_id", "n_eligible_source_events", "candidate_window_days", "delay_bucket", "source_event_share_percent"]]
 
 
 def _window_sensitivity(
@@ -517,7 +530,17 @@ def _window_sensitivity(
     total_cost: np.ndarray,
     cost_scale: float,
     cfg: dict,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Compute common-cohort candidate-window diagnostics without nested bootstrap.
+
+    The main Exp2 route-sensitivity figure carries the inferential UID-bootstrap
+    intervals.  Candidate-window results are appendix-only common-cohort
+    descriptive diagnostics.  Repeating the full UID bootstrap for every
+    window adds four expensive nested resampling jobs but does not feed any
+    reported confidence interval or scientific gate.  This function therefore
+    reports deterministic point estimates, common-cohort coverage, and UID
+    compatibility audit fields only.
+    """
     routes = list(map(str, cfg["attribution_routes"]["main"]))
     windows = list(map(float, cfg["candidate_set"]["window_days_sensitivity"]))
     id_sets: dict[float, set[str]] = {}
@@ -532,21 +555,30 @@ def _window_sensitivity(
             routes,
         )
         id_sets[window] = set(
-            result.assignments.loc[result.assignments["route"].eq(MAIN_REFERENCE_ROUTE), "conversion_id"].astype(str)
+            result.assignments.loc[
+                result.assignments["route"].eq(MAIN_REFERENCE_ROUTE), "conversion_id"
+            ].astype(str)
+        )
+        print(
+            f"[stats] candidate-window eligibility: window={window:g}d; "
+            f"available_conversions={len(id_sets[window]):,}",
+            flush=True,
         )
     common_ids = set.intersection(*id_sets.values()) if id_sets else set()
     if not common_ids:
         raise RuntimeError("Candidate-window common cohort is empty after intersecting eligible conversion IDs.")
-    common_conversions = main_conversions[main_conversions["conversion_id"].astype(str).isin(common_ids)].copy()
-    metric_fields = [
-        TOP_K_CREDITED_MASS,
-        _reference_fields(MAIN_REFERENCE_LABEL)["mass_difference"],
-        _reference_fields(MAIN_REFERENCE_LABEL)["allocation_tv"],
-        _reference_fields(MAIN_REFERENCE_LABEL)["top_k_overlap"],
-        _reference_fields(MAIN_REFERENCE_LABEL)["spearman"],
-    ]
-    metrics_rows, bootstrap_rows, audit_rows = [], [], []
-    for position, window in enumerate(windows):
+    common_conversions = main_conversions[
+        main_conversions["conversion_id"].astype(str).isin(common_ids)
+    ].copy()
+    print(
+        f"[stats] candidate-window common cohort: conversions={len(common_conversions):,}; "
+        "appendix diagnostic uses point estimates only",
+        flush=True,
+    )
+
+    metrics_rows, audit_rows = [], []
+    for position, window in enumerate(windows, start=1):
+        started = time.monotonic()
         result = build_assignments(
             candidates,
             common_conversions,
@@ -571,28 +603,12 @@ def _window_sensitivity(
             MAIN_REFERENCE_ROUTE,
             MAIN_REFERENCE_LABEL,
         )
-        boot = _bootstrap_matrix(
-            matrix,
-            routes,
-            actions,
-            n_impressions,
-            total_cost,
-            cost_scale,
-            cfg,
-            seed_offset=10_000 + position,
-        )
-        point = _add_bootstrap_intervals(
-            point,
-            boot,
-            float(cfg["statistics"]["uid_bootstrap"]["ci_level"]),
-            metric_fields,
-        )
         point["candidate_window_days"] = window
         point["window_common_cohort_events"] = int(len(common_conversions))
         point["common_cohort_coverage"] = int(len(common_conversions)) / max(int(len(id_sets[window])), 1)
+        point["window_bootstrap_replicates"] = 0
+        point["window_uncertainty_status"] = "not_computed_point_estimate_common_cohort_diagnostic"
         metrics_rows.append(point)
-        boot["candidate_window_days"] = window
-        bootstrap_rows.append(boot)
         audit_rows.append(
             {
                 "candidate_window_days": window,
@@ -601,13 +617,18 @@ def _window_sensitivity(
                 "n_assignment_rows": int(len(result.assignments)),
                 "missing_reference": 0,
                 "uid_mismatch": 0,
+                "window_bootstrap_replicates": 0,
+                "window_uncertainty_status": "not_computed_point_estimate_common_cohort_diagnostic",
+                "elapsed_seconds": round(time.monotonic() - started, 3),
             }
         )
-    return (
-        pd.concat(metrics_rows, ignore_index=True),
-        pd.concat(bootstrap_rows, ignore_index=True),
-        pd.DataFrame(audit_rows),
-    )
+        print(
+            f"[stats] candidate-window diagnostic: {position}/{len(windows)}; "
+            f"window={window:g}d; assignments={len(result.assignments):,}; "
+            f"elapsed={time.monotonic() - started:.1f}s",
+            flush=True,
+        )
+    return pd.concat(metrics_rows, ignore_index=True), pd.DataFrame(audit_rows)
 
 
 def _em_assignment_diagnostic(assignments: pd.DataFrame) -> pd.DataFrame:
@@ -677,8 +698,13 @@ def main() -> None:
         MAIN_REFERENCE_ROUTE,
         MAIN_REFERENCE_LABEL,
     )
+    bootstrap_started = time.monotonic()
     bootstrap = _bootstrap_matrix(matrix, main_routes, actions, n_impressions, total_cost, cost_scale, cfg)
-    print(f"[stats] UID bootstrap completed: {int(cfg['statistics']['uid_bootstrap']['n_bootstrap'])} replicates", flush=True)
+    print(
+        f"[stats] main UID bootstrap completed: {int(cfg['statistics']['uid_bootstrap']['n_bootstrap'])} replicates; "
+        f"elapsed={time.monotonic() - bootstrap_started:.1f}s",
+        flush=True,
+    )
     main_metric_fields = [
         TOP_K_CREDITED_MASS,
         _reference_fields(MAIN_REFERENCE_LABEL)["mass_difference"],
@@ -731,7 +757,10 @@ def main() -> None:
         )(list(map(str, cfg["reporting"]["pairwise_overlap_routes"]))),
         summaries / "exp2_pairwise_top_k_overlap.csv",
     )
-    write_csv(_delay_profile(candidates, main_conversions), summaries / "exp2_source_event_delay_profile.csv")
+    write_csv(
+        _delay_profile(candidates, main_conversions, float(cfg["candidate_set"]["window_days_main"])),
+        summaries / "exp2_source_event_delay_profile.csv",
+    )
 
     audit_routes = main_routes + [str(cfg["attribution_routes"]["audit_reference"])]
     audit_assignments = assignments[
@@ -769,7 +798,7 @@ def main() -> None:
         cost_rows.append(metrics)
     write_csv(pd.concat(cost_rows, ignore_index=True), summaries / "exp2_cost_adjusted_credit_score.csv")
 
-    window, window_bootstrap, window_audit = _window_sensitivity(
+    window, window_audit = _window_sensitivity(
         candidates,
         main_conversions,
         action_exposure,
@@ -780,7 +809,6 @@ def main() -> None:
         cfg,
     )
     write_csv(window, summaries / "exp2_candidate_window_sensitivity.csv")
-    write_csv(window_bootstrap, raw / "exp2_candidate_window_uid_bootstrap_replicates.csv")
     write_csv(window_audit, processed / "exp2_candidate_window_uid_integrity.csv")
 
     write_csv(_em_assignment_diagnostic(main_assignments), summaries / "exp2_em_assignment_diagnostic.csv")
@@ -794,6 +822,7 @@ def main() -> None:
             "n_decision_cells": int(len(actions)),
             "action_unit": cfg["action"]["action_unit"],
             "main_metric": "credit_allocation_tv_distance_vs_arrival_anchor",
+            "candidate_window_uncertainty": "not_computed_point_estimate_common_cohort_diagnostic",
         },
     )
     make_output_manifest(cfg)

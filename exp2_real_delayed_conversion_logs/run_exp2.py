@@ -6,13 +6,13 @@ import numpy as np
 import pandas as pd
 
 from attribution_engine import build_assignments, route_specification_table
-from src.common import ensure_output_dirs, load_config, make_output_manifest, normalise_identifier, out_dir, save_run_metadata, write_csv
+from src.common import ensure_output_dirs, load_config, make_output_manifest, normalise_conversion_identifier, normalise_uid_identifier, out_dir, save_run_metadata, write_csv
 
 
 def _validate_uid_contract(conversions: pd.DataFrame, candidates: pd.DataFrame, cohort_name: str) -> None:
     conversion_frame = conversions[["conversion_id", "uid"]].copy()
-    conversion_frame["conversion_id"] = normalise_identifier(conversion_frame["conversion_id"])
-    conversion_frame["uid"] = normalise_identifier(conversion_frame["uid"])
+    conversion_frame["conversion_id"] = normalise_conversion_identifier(conversion_frame["conversion_id"])
+    conversion_frame["uid"] = normalise_uid_identifier(conversion_frame["uid"])
     bad = conversion_frame["conversion_id"].isna() | conversion_frame["uid"].isna()
     if bad.any():
         raise RuntimeError(f"{cohort_name}: {int(bad.sum())} conversion rows have a missing conversion_id or UID.")
@@ -21,8 +21,8 @@ def _validate_uid_contract(conversions: pd.DataFrame, candidates: pd.DataFrame, 
         raise RuntimeError(f"{cohort_name}: conversion IDs with non-unique UIDs: {uid_counts[uid_counts.ne(1)].index[:5].tolist()}.")
     expected = conversion_frame.drop_duplicates("conversion_id").set_index("conversion_id")["uid"].astype(str)
     frame = candidates[candidates["conversion_id"].astype(str).isin(set(expected.index.astype(str)))].copy()
-    frame["conversion_id"] = normalise_identifier(frame["conversion_id"])
-    frame["uid"] = normalise_identifier(frame["uid"])
+    frame["conversion_id"] = normalise_conversion_identifier(frame["conversion_id"])
+    frame["uid"] = normalise_uid_identifier(frame["uid"])
     if frame["uid"].isna().any():
         raise RuntimeError(f"{cohort_name}: candidate rows with missing UID reached route assignment.")
     mismatch = frame["uid"].astype(str).ne(frame["conversion_id"].astype(str).map(expected))
@@ -43,7 +43,7 @@ def _candidate_summary(conversions: pd.DataFrame, cfg: dict) -> pd.DataFrame:
             {
                 "cohort_id": cohort_id,
                 "n_conversion_events": int(frame["conversion_id"].nunique()),
-                "n_users": int(normalise_identifier(frame["uid"]).nunique(dropna=True)),
+                "n_users": int(normalise_uid_identifier(frame["uid"]).nunique(dropna=True)),
                 "candidate_source_event_count_median": float(frame["n_candidate_source_rows"].median()),
                 "candidate_source_event_count_p90": float(frame["n_candidate_source_rows"].quantile(0.90)),
                 "candidate_decision_cell_count_median": float(frame["n_candidate_decision_cells"].median()),

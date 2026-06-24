@@ -22,7 +22,7 @@ def main() -> None:
     # Sufficient decision-cell exposure over a 34-day log.
     for day in range(34):
         for campaign in range(n_campaigns):
-            for rep in range(60):
+            for rep in range(6):
                 rows.append({
                     "timestamp": day * DAY + campaign * 600 + rep * 30,
                     "uid": f"background_{day}_{campaign}_{rep}",
@@ -35,7 +35,7 @@ def main() -> None:
     # Every converted journey has two source days. Half deliberately remain in
     # one campaign, showing that source-time cells prevent campaign-only collapse.
     for day in range(3, 28):
-        for rep in range(80):
+        for rep in range(12):
             left = (day + rep) % n_campaigns
             right = left if (day + rep) % 2 == 0 else (left + 1) % n_campaigns
             uid = f"u_{day}_{rep}"
@@ -56,6 +56,7 @@ def main() -> None:
         {"timestamp": d + 200, "uid": "cross_left", "campaign": "1", "conversion": 1, "conversion_timestamp": d + 8_000, "conversion_id": "cv_cross_uid", "attribution": 1, "click": 1, "cost": 0.4},
         {"timestamp": d + 300, "uid": "cross_right", "campaign": "1", "conversion": 1, "conversion_timestamp": d + 8_000, "conversion_id": "cv_cross_uid", "attribution": 0, "click": 0, "cost": 0.4},
         {"timestamp": d + 400, "uid": "missing_cid", "campaign": "2", "conversion": 1, "conversion_timestamp": d + 8_000, "conversion_id": None, "attribution": 1, "click": 1, "cost": 0.4},
+        {"timestamp": d + 500, "uid": "-1", "campaign": "3", "conversion": 1, "conversion_timestamp": d + 8_000, "conversion_id": "cv_uid_minus_one", "attribution": 1, "click": 1, "cost": 0.4},
     ]
     output.parent.mkdir(parents=True, exist_ok=True)
     pd.DataFrame(rows).sort_values(["timestamp", "uid"], kind="stable").to_csv(output, sep="\t", index=False)

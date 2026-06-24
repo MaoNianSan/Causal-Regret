@@ -28,7 +28,6 @@ BUCKET_LABELS = {
     "d7_to_d30": "7–30 d",
 }
 SHORT_LABELS = {
-    "arrival_time_naive": "Arrival",
     "arrival_bin_anchor": "Arrival anchor",
     "first_click": "First click or touch",
     "last_click": "Last click or touch",
@@ -159,9 +158,16 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
     fig, axes = plt.subplots(1, 2, figsize=size)
 
     ordered = ["less_equal_1h", "h1_to_h6", "h6_to_h24", "d1_to_d7", "d7_to_d30"]
-    bucket_col = "delay_bucket" if "delay_bucket" in delay.columns else "conversion_delay_bucket"
-    share_col = "conversion_event_share_percent" if "conversion_event_share_percent" in delay.columns else "source_event_share_percent"
-    count_col = "n_conversion_events" if "n_conversion_events" in delay.columns else "n_candidate_source_events"
+    required_delay_columns = {"delay_bucket", "n_eligible_source_events", "source_event_share_percent"}
+    missing_delay_columns = required_delay_columns.difference(delay.columns)
+    if missing_delay_columns:
+        raise RuntimeError(
+            "Delay-profile contract failed: expected source-event fields "
+            f"{sorted(required_delay_columns)}, missing={sorted(missing_delay_columns)}."
+        )
+    bucket_col = "delay_bucket"
+    share_col = "source_event_share_percent"
+    count_col = "n_eligible_source_events"
     profile = delay.set_index(bucket_col).reindex(ordered).fillna(0.0).reset_index().rename(columns={bucket_col: "delay_bucket"})
     axes[0].bar([BUCKET_LABELS[value] for value in ordered], profile[share_col])
     axes[0].set_xlabel("Source-to-conversion delay")
@@ -252,7 +258,7 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
 
     rows: list[dict] = []
     for _, row in profile.iterrows():
-        record = _base_row(cfg, fig_id, "panel_a", "conversion_event_share_percent", cohort_id)
+        record = _base_row(cfg, fig_id, "panel_a", "source_event_share_percent", cohort_id)
         record.update(
             {
                 "x_id": "delay_bucket",
@@ -264,7 +270,7 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
                 "n_events": int(row[count_col]),
                 "n_users": np.nan,
                 "filter_id": "all_conversion_candidates",
-                "filter_description": "Eligible decision-cell cohort; delay is conversion time minus source-event time.",
+                "filter_description": "Eligible source-event rows in the decision-cell cohort; delay is conversion time minus source-event time.",
                 **_method_fields("arrival_bin_anchor"),
             }
         )
@@ -318,9 +324,10 @@ def main_figure(cfg: dict, summary: pd.DataFrame, delay: pd.DataFrame) -> None:
                 "arrival-bin anchor."
             ),
             "panel_a_note": (
-                "The distribution is computed within the eligible decision-cell cohort under the 30-day "
-                "candidate window and is not the full Criteo-log delay distribution."
+                "The distribution is computed over eligible source-event rows within the decision-cell cohort "
+                "under the 30-day candidate window and is not the full Criteo-log delay distribution."
             ),
+            "panel_a_metric_semantics": "source_event_share_percent over eligible source-event rows",
         },
     )
 

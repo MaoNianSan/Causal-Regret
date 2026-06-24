@@ -70,6 +70,32 @@ The main-figure metadata must record the paired `ST ridge` versus `History mean`
 effect and an explicit guide to points, intervals, the carrier baseline, and the
 offline reference.
 
+The main-figure source-data CSV and metadata must also satisfy the final visual
+contract:
+
+```text
+Panel A method_id: short_term_ridge_proxy only
+Panel A labels: ST ridge; y = x; Deciles; whiskers: 95% user-bootstrap CI
+Panel B order: source_aware_reference, partial_source_label_q50, partial_source_label_q30,
+  partial_source_label_q10, history_mean_static, short_term_ridge_proxy,
+  short_term_composite_surrogate
+Panel B labels: Reference (offline); Carrier baseline; Whiskers: 95% user-bootstrap CI
+```
+
+The horizon figure contract fixes the 6h tick label to `6h (primary)`, removes
+the single-series legend, labels the prespecified primary horizon inside the
+axes, and records that the figure is an availability diagnostic only.
+
+The release-level notebook audit writes:
+
+```text
+outputs/full/checks/figure_release_audit.csv
+outputs/full/checks/figure_release_audit.md
+outputs/full/checks/exp3_figure_release_audit_executed.ipynb
+```
+
+These files are required release archive members.
+
 ## Rerun integrity
 
 A run does not append to an existing active output tree. If `outputs/<mode>/` contains active artifacts, use the corresponding runner with `--clean-output`; otherwise the runner exits before writing a new manifest. This prevents stale summaries or figure bundles from being mixed with a fresh run.

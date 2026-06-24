@@ -1,8 +1,0 @@
-{
-  "same_file_set": true,
-  "same_sha256_for_every_core_file": true,
-  "figure_table_repair_regression_passed": true,
-  "n_core_files_before": 30,
-  "n_core_files_after": 30,
-  "changed_or_missing_files": []
-}

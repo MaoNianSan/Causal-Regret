@@ -1,6 +1,0 @@
-{
-  "configured_observation_window_days": 30.0,
-  "analysis_window_start_timestamp": 79199.0,
-  "analysis_window_end_timestamp": 2671199.0,
-  "selection_rule": "last configured observation_window_days ending at the maximum observed impression timestamp"
-}

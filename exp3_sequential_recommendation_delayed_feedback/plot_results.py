@@ -11,6 +11,34 @@ from config import DEFAULT_CONFIG, ExperimentConfig
 from figure_contract import retire_figure_bundle, write_figure_bundle
 from recoverability import METHOD_META
 
+MAIN_FIGURE_METHOD_ORDER = [
+    "source_aware_reference",
+    "partial_source_label_q50",
+    "partial_source_label_q30",
+    "partial_source_label_q10",
+    "history_mean_static",
+    "short_term_ridge_proxy",
+    "short_term_composite_surrogate",
+]
+
+MAIN_FIGURE_VISUAL_CONTRACT = {
+    "panel_a_route_label": "ST ridge",
+    "panel_a_reference_label": "y = x",
+    "panel_a_uncertainty_label": "Deciles; whiskers: 95% user-bootstrap CI",
+    "panel_b_reference_label": "Reference (offline)",
+    "panel_b_carrier_label": "Carrier baseline",
+    "panel_b_uncertainty_label": "Whiskers: 95% user-bootstrap CI",
+    "panel_b_method_order": MAIN_FIGURE_METHOD_ORDER,
+}
+
+HORIZON_VISUAL_CONTRACT = {
+    "metric_label": "Right-censored source events (%)",
+    "primary_horizon_tick_label": "6h (primary)",
+    "primary_horizon_annotation": "Prespecified primary horizon",
+    "series_legend_removed": True,
+    "interpretation": "Availability diagnostic only; not target saturation.",
+}
+
 
 def _load(path: Path) -> pd.DataFrame:
     return pd.read_csv(path) if path.exists() else pd.DataFrame()
@@ -82,7 +110,7 @@ def _static_effect_note(output_dir: Path, cfg: ExperimentConfig) -> tuple[str, d
         return "Paired ST-ridge-versus-history-mean contrast is reported in the appendix table.", {}
     rec = hit.iloc[0].to_dict()
     note = (
-        "Paired ST ridge − History mean: "
+        "ST ridge versus History mean paired contrast: "
         f"Δ={float(rec['point_estimate']):.4f} "
         f"[{float(rec['ci_lower']):.4f}, {float(rec['ci_upper']):.4f}]; positive favors ST ridge."
     )
@@ -98,7 +126,7 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     condition = cfg.primary_delay_condition
     boot = boot[boot["delay_condition"] == condition].copy()
     calibration = calibration[calibration["delay_condition"] == condition].copy()
-    fig, axes = plt.subplots(1, 2, figsize=(6.85, 2.75), gridspec_kw={"width_ratios": [1.0, 1.10]})
+    fig, axes = plt.subplots(1, 2, figsize=(6.85, 2.75), gridspec_kw={"width_ratios": [0.88, 1.28]})
     rows: list[dict[str, Any]] = []
 
     # Panel A: one prespecified proxy route, held out by calendar split.
@@ -119,10 +147,21 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     ax.plot([lower, upper], [lower, upper], linestyle="--", linewidth=1.0, color="0.35", label="y = x")
     ax.set_xlim(lower, upper)
     ax.set_ylim(lower, upper)
-    ax.set_xlabel("Predicted 6h target (log1p)", fontsize=8)
-    ax.set_ylabel("Observed 6h target (log1p)", fontsize=8)
+    ax.set_xlabel("Mean predicted 6h target (log1p)", fontsize=8)
+    ax.set_ylabel("Mean observed 6h target (log1p)", fontsize=8)
     ax.set_title("(a) Held-out calibration", loc="left", fontsize=9)
-    ax.legend(fontsize=6.4, frameon=False, loc="upper left")
+    ax.text(
+        0.03,
+        0.05,
+        "Deciles; whiskers: 95% user-bootstrap CI",
+        transform=ax.transAxes,
+        ha="left",
+        va="bottom",
+        fontsize=6.0,
+        color="0.35",
+        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.88, "pad": 0.8},
+    )
+    ax.legend(fontsize=6.2, frameon=False, loc="upper left")
     ax.tick_params(labelsize=7)
     ax.grid(alpha=0.18)
     for rec in data.to_dict("records"):
@@ -134,7 +173,7 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
             rec["mean_predicted_long_value_log"],
             rec["mean_observed_long_value_log"],
             x_id="mean_predicted_long_value_log",
-            x_display_label="Predicted 6h target (log1p)",
+            x_display_label="Mean predicted 6h target (log1p)",
             run_mode=run_mode,
             paper_result=paper_result,
             notes="ST ridge is fit on history-standard only and evaluated on main-standard. Points are prediction deciles; vertical bars are 95% user-bootstrap CIs.",
@@ -145,14 +184,38 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     baseline = boot[boot["method_id"] == "arrival_time_naive"]
     base_value = float(baseline["point_estimate"].iloc[0]) if not baseline.empty else np.nan
     if np.isfinite(base_value):
-        ax.axvline(base_value, linestyle="--", linewidth=1.0, color="0.35", label="Carrier baseline")
-    method_order = cfg.main_methods
+        ax.axvline(base_value, linestyle="--", linewidth=1.0, color="0.35")
+        ax.text(
+            base_value + 0.0015,
+            0.035,
+            "Carrier\nbaseline",
+            transform=ax.get_xaxis_transform(),
+            ha="left",
+            va="bottom",
+            fontsize=6.0,
+            color="0.35",
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.90, "pad": 0.8},
+        )
+    method_order = MAIN_FIGURE_METHOD_ORDER
     y_positions = np.arange(len(method_order))
     by_method = boot.set_index("method_id")
+    duplicated_methods = boot[boot["method_id"].isin(method_order)]["method_id"]
+    duplicated_methods = duplicated_methods[duplicated_methods.duplicated()].unique().tolist()
+    if duplicated_methods:
+        raise RuntimeError(
+            "Required main-figure methods duplicated in bootstrap summary: "
+            + ", ".join(duplicated_methods)
+        )
+    missing_methods = [m for m in method_order if m not in by_method.index]
+    if missing_methods:
+        raise RuntimeError(
+            "Required main-figure methods missing from bootstrap summary: "
+            + ", ".join(missing_methods)
+        )
     for y_pos, method in zip(y_positions, method_order):
-        if method not in by_method.index:
-            continue
         rec = by_method.loc[method]
+        rec_dict = rec.to_dict()
+        rec_dict["method_id"] = method
         point = float(rec["point_estimate"])
         low = float(rec["ci_lower"])
         high = float(rec["ci_upper"])
@@ -163,7 +226,7 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
         rows.append(_common_figure_row(
             "fig_exp3_long_term_recoverability",
             "panel_b",
-            rec.to_dict(),
+            rec_dict,
             "ranking_regret_per_time_bin",
             method,
             point,
@@ -179,21 +242,20 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
     ax.set_title("(b) Daily ranking regret", loc="left", fontsize=9)
     ax.tick_params(labelsize=7)
     ax.grid(axis="x", alpha=0.18)
-    if np.isfinite(base_value):
-        ax.legend(fontsize=6.2, frameon=False, loc="lower right")
+    ax.text(
+        0.98,
+        0.05,
+        "Whiskers: 95% user-bootstrap CI",
+        transform=ax.transAxes,
+        ha="right",
+        va="bottom",
+        fontsize=6.0,
+        color="0.35",
+        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.88, "pad": 0.8},
+    )
 
     static_note, static_effect = _static_effect_note(output_dir, cfg)
-    fig.text(
-        0.012,
-        0.012,
-        "(a) Points = prediction deciles; vertical bars = 95% user-bootstrap CI. "
-        "(b) Points = estimates; horizontal bars = 95% user-bootstrap CI; dashed line = Carrier. "
-        + static_note,
-        ha="left",
-        va="bottom",
-        fontsize=5.8,
-    )
-    fig.subplots_adjust(left=0.13, right=0.985, bottom=0.32, top=0.88, wspace=0.52)
+    fig.subplots_adjust(left=0.10, right=0.99, bottom=0.18, top=0.88, wspace=0.68)
     write_figure_bundle(fig, rows, output_dir, "fig_exp3_long_term_recoverability", {
         "metric_id": "ranking_regret_per_time_bin",
         "primary_horizon": "6h",
@@ -205,6 +267,7 @@ def plot_main_recoverability(output_dir: Path, run_mode: str, paper_result: bool
         "paired_static_control_effect": static_effect,
         "caption_note": static_note,
         "plot_label_map_version": "v5_2_explanatory",
+        "visual_contract": MAIN_FIGURE_VISUAL_CONTRACT,
     }, run_mode, paper_result, input_data_status=input_data_status)
 
 
@@ -217,28 +280,31 @@ def plot_horizon_eligibility(output_dir: Path, run_mode: str, paper_result: bool
     positions = np.arange(len(table))
     rates = 100.0 * table["right_censoring_rate"].to_numpy(float)
     fig, ax = plt.subplots(figsize=(6.85, 2.25))
-    ax.plot(positions, rates, marker="o", linewidth=1.15, label="Right censoring")
+    ax.plot(positions, rates, marker="o", linewidth=1.15)
     for position, rate in zip(positions, rates):
         ax.annotate(f"{rate:.1f}%", (position, rate), textcoords="offset points", xytext=(0, 5), ha="center", fontsize=6.5)
     six_h = np.flatnonzero(table["horizon"].astype(str).to_numpy() == "6h")
     if len(six_h):
-        ax.axvline(int(six_h[0]), linestyle="--", linewidth=0.9, color="0.35", label="Primary horizon: 6h")
-    ax.set_xticks(positions, table["horizon"].astype(str).tolist())
+        six_h_position = int(six_h[0])
+        ax.axvline(six_h_position, linestyle="--", linewidth=0.9, color="0.35")
+        ax.text(
+            six_h_position + 0.05,
+            0.94,
+            "Prespecified\nprimary horizon",
+            transform=ax.get_xaxis_transform(),
+            ha="left",
+            va="top",
+            fontsize=6.3,
+            color="0.35",
+        )
+    tick_labels = ["1h", "6h\n(primary)", "1d", "3d"]
+    ax.set_xticks(positions, tick_labels)
     ax.set_xlabel("Future-engagement horizon", fontsize=8)
-    ax.set_ylabel("Right-censoring rate (%)", fontsize=8)
+    ax.set_ylabel("Right-censored source events (%)", fontsize=8)
     ax.set_title("Horizon eligibility", loc="left", fontsize=9)
     ax.tick_params(labelsize=7)
     ax.grid(axis="y", alpha=0.18)
-    ax.legend(fontsize=6.4, frameon=False, loc="upper left")
-    fig.text(
-        0.012,
-        0.012,
-        "Eligible source events remain observed through the full target window. The 6h horizon is prespecified; this figure reports availability only.",
-        ha="left",
-        va="bottom",
-        fontsize=6.0,
-    )
-    fig.subplots_adjust(left=0.10, right=0.985, bottom=0.28, top=0.87)
+    fig.subplots_adjust(left=0.12, right=0.99, bottom=0.24, top=0.88)
     rows = []
     for rec in table.to_dict("records"):
         row = dict(rec)
@@ -267,6 +333,8 @@ def plot_horizon_eligibility(output_dir: Path, run_mode: str, paper_result: bool
         "eligibility_definition": "A source event is eligible when its user remains observed in the same standard-log split through the entire future target horizon.",
         "interpretation_boundary": "This figure does not establish target saturation or choose the horizon post hoc; it reports right-censoring availability for prespecified diagnostic horizons.",
         "plot_label_map_version": "v5_2_explanatory",
+        "caption_note": "The 6h horizon is prespecified; this is an availability diagnostic and not evidence of engagement saturation.",
+        "visual_contract": HORIZON_VISUAL_CONTRACT,
     }, run_mode, paper_result, input_data_status=input_data_status)
 
 

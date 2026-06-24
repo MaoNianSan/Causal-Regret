@@ -40,6 +40,13 @@ REQUIRED_RELEASE_DOCS = (
     Path("docs/final_full_result_summary.md"),
     Path("docs/latex_interface_experiments.md"),
 )
+REQUIRED_NOTEBOOK_AUDIT_FILES = (
+    Path("notebooks/exp3_figure_release_audit.ipynb"),
+    Path("notebooks/README.md"),
+    Path("outputs/full/checks/figure_release_audit.csv"),
+    Path("outputs/full/checks/figure_release_audit.md"),
+    Path("outputs/full/checks/exp3_figure_release_audit_executed.ipynb"),
+)
 PLOT_LABELS = {
     "source_aware_reference": "Reference",
     "arrival_time_naive": "Carrier",
@@ -184,6 +191,7 @@ def write_final_docs() -> None:
         "## Permissible Claims\n\n"
         "- The history-fitted short-term ridge proxy achieved strong held-out alignment with the constructed 6h target.\n"
         "- Its ranking-regret point estimate was lower than `history_mean_static`, but the paired 95% CI spanned zero.\n"
+        "- The short-term ridge proxy has strong held-out score-level alignment with the constructed 6h target. Its point-estimated ranking regret is lower than the history-only static control, but the paired interval against the static control spans zero under daily aggregation.\n"
         "- Stable action-category structure limits power to separate dynamic proxy value from history-level action differences.\n\n"
         "## Prohibited Claims\n\n"
         "- Do not claim significant outperformance over the history-only baseline.\n"
@@ -200,10 +208,16 @@ def write_final_docs() -> None:
         "\\includegraphics{outputs/full/figures/pdf/fig_app_exp3_horizon_eligibility.pdf}\n"
         "```\n\n"
         "## Figure Caption Fact Sheet\n\n"
-        "- Main figure Panel A: held-out calibration; deciles; vertical bars are 95% user-bootstrap CIs.\n"
-        "- Main figure Panel B: 6h ranking regret; lower is better; `Reference` is offline; dashed carrier line is the carrier baseline.\n"
+        "- Main figure Panel A uses held-out prediction deciles.\n"
+        "- Main figure Panel A vertical whiskers are 95% user-bootstrap CI.\n"
+        "- Main figure Panel B horizontal whiskers are 95% user-bootstrap CI.\n"
+        "- Carrier is a baseline assignment route.\n"
+        "- Reference is offline and non-deployable.\n"
+        "- ST ridge versus History mean paired comparison spans zero.\n"
         f"- ST ridge versus History mean paired regret reduction: {_fmt(eff['effect_estimate'])}, 95% CI [{_fmt(eff['ci_lower'])}, {_fmt(eff['ci_upper'])}].\n"
-        "- Horizon appendix: the primary 6h horizon was pre-specified; the figure reports eligibility loss due to right censoring, not engagement saturation.\n\n"
+        "- Horizon figure: 6h is prespecified.\n"
+        "- Horizon figure reports right-censoring availability only.\n"
+        "- Horizon figure does not establish engagement saturation.\n\n"
         "## Table Input Paths\n\n"
         "- `outputs/full/tables/tbl_app_exp3_proxy_static_control.csv`\n"
         "- `outputs/full/tables/tbl_app_exp3_source_label_sensitivity.csv`\n"
@@ -284,7 +298,7 @@ def _excluded(path: Path) -> bool:
 
 def _base_package_files() -> list[Path]:
     patterns = [
-        "*.py", "requirements.txt", "README.md", "docs/**", "src/**", "tests/**",
+        "*.py", "requirements.txt", "README.md", "docs/**", "notebooks/**", "src/**", "tests/**",
         "outputs/full/figures/pdf/**/*", "outputs/full/figures/png/**/*",
         "outputs/full/figures/data/**/*", "outputs/full/figures/metadata/**/*",
         "outputs/full/tables/**/*", "outputs/full/summaries/**/*",
@@ -483,7 +497,18 @@ def verify_release_packages() -> tuple[bool, list[str]]:
     errors.extend(_verify_artifact_checksum_index())
 
     expected_code = {path.as_posix() for path in collect_code_package_files(include_release_manifests=True)}
-    required_members = _required_figure_members() | {path.as_posix() for path in REQUIRED_RELEASE_DOCS}
+    required_members = (
+        _required_figure_members()
+        | {path.as_posix() for path in REQUIRED_RELEASE_DOCS}
+        | {path.as_posix() for path in REQUIRED_NOTEBOOK_AUDIT_FILES}
+    )
+    audit_path = FULL / "checks" / "figure_release_audit.csv"
+    if not audit_path.exists():
+        errors.append("figure release audit CSV is missing")
+    else:
+        audit = pd.read_csv(audit_path)
+        if audit.empty or not (audit.get("status", pd.Series(dtype=str)).astype(str) == "passed").all():
+            errors.append("figure release audit CSV does not report passed")
     for zip_path, expected in [
         (CODE_ZIP, expected_code),
         (REPRO_ZIP, expected_code | {path.as_posix() for path in REPRO_EXTRAS} | {"full_result_inventory.csv", "artifact_sha256sums.txt"}),
@@ -518,6 +543,7 @@ def write_release_reports(errors: list[str]) -> None:
         f"- Full result validation status: {status}\n"
         f"- Promotion status: paper_result={manifest.get('paper_result')}, status={manifest.get('status')}\n"
         f"- Active figures: {', '.join(ACTIVE_FIGURES)}\n"
+        "- Figure release audit: `outputs/full/checks/figure_release_audit.csv`, `outputs/full/checks/figure_release_audit.md`, `outputs/full/checks/exp3_figure_release_audit_executed.ipynb`\n"
         f"- Retired figures: {', '.join(RETIRED_FIGURES)}\n"
         "- Paper-facing tables: `tbl_app_exp3_proxy_static_control.csv`, `tbl_app_exp3_source_label_sensitivity.csv`, `tbl_app_exp3_proxy_score_quality.csv`\n"
         f"- Upload archive contents: `{CODE_ZIP.name}`, `{REPRO_ZIP.name}`\n"

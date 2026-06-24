@@ -36,6 +36,7 @@ def static_checks(rows: list[dict]) -> None:
         ROOT / "make_tables_exp2.py",
         ROOT / "attribution_engine.py",
         ROOT / "self_check_exp2.py",
+        ROOT / "src" / "common.py",
     ]
     text = "\n".join(path.read_text(encoding="utf-8") for path in formal_files)
     production_text = "\n".join(path.read_text(encoding="utf-8") for path in formal_files if path.name != "self_check_exp2.py")
@@ -45,6 +46,11 @@ def static_checks(rows: list[dict]) -> None:
     plot = (ROOT / "plot_exp2.py").read_text(encoding="utf-8")
     check = (ROOT / "self_check_exp2.py").read_text(encoding="utf-8")
     finalizer = (ROOT / "finalize_exp2.py").read_text(encoding="utf-8")
+    common = (ROOT / "src" / "common.py").read_text(encoding="utf-8")
+    attribution = (ROOT / "attribution_engine.py").read_text(encoding="utf-8")
+    construct = (ROOT / "construct_timeline.py").read_text(encoding="utf-8")
+    fixture_config = (ROOT / "tests" / "fixture_config.yaml").read_text(encoding="utf-8")
+    synthetic_integration = ROOT / "tests" / "run_synthetic_integration.py"
 
     _add(rows, "mode_isolation", "shutil.rmtree" in runner and "outputs" in runner, "runner clears isolated outputs/<mode>")
     _add(rows, "missing_input_hard_failure", "blocked_missing_input" in runner, "missing protected input exits non-zero")
@@ -61,6 +67,13 @@ def static_checks(rows: list[dict]) -> None:
     _add(rows, "primary_metric_semantics", "top_k_credited_mass_per_1000_events" in stats and "top_k_cost_adjusted_score_per_1000_events" in stats and "offline_utility_per_1000" not in stats, "primary outcome is credited mass; cost-adjusted score is appendix-only")
     _add(rows, "arrival_anchor_label", "Arrival-bin anchor (diagnostic)" in text and "diagnostic/nondeployable" in check, "arrival anchor is explicitly diagnostic")
     _add(rows, "paper_result_finalization_gate", "finalize_exp2.py" in runner and "paper_result" in finalizer and "semantic self-check has failures" in finalizer, "full paper_result is promoted only after semantic self-check")
+    _add(rows, "clean_run_replot_guard", "not_applicable_clean_run" in check and "comparison_performed" in check, "clean runs do not fail the display-only hash regression guard")
+    _add(rows, "source_event_delay_profile_contract", "n_eligible_source_events" in stats and "source_event_share_percent" in stats and "conversion_event_share_percent" not in stats and "source_event_share_percent" in plot, "Panel A counts eligible source-event rows")
+    _add(rows, "uid_minus_one_sentinel_filter", "normalise_uid_identifier" in common and "uid_sentinel_minus_one" in construct and "candidate_rows_uid_sentinel_minus_one" in construct, "UID -1 is treated as missing and audited")
+    _add(rows, "stale_arrival_alias_rejected", "validate_exp2_config" in common and '"arrival_time_naive"' not in attribution and "arrival_bin_anchor" in config, "stale arrival_time_naive configuration is rejected")
+    _add(rows, "fixture_config_current", "arrival_bin_anchor" in fixture_config and "min_decision_cell_ambiguity_rate" in fixture_config and "min_core_pairwise_tv" in fixture_config and "min_em_positive_entropy_share" in fixture_config and "arrival_time_naive" not in fixture_config, "synthetic fixture matches production route/gate contract")
+    _add(rows, "synthetic_integration_runner_present", synthetic_integration.exists(), "fixture integration runner exists")
+    _add(rows, "input_identity_recorded", "input_file_identity" in runner and "raw_input_identity" in common, "run metadata records input size, mtime, and partial hash")
 
     old_ids = [
         "source_labelled_update",

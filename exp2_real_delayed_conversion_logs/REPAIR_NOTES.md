@@ -1,27 +1,45 @@
-# Repair notes
+# Exp2 repair notes
 
-## Earlier integrity repairs retained
+## Rerun-readiness repairs
 
-1. UID bootstrap now excludes invalid journeys before sparse-matrix construction:
-   - missing UID;
-   - missing or sentinel `conversion_id`;
-   - a `conversion_id` appearing under multiple UIDs.
-2. Every candidate-window analysis builds/uses a window-compatible UID reference and reports its own audit row.
-3. Old temporal replay, label-availability, and single-permutation controls are absent from the formal pipeline.
+### 1. Clean-run display-hash guard
 
-## This semantic/figure repair
+The runner removes `outputs/<mode>` at the beginning of every fresh run. A fresh run therefore cannot require a prior display-only hash snapshot. The semantic check now treats that snapshot as optional for a clean run and records the display regression as not applicable unless the user deliberately launches a replot-only audit with a before-hash file.
 
-1. Renamed primary fields from utility-like names to credit-summary names:
-   - `top_k_credited_mass_per_1000_events`;
-   - `credit_allocation_tv_distance_vs_arrival_anchor`;
-   - `top_k_decision_cell_overlap_vs_arrival_anchor`.
-2. Main figure Panel B now maps allocation TV distance against ranking overlap; it does not map credited-mass displacement.
-3. Main figure excludes `soft_attribution_em`; EM remains in computation, non-degeneracy gates, and a table audit.
-4. Display names now state `First click or touch` and `Last click or touch` because both routes explicitly fall back to source touches when clicks are unavailable.
-5. Unique-labelled source-linked, candidate-window, and EM diagnostics are tables rather than low-information figures.
-6. Replaced the old top-k line plot with a pairwise source-route TV and top-10 overlap heatmap appendix figure.
-7. Route-degeneracy gate now evaluates core source-route pairs, not merely any pair involving the arrival anchor.
+### 2. Delay-composition unit
 
-## Required rerun scope
+The main delay-composition panel is a composition of eligible source-event rows, not a unique-conversion distribution. The statistics contract now writes:
 
-This repair changes statistics output fields, bootstrap summaries, tables, figure data, figure metadata, and self-check contracts. Run a clean fast pipeline from `main.py`; do not reuse any prior output directory.
+```text
+n_eligible_source_events
+source_event_share_percent
+```
+
+This corrects the Panel A denominator and aligns it with the figure caption and paper text.
+
+### 3. UID sentinel integrity
+
+UID values `-1` and `-1.0` now follow the same missingness path as blank or null UIDs. They are excluded before candidate construction, route assignment, and UID-cluster bootstrap. The integrity summary reports the filtered UID sentinel counts.
+
+### 4. Candidate-window diagnostic runtime
+
+Candidate-window sensitivity is appendix-only and reports common-cohort point estimates. It no longer runs a nested UID bootstrap for every window. The main route-sensitivity summary remains the inferential object and uses the configured 200/1000 UID bootstrap replicates in fast/full modes.
+
+The window output explicitly records:
+
+```text
+window_bootstrap_replicates=0
+window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic
+```
+
+### 5. Non-destructive semantic checking
+
+A failed manual self-check no longer rewrites existing figure data or metadata. The check reports failure and exits nonzero. Full `paper_result=true` promotion remains gated by the finalizer after a passing semantic check.
+
+### 6. Fixture consistency
+
+The synthetic fixture configuration now uses the production source-time routes, arrival-bin anchor, scientific-gate keys, and current output contracts. The integration runner verifies reproducibility across `--n-jobs=1` and `--n-jobs=4`.
+
+## Rerun requirements
+
+Use the synthetic integration test first, then launch the real fast run. Do not run full until the real fast run has passed `self_check.py` and `code_check.py`.

@@ -159,3 +159,24 @@ Source code, README/docs, notebooks, run logs when present, manifests, lightweig
 ### What remains local and why
 
 Criteo raw files, downloaded archives, processed timelines, route assignment intermediates, raw outputs, and cache/runtime state remain local because of size and data-license constraints.
+
+## Clean-rerun safeguards
+
+A clean run does not require a historical figure/table hash snapshot. The display-only SHA256 regression is enforced only when `outputs/<mode>/checks/figure_table_repair_core_hashes_before.csv` is deliberately supplied for a replot-only audit.
+
+The main delay-composition figure is a distribution over eligible source-event rows. Its summary fields are `n_eligible_source_events` and `source_event_share_percent`; it is not a unique-conversion distribution.
+
+UID values `-1` and `-1.0` are treated as missing for UID integrity and bootstrap clustering. Their row and conversion-ID counts are written to `exp2_conversion_uid_integrity_summary.csv`.
+
+Before any real run, execute:
+
+```powershell
+python tests\run_synthetic_integration.py
+```
+
+This verifies the current fixture contract and identical UID-bootstrap output under `--n-jobs=1` and `--n-jobs=4`.
+
+## Candidate-window diagnostic runtime contract
+
+Candidate-window sensitivity is an appendix-only common-cohort point-estimate diagnostic. It does not run a separate nested UID bootstrap for every window. The main route-sensitivity summary remains the sole inferential Exp2 object and reports the configured UID-bootstrap confidence intervals. Candidate-window outputs record `window_bootstrap_replicates=0` and `window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic`.
+

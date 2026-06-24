@@ -4,3 +4,5 @@ scipy
 matplotlib
 pyarrow
 tqdm
+ipython
+nbconvert

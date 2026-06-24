@@ -1,91 +1,76 @@
-# Experiment 2 display-layer repair validation
+# Experiment 2 rerun-readiness validation
 
 ## Scope
 
-This pass was a pure display-layer and audit-layer repair on an already completed real-data `outputs/fast` run.
+This validation covers the clean-rerun code path for the source-time decision-cell version of Experiment 2. The package was checked after correcting four rerun blockers:
 
-It did not rerun:
+1. a clean run no longer requires a historical display-only hash snapshot;
+2. the delay composition is counted over eligible source-event rows, not unique conversion IDs;
+3. UID sentinels `-1` and `-1.0` are treated as missing and audited before clustering;
+4. the synthetic fixture configuration now matches the current route and scientific-gate contract.
 
-- `run_precheck.py`
-- `construct_timeline.py`
-- `run_exp2.py`
-- `stats_exp2.py`
-- `main.py`
-- route assignment
-- UID bootstrap
-- source-time decision-cell construction
-- candidate-window eligibility
-- scientific-gate numeric computation
+A fifth runtime correction removes nested UID bootstrap from the appendix-only candidate-window diagnostic. The main route-sensitivity summary remains the only inferential object and retains its configured UID bootstrap.
 
-Only figures, tables, figure metadata, self-check audit logic, hash-regression audit files, and documentation were updated.
+## Validation executed
 
-## Core Hash Regression
-
-Before any figure/table regeneration, protected core output hashes were written to:
+The following synthetic integration test completed successfully on 2026-06-24:
 
 ```text
-outputs/fast/checks/figure_table_repair_core_hashes_before.csv
+python tests/run_synthetic_integration.py
 ```
 
-After replotting and table regeneration, protected core output hashes were written to:
+It ran the complete fast pipeline twice against a synthetic fixture:
 
 ```text
-outputs/fast/checks/figure_table_repair_core_hashes_after.csv
-outputs/fast/checks/figure_table_repair_regression.json
+precheck -> timeline -> route_assignment -> statistics -> figures -> tables -> self_check
 ```
 
-Regression result:
+The two passes used `--n-jobs=1` and `--n-jobs=4`. The UID-bootstrap output hashes were identical. The final synthetic run completed with 69 semantic checks and zero failures, followed by a passing static code check.
+
+The recorded synthetic step times for the `--n-jobs=4` pass were approximately:
+
+| Step | Elapsed time |
+|---|---:|
+| precheck | 3.5 s |
+| timeline | 4.4 s |
+| route assignment | 6.4 s |
+| statistics | 15.7 s |
+| figures | 6.6 s |
+| tables | 4.4 s |
+| self-check | 3.2 s |
+
+The synthetic timing is only a control-path check and is not a forecast for the real Criteo run.
+
+## Code and contract checks
+
+The final synthetic pass confirmed all of the following:
+
+- clean fast execution succeeds without a historical replot hash snapshot;
+- source-event delay profile fields are `n_eligible_source_events` and `source_event_share_percent`;
+- missing UID values and `-1` / `-1.0` UID sentinels are filtered and audited;
+- conversion IDs with non-unique UIDs remain hard failures after integrity filtering;
+- candidate-window diagnostics use a common cohort and window-specific UID compatibility audit;
+- candidate-window diagnostics are point estimates only, with `window_bootstrap_replicates=0` and an explicit uncertainty-status field;
+- source-time decision-cell action construction is retained;
+- the main route sensitivity still uses UID-cluster bootstrap;
+- route-degeneracy scientific gates, figure/table contracts, and paper-result gates remain active;
+- `--n-jobs=1` and `--n-jobs=4` generate identical UID-bootstrap replicate files on the fixture;
+- source code compiles and static code checks pass.
+
+## Real-data rerun boundary
+
+No real Criteo fast or full run was executed during this validation. The package intentionally contains no protected raw input and no synthetic result files in `outputs/`.
+
+Place the real data at:
 
 ```text
-same_file_set = true
-same_sha256_for_every_core_file = true
-figure_table_repair_regression_passed = true
-n_core_files_before = 30
-n_core_files_after = 30
+inputs/pcb_dataset_final.tsv
 ```
 
-The protected set covers `outputs/fast/processed`, `outputs/fast/summaries`, and stable existing files under `outputs/fast/checks`. Regenerable validation files from this repair (`figure_table_repair_*`, `exp2_self_check_*`, and `code_check_*`) were excluded from the protected hash set so the allowed audit commands could run without falsely changing the core statistics contract.
+Then execute the real fast run first. Do not reuse any old `outputs/fast` or `outputs/full` directory; `main.py` removes the selected mode directory before it starts.
 
-## Repaired Outputs
+## Expected output progression
 
-- `fig_exp2_attribution_sensitivity` was redrawn with short non-overlapping panel titles and bounded Panel B Top-10 annotations. Marker coordinates, CIs, route order, and annotation values were not changed.
-- `fig_app_exp2_source_route_pairwise_overlap` was redrawn from the existing pairwise summary and contains only `first_click`, `last_click`, `linear_attribution`, and `time_decay_soft`. Its metadata now includes `figure_role = appendix_source_route_mechanism_diagnostic`.
-- `tbl_app_exp2_source_linked_audit` now includes `candidate_decision_cell_count_p90`, `attribution_nondiscriminative`, and `interpretation_note`.
-- Formal appendix tables have CSV, Markdown, and TeX triplets.
-- Required docs state that Exp2 evaluates observational logged credit-allocation and source-time decision-cell ranking sensitivity, not causal regret, online policy value, ROI, or deployable policy comparison.
+The real runner prints elapsed seconds for each completed step. For the candidate-window appendix diagnostic it also prints four window-specific point-estimate steps. These are expected to be slower than the main UID bootstrap for some inputs, but they do not launch nested bootstrap jobs.
 
-## Commands Run
-
-Allowed display/audit commands only:
-
-```powershell
-python plot_exp2.py --config .runtime\config_exp2_fast.yaml
-python make_tables_exp2.py --config .runtime\config_exp2_fast.yaml
-python self_check.py --mode fast
-python code_check.py --mode fast
-```
-
-No statistics, route-assignment, timeline, precheck, bootstrap, or full-mode command was run in this repair pass.
-
-## Validation
-
-The final fast self-check passed with 67 checks and 0 failures, including:
-
-```text
-[PASS] figure_table_repair_regression
-[PASS] main_figure_uses_horizontal_point_range
-[PASS] pairwise_heatmap_excludes_arrival_anchor
-[PASS] main_figure_panel_titles_do_not_overlap
-[PASS] main_figure_annotations_within_axes
-[PASS] source_linked_audit_has_nondiscriminative_flag
-[PASS] csv_md_tex_table_triplets_exist
-[PASS] docs_present_and_updated
-```
-
-`python code_check.py --mode fast` also passed, including:
-
-```text
-[PASS] formal_latex_figure_interface_nonempty
-```
-
-The current fast numeric results can continue to serve as the design-validation basis before any full run. Real full mode was not run.
+The full run is eligible for paper-result finalization only after the final semantic check succeeds. Any failed integrity, route-degeneracy, or figure/table contract leaves `paper_result=false`.

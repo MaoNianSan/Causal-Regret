@@ -1,0 +1,2 @@
+check_id,mode,status,n_errors,paper_result,promotion_status,details
+self_check,fast,passed,0,False,not_promoted,SELF-CHECK PASSED

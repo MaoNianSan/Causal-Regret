@@ -6,12 +6,14 @@ import os
 import shutil
 import subprocess
 import sys
+import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any
 
 import yaml
 
+from src.common import input_file_identity, validate_exp2_config
 from src.parallel import available_cpus, resolve_n_jobs
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -90,6 +92,7 @@ def build_effective_config(
     base_path = Path(base_config).resolve() if base_config else DEFAULT_CONFIG
     cfg = copy.deepcopy(_load_yaml(base_path))
     cfg.setdefault("data", {})["raw_file"] = str(Path(input_path)) if input_path else str(INPUT_RELATIVE_PATH)
+    validate_exp2_config(cfg)
     bootstrap = cfg.setdefault("statistics", {}).setdefault("uid_bootstrap", {})
     if n_bootstrap is not None:
         if int(n_bootstrap) < 2:
@@ -165,9 +168,12 @@ def _child_environment(cfg_path: Path) -> dict[str, str]:
 
 def _run_step(command: list[str], step: str, mode: str, steps: list[dict[str, Any]], env: dict[str, str], expected_bootstrap: int, input_file: str) -> int:
     started = _timestamp()
+    started_monotonic = time.monotonic()
     print(f"[runner] {step}: {' '.join(command)}", flush=True)
     completed = subprocess.run(command, cwd=PROJECT_ROOT, env=env)
-    steps.append({"step": step, "command": command, "return_code": completed.returncode, "started_at": started, "finished_at": _timestamp()})
+    elapsed_seconds = round(time.monotonic() - started_monotonic, 3)
+    print(f"[runner] {step}: exit={completed.returncode}; elapsed={elapsed_seconds:.1f}s", flush=True)
+    steps.append({"step": step, "command": command, "return_code": completed.returncode, "started_at": started, "finished_at": _timestamp(), "elapsed_seconds": elapsed_seconds})
     _write_status(mode, "running", steps=steps, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file)
     return completed.returncode
 
@@ -198,11 +204,15 @@ def run(
         print(f"[runner] ERROR: {input_issue}", file=sys.stderr)
         return 2
     cfg = _load_yaml(config_path)
+    validate_exp2_config(cfg)
     expected_bootstrap = int(cfg["statistics"]["uid_bootstrap"]["n_bootstrap"])
     input_file = _resolved_input_file(input_path)
+    input_identity = input_file_identity(input_file)
+    cfg.setdefault("runtime", {})["input_identity"] = input_identity
+    config_path.write_text(yaml.safe_dump(cfg, sort_keys=False, allow_unicode=True), encoding="utf-8")
     steps: list[dict[str, Any]] = []
     parallel_meta = {"n_jobs": cfg.get("runtime", {}).get("n_jobs"), "host_logical_cpus": cfg.get("runtime", {}).get("host_logical_cpus"), "resolved_bootstrap_workers": cfg.get("runtime", {}).get("resolved_bootstrap_workers")}
-    _write_status(mode, "running", config_path=str(config_path), steps=steps, started_at=_timestamp(), parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file)
+    _write_status(mode, "running", config_path=str(config_path), steps=steps, started_at=_timestamp(), parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file, input_identity=input_identity)
     executable = sys.executable
     pipeline = [
         ("precheck", [executable, "run_precheck.py", "--config", str(config_path)]),
@@ -219,9 +229,9 @@ def run(
     for step, command in pipeline:
         code = _run_step(command, step, mode, steps, env, expected_bootstrap, input_file)
         if code:
-            _write_status(mode, "failed", config_path=str(config_path), failed_step=step, steps=steps, parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file)
+            _write_status(mode, "failed", config_path=str(config_path), failed_step=step, steps=steps, parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file, input_identity=input_identity)
             print(f"[runner] ERROR: step '{step}' failed with exit code {code}.", file=sys.stderr)
             return code
-    _write_status(mode, "success", config_path=str(config_path), steps=steps, finished_at=_timestamp(), parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file)
+    _write_status(mode, "success", config_path=str(config_path), steps=steps, finished_at=_timestamp(), parallel=parallel_meta, expected_uid_bootstrap_replicates=expected_bootstrap, input_file=input_file, input_identity=input_identity)
     print(f"[runner] {mode} completed successfully. Outputs: {output_root}")
     return 0
