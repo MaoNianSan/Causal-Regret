@@ -1,13 +1,16 @@
 {
-  "completed_runs": 204,
-  "cpu_count": 22,
-  "error": "OSError(22, 'Invalid argument')",
-  "expected_runs": 1089,
+  "completed_runs": 792,
+  "cpu_count": 32,
+  "detailed_trace_logs": false,
+  "expected_runs": 792,
   "is_smoke": false,
   "mode": "fast",
   "project_id": "exp1_controlled_validity",
-  "status": "FAILED",
-  "updated_at": "2026-06-23T06:09:44.579590+00:00",
-  "workers": 4,
-  "workers_source": "environment"
+  "raw_log_mode_effective": "summary_only",
+  "raw_log_mode_requested": "summary_only",
+  "selected_trajectory_trace": true,
+  "status": "PASSED",
+  "updated_at": "2026-06-24T06:23:25.454767+00:00",
+  "workers": 24,
+  "workers_source": "auto"
 }

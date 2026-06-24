@@ -12,7 +12,7 @@ def parse_args() -> argparse.Namespace:
         "--raw-log-mode",
         choices=("summary_only", "full"),
         default=None,
-        help="Fast defaults to summary_only; full defaults to full raw logs.",
+        help="Both standard modes default to summary_only. Use full only with CRMD_WORKERS=1 for explicit detailed trace audits.",
     )
     parser.add_argument("--smoke", action="store_true", help="Use a short non-paper horizon for execution tests.")
     parser.add_argument("--output-tag", default=None, help="Write to outputs/<tag> instead of outputs/<mode>.")

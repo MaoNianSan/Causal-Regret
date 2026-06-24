@@ -1,12 +1,16 @@
 {
   "completed_runs": 7920,
   "cpu_count": 32,
+  "detailed_trace_logs": false,
   "expected_runs": 7920,
   "is_smoke": false,
   "mode": "full",
-  "project_id": "exp1_controlled_identifiability_contextual",
+  "project_id": "exp1_controlled_validity",
+  "raw_log_mode_effective": "summary_only",
+  "raw_log_mode_requested": "summary_only",
+  "selected_trajectory_trace": true,
   "status": "PASSED",
-  "updated_at": "2026-06-20T08:29:56.192305+00:00",
+  "updated_at": "2026-06-24T06:40:18.688185+00:00",
   "workers": 24,
-  "workers_source": "environment"
+  "workers_source": "auto"
 }

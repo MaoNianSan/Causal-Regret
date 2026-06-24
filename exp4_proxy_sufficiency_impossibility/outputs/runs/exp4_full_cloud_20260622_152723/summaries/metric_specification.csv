@@ -1,6 +1,0 @@
-metric_id,metric_formula_id,formula
-causal_regret_per_round,post_warmup_structural_regret,"mean_{t=warmup_t+1..T}[ell(A_t,S_t)-min_a ell(a,S_t)]"
-proxy_state_error_per_round,mean_l2_proxy_state_error,mean_t ||P_t-S_t||_2; environment-side diagnostic
-absolute_proxy_distortion_per_round,mean_absolute_loss_map_difference,"mean_{t,a}|ell(a,S_t)-ell(a,P_t)|; environment-side diagnostic"
-oracle_normalized_recovery,arrival_oracle_normalized_recovery,(R_arrival-R_route)/(R_arrival-R_proxy_oracle); raw values are not clipped
-source_labelled_normalized_recovery,arrival_source_labelled_normalized_recovery,(R_arrival-R_route)/(R_arrival-R_source_labelled_reference); q=1 equals 1 by construction when action traces match

@@ -1,17 +1,36 @@
 check_name,status,details
-backend completed,FAILED,failed
+backend completed,PASSED,completed
+run mode matches requested check,PASSED,fast
 contextual estimand declared,PASSED,"all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]"
 primary shared-path contract declared,PASSED,pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay
 structural EM contract declared,PASSED,default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation
 proxy feature-consistency contract declared,PASSED,"proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature"
-no output marked as paper result,PASSED,paper_result=False
+bootstrap contract,PASSED,n_bootstrap=2000; ci_level=0.95
+input status declared,PASSED,synthetic_complete
+summary-only run has no placeholder trace files,PASSED,
+fast result is not paper-marked,PASSED,paper_result=False
 seed summary schema,PASSED,missing=[]
-expected run count,FAILED,expected=792; observed=204
+expected run count,PASSED,expected=792; observed=792
 unique design keys,PASSED,duplicates=0
 all learners receive context,PASSED,context_observed_by_all
 regret comparator is context-information oracle,PASSED,['context_information_oracle']
 causal regret finite,PASSED,final_Rc
-seed summary readable,FAILED,OverflowError('cannot convert float infinity to integer')
-design manifest expected count,FAILED,expected=792; observed=204
-design manifest contains no failed row,PASSED,{'completed': 204}
-registered diagnostic figure bundles exist,FAILED,figures/data/fig_exp1_same_mean_delay_data.csv; figures/png/fig_exp1_same_mean_delay.png; figures/pdf/fig_exp1_same_mean_delay.pdf; figures/metadata/fig_exp1_same_mean_delay_metadata.json; figures/data/fig_exp1_attribution_diagnostics_data.csv; figures/png/fig_exp1_attribution_diagnostics.png; figures/pdf/fig_exp1_attribution_diagnostics.pdf; figures/metadata/fig_exp1_attribution_diagnostics_metadata.json; figures/data/fig_exp1_proxy_quality_data.csv; figures/png/fig_exp1_proxy_quality.png; figures/pdf/fig_exp1_proxy_quality.pdf; figures/metadata/fig_exp1_proxy_quality_metadata.json
+canonical run metadata,PASSED,run_mode=['fast']
+primary metric is declared,PASSED,['causal_regret_per_round']
+primary paths shared across methods,PASSED,max distinct path IDs=1
+primary realised delay unchanged by learner,PASSED,max method spread=0.0
+primary paths calibrated to observed-delay target,PASSED,max |mean-15|=0.005931683370832275; tolerance=0.75
+action-dependent delay isolated as stress test,PASSED,policy_dependent_delay
+per-arrival feedback-unit accounting,PASSED,max |units-arrivals|=0.0
+structural EM uses observable-state integrated likelihood,PASSED,['gaussian_observable_state_integrated_quadrature']
+EM ablation is explicitly stationary,PASSED,['stationary_geometric_ablation']
+EM/proxy labelled updates share decision feature space,PASSED,max discrepancy=0.0
+proxy error is time-averaged and finite,PASSED,nonfinite=0
+proxy quality sweep changes time-averaged state error,PASSED,"{'proxy_bad_matched_15': 0.6703132119579092, 'proxy_good_matched_15': 0.21727605525437824}"
+design manifest expected count,PASSED,expected=792; observed=792
+design manifest contains no failed row,PASSED,{'completed': 792}
+method summary bootstrap schema,PASSED,missing=[]
+method summary uses 2000 percentile bootstrap,PASSED,n_bootstrap=[2000]
+selected trajectory output exists,PASSED,/home/ubuntu/crmd_df/code/exp1_controlled_identifiability/outputs/fast/processed/selected_trajectory_points.csv
+registered figure bundles exist,PASSED,
+figure data follow common schema,PASSED,

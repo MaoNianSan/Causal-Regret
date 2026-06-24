@@ -1,8 +1,20 @@
 {
+  "ci_level": 0.95,
+  "comparison_rule": "Methods are compared only within the same information regime and declared interface.",
+  "data_csv": "figures\\data\\fig_exp1_attribution_diagnostics_data.csv",
+  "description": "Posterior attribution diagnostics, stratified by information regime.",
+  "dpi": 600,
   "figure_id": "fig_exp1_attribution_diagnostics",
-  "generated_at_utc": "2026-06-20T08:29:54.975843+00:00",
-  "description": "Soft posterior mass and top-1 source recovery accumulated over all unlabelled arrivals, with separate panels for each information regime.",
-  "data_csv": "figures/data/fig_exp1_attribution_diagnostics_data.csv",
-  "paper_result": false,
-  "comparison_rule": "Method comparisons are made only within the same information regime. No panel mixes labelled, mixture_labelled, and unlabelled methods."
+  "figure_size_in": [
+    6.85,
+    5.3
+  ],
+  "figure_status": "paper_eligible",
+  "generated_at_utc": "2026-06-24T07:21:41.101395+00:00",
+  "input_data_status": "synthetic_complete",
+  "metric_formula_id": "posterior_attribution_diagnostic",
+  "metric_id": "posterior_attribution_diagnostic",
+  "n_bootstrap": 2000,
+  "paper_result": true,
+  "uncertainty_unit": "shared_simulation_seed"
 }

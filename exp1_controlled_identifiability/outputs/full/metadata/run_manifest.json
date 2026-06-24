@@ -1,13 +1,16 @@
 {
   "action_dependent_delay_contract": "policy-dependent stress test; excluded from same-mean-delay primary claim",
   "backend_status": "completed",
+  "ci_level": 0.95,
   "completed_runs": 7920,
   "cpu_count": 32,
-  "created_at_utc": "2026-06-20T08:29:56.174787+00:00",
+  "created_at_utc": "2026-06-24T06:40:18.669951+00:00",
+  "detailed_trace_logs": false,
   "error": "",
   "expected_runs": 7920,
   "horizon": 5000,
   "information_structure": "all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]",
+  "input_data_status": "synthetic_complete",
   "is_smoke": false,
   "methods": [
     "oracle",
@@ -23,16 +26,27 @@
     "proxy"
   ],
   "mode": "full",
+  "n_bootstrap": 2000,
   "n_seeds": 30,
-  "paper_result": false,
+  "paper_result": true,
+  "paper_result_finalized_at": "2026-06-24T07:22:00.524459+00:00",
+  "paper_result_gate": "passed: completed full run plus self-check plus explicit finalization",
   "primary_delay_contract": "pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay",
-  "project_id": "exp1_controlled_identifiability_contextual",
+  "primary_metric": "causal_regret_per_round",
+  "primary_metric_formula": "R_T^c / T",
+  "project_id": "exp1_controlled_validity",
   "proxy_feature_contract": "proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature",
+  "raw_log_mode_effective": "summary_only",
+  "raw_log_mode_requested": "summary_only",
+  "raw_output_contract": "seed_level_results.csv is always written. Detailed schedule/arrival/step logs are written only for explicit raw_log_mode=full with CRMD_WORKERS=1; standard fast/full runs are summary_only and do not create placeholder trace files.",
   "regimes": [
     "labelled",
     "mixture_labelled",
     "unlabelled"
   ],
+  "reused_raw_outputs": true,
+  "run_mode": "full",
+  "selected_trajectory_trace": true,
   "settings": [
     "zero_static",
     "aligned_static_delay_15",
@@ -46,5 +60,5 @@
   "status": "PASSED",
   "structural_em_contract": "default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation",
   "workers": 24,
-  "workers_source": "environment"
+  "workers_source": "auto"
 }

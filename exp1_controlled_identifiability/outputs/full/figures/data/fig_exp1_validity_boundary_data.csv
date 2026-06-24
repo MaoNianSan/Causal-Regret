@@ -1,96 +1,33 @@
-regime,delay_setting,method,n,mean,se,ci_low,ci_high
-labelled,zero_static,oracle,30,0.0,0.0,0.0,0.0
-labelled,zero_static,naive,30,0.03213168724279827,0.00036711766586054945,0.03141213661771159,0.03285123786788494
-labelled,zero_static,delayed_ucb,30,0.04590617283950518,1.2885202500607364e-18,0.04590617283950518,0.04590617283950518
-labelled,zero_static,delayed_exp3,30,0.2526762139917763,0.000321069724219864,0.2520469173323054,0.25330551065124723
-labelled,zero_static,causal_labeled,30,0.03134551440329209,0.00043955264698224047,0.0304839912152069,0.03220703759137728
-mixture_labelled,zero_static,oracle,30,0.0,0.0,0.0,0.0
-mixture_labelled,zero_static,naive,30,0.03186436213991761,0.0004390278851813957,0.03100386748496208,0.03272485679487315
-mixture_labelled,zero_static,delayed_ucb,30,0.04590617283950518,1.2885202500607364e-18,0.04590617283950518,0.04590617283950518
-mixture_labelled,zero_static,delayed_exp3,30,0.2526051028806652,0.0005358624701751538,0.25155481243912187,0.2536553933222085
-mixture_labelled,zero_static,causal_em,30,0.031969711934156285,0.0002983458495801649,0.03138495406897916,0.03255446979933341
-mixture_labelled,zero_static,causal_em_misspecified,30,0.033295802469135695,0.0006294535256245474,0.03206207355891158,0.03452953137935981
-mixture_labelled,zero_static,proxy,30,0.03232065843621389,0.000343312129092499,0.03164776666319259,0.03299355020923518
-unlabelled,zero_static,oracle,30,0.0,0.0,0.0,0.0
-unlabelled,zero_static,naive,30,0.03218699588477356,0.00047095490910889774,0.03126392426292012,0.033110067506627004
-unlabelled,zero_static,delayed_ucb,30,0.04590617283950518,1.2885202500607364e-18,0.04590617283950518,0.04590617283950518
-unlabelled,zero_static,delayed_exp3,30,0.252133004115233,0.00038323338025540883,0.2513818666899324,0.25288414154053357
-unlabelled,zero_static,causal_em,30,0.03210205761316864,0.0004568353209543115,0.031206660384098188,0.032997454842239086
-unlabelled,zero_static,causal_em_misspecified,30,0.043519999999999885,0.004435101722774973,0.034827200623360935,0.052212799376638835
-unlabelled,zero_static,proxy,30,0.032798683127571907,0.00040303316704216283,0.032008738120169265,0.03358862813497455
-labelled,aligned_static_delay_15,oracle,30,0.0,0.0,0.0,0.0
-labelled,aligned_static_delay_15,naive,30,0.17645432098765554,0.022878801299573256,0.13161187044049197,0.2212967715348191
-labelled,aligned_static_delay_15,delayed_ucb,30,0.11072855967078014,0.00599016791484173,0.09898783055769035,0.12246928878386994
-labelled,aligned_static_delay_15,delayed_exp3,30,0.3950748971193613,0.0008165899823355208,0.39347438075398367,0.3966754134847389
-labelled,aligned_static_delay_15,causal_labeled,30,0.033932510288065744,0.0003615669965275477,0.03322383897487175,0.034641181601259736
-mixture_labelled,aligned_static_delay_15,oracle,30,0.0,0.0,0.0,0.0
-mixture_labelled,aligned_static_delay_15,naive,30,0.17776329218107012,0.03090245643940722,0.11719447755983198,0.23833210680230826
-mixture_labelled,aligned_static_delay_15,delayed_ucb,30,0.10826139917695324,0.007362989169759774,0.09382994040422409,0.12269285794968239
-mixture_labelled,aligned_static_delay_15,delayed_exp3,30,0.3940431275720358,0.0009747890023534441,0.3921325411274231,0.39595371401664853
-mixture_labelled,aligned_static_delay_15,causal_em,30,0.03334057613168714,0.00035838707717713707,0.03263813746041995,0.034043014802954324
-mixture_labelled,aligned_static_delay_15,causal_em_misspecified,30,0.03873514403292169,0.00307535596550832,0.03270744634052539,0.044762841725318
-mixture_labelled,aligned_static_delay_15,proxy,30,0.03238781893004105,0.00038677093932076043,0.03162974788897236,0.03314588997110974
-unlabelled,aligned_static_delay_15,oracle,30,0.0,0.0,0.0,0.0
-unlabelled,aligned_static_delay_15,naive,30,0.14215506172839557,0.02010209177653273,0.10275496184639141,0.18155516161039972
-unlabelled,aligned_static_delay_15,delayed_ucb,30,0.10850238683127496,0.005685134037734904,0.09735952411731455,0.11964524954523537
-unlabelled,aligned_static_delay_15,delayed_exp3,30,0.39540016460907323,0.0006480481985098133,0.394129990139994,0.39667033907815247
-unlabelled,aligned_static_delay_15,causal_em,30,0.03239901234567891,0.0003492770159134622,0.03171442939448852,0.03308359529686929
-unlabelled,aligned_static_delay_15,causal_em_misspecified,30,0.11604148148148226,0.015786315075177314,0.08510030393413473,0.1469826590288298
-unlabelled,aligned_static_delay_15,proxy,30,0.03258271604938262,0.0003833024981731163,0.03183144315296331,0.03333398894580193
-labelled,geometric_matched_15,oracle,30,0.0,0.0,0.0,0.0
-labelled,geometric_matched_15,naive,30,1.1386709041445864,0.031659080303957685,1.0766191067488293,1.2007227015403434
-labelled,geometric_matched_15,delayed_ucb,30,1.1580085776471907,0.030906923817884974,1.0974310069641362,1.2185861483302451
-labelled,geometric_matched_15,delayed_exp3,30,1.538615410977084,0.023636788431298572,1.4922873056517387,1.5849435163024292
-labelled,geometric_matched_15,causal_labeled,30,0.3142587883916097,0.005983737125777439,0.3025306636250859,0.3259869131581335
-mixture_labelled,geometric_matched_15,oracle,30,0.0,0.0,0.0,0.0
-mixture_labelled,geometric_matched_15,naive,30,1.0983995664628785,0.04750960339078958,1.0052807438169309,1.1915183891088261
-mixture_labelled,geometric_matched_15,delayed_ucb,30,1.1621013242905889,0.021811452350860613,1.119350877682902,1.2048517708982758
-mixture_labelled,geometric_matched_15,delayed_exp3,30,1.537176983460093,0.024392416713087995,1.4893678467024405,1.5849861202177455
-mixture_labelled,geometric_matched_15,causal_em,30,0.4901638461004581,0.016177201266116024,0.4584565316188707,0.5218711605820455
-mixture_labelled,geometric_matched_15,causal_em_misspecified,30,0.5049598123043411,0.014564159838398295,0.4764140590210804,0.5335055655876018
-mixture_labelled,geometric_matched_15,proxy,30,0.5242496903017974,0.013171057446957905,0.49843441770575986,0.5500649628978348
-unlabelled,geometric_matched_15,oracle,30,0.0,0.0,0.0,0.0
-unlabelled,geometric_matched_15,naive,30,1.1208167182468822,0.04225079948704623,1.0380051512522717,1.2036282852414928
-unlabelled,geometric_matched_15,delayed_ucb,30,1.1292970003691774,0.02349845363148749,1.0832400312514618,1.1753539694868929
-unlabelled,geometric_matched_15,delayed_exp3,30,1.5364340514793384,0.023429733818153036,1.4905117731957584,1.5823563297629184
-unlabelled,geometric_matched_15,causal_em,30,1.1448695170701935,0.05302603694087394,1.0409384846660805,1.2488005494743064
-unlabelled,geometric_matched_15,causal_em_misspecified,30,1.0915411907341437,0.0443783248404734,1.004559674046816,1.1785227074214715
-unlabelled,geometric_matched_15,proxy,30,1.1481252380032692,0.056304648306870826,1.0377681273218022,1.258482348684736
-labelled,mixture_matched_15,oracle,30,0.0,0.0,0.0,0.0
-labelled,mixture_matched_15,naive,30,0.8251432025702246,0.021150500448376332,0.783688221691407,0.8665981834490422
-labelled,mixture_matched_15,delayed_ucb,30,0.9184561748577297,0.022466185683291152,0.874422450918479,0.9624898987969803
-labelled,mixture_matched_15,delayed_exp3,30,1.5220115786539077,0.022766816455124735,1.4773886184018632,1.5666345389059522
-labelled,mixture_matched_15,causal_labeled,30,0.31442093103050855,0.005310883292109601,0.30401159977797376,0.32483026228304335
-mixture_labelled,mixture_matched_15,oracle,30,0.0,0.0,0.0,0.0
-mixture_labelled,mixture_matched_15,naive,30,0.8452674713974571,0.030267542254344915,0.785943088578941,0.9045918542159731
-mixture_labelled,mixture_matched_15,delayed_ucb,30,0.8955114914911487,0.017187518740732512,0.861823954759313,0.9291990282229845
-mixture_labelled,mixture_matched_15,delayed_exp3,30,1.5173160293368946,0.022405495785085657,1.4734012575981268,1.5612308010756624
-mixture_labelled,mixture_matched_15,causal_em,30,0.4748337264657888,0.013896868295805189,0.44759586460601064,0.502071588325567
-mixture_labelled,mixture_matched_15,causal_em_misspecified,30,0.47784808847829596,0.013713061660072587,0.4509704876245537,0.5047256893320382
-mixture_labelled,mixture_matched_15,proxy,30,0.5023408116432344,0.015685756740819297,0.4715967284312286,0.5330848948552402
-unlabelled,mixture_matched_15,oracle,30,0.0,0.0,0.0,0.0
-unlabelled,mixture_matched_15,naive,30,0.8335153038027935,0.026286427029072214,0.7819939068258119,0.885036700779775
-unlabelled,mixture_matched_15,delayed_ucb,30,0.8965355094712535,0.018995245496618744,0.8593048282978808,0.9337661906446262
-unlabelled,mixture_matched_15,delayed_exp3,30,1.5269711466302047,0.02411762816821384,1.4797005954205056,1.5742416978399039
-unlabelled,mixture_matched_15,causal_em,30,1.0730043168325347,0.04813847464644387,0.9786529065255047,1.1673557271395647
-unlabelled,mixture_matched_15,causal_em_misspecified,30,1.0825704294264862,0.04620029982307045,0.9920178417732681,1.1731230170797042
-unlabelled,mixture_matched_15,proxy,30,1.076244022634664,0.054231576463694496,0.9699501327658226,1.1825379125035052
-labelled,state_structural_matched_15,oracle,30,0.0,0.0,0.0,0.0
-labelled,state_structural_matched_15,naive,30,0.974262933655057,0.026745115143269473,0.9218425079742488,1.026683359335865
-labelled,state_structural_matched_15,delayed_ucb,30,1.04044063205064,0.025212087956365217,0.9910249396561642,1.0898563244451158
-labelled,state_structural_matched_15,delayed_exp3,30,1.5255698585820487,0.024245414602592247,1.478048845960968,1.5730908712031295
-labelled,state_structural_matched_15,causal_labeled,30,0.34902483488809005,0.00731201101468548,0.3346932932993065,0.3633563764768736
-mixture_labelled,state_structural_matched_15,oracle,30,0.0,0.0,0.0,0.0
-mixture_labelled,state_structural_matched_15,naive,30,0.948025777187136,0.03166835717903676,0.885955797116224,1.010095757258048
-mixture_labelled,state_structural_matched_15,delayed_ucb,30,1.0091480552800107,0.022026083636588135,0.965976931352298,1.0523191792077236
-mixture_labelled,state_structural_matched_15,delayed_exp3,30,1.5276553963912538,0.023370890291244336,1.4818484514204149,1.5734623413620927
-mixture_labelled,state_structural_matched_15,causal_em,30,0.5303224387192772,0.015436962766101882,0.5000659916977175,0.5605788857408369
-mixture_labelled,state_structural_matched_15,causal_em_misspecified,30,0.5071828741748494,0.015009136254867416,0.4777649671153093,0.5366007812343896
-mixture_labelled,state_structural_matched_15,proxy,30,0.5385905989769673,0.013954148065958263,0.511240468767689,0.5659407291862455
-unlabelled,state_structural_matched_15,oracle,30,0.0,0.0,0.0,0.0
-unlabelled,state_structural_matched_15,naive,30,0.9683089122770755,0.031522286870040335,0.9065252300117964,1.0300925945423545
-unlabelled,state_structural_matched_15,delayed_ucb,30,0.991908791775575,0.02191379914184395,0.9489577454575608,1.0348598380935892
-unlabelled,state_structural_matched_15,delayed_exp3,30,1.5257280266361655,0.023922818921796738,1.4788393015494439,1.572616751722887
-unlabelled,state_structural_matched_15,causal_em,30,0.9554788334764548,0.03489917898759659,0.8870764426607655,1.023881224292144
-unlabelled,state_structural_matched_15,causal_em_misspecified,30,1.0038047709651228,0.04425052302290795,0.9170737458402232,1.0905357960900224
-unlabelled,state_structural_matched_15,proxy,30,0.9417680431960346,0.031583965572237846,0.8798634706744484,1.0036726157176208
+figure_id,panel_id,experiment_id,subexperiment_id,setting_id,method_id,method_display_name,information_interface,reference_role,diagnostic_only,deployable,metric_id,metric_formula_id,x_id,x_value,x_display_label,y_value,ci_lower,ci_upper,ci_level,uncertainty_unit,n_seeds,n_bootstrap,n_events,n_users,filter_id,filter_description,run_mode,paper_result,notes
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,zero_static,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Zero,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,150000,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,zero_static,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Zero,0.0321316872427982,0.0313968724279834,0.0328190946502056,0.95,shared_simulation_seed,30,2000,150000,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,zero_static,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Zero,0.2526762139917762,0.2520361810699654,0.2532932674897188,0.95,shared_simulation_seed,30,2000,150000,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,zero_static,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Zero,0.031345514403292,0.0304908641975307,0.0321738765432097,0.95,shared_simulation_seed,30,2000,150000,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,aligned_static_delay_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Aligned static 15,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,149550,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,aligned_static_delay_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Aligned static 15,0.1764543209876555,0.1356974156378595,0.2237441481481515,0.95,shared_simulation_seed,30,2000,149550,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,aligned_static_delay_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Aligned static 15,0.3950748971193613,0.3936262880658632,0.3966644938271801,0.95,shared_simulation_seed,30,2000,149550,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,source_binding_validity,aligned_static_delay_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Aligned static 15,0.0339325102880657,0.0332437201646089,0.0346311275720163,0.95,shared_simulation_seed,30,2000,149550,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,2.0,Geometric,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,Geometric,1.1386709041445864,1.0799287672560995,1.1978063799242409,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,Geometric,1.538615410977084,1.4919782922671154,1.583665651626275,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,Geometric,0.3142587883916097,0.3022960370421538,0.3252527007711051,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,3.0,Mixture,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,3.0,Mixture,0.8251432025702246,0.7838124756248718,0.8648448319614237,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,3.0,Mixture,1.5220115786539077,1.4783819276195709,1.5661866012722636,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,3.0,Mixture,0.3144209310305086,0.3038574675141491,0.3246527690584277,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,4.0,State structural,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,4.0,State structural,0.974262933655057,0.9226316200939167,1.0263795333512478,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,4.0,State structural,1.5255698585820487,1.4782837318842,1.5713844268167825,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_a,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,4.0,State structural,0.34902483488809,0.3355506340147231,0.3625492695881042,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Geometric,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Geometric,1.1386709041445864,1.0776800724290558,1.199695077169307,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Geometric,1.538615410977084,1.4928155670605583,1.5847177958794356,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,geometric_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,0.0,Geometric,0.3142587883916097,0.3019416567209566,0.3252549978723525,0.95,shared_simulation_seed,30,2000,149338,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Mixture,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Mixture,0.8251432025702246,0.7849518070751934,0.8642598388371026,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Mixture,1.5220115786539077,1.479009803691639,1.5654404853645767,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,mixture_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,1.0,Mixture,0.3144209310305086,0.3040433250277063,0.3244718979684098,0.95,shared_simulation_seed,30,2000,146562,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,oracle_reference,Context oracle reference,oracle_reference,oracle_reference,False,False,causal_regret_per_round,R_T^c / T,delay_setting,2.0,State structural,0.0,0.0,0.0,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,arrival_time_naive,Arrival time,arrival_time,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,State structural,0.974262933655057,0.9254596060405322,1.0292058865631448,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,delayed_exp3,Delayed EXP3,unlabelled_delayed,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,State structural,1.5255698585820487,1.4776695890491407,1.5741410894517345,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,
+fig_exp1_validity_boundary,panel_b,exp1_controlled_validity,matched_mean_delay,state_structural_matched_15,source_labelled,Source labelled,source_labelled,none,False,True,causal_regret_per_round,R_T^c / T,delay_setting,2.0,State structural,0.34902483488809,0.3355227149880718,0.3627799789130424,0.95,shared_simulation_seed,30,2000,141326,0,labelled_core_methods,Full source-label regime; no cross-regime method comparison.,full,True,

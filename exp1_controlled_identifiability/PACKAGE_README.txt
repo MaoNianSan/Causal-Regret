@@ -1,15 +1,20 @@
-Exp1 controlled-identifiability complete cloud archive
-Created: 2026-06-20T16:33:23
+EXP1 rerun-ready source archive
+
 Contents:
-  code/        complete source code plus outputs/fast and outputs/full
-  incoming/    original uploaded cloud package
-  runlogs/     cloud execution logs
-  environment/ runtime and dependency records
+  source code, checks, output contracts, documentation, and lightweight local
+  input placeholders.
 
-Excluded intentionally:
-  .venv/       machine-specific Linux virtual environment
+Not included:
+  completed fast/full numerical outputs, historical cloud run logs, executed
+  result notebooks, caches, or virtual environments.
 
-Validation status:
-  full run completed: 7920/7920
-  self-check: PASSED
+Validation performed before packaging:
+  python code_check.py
+  complete 264-combination smoke design
+  current-schema raw-output rebuild
+  self-check and one-worker detailed-trace audit
 
+Start with:
+  python code_check.py
+  python reproduce_fast.py
+  python self_check.py --mode fast

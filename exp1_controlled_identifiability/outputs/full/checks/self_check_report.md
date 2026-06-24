@@ -1,29 +1,36 @@
 # EXP1 self-check
 
 - [PASSED] backend completed: completed
+- [PASSED] run mode matches requested check: full
 - [PASSED] contextual estimand declared: all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]
 - [PASSED] primary shared-path contract declared: pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay
 - [PASSED] structural EM contract declared: default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation
 - [PASSED] proxy feature-consistency contract declared: proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature
-- [PASSED] no output marked as paper result: paper_result=False
+- [PASSED] bootstrap contract: n_bootstrap=2000; ci_level=0.95
+- [PASSED] input status declared: synthetic_complete
+- [PASSED] summary-only run has no placeholder trace files: 
 - [PASSED] seed summary schema: missing=[]
 - [PASSED] expected run count: expected=7920; observed=7920
 - [PASSED] unique design keys: duplicates=0
 - [PASSED] all learners receive context: context_observed_by_all
 - [PASSED] regret comparator is context-information oracle: ['context_information_oracle']
 - [PASSED] causal regret finite: final_Rc
+- [PASSED] canonical run metadata: run_mode=['full']
+- [PASSED] primary metric is declared: ['causal_regret_per_round']
 - [PASSED] primary paths shared across methods: max distinct path IDs=1
 - [PASSED] primary realised delay unchanged by learner: max method spread=0.0
 - [PASSED] primary paths calibrated to observed-delay target: max |mean-15|=0.011049723756908492; tolerance=0.75
 - [PASSED] action-dependent delay isolated as stress test: policy_dependent_delay
 - [PASSED] per-arrival feedback-unit accounting: max |units-arrivals|=0.0
-- [PASSED] labelled source learner processes each source outcome: max discrepancy=0.0
-- [PASSED] soft attribution metrics are posterior-derived: finite posterior metrics=1440; events=5911519
-- [PASSED] structural EM uses observable-state integrated delay likelihood: ['gaussian_observable_state_integrated_quadrature']
+- [PASSED] structural EM uses observable-state integrated likelihood: ['gaussian_observable_state_integrated_quadrature']
 - [PASSED] EM ablation is explicitly stationary: ['stationary_geometric_ablation']
-- [PASSED] EM/proxy labelled updates share their decision feature space: max feature discrepancy=0.0
+- [PASSED] EM/proxy labelled updates share decision feature space: max discrepancy=0.0
 - [PASSED] proxy error is time-averaged and finite: nonfinite=0
 - [PASSED] proxy quality sweep changes time-averaged state error: {'proxy_bad_matched_15': 0.6803731050831184, 'proxy_good_matched_15': 0.21681860082647356}
 - [PASSED] design manifest expected count: expected=7920; observed=7920
 - [PASSED] design manifest contains no failed row: {'completed': 7920}
-- [PASSED] registered diagnostic figure bundles exist: 
+- [PASSED] method summary bootstrap schema: missing=[]
+- [PASSED] method summary uses 2000 percentile bootstrap: n_bootstrap=[2000]
+- [PASSED] selected trajectory output exists: D:\research\CausalRegretMinimizationUnderDelayedFeedback\experiment\github\exp1_controlled_identifiability\outputs\full\processed\selected_trajectory_points.csv
+- [PASSED] registered figure bundles exist: 
+- [PASSED] figure data follow common schema: 

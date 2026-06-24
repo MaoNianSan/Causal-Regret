@@ -31,6 +31,10 @@ def main() -> int:
     checks.append(check("structural EM integrates observable state", "gaussian_observable_state_integrated_quadrature" in source and "_integrated_structural_weight" in source, "no structural plug-in prior is used in the default EM"))
     proxy_feature_marker = 'self.history[src_t]["x"]'
     checks.append(check("proxy labelled updates use saved proxy features", "Never use item['src_x'] here" in source and proxy_feature_marker in source, "proxy train and decision features are source-time consistent"))
+    checks.append(check("standard full run is summary-only", 'run("full", raw_log_mode="summary_only")' in (ROOT / "reproduce_full.py").read_text(encoding="utf-8"), "parallel full runs cannot emit empty placeholder trace CSVs"))
+    checks.append(check("full trace mode is guarded", "Detailed schedule/arrival/step traces require CRMD_WORKERS=1" in source, "detailed traces require an explicit single-worker audit run"))
+    checks.append(check("paper uncertainty uses 2000 bootstrap resamples", "N_BOOTSTRAP = 2000" in (ROOT / "config.py").read_text(encoding="utf-8") and "percentile_bootstrap" in source, "shared-seed percentile intervals"))
+    checks.append(check("raw rebuild entrypoint uses current schema", "raw_setting_id" not in (ROOT / "rebuild_outputs_from_raw.py").read_text(encoding="utf-8"), "rebuild reads current seed_level_results.csv schema"))
 
     env = dict(os.environ)
     env["EXP1_SMOKE_T"] = "100"
@@ -49,6 +53,16 @@ def main() -> int:
         checks.append(check("smoke proxy feature alignment", bool((gap <= 1e-12).all()), f"max_gap={float(gap.max()) if len(gap) else float('nan')}"))
     else:
         checks.append(check("smoke summary emitted", False, str(smoke_summary)))
+    rebuild = subprocess.run(
+        [sys.executable, "rebuild_outputs_from_raw.py", "--mode", "fast", "--output-tag", "code_check_smoke"],
+        cwd=ROOT,
+        env=env,
+        text=False,
+        capture_output=True,
+        timeout=180,
+    )
+    rebuild_text = (rebuild.stdout + b"\n" + rebuild.stderr).decode("utf-8", "backslashreplace")
+    checks.append(check("raw-output rebuild", rebuild.returncode == 0, rebuild_text[-1200:]))
     (ROOT / "outputs").mkdir(exist_ok=True)
     (ROOT / "outputs" / "code_check_report.txt").write_text("\n".join("PASS" if x else "FAIL" for x in checks) + "\n", encoding="utf-8")
     return 0 if all(checks) else 1

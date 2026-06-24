@@ -1,0 +1,60 @@
+{
+  "figure_id": "fig_app_exp4_delay_state_coupling",
+  "figure_size_in": [
+    6.85,
+    2.55
+  ],
+  "dpi": 600,
+  "mode": "full",
+  "paper_result": true,
+  "figure_status": "paper_eligible_full",
+  "appendix_only": true,
+  "panels": [
+    "coupling mechanism diagnostic",
+    "source-binding advantage"
+  ],
+  "input_data_status": "complete_simulator",
+  "ci_level": 0.95,
+  "n_bootstrap": 2000,
+  "caption_note": "beta = 0 denotes no additional delay-state association. It does not imply zero delay or zero source-arrival mismatch. The source-binding advantage is positive across the tested coupling settings, but is not claimed to increase monotonically with beta.",
+  "protected_csv_sha256_before_redraw": {
+    "raw/delay_state_coupling_results.csv": "092d226a4ab2af851fb281e0060b774f8dff92fed4d6c39875c5316522078eb8",
+    "raw/proxy_distortion_diagnostic_results.csv": "046fa50e69d459351df057e3fbd69e4e4d2f613553ac5cc3631994533463f061",
+    "raw/recoverability_phase_map_results.csv": "166333602252b49e3aa68113ee0939f3e2282154f12275b1e723c0e47a624d0e",
+    "raw/seed_level_results.csv": "5020558c49ef62f8456aeaba78931bf8b5aa8b14c439ab54e0f4663660a6b9b2",
+    "raw/source_label_sweep_results.csv": "1304c31759ba2d777604ffb93201eeb36be3105bbdb7ecf74d79da7311a733a9",
+    "summaries/delay_calibration_audit.csv": "aeaf8724269a0f7cd807add6014b7fd7521d0fbd868726a87e4702000802400a",
+    "summaries/delay_state_coupling_summary.csv": "3a2016d29d59d12671ddf6392cd062e1f2c6104784fdb440a6af1d76a10b91d5",
+    "summaries/full_seed_level_results.csv": "12dcf034f4aaf4e1a729ecc9315ed03388a1eb6ce5ec2c88d7b0a41da53af24c",
+    "summaries/metric_specification.csv": "f39d46e05ee65dadd0e39110b448eff7ca6f523a5de2bebf4fd86be7080cac61",
+    "summaries/paired_bootstrap_comparisons.csv": "af8e1a3af55ab687ad350092d2cdac25723e1051d100d87762de93a28252e86d",
+    "summaries/proxy_distortion_diagnostic_summary.csv": "b131cf5564d43459f7655473af3d9e1ca639e9e20ce31932496ecd4d118290bb",
+    "summaries/recoverability_phase_map_seed_level.csv": "3aa00c2acf5e7d929f20c242a4ff1a9c720260b31e0b06085eeccb43e1e93176",
+    "summaries/recoverability_phase_map_summary.csv": "31c003c0c24ba930d9b0e29938ccdd4f7a1e772ae73175fd8117bba6f61de6ef",
+    "summaries/source_binding_advantage_seed_level.csv": "d18050925ff8537e4e12792244e8f6e22af8a6392cafd7c1ec0ba1b9545a89c6",
+    "summaries/source_binding_advantage_summary.csv": "9c59cd78dc6b7e382111c468fa1b52176f7877caa0c67af1a712d7ec2bfef26d",
+    "summaries/source_label_sweep_summary.csv": "b5c85b9719f15681cc38152537cb6d6afa309a716708ccae707abd61a3654404",
+    "figures/data/fig_exp4_recoverability_boundary_data.csv": "614600a45bd7f69d5cdb2676c83d247709ed475600f0ca8476aec605db3edd8b"
+  },
+  "protected_csv_sha256_after_redraw": {
+    "raw/delay_state_coupling_results.csv": "092d226a4ab2af851fb281e0060b774f8dff92fed4d6c39875c5316522078eb8",
+    "raw/proxy_distortion_diagnostic_results.csv": "046fa50e69d459351df057e3fbd69e4e4d2f613553ac5cc3631994533463f061",
+    "raw/recoverability_phase_map_results.csv": "166333602252b49e3aa68113ee0939f3e2282154f12275b1e723c0e47a624d0e",
+    "raw/seed_level_results.csv": "5020558c49ef62f8456aeaba78931bf8b5aa8b14c439ab54e0f4663660a6b9b2",
+    "raw/source_label_sweep_results.csv": "1304c31759ba2d777604ffb93201eeb36be3105bbdb7ecf74d79da7311a733a9",
+    "summaries/delay_calibration_audit.csv": "aeaf8724269a0f7cd807add6014b7fd7521d0fbd868726a87e4702000802400a",
+    "summaries/delay_state_coupling_summary.csv": "3a2016d29d59d12671ddf6392cd062e1f2c6104784fdb440a6af1d76a10b91d5",
+    "summaries/full_seed_level_results.csv": "12dcf034f4aaf4e1a729ecc9315ed03388a1eb6ce5ec2c88d7b0a41da53af24c",
+    "summaries/metric_specification.csv": "f39d46e05ee65dadd0e39110b448eff7ca6f523a5de2bebf4fd86be7080cac61",
+    "summaries/paired_bootstrap_comparisons.csv": "af8e1a3af55ab687ad350092d2cdac25723e1051d100d87762de93a28252e86d",
+    "summaries/proxy_distortion_diagnostic_summary.csv": "b131cf5564d43459f7655473af3d9e1ca639e9e20ce31932496ecd4d118290bb",
+    "summaries/recoverability_phase_map_seed_level.csv": "3aa00c2acf5e7d929f20c242a4ff1a9c720260b31e0b06085eeccb43e1e93176",
+    "summaries/recoverability_phase_map_summary.csv": "31c003c0c24ba930d9b0e29938ccdd4f7a1e772ae73175fd8117bba6f61de6ef",
+    "summaries/source_binding_advantage_seed_level.csv": "d18050925ff8537e4e12792244e8f6e22af8a6392cafd7c1ec0ba1b9545a89c6",
+    "summaries/source_binding_advantage_summary.csv": "9c59cd78dc6b7e382111c468fa1b52176f7877caa0c67af1a712d7ec2bfef26d",
+    "summaries/source_label_sweep_summary.csv": "b5c85b9719f15681cc38152537cb6d6afa309a716708ccae707abd61a3654404",
+    "figures/data/fig_app_exp4_delay_state_coupling_data.csv": "7421df5e14862c24b75cebcc8d242403f6b74da3cffd4b0c64dfb8b826ed9d4c",
+    "figures/data/fig_exp4_recoverability_boundary_data.csv": "614600a45bd7f69d5cdb2676c83d247709ed475600f0ca8476aec605db3edd8b"
+  },
+  "protected_csv_sha256_unchanged": false
+}

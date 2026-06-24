@@ -1,2 +1,0 @@
-CRMD_WORKERS=24
-reproduce_full_exit_code=0

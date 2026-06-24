@@ -1,5 +1,7 @@
-python=3.11.6 (tags/v3.11.6:8b6ee5b, Oct  2 2023, 14:57:12) [MSC v.1935 64 bit (AMD64)]
-platform=Windows-10-10.0.26200-SP0
-numpy=2.4.4
+python=3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]
+platform=Linux-6.8.0-124-generic-x86_64-with-glibc2.39
+numpy=2.5.0
 estimand=context-information oracle excess conditional risk
 primary paths=pre-generated and shared across methods
+ci=percentile bootstrap; level=0.95; resamples=2000
+raw_log_mode=summary_only

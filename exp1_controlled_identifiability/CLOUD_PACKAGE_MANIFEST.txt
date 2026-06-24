@@ -1,7 +1,17 @@
-﻿Project: exp1_controlled_identifiability
-Package purpose: Tencent Cloud full experiment execution
-Created at: 2026-06-20 15:49:47
-Source path: D:\research\CausalRegretMinimizationUnderDelayedFeedback\experiment\IPY\exp1_controlled_identifiability
-Package policy:
-- excluded old outputs, logs, caches, virtual environments, archives, backups
-- included source code, configs, scripts, README, requirements, checks
+Project: exp1_controlled_validity
+Package purpose: clean rerun-ready EXP1 source archive
+
+Included:
+- source code and entry points
+- self-check and code-check gates
+- output and manuscript-interface contracts
+- documentation for fast, full, rebuild, and trace-audit modes
+
+Excluded intentionally:
+- completed fast/full outputs
+- partial or historical run logs
+- executed result notebooks
+- caches and virtual environments
+
+The package is not evidence of a completed numerical run. New outputs must be
+created locally or on the execution environment using the documented commands.

@@ -1,34 +1,39 @@
-# Validation record for this clean source package
+# Validation record for the rerun-ready source package
 
-## Completed before packaging
+## Completed code validation
 
-- All Python modules compiled successfully.
-- `python code_check.py` completed successfully after the final implementation
-  changes. Its isolated smoke run executed the entire 264-combination design and
-  passed `self_check.py`.
-- Targeted `T=5000` execution checks were run after the final implementation
-  changes:
-  - Gaussian-integrated EM on `state_structural_matched_15` emitted
-    `em_delay_likelihood=gaussian_observable_state_integrated_quadrature` and
-    conserved one feedback unit per observed arrival.
-  - The stationary ablation emitted
-    `em_delay_likelihood=stationary_geometric_ablation`.
-  - Labelled ProxyAgent emitted `labelled_feature_alignment_max=0.0`.
-  - On the same seed/path, the proxy quality contrast yielded a lower
-    time-averaged state error for `proxy_good_matched_15` than for
-    `proxy_bad_matched_15`; the low-quality condition also incurred higher
-    causal regret in that targeted path.
+- All Python modules compile successfully.
+- `python code_check.py` passed after the current output-contract repairs.
+- The code check ran the complete `264`-combination smoke design and passed the
+  internal self-check.
+- The rebuild path was tested from current-schema raw results using
+  `rebuild_outputs_from_raw.py` and passed self-check.
+- A one-worker trace-audit smoke run produced non-empty schedule, arrival, and
+  step trace files. This verifies that detailed traces are written only when
+  their requested logging mode is feasible.
+- A targeted `T=5000` state-structural Gaussian-integrated EM run completed
+  with one effective feedback unit per observed arrival and the expected
+  integrated-delay-likelihood identifier.
 
-## Not packaged as results
+## Verified modelling and fairness contracts
 
-A full 792-run `fast` execution was started only to confirm the production
-scheduler enters real tasks. It was stopped before completion and all partial
-outputs were deleted. This package contains source, documentation, and an empty
-`outputs/` directory only.
+- All learners receive the same public decision-time context.
+- Regret uses the context-information comparator rather than a full-state
+  comparator unavailable to non-reference learners.
+- Main matched-delay settings share policy-independent state, context, and
+  delay paths within each seed.
+- Matched delays are calibrated using finite-horizon realised observed delay.
+- Source-labelled and proxy learners use source-time saved features for
+  labelled feedback updates.
+- Arrival-time, source-labelled, EM, and proxy routes update per arrived source
+  outcome rather than by batch average.
+- The default structural EM uses observable-state Gaussian integration; the
+  stationary-geometric route is a diagnostic ablation.
+- Seed uncertainty uses a `2000`-resample percentile bootstrap contract.
 
-Run formal fast outputs locally or on the cloud with:
+## Deliberately absent from this package
 
-```powershell
-python reproduce_fast.py
-python self_check.py --mode fast
-```
+The package contains no formal fast or full numerical results. The `outputs/`
+directory is intentionally clean so that a rerun cannot mix stale results with
+new results. Run the commands in `README.md` before interpreting any numerical
+output as a result.

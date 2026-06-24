@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.plot_utils import plot_validity_boundary
+from src.plot_utils import plot_exp1_bundles
 
 
 def main() -> int:
@@ -15,7 +15,7 @@ def main() -> int:
     args = parser.parse_args()
     root = Path(__file__).resolve().parent / "outputs" / (args.output_tag or args.mode)
     seed = pd.read_csv(root / "summaries" / "seed_summary.csv")
-    plot_validity_boundary(seed, root)
+    plot_exp1_bundles(seed, root)
     return 0
 
 

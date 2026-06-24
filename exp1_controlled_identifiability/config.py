@@ -10,3 +10,7 @@ SEEDS = list(range(30))
 D_MAX = 100
 FAST_T = T
 FAST_SEEDS = [0, 1, 2]
+
+# Paper-facing uncertainty contract for the 30 shared simulation seeds.
+N_BOOTSTRAP = 2000
+CI_LEVEL = 0.95

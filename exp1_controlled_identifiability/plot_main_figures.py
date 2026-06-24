@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.plot_utils import plot_validity_boundary
+from src.plot_utils import plot_exp1_bundles
 
 
 def main() -> int:
@@ -17,7 +17,7 @@ def main() -> int:
     seed_path = root / "summaries" / "seed_summary.csv"
     if not seed_path.exists():
         raise FileNotFoundError(f"Missing {seed_path}; run the simulation first.")
-    plot_validity_boundary(pd.read_csv(seed_path), root)
+    plot_exp1_bundles(pd.read_csv(seed_path), root)
     print(root / "figures" / "png" / "fig_exp1_validity_boundary.png")
     return 0
 

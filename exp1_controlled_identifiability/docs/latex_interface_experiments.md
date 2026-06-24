@@ -1,11 +1,34 @@
-# Experiment 1 LaTeX Interface
+# Experiment 1 LaTeX interface
+
+## Main figure
 
 ```latex
-\caption{\textbf{Source binding determines whether arrival-time evaluation remains decision-consistent.}
-Panel (a) compares source-preserving and source-disrupting delay mechanisms using structural causal regret per decision round, $R_T^c/T$.
-A fixed positive delay under a static state preserves the source--intervention binding, whereas the geometric, mixture, and structural mechanisms can disrupt it.
-Panel (b) holds the empirical mean delay near 15 while varying the delay mechanism, showing that average delay alone does not determine structural regret.
-Points are seed-level means and intervals are paired percentile 95\% bootstrap confidence intervals over 30 shared simulation seeds.
-The oracle reference uses hidden-state information and is not deployable.}
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\linewidth]{outputs/full/figures/pdf/fig_exp1_validity_boundary.pdf}
+\caption{
+\textbf{Source binding is the validity boundary for arrival-time evaluation.}
+Panel~(a) compares source-preserving and source-disrupting delay conditions in
+the labelled information regime. Panel~(b) compares geometric, mixture, and
+state-structural mechanisms calibrated to the same realised observed mean delay.
+The vertical axis is contextual structural causal regret per round, $R_T^c/T$.
+Points and intervals are shared-seed percentile $95\%$ bootstrap intervals with
+$2000$ resamples. The context oracle is a non-deployable reference.
+}
+\label{fig:exp1_validity_boundary}
+\end{figure*}
 ```
 
+## Appendix objects
+
+```latex
+\input{outputs/full/tables/tbl_app_exp1_simulation_settings.tex}
+\input{outputs/full/tables/tbl_app_exp1_information_interfaces.tex}
+\input{outputs/full/tables/tbl_app_exp1_all_method_results.tex}
+
+\includegraphics[width=\linewidth]{outputs/full/figures/pdf/fig_app_exp1_selected_trajectories.pdf}
+\includegraphics[width=\linewidth]{outputs/full/figures/pdf/fig_app_exp1_mismatch_diagnostics.pdf}
+```
+
+Do not use fast outputs in manuscript paths. Run
+`finalize_paper_outputs.py --mode full` only after the full self-check passes.

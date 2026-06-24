@@ -1,18 +1,37 @@
 # EXP1 self-check
 
-- [FAILED] backend completed: failed
+- [PASSED] backend completed: completed
+- [PASSED] run mode matches requested check: fast
 - [PASSED] contextual estimand declared: all learners observe X_t; comparator is the conditional-risk argmin_a E[loss(a,S_t)|X_t]
 - [PASSED] primary shared-path contract declared: pre-generated shared state/context/delay paths; matched by realised uncensored finite-horizon mean delay
 - [PASSED] structural EM contract declared: default EM integrates P(D=d|observable source feature) under the Gaussian AR(1) state posterior by binned Gauss-Hermite quadrature; stationary geometric EM is an explicit ablation
 - [PASSED] proxy feature-consistency contract declared: proxy action selection, labelled source updates, and unlabelled candidate updates all use the saved source-time Kalman proxy feature
-- [PASSED] no output marked as paper result: paper_result=False
+- [PASSED] bootstrap contract: n_bootstrap=2000; ci_level=0.95
+- [PASSED] input status declared: synthetic_complete
+- [PASSED] summary-only run has no placeholder trace files: 
+- [PASSED] fast result is not paper-marked: paper_result=False
 - [PASSED] seed summary schema: missing=[]
-- [FAILED] expected run count: expected=792; observed=204
+- [PASSED] expected run count: expected=792; observed=792
 - [PASSED] unique design keys: duplicates=0
 - [PASSED] all learners receive context: context_observed_by_all
 - [PASSED] regret comparator is context-information oracle: ['context_information_oracle']
 - [PASSED] causal regret finite: final_Rc
-- [FAILED] seed summary readable: OverflowError('cannot convert float infinity to integer')
-- [FAILED] design manifest expected count: expected=792; observed=204
-- [PASSED] design manifest contains no failed row: {'completed': 204}
-- [FAILED] registered diagnostic figure bundles exist: figures/data/fig_exp1_same_mean_delay_data.csv; figures/png/fig_exp1_same_mean_delay.png; figures/pdf/fig_exp1_same_mean_delay.pdf; figures/metadata/fig_exp1_same_mean_delay_metadata.json; figures/data/fig_exp1_attribution_diagnostics_data.csv; figures/png/fig_exp1_attribution_diagnostics.png; figures/pdf/fig_exp1_attribution_diagnostics.pdf; figures/metadata/fig_exp1_attribution_diagnostics_metadata.json; figures/data/fig_exp1_proxy_quality_data.csv; figures/png/fig_exp1_proxy_quality.png; figures/pdf/fig_exp1_proxy_quality.pdf; figures/metadata/fig_exp1_proxy_quality_metadata.json
+- [PASSED] canonical run metadata: run_mode=['fast']
+- [PASSED] primary metric is declared: ['causal_regret_per_round']
+- [PASSED] primary paths shared across methods: max distinct path IDs=1
+- [PASSED] primary realised delay unchanged by learner: max method spread=0.0
+- [PASSED] primary paths calibrated to observed-delay target: max |mean-15|=0.005931683370832275; tolerance=0.75
+- [PASSED] action-dependent delay isolated as stress test: policy_dependent_delay
+- [PASSED] per-arrival feedback-unit accounting: max |units-arrivals|=0.0
+- [PASSED] structural EM uses observable-state integrated likelihood: ['gaussian_observable_state_integrated_quadrature']
+- [PASSED] EM ablation is explicitly stationary: ['stationary_geometric_ablation']
+- [PASSED] EM/proxy labelled updates share decision feature space: max discrepancy=0.0
+- [PASSED] proxy error is time-averaged and finite: nonfinite=0
+- [PASSED] proxy quality sweep changes time-averaged state error: {'proxy_bad_matched_15': 0.6703132119579092, 'proxy_good_matched_15': 0.21727605525437824}
+- [PASSED] design manifest expected count: expected=792; observed=792
+- [PASSED] design manifest contains no failed row: {'completed': 792}
+- [PASSED] method summary bootstrap schema: missing=[]
+- [PASSED] method summary uses 2000 percentile bootstrap: n_bootstrap=[2000]
+- [PASSED] selected trajectory output exists: /home/ubuntu/crmd_df/code/exp1_controlled_identifiability/outputs/fast/processed/selected_trajectory_points.csv
+- [PASSED] registered figure bundles exist: 
+- [PASSED] figure data follow common schema: 

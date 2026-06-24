@@ -1,0 +1,41 @@
+# Project-local runtime/cache
+.runtime/
+tmp/
+temp/
+cache/
+__pycache__/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Raw or downloaded data
+data/raw/
+data/external/
+downloads/
+datasets/
+
+# Heavy intermediate outputs
+outputs/**/intermediate/
+outputs/**/cache/
+outputs/**/raw_large/
+outputs/**/processed/
+outputs/**/raw/
+outputs/**/*.pkl
+outputs/**/*.joblib
+outputs/**/*.npy
+outputs/**/*.npz
+outputs/**/*.parquet
+
+# Keep lightweight GitHub-facing outputs
+!outputs/**/summary*.csv
+!outputs/**/summaries/**
+!outputs/**/tables/**
+!outputs/**/figures/**
+!outputs/**/checks/**
+!outputs/**/metadata/**
+!outputs/**/reports/**
+!output_manifest.md
+!docs/**
+!ipy/**
+!runlogs/*.txt
+!runlogs/*.md
+!runlogs/*.log

@@ -43,6 +43,11 @@ class ContextualTable:
         scaled = (float(x) - CONTEXT_MIN) / (CONTEXT_MAX - CONTEXT_MIN)
         return int(np.clip(np.floor(scaled * self.n_bins), 0, self.n_bins - 1))
 
+    def bins(self, x: np.ndarray) -> np.ndarray:
+        values = np.asarray(x, dtype=float)
+        scaled = (values - CONTEXT_MIN) / (CONTEXT_MAX - CONTEXT_MIN)
+        return np.clip(np.floor(scaled * self.n_bins), 0, self.n_bins - 1).astype(int)
+
     def update(self, x: float, action: int, loss: float, weight: float = 1.0) -> None:
         w = float(weight)
         if w <= 0.0 or not np.isfinite(w):
@@ -64,6 +69,38 @@ class ContextualTable:
         out[no_local] = global_mean[no_local]
         out[self.global_count <= 0.0] = 0.0
         return out
+
+    def estimate_pairs(self, features: np.ndarray, actions: np.ndarray) -> np.ndarray:
+        """Vectorized contextual estimates for many source candidates."""
+        xs = np.asarray(features, dtype=float)
+        aa = np.asarray(actions, dtype=int)
+        if xs.size == 0:
+            return np.zeros(0, dtype=float)
+        bins = self.bins(xs)
+        local_count = self.count[bins, aa]
+        local_mean = self.sum_loss[bins, aa] / np.maximum(local_count, 1e-12)
+        global_count = self.global_count[aa]
+        global_mean = self.global_sum[aa] / np.maximum(global_count, 1e-12)
+        values = np.where(local_count > 0.0, local_mean, global_mean)
+        values = np.where(global_count > 0.0, values, 0.0)
+        return np.asarray(values, dtype=float)
+
+    def batch_update(self, features: np.ndarray, actions: np.ndarray, loss: float, weights: np.ndarray) -> None:
+        """Vectorized weighted updates that preserve one feedback-unit mass."""
+        xs = np.asarray(features, dtype=float)
+        aa = np.asarray(actions, dtype=int)
+        ww = np.asarray(weights, dtype=float)
+        valid = np.isfinite(xs) & np.isfinite(ww) & (ww > 0.0) & (aa >= 0) & (aa < self.K)
+        if not np.any(valid):
+            return
+        xs = xs[valid]
+        aa = aa[valid]
+        ww = ww[valid]
+        bb = self.bins(xs)
+        np.add.at(self.sum_loss, (bb, aa), ww * float(loss))
+        np.add.at(self.count, (bb, aa), ww)
+        np.add.at(self.global_sum, aa, ww * float(loss))
+        np.add.at(self.global_count, aa, ww)
 
     def count_at(self, x: float) -> np.ndarray:
         return self.count[self.bin(x)].copy()
@@ -514,7 +551,7 @@ class CausalEMAgent(BaseAgent):
         if len(source_times) == 0:
             return source_times, actions, features, np.zeros(0, dtype=float)
         prior = self._delay_prior(lags, features, state_means, state_vars, actions)
-        means = np.asarray([self.table.estimate(x)[a] for x, a in zip(features, actions)], dtype=float)
+        means = self.table.estimate_pairs(features, actions)
         sigma2 = max(self.sigma**2, 1e-8)
         score = -0.5 * ((float(y) - means) ** 2) / sigma2
         score -= float(np.max(score))
@@ -545,8 +582,7 @@ class CausalEMAgent(BaseAgent):
             src_times, actions, features, posterior = self._posterior(y, int(t))
             if len(posterior) == 0:
                 continue
-            for source_feature, source_a, weight in zip(features, actions, posterior):
-                self.table.update(float(source_feature), int(source_a), y, float(weight))
+            self.table.batch_update(features, actions, y, posterior)
             self.feedback_units += 1.0
             entropy = self._entropy(posterior)
             self.assignment_entropy_sum += entropy
