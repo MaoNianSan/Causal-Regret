@@ -1,0 +1,28 @@
+\begin{table}
+\caption{Cost-normalization robustness check only. The transformed cost field is not interpreted as monetary profit or ROI.}
+\label{tab:app_exp2_cost_adjusted_credit_score}
+\begin{tabular}{rlrrr}
+\toprule
+Cost lambda & Route & Cost-adjusted top-k score / 1,000 & Cost-adjusted score difference vs arrival anchor / 1,000 & Top-10 overlap vs arrival anchor \\
+\midrule
+0.1 & Arrival-bin anchor (diagnostic) & 270.7 & 0 & 1 \\
+0.1 & First click or touch & 22.22 & -248.5 & 0 \\
+0.1 & Last click or touch & 22.4 & -248.3 & 0 \\
+0.1 & Linear attribution & 20.68 & -250 & 0 \\
+0.1 & Time-decay attribution & 20.89 & -249.8 & 0 \\
+0.1 & EM soft attribution & 20.96 & -249.7 & 0 \\
+0.5 & Arrival-bin anchor (diagnostic) & 136.9 & 0 & 1 \\
+0.5 & First click or touch & -6.051 & -142.9 & 0 \\
+0.5 & Last click or touch & -9.375 & -146.2 & 0 \\
+0.5 & Linear attribution & -7.265 & -144.1 & 0 \\
+0.5 & Time-decay attribution & -9.352 & -146.2 & 0 \\
+0.5 & EM soft attribution & -9.336 & -146.2 & 0 \\
+1 & Arrival-bin anchor (diagnostic) & 9.469 & 0 & 1 \\
+1 & First click or touch & -23.55 & -33.02 & 0 \\
+1 & Last click or touch & -24.91 & -34.37 & 0 \\
+1 & Linear attribution & -24.77 & -34.24 & 0 \\
+1 & Time-decay attribution & -24.87 & -34.34 & 0 \\
+1 & EM soft attribution & -24.87 & -34.34 & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}

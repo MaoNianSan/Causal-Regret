@@ -1,0 +1,9 @@
+metric,value
+n_conversion_ids,435810.0
+share_unique_attributed_row,0.3694132764278011
+share_no_attributed_row,0.4577201073862463
+share_multiple_attributed_rows,0.1728666161859526
+mean_candidate_rows_per_conversion,1.8498795346595993
+median_candidate_rows_per_conversion,1.0
+p90_candidate_rows,3.0
+p99_candidate_rows,11.0

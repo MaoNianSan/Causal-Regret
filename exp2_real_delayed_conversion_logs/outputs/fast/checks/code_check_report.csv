@@ -1,0 +1,29 @@
+check_name,status,detail
+all_python_files_compile,PASS,4420 files
+mode_isolation,PASS,runner clears isolated outputs/<mode>
+missing_input_hard_failure,PASS,missing protected input exits non-zero
+all_conversion_main_cohort,PASS,all conversion candidates use source-time decision cells
+source_linked_audit_only,PASS,source-linked reference is restricted by semantic check
+uid_bootstrap,PASS,UID-cluster percentile bootstrap implemented
+main_figure_contract,PASS,main figure displays allocation TV point-range and top-10 overlap annotations
+appendix_pairwise_overlap_figure,PASS,appendix uses pairwise TV and top-10 overlap heatmaps
+appendix_diagnostics_as_tables,PASS,"source-linked, window, and EM diagnostics are tables"
+no_replay_as_main_endpoint,PASS,deprecated temporal replay removed from formal pipeline
+no_label_availability_leakage,PASS,Exp2 does not reuse invalid label-mask sensitivity
+honest_estimand_language,PASS,configuration preserves observational estimand boundary
+source_time_cell_design,PASS,source-time cells plus core-route scientific degeneracy gate
+primary_metric_semantics,PASS,primary outcome is credited mass; cost-adjusted score is appendix-only
+arrival_anchor_label,PASS,arrival anchor is explicitly diagnostic
+paper_result_finalization_gate,PASS,full paper_result is promoted only after semantic self-check
+clean_run_replot_guard,PASS,clean runs do not fail the display-only hash regression guard
+source_event_delay_profile_contract,PASS,Panel A counts eligible source-event rows
+uid_minus_one_sentinel_filter,PASS,UID -1 is treated as missing and audited
+stale_arrival_alias_rejected,PASS,stale arrival_time_naive configuration is rejected
+fixture_config_current,PASS,synthetic fixture matches production route/gate contract
+synthetic_integration_runner_present,PASS,fixture integration runner exists
+input_identity_recorded,PASS,"run metadata records input size, mtime, and partial hash"
+deprecated_ids_removed_from_formal_code,PASS,no old Exp2 route or figure ids in formal code: []
+figure_ids_snake_case,PASS,formal figure ids are snake_case: []
+formal_latex_figure_interface_nonempty,PASS,"formal LaTeX figure interface contains required figure ids: ['fig_exp2_attribution_sensitivity', 'fig_app_exp2_source_route_pairwise_overlap']"
+completed_run_status,PASS,"{""experiment_id"": ""exp2_logged_attribution_sensitivity"", ""mode"": ""fast"", ""status"": ""success"", ""updated_at"": ""2026-06-24T19:04:30"", ""expected_uid_bootstrap_replicates"": 200, ""input_file"": ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv"", ""config_path"": ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"", ""steps"": [{""step"": ""precheck"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""run_precheck.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T18:31:19"", ""finished_at"": ""2026-06-24T18:39:02"", ""elapsed_seconds"": 462.594}, {""step"": ""timeline"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""construct_timeline.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T18:39:02"", ""finished_at"": ""2026-06-24T18:43:51"", ""elapsed_seconds"": 289.529}, {""step"": ""route_assignment"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""run_exp2.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T18:43:51"", ""finished_at"": ""2026-06-24T18:48:41"", ""elapsed_seconds"": 289.981}, {""step"": ""statistics"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""stats_exp2.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T18:48:41"", ""finished_at"": ""2026-06-24T19:04:13"", ""elapsed_seconds"": 931.739}, {""step"": ""figures"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""plot_exp2.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T19:04:13"", ""finished_at"": ""2026-06-24T19:04:17"", ""elapsed_seconds"": 3.911}, {""step"": ""tables"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""make_tables_exp2.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml""], ""return_code"": 0, ""started_at"": ""2026-06-24T19:04:17"", ""finished_at"": ""2026-06-24T19:04:19"", ""elapsed_seconds"": 2.49}, {""step"": ""self_check"", ""command"": [""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python"", ""self_check_exp2.py"", ""--config"", ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"", ""--mode"", ""fast"", ""--allow-running""], ""return_code"": 0, ""started_at"": ""2026-06-24T19:04:19"", ""finished_at"": ""2026-06-24T19:04:30"", ""elapsed_seconds"": 10.532}], ""finished_at"": ""2026-06-24T19:04:30"", ""parallel"": {""n_jobs"": ""auto"", ""host_logical_cpus"": 32, ""resolved_bootstrap_workers"": 4}, ""input_identity"": {""path"": ""/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv"", ""size_bytes"": 2589891984, ""modified_at"": ""2017-08-31T20:53:28"", ""partial_sha256"": ""a860f86cb9142c0f797ec34a2ad89f6773b3ea8ded565fd056b28a05b741b0e9"", ""partial_sha256_scheme"": ""sha256(first_1048576_bytes_plus_last_1048576_bytes)""}}"
+self_check_passes,PASS,exit_code=0

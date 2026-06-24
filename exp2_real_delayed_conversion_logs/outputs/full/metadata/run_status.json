@@ -1,0 +1,131 @@
+{
+  "experiment_id": "exp2_logged_attribution_sensitivity",
+  "mode": "full",
+  "status": "success",
+  "updated_at": "2026-06-24T20:09:33",
+  "expected_uid_bootstrap_replicates": 1000,
+  "input_file": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv",
+  "config_path": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml",
+  "steps": [
+    {
+      "step": "precheck",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "run_precheck.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T19:35:50",
+      "finished_at": "2026-06-24T19:43:25",
+      "elapsed_seconds": 455.168
+    },
+    {
+      "step": "timeline",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "construct_timeline.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T19:43:25",
+      "finished_at": "2026-06-24T19:48:19",
+      "elapsed_seconds": 293.428
+    },
+    {
+      "step": "route_assignment",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "run_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T19:48:19",
+      "finished_at": "2026-06-24T19:53:10",
+      "elapsed_seconds": 290.719
+    },
+    {
+      "step": "statistics",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "stats_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T19:53:10",
+      "finished_at": "2026-06-24T20:09:16",
+      "elapsed_seconds": 966.58
+    },
+    {
+      "step": "figures",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "plot_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T20:09:16",
+      "finished_at": "2026-06-24T20:09:20",
+      "elapsed_seconds": 3.876
+    },
+    {
+      "step": "tables",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "make_tables_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T20:09:20",
+      "finished_at": "2026-06-24T20:09:22",
+      "elapsed_seconds": 2.349
+    },
+    {
+      "step": "self_check",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "self_check_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml",
+        "--mode",
+        "full",
+        "--allow-running"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T20:09:22",
+      "finished_at": "2026-06-24T20:09:33",
+      "elapsed_seconds": 10.504
+    },
+    {
+      "step": "finalize_paper_result",
+      "command": [
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python",
+        "finalize_exp2.py",
+        "--config",
+        "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_full.yaml"
+      ],
+      "return_code": 0,
+      "started_at": "2026-06-24T20:09:33",
+      "finished_at": "2026-06-24T20:09:33",
+      "elapsed_seconds": 0.278
+    }
+  ],
+  "finished_at": "2026-06-24T20:09:33",
+  "parallel": {
+    "n_jobs": "auto",
+    "host_logical_cpus": 32,
+    "resolved_bootstrap_workers": 4
+  },
+  "input_identity": {
+    "path": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv",
+    "size_bytes": 2589891984,
+    "modified_at": "2017-08-31T20:53:28",
+    "partial_sha256": "a860f86cb9142c0f797ec34a2ad89f6773b3ea8ded565fd056b28a05b741b0e9",
+    "partial_sha256_scheme": "sha256(first_1048576_bytes_plus_last_1048576_bytes)"
+  }
+}

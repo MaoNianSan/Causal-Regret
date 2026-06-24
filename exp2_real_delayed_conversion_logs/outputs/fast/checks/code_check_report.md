@@ -1,0 +1,30 @@
+# Experiment 2 Code-check Report
+
+- [PASS] all_python_files_compile: 4420 files
+- [PASS] mode_isolation: runner clears isolated outputs/<mode>
+- [PASS] missing_input_hard_failure: missing protected input exits non-zero
+- [PASS] all_conversion_main_cohort: all conversion candidates use source-time decision cells
+- [PASS] source_linked_audit_only: source-linked reference is restricted by semantic check
+- [PASS] uid_bootstrap: UID-cluster percentile bootstrap implemented
+- [PASS] main_figure_contract: main figure displays allocation TV point-range and top-10 overlap annotations
+- [PASS] appendix_pairwise_overlap_figure: appendix uses pairwise TV and top-10 overlap heatmaps
+- [PASS] appendix_diagnostics_as_tables: source-linked, window, and EM diagnostics are tables
+- [PASS] no_replay_as_main_endpoint: deprecated temporal replay removed from formal pipeline
+- [PASS] no_label_availability_leakage: Exp2 does not reuse invalid label-mask sensitivity
+- [PASS] honest_estimand_language: configuration preserves observational estimand boundary
+- [PASS] source_time_cell_design: source-time cells plus core-route scientific degeneracy gate
+- [PASS] primary_metric_semantics: primary outcome is credited mass; cost-adjusted score is appendix-only
+- [PASS] arrival_anchor_label: arrival anchor is explicitly diagnostic
+- [PASS] paper_result_finalization_gate: full paper_result is promoted only after semantic self-check
+- [PASS] clean_run_replot_guard: clean runs do not fail the display-only hash regression guard
+- [PASS] source_event_delay_profile_contract: Panel A counts eligible source-event rows
+- [PASS] uid_minus_one_sentinel_filter: UID -1 is treated as missing and audited
+- [PASS] stale_arrival_alias_rejected: stale arrival_time_naive configuration is rejected
+- [PASS] fixture_config_current: synthetic fixture matches production route/gate contract
+- [PASS] synthetic_integration_runner_present: fixture integration runner exists
+- [PASS] input_identity_recorded: run metadata records input size, mtime, and partial hash
+- [PASS] deprecated_ids_removed_from_formal_code: no old Exp2 route or figure ids in formal code: []
+- [PASS] figure_ids_snake_case: formal figure ids are snake_case: []
+- [PASS] formal_latex_figure_interface_nonempty: formal LaTeX figure interface contains required figure ids: ['fig_exp2_attribution_sensitivity', 'fig_app_exp2_source_route_pairwise_overlap']
+- [PASS] completed_run_status: {"experiment_id": "exp2_logged_attribution_sensitivity", "mode": "fast", "status": "success", "updated_at": "2026-06-24T19:04:30", "expected_uid_bootstrap_replicates": 200, "input_file": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv", "config_path": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml", "steps": [{"step": "precheck", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "run_precheck.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T18:31:19", "finished_at": "2026-06-24T18:39:02", "elapsed_seconds": 462.594}, {"step": "timeline", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "construct_timeline.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T18:39:02", "finished_at": "2026-06-24T18:43:51", "elapsed_seconds": 289.529}, {"step": "route_assignment", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "run_exp2.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T18:43:51", "finished_at": "2026-06-24T18:48:41", "elapsed_seconds": 289.981}, {"step": "statistics", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "stats_exp2.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T18:48:41", "finished_at": "2026-06-24T19:04:13", "elapsed_seconds": 931.739}, {"step": "figures", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "plot_exp2.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T19:04:13", "finished_at": "2026-06-24T19:04:17", "elapsed_seconds": 3.911}, {"step": "tables", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "make_tables_exp2.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml"], "return_code": 0, "started_at": "2026-06-24T19:04:17", "finished_at": "2026-06-24T19:04:19", "elapsed_seconds": 2.49}, {"step": "self_check", "command": ["/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.venv/bin/python", "self_check_exp2.py", "--config", "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml", "--mode", "fast", "--allow-running"], "return_code": 0, "started_at": "2026-06-24T19:04:19", "finished_at": "2026-06-24T19:04:30", "elapsed_seconds": 10.532}], "finished_at": "2026-06-24T19:04:30", "parallel": {"n_jobs": "auto", "host_logical_cpus": 32, "resolved_bootstrap_workers": 4}, "input_identity": {"path": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv", "size_bytes": 2589891984, "modified_at": "2017-08-31T20:53:28", "partial_sha256": "a860f86cb9142c0f797ec34a2ad89f6773b3ea8ded565fd056b28a05b741b0e9", "partial_sha256_scheme": "sha256(first_1048576_bytes_plus_last_1048576_bytes)"}}
+- [PASS] self_check_passes: exit_code=0

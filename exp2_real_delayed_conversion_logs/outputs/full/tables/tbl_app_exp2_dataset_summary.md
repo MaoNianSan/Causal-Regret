@@ -1,0 +1,12 @@
+# Raw-log and analysis-window summary.
+
+Metric,Value
+n_rows,16468027.0
+n_users_exact,6142256.0
+n_campaigns,675.0
+n_conversion_rows,806196.0
+n_attributed_rows,442424.0
+n_clicked_rows,5947563.0
+time_span_days,30.916655092592592
+configured_observation_window_days,30.0
+

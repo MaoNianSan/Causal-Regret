@@ -1,0 +1,13 @@
+file_path,file_type,description,created_at,n_rows,n_columns,required_for_paper
+outputs/metadata/config_snapshot.yaml,yaml,,2026-06-24T17:43:58,,,
+outputs/metadata/run_metadata.json,json,,2026-06-24T17:51:34,,,
+outputs/precheck/exp2_analysis_window.json,json,,2026-06-24T17:51:31,,,
+outputs/precheck/exp2_campaign_summary.csv,csv,,2026-06-24T17:51:31,523.0,10.0,
+outputs/precheck/exp2_conversion_id_check.csv,csv,,2026-06-24T17:51:34,8.0,2.0,
+outputs/precheck/exp2_conversion_id_summary.csv,csv,,2026-06-24T17:51:34,435810.0,11.0,
+outputs/precheck/exp2_dataset_summary.csv,csv,,2026-06-24T17:51:31,15.0,2.0,
+outputs/precheck/exp2_delay_bucket_summary.csv,csv,,2026-06-24T17:51:31,5.0,7.0,
+outputs/precheck/exp2_delay_summary.csv,csv,,2026-06-24T17:51:31,1.0,17.0,
+outputs/precheck/exp2_precheck_preview_report.md,md,,2026-06-24T17:51:34,,,
+outputs/precheck/exp2_sample_100.csv,csv,,2026-06-24T17:43:59,100.0,22.0,
+outputs/precheck/exp2_top_campaign_coverage_summary.csv,csv,,2026-06-24T17:51:31,3.0,6.0,

@@ -1,0 +1,84 @@
+{
+  "figure_id": "fig_exp2_attribution_sensitivity",
+  "figure_status": "generated",
+  "paper_result": true,
+  "run_mode": "full",
+  "input_data_status": "complete",
+  "estimand_boundary": "observational logged credit-allocation and source-time decision-cell ranking sensitivity; not policy value, causal effect, ROI, or deployment evaluation",
+  "figure_size_in": [
+    6.85,
+    2.7
+  ],
+  "dpi": 600,
+  "metric_id": "credit_allocation_tv_distance_vs_arrival_anchor",
+  "metric_formula_id": "tv_distance_between_normalized_route_credit_allocation_and_arrival_anchor;top10_set_overlap_between_route_and_arrival_anchor",
+  "uncertainty_unit": "uid",
+  "ci_level": 0.95,
+  "n_bootstrap": 1000,
+  "input_files": [
+    "summaries/exp2_route_sensitivity_summary.csv",
+    "summaries/exp2_source_event_delay_profile.csv"
+  ],
+  "config_hash": "11b2c13dfc4eaae3",
+  "secondary_annotation": "top_k_decision_cell_overlap_vs_arrival_anchor",
+  "x_id": "credit_allocation_tv_distance_vs_arrival_anchor",
+  "y_id": "method_display_name",
+  "layout": "1_row_2_columns",
+  "panel_titles": {
+    "panel_a": "(a) Delay composition",
+    "panel_b": "(b) Allocation and ranking displacement"
+  },
+  "panel_title_font_size": 9.0,
+  "panel_title_overlap_check": "reserved_top_space_with_tight_layout_rect_and_subplots_adjust",
+  "panel_b_annotation_positions": [
+    {
+      "route": "arrival_bin_anchor",
+      "x_marker": 0.0,
+      "x_ci_upper": 0.0,
+      "x_annotation": 0.08,
+      "x_axis_max": 1.105939216715262,
+      "right_margin": 0.012,
+      "padding": 0.025
+    },
+    {
+      "route": "first_click",
+      "x_marker": 0.9243707314386428,
+      "x_ci_upper": 0.925939216715262,
+      "x_annotation": 0.950939216715262,
+      "x_axis_max": 1.105939216715262,
+      "right_margin": 0.012,
+      "padding": 0.025
+    },
+    {
+      "route": "last_click",
+      "x_marker": 0.9222433355364617,
+      "x_ci_upper": 0.9238546731066866,
+      "x_annotation": 0.9488546731066866,
+      "x_axis_max": 1.105939216715262,
+      "right_margin": 0.012,
+      "padding": 0.025
+    },
+    {
+      "route": "linear_attribution",
+      "x_marker": 0.923483767668558,
+      "x_ci_upper": 0.9250080734291524,
+      "x_annotation": 0.9500080734291524,
+      "x_axis_max": 1.105939216715262,
+      "right_margin": 0.012,
+      "padding": 0.025
+    },
+    {
+      "route": "time_decay_soft",
+      "x_marker": 0.9225146012904448,
+      "x_ci_upper": 0.9240927104348386,
+      "x_annotation": 0.9490927104348387,
+      "x_axis_max": 1.105939216715262,
+      "right_margin": 0.012,
+      "padding": 0.025
+    }
+  ],
+  "caption_template": "Panel A reports the delay composition within the eligible decision-cell cohort under the 30-day candidate window, not the full Criteo-log delay distribution. Panel B reports logged credit-allocation TV distance and Top-10 decision-cell overlap relative to the constructed arrival-bin anchor.",
+  "panel_a_note": "The distribution is computed over eligible source-event rows within the decision-cell cohort under the 30-day candidate window and is not the full Criteo-log delay distribution.",
+  "panel_a_metric_semantics": "source_event_share_percent over eligible source-event rows",
+  "finalized_after_semantic_self_check": true
+}

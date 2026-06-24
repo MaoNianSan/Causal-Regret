@@ -1,0 +1,20 @@
+{
+  "experiment_id": "exp2_logged_attribution_sensitivity",
+  "title": "Experiment 2: Source-time attribution sensitivity in delayed conversion logs",
+  "raw_data_file": "inputs/pcb_dataset_final.tsv",
+  "raw_input_identity": {
+    "path": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv",
+    "size_bytes": 2589891984,
+    "modified_at": "2017-08-31T20:53:28",
+    "partial_sha256": "a860f86cb9142c0f797ec34a2ad89f6773b3ea8ded565fd056b28a05b741b0e9",
+    "partial_sha256_scheme": "sha256(first_1048576_bytes_plus_last_1048576_bytes)"
+  },
+  "config_file": "/home/ubuntu/crmd_df/exp2_real_delayed_conversion_logs/.runtime/config_exp2_fast.yaml",
+  "config_hash": "de7ac06680343353",
+  "python_version": "3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]",
+  "platform": "Linux-6.8.0-124-generic-x86_64-with-glibc2.39",
+  "pandas_version": "3.0.3",
+  "numpy_version": "2.5.0",
+  "status": "tables_success",
+  "updated_at": "2026-06-24T19:04:17"
+}
