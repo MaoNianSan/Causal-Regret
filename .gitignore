@@ -35,19 +35,24 @@ Thumbs.db
 .idea/
 **/.git/
 
-# Archives and local downloads
+# Archives, binary artifacts, and local downloads
 *.zip
 *.tar
 *.tar.gz
 *.tgz
 *.7z
 *.rar
+*.parquet
+*.pkl
+*.joblib
 downloads/
 datasets/
 data/raw/
 data/external/
 
-# Local raw-data holders. Keep only lightweight placement notes.
+# Per-project output runs (large generated artifacts).
+# Each project has its own .gitignore for outputs/runs/.
+# Keep only lightweight placement notes (.gitkeep) in output trees.
 **/inputs/**
 !**/inputs/
 !**/inputs/README.md

@@ -29,3 +29,6 @@
 *.zip binary
 *.tar binary
 *.tgz binary
+
+# Repository placeholder files.
+.gitkeep text eol=lf

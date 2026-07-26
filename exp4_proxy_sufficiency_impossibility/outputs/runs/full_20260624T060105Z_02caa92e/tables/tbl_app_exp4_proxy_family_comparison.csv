@@ -1,7 +1,0 @@
-method_id,method_display_name,information_interface,reference_role,diagnostic_only,deployable,uses_arrival_feedback,uses_source_labels,uses_proxy,description
-arrival_time_naive,Arrival time,arrival_time,none,False,True,True,False,coarse_context_only,Assigns anonymous arrival losses to the current action and current proxy context.
-observable_history_surrogate,Observable history surrogate,observable_history_proxy,none,False,True,True,False,coarse_context_only,Uses exponentially discounted anonymous arrival history within the common observable proxy context.
-proxy_label_recovery,Proxy label recovery,partial_attribution_proxy,none,False,True,True,partial,candidate_source_similarity,Uses exact retained source labels and soft proxy-based attribution for anonymous arrivals.
-source_labelled_reference,Source labelled reference,source_labelled,source_labelled_reference,False,False,True,True,coarse_context_only,Reference route with every arriving outcome linked to its source action and source proxy context.
-proxy_noisy_oracle_diagnostic,Noisy oracle proxy,diagnostic_proxy_measurement,diagnostic_control,True,False,False,False,instantaneous_noisy_measurement,Diagnostic policy that maps the emitted noisy proxy directly to the nearest action center.
-proxy_oracle_diagnostic,Proxy oracle diagnostic,latent_oracle,oracle_reference,True,False,False,False,latent_state,Diagnostic upper benchmark using the latent decision-time state; never a deployable method.

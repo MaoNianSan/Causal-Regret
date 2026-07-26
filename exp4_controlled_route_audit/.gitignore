@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+outputs/runs/*/
+!outputs/runs/.gitkeep
+.DS_Store
+Thumbs.db
