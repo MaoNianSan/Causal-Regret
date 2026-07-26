@@ -1,0 +1,60 @@
+{
+  "artifact_id": "exp1_delay_calibration",
+  "calibration_metrics": {
+    "matched_mean_gate": true,
+    "mixture_tail_gate": true,
+    "pairwise_mean_gate": true,
+    "pooled_generated_means": {
+      "geometric_delay": 14.963460784313725,
+      "mixture_delay": 14.945323529411764,
+      "state_coupled_delay": 15.000009803921568
+    },
+    "pooled_q90": {
+      "geometric_delay": 35.0,
+      "mixture_delay": 46.0,
+      "state_coupled_delay": 38.0
+    },
+    "state_coupling_gate": true,
+    "state_delay_spearman": -0.39666082399667335
+  },
+  "calibration_seed_ids": [
+    10000,
+    10001,
+    10002,
+    10003,
+    10004,
+    10005,
+    10006,
+    10007,
+    10008,
+    10009,
+    10010,
+    10011,
+    10012,
+    10013,
+    10014,
+    10015,
+    10016,
+    10017,
+    10018,
+    10019
+  ],
+  "candidate_set": {
+    "geometric_probability": "binary search over truncated geometric mean",
+    "mixture_components": {
+      "p_fast": 0.3333333333333333,
+      "p_slow": 0.03225806451612903
+    },
+    "state_coupled_beta": 1.0
+  },
+  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
+  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
+  "config_hash": "21563d9a7d6a3134d56776beef7f02b88fbe31e8f18ac118a957eac374c3df02",
+  "evaluation_seed_overlap": false,
+  "experiment_id": "exp1_alignment_transfer",
+  "generated_at": "2026-07-26T11:52:37.339427+00:00",
+  "geometric_probability": 0.06188280296766341,
+  "mixture_weight_fast": 0.46234601350527876,
+  "selection_criterion": "match generated source-level mean delay 15 under frozen gates",
+  "state_coupled_intercept": -2.614910962117585
+}

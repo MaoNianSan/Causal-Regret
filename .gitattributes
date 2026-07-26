@@ -11,6 +11,10 @@
 *.json text eol=lf
 *.csv text eol=lf
 *.tex text eol=lf
+*.html text eol=lf
+*.css text eol=lf
+*.js text eol=lf
+*.svg text eol=lf
 
 # Binary artifacts.
 *.png binary
@@ -18,3 +22,10 @@
 *.ipynb text eol=lf
 *.gz binary
 *.parquet binary
+*.pkl binary
+*.joblib binary
+*.pt binary
+*.onnx binary
+*.zip binary
+*.tar binary
+*.tgz binary

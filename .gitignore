@@ -100,3 +100,8 @@ huggingface_cache/
 !**/outputs/**/checks/**
 !**/outputs/**/metadata/**
 !**/outputs/**/reports/**
+!**/outputs/**/derived/**
+!**/outputs/**/manuscript/**
+!**/outputs/**/seed_metrics/**
+!**/outputs/**/targeted/**
+!**/outputs/**/seed_metrics/*.parquet

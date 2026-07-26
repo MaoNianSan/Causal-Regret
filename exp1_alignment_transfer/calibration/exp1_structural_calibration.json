@@ -1,0 +1,112 @@
+{
+  "artifact_id": "exp1_structural_calibration",
+  "calibration_metrics": [
+    {
+      "ar_coefficient": 0.95,
+      "innovation_sd": 0.15,
+      "metrics": {
+        "lag1_structural_state_autocorrelation": 0.9485192247819666,
+        "max_optimal_action_share": 0.18419,
+        "median_optimal_action_run_length": 2.0,
+        "near_tie_share": 0.10038,
+        "near_tie_threshold": 0.0012345679012345679,
+        "normalized_optimal_action_entropy": 0.8670788836408985,
+        "optimal_action_switch_rate": 0.4304360872174435
+      },
+      "passes_gates": true
+    },
+    {
+      "ar_coefficient": 0.95,
+      "innovation_sd": 0.25,
+      "metrics": {
+        "lag1_structural_state_autocorrelation": 0.9446827902563668,
+        "max_optimal_action_share": 0.12079,
+        "median_optimal_action_run_length": 1.0,
+        "near_tie_share": 0.10296,
+        "near_tie_threshold": 0.0012345679012345679,
+        "normalized_optimal_action_entropy": 0.9752643762359814,
+        "optimal_action_switch_rate": 0.5189737947589518
+      },
+      "passes_gates": false
+    },
+    {
+      "ar_coefficient": 0.98,
+      "innovation_sd": 0.15,
+      "metrics": {
+        "lag1_structural_state_autocorrelation": 0.9784492874538014,
+        "max_optimal_action_share": 0.11959,
+        "median_optimal_action_run_length": 2.0,
+        "near_tie_share": 0.10249,
+        "near_tie_threshold": 0.0012345679012345679,
+        "normalized_optimal_action_entropy": 0.966343932460829,
+        "optimal_action_switch_rate": 0.3673634726945389
+      },
+      "passes_gates": true
+    },
+    {
+      "ar_coefficient": 0.98,
+      "innovation_sd": 0.25,
+      "metrics": {
+        "lag1_structural_state_autocorrelation": 0.9749868175988631,
+        "max_optimal_action_share": 0.14002,
+        "median_optimal_action_run_length": 1.0,
+        "near_tie_share": 0.09419,
+        "near_tie_threshold": 0.0012345679012345679,
+        "normalized_optimal_action_entropy": 0.9853123147597336,
+        "optimal_action_switch_rate": 0.4079515903180636
+      },
+      "passes_gates": false
+    }
+  ],
+  "calibration_seed_ids": [
+    10000,
+    10001,
+    10002,
+    10003,
+    10004,
+    10005,
+    10006,
+    10007,
+    10008,
+    10009,
+    10010,
+    10011,
+    10012,
+    10013,
+    10014,
+    10015,
+    10016,
+    10017,
+    10018,
+    10019
+  ],
+  "candidate_set": [
+    {
+      "ar_coefficient": 0.95,
+      "innovation_sd": 0.15
+    },
+    {
+      "ar_coefficient": 0.95,
+      "innovation_sd": 0.25
+    },
+    {
+      "ar_coefficient": 0.98,
+      "innovation_sd": 0.15
+    },
+    {
+      "ar_coefficient": 0.98,
+      "innovation_sd": 0.25
+    }
+  ],
+  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
+  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
+  "config_hash": "21563d9a7d6a3134d56776beef7f02b88fbe31e8f18ac118a957eac374c3df02",
+  "evaluation_seed_overlap": false,
+  "experiment_id": "exp1_alignment_transfer",
+  "generated_at": "2026-07-26T11:52:35.448976+00:00",
+  "selected_value": {
+    "ar_coefficient": 0.98,
+    "innovation_sd": 0.15
+  },
+  "selection_criterion": "pass nondegeneracy gates based on action support, state persistence, run length, and near ties; retain (0.98,0.25) if it passes, otherwise maximize normalized optimal-action entropy with larger rho as tie-break"
+}

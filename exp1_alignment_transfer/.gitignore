@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.venv/
+outputs/fast/
+outputs/full/
+outputs/paper_candidate/
+.ipynb_checkpoints/
