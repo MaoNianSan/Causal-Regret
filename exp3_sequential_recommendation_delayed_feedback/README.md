@@ -1,151 +1,224 @@
-# Experiment 3: Offline Recoverability of a Constructed 6h Target in KuaiRand Logs
+# Experiment 3: Proxy Score, Gap, and Ranking Recovery
 
-## Scope and Interpretation Boundary
+## Scientific scope
 
-Experiment 3 is an **offline logged-support recoverability diagnostic**, not an online recommendation-policy evaluation. A source event is a standard-feed user--video exposure. For an eligible event at time \(t\), the constructed future-engagement target is
+Experiment 3 is a logged-support recoverability diagnostic using KuaiRand-1K
+standard recommendation logs. Its fixed evidence chain is:
 
 \[
-V^{(6h)}_{u,t}
-=
-0.5\,\mathrm{long\_view}
-+1.0\,\mathrm{like}
-+1.0\,\mathrm{comment}
-+1.0\,\mathrm{forward}
-+1.5\,\mathrm{follow},
-\qquad
-Y^{(6h)}_{u,t}=\log\{1+V^{(6h)}_{u,t}\}.
+\text{score recovery}
+\rightarrow
+\text{held-out action-gap recovery}
+\rightarrow
+\text{offline ranking recovery}.
 \]
 
-The target is constructed from later engagement in the same standard-log split. It is **not** an official platform utility, native delayed-conversion label, identified causal effect, off-policy estimate, or online policy value.
+It does **not** estimate online policy value, off-policy value, causal action
+gaps, source-label sufficiency, or structural causal regret.
 
-## Fixed Protocol
+## Frozen design
 
-- **History split:** `log_standard_4_08_to_4_21_1k.csv`
-- **Held-out main split:** `log_standard_4_22_to_5_08_1k.csv`
-- **Primary horizon:** 6h
-- **Action vocabulary:** 20 most frequent non-missing history tags; residual tags are retained in update accounting but excluded from candidate actions.
-- **Decision aggregation:** 1 day.
-- **Primary ranking metric:** offline 6h ranking regret under a support-restricted daily action set.
-- **Bootstrap:** user-cluster bootstrap; fast uses 100 draws and 3 label-mask trajectories, full uses 1,000 draws and 30 label-mask trajectories.
+- History: `log_standard_4_08_to_4_21_1k.csv`
+- Evaluation: `log_standard_4_22_to_5_08_1k.csv`
+- Time bins: Asia/Shanghai epoch days, with frozen split intervals
+  `[2022-04-08, 2022-04-22)` and `[2022-04-22, 2022-05-09)`
+- Primary target: constructed same-user 6-hour future-engagement score on the exact interval `[t, t+6h)`
+- Candidate actions: history-defined top 20 named tags
+- Residual bucket: accounting only; never a primary candidate
+- Audit unit: calendar day × deterministic user hash group
+- Reference: deterministic two-fold user split
+- Full support threshold: 500 source events per fold, audit unit, and action
+- Primary routes: Arrival carrier, Historical mean, Ridge proxy
+- Uncertainty interface: full-sample point estimates are primary; user-cluster resampling (100 fast; 1,000 full) supplies empirical 95% sensitivity ranges only. No formal confidence interval is claimed
+- Ranking metric: signed `cross_fitted_ranking_shortfall`; negative values are
+  permitted and are never truncated
 
-The standard history split alone defines the action vocabulary and fits the ridge proxy. Main-split proxy features use completed history and earlier main bins only. The carrier route assigns an arriving outcome to the most recent same-user standard exposure at or before arrival.
+The group count, action vocabulary, support threshold, near-tie threshold, and
+Ridge model are frozen from the history split before evaluation.
 
-## Required Raw Inputs
+## Commands
 
-Place the following files under `inputs/KuaiRand-1K/data/`:
+```bash
+# Real-data fast run. This is the default fast contract.
+python main.py fast --n-jobs 4
+python main.py self-check --mode fast --run-id <real_fast_run_id>
+
+# After independent PASS, create and verify a slim archive. The local full run
+# and its processed event files remain untouched.
+python main.py archive --mode fast --run-id <real_fast_run_id>
+python main.py archive-verify --package-dir deliverables/<real_fast_run_id>-archival --run-id <real_fast_run_id>
+
+# Explicit software-only fixture. The printed fixture run ID must be passed to
+# self-check because fixture outputs are intentionally not resolved as real fast runs.
+python main.py fast --synthetic-fixture --n-jobs 4
+python main.py self-check --mode fast --output-dir outputs/<fixture_run_id>
+
+python main.py audit-inputs
+python main.py full --n-jobs 12
+python main.py self-check --mode full
+
+# Resume only the bootstrap/render/finalize stages of an interrupted run.
+python main.py full --resume-bootstrap --output-dir outputs/<full_run_id> --n-jobs 12
+
+# Promotion is explicit and run-ID based.
+python promote.py --run-id <full_run_id>
+
+# Remove one run interactively, either by exact run ID or by latest tier run.
+python clean.py --run-id <run_id>
+python clean.py --mode fast
+python clean.py --mode full
+```
+
+Each fresh run is immutable and is written to
+`outputs/exp3-<tier>-<UTC timestamp>/`. With no explicit selector, self-check
+uses the latest pipeline-completed run, including a run whose earlier
+self-check failed. Formal result references use the separate latest audited
+PASS resolver. Bootstrap resume requires arrays, checkpoint, config, and a
+compatible source-tree hash. `--run-id` and `--output-dir` always take
+precedence over automatic resolution.
+
+Fast and full both hard-fail when the three required original inputs are
+missing. A deterministic software fixture is available only through the
+explicit `--synthetic-fixture` flag and always has `paper_result=false`.
+
+## Cleaning outputs
+
+`clean.py` removes one immutable run directory at a time. By default it prints
+the resolved target and requires typing `CLEAN` before deletion:
+
+```bash
+# Delete a specific real or fixture run.
+python clean.py --run-id exp3-fixture-20260727T040311Z
+
+# Delete the latest real run of a tier. Fixture runs are not selected by --mode.
+python clean.py --mode fast
+python clean.py --mode full
+
+# Skip the interactive confirmation, for example in automation.
+python clean.py --run-id <run_id> --yes
+```
+
+Promoted paper results are protected. `clean.py` refuses to remove one unless
+`--force-paper` is supplied explicitly; archive the result before using that
+override.
+
+## Main output
+
+The active paper figure is:
 
 ```text
-log_standard_4_08_to_4_21_1k.csv
-log_standard_4_22_to_5_08_1k.csv
-video_features_basic_1k.csv
+figures/main/exp3_main_score_gap_ranking.pdf
+figures/main/exp3_main_score_gap_ranking.png
+figures/data/exp3_main_score_gap_ranking_data.csv
+figures/metadata/exp3_main_score_gap_ranking_metadata.json
 ```
 
-The random-exposure log is optional and is not used in the primary Exp3 target construction.
+The layout directly encodes the evidence chain:
 
-## Before Every Rerun
+1. score calibration for Historical mean and Ridge proxy;
+2. held-out action-gap defect and sign agreement;
+3. signed cross-fitted ranking shortfall and top-action match.
 
-Run the static and temporal checks first:
-
-```bash
-python code_check.py
-python tests/test_temporal_contracts.py
-```
-
-The runner refuses to mix a new run with stale active outputs. When rerunning a mode, pass `--clean-output`; this removes only active artifacts for that mode and preserves `outputs/<mode>/legacy/`.
-
-## Fast Run
-
-```bash
-python reproduce_fast.py --n-jobs 12 --clean-output
-python self_check.py --mode fast
-```
-
-When original KuaiRand files are absent, fast mode creates a deterministic synthetic fixture solely for software and figure-contract testing. Such output is always `paper_result=false` and cannot be cited in the paper.
-
-## Full Run
-
-```bash
-python reproduce_full.py --n-jobs 24 --clean-output
-python self_check.py --mode full
-python self_check.py --mode full --promote-paper-result
-python self_check.py --mode full
-```
-
-Full mode is blocked if the three required raw inputs are absent. Do not run `build_upload_packages.py` until the final full self-check passes and the manifest reports `paper_result=true`.
-
-To refresh only the final full figure interfaces after a promoted or promotable full run, use:
-
-```bash
-python refresh_full_figures.py
-```
-
-This reads existing `outputs/full` summaries and metadata, rewrites only active figure bundles and the artifact manifest, and does not rerun `reproduce_full.py`.
-
-## Output Contract
-
-Each run writes to `outputs/<mode>/`:
+Primary numerical and audit tables:
 
 ```text
-raw/
-  sequential_decision_raw.csv
-  user_bootstrap_draws.csv
-  proxy_calibration_cells_raw.csv
-  proxy_calibration_bootstrap_draws.csv
-processed/
-  action_vocabulary.csv
-  fixed_action_bucket_map.csv
-  *_processed.parquet or *_processed.csv
-  *_source_events_with_targets.parquet or *_source_events_with_targets.csv
-  arrival_timeline_audit_sample_<condition>.csv
-summaries/
-  user_bootstrap_metric_summary.csv
-  paired_effect_vs_arrival_time.csv
-  paired_effect_vs_history_mean_static.csv
-  paired_mechanism_contrast.csv
-  oracle_action_dynamics_summary.csv
-  proxy_calibration_summary.csv
-  arrival_mechanism_summary.csv
-tables/
-  tbl_app_exp3_proxy_score_quality.csv
-  tbl_app_exp3_proxy_static_control.csv
-  tbl_app_exp3_source_label_sensitivity.csv
-figures/pdf/, figures/png/, figures/data/, figures/metadata/
-metadata/
-  run_manifest.json
-  run_config_snapshot.json
-  input_data_manifest.csv
-  artifacts_manifest.csv
-checks/
-  input_schema_report.csv
-  code_check_report.csv
-  self_check_report.csv
-reports/
-  experiment_refactor_completion_report.md
+tables/exp3_primary_route_results.csv
+tables/exp3_paired_ranking_contrast.csv
+tables/exp3_support_coverage.csv
+tables/exp3_decile_calibration.csv
+checks/exp3_resampling_sensitivity_audit.csv
+tables/exp3_data_dependence_structure.csv
+tables/exp3_resampling_structure_diagnostics.csv
+derived/exp3_outcome_reuse_quantiles.csv
+diagnostics/exp3_route_selection_diagnostics.csv
+diagnostics/exp3_ridge_history_selection_overlap.json
+tables/exp3_action_space_coverage.csv
+tables/exp3_full_design_support_preflight.csv
 ```
 
-Every active figure has four synchronized members: PDF, PNG, source-data CSV, and metadata JSON. The only active paper interfaces are:
+Appendix figures:
 
 ```text
-fig_exp3_long_term_recoverability
-fig_app_exp3_horizon_eligibility
+figures/appendix/exp3_appendix_full_design_support_preflight.pdf
+figures/appendix/exp3_appendix_arrival_carrier_diagnostic.pdf
+figures/appendix/exp3_appendix_dependence_and_selection_structure.pdf
 ```
 
-The arrival-mechanism contrast and source-label coverage curve are audit-only; they are not active paper figures.
+The full-design support preflight evaluates the formal top-20, G in {10,5}, and 500-events-per-fold specification during fast without changing the active top-6 fast estimand.
 
-The main figure visual contract fixes Panel A to `short_term_ridge_proxy` (`ST ridge`) and Panel B to seven routes in this order: `source_aware_reference`, `partial_source_label_q50`, `partial_source_label_q30`, `partial_source_label_q10`, `history_mean_static`, `short_term_ridge_proxy`, `short_term_composite_surrogate`. The horizon figure marks `6h (primary)` as the prespecified primary horizon and reports right-censoring availability only.
+Support coverage is scoped to the selected action vocabulary. The main figure,
+source CSV, metadata, and report separately disclose the fraction of total
+evaluation exposure mass represented by that vocabulary.
 
-## Result Boundary
+All plots read frozen tables only. They do not fit models, choose actions,
+change support, or run bootstrap procedures.
 
-The permitted conclusion is that a history-fitted short-term proxy can show held-out alignment with the constructed 6h target. A lower point estimate than `history_mean_static` does **not** establish an incremental dynamic decision-level gain when its paired confidence interval spans zero. Do not claim online policy improvement, OPE, causal regret, platform utility evaluation, label sufficiency, or monotonic label-rate recovery.
+## Status gates
 
-## Release Packaging
+- `Engineering PASS`: executable pipeline, valid schemas, schedule-independent
+  bootstrap seeds, resumable persisted draws, and synchronized figure data.
+- `Scientific PASS`: honest time split and two-fold design, adequate support,
+  no evaluation-based design tuning, no legacy partial-label routes.
+- `Paper PASS`: explicit promotion after a non-synthetic full run with both
+  engineering and scientific PASS.
 
-After a promoted full run:
+`PASS_WITH_LIMITED_SUPPORT` is reportable as a diagnostic but cannot be
+promoted to a paper result without a new approved design decision.
 
-```bash
-jupyter nbconvert --to notebook --execute notebooks/exp3_figure_release_audit.ipynb --output exp3_figure_release_audit_executed.ipynb --output-dir outputs/full/checks/
-python build_upload_packages.py
-python verify_release_package.py
-```
 
-The release verifier checks active figure bundles, the notebook audit outputs, release-manifest hashes, checksum-index hashes, archive sidecars, and exclusion of raw KuaiRand inputs and full raw event-level outputs.
+## Run-tier input contract
+
+- `python main.py fast` uses the frozen real KuaiRand inputs. Fast changes only the prespecified computational scale—top-6 actions, fast support threshold, and 100 bootstrap repetitions—and is never paper eligible.
+- `python main.py fast --synthetic-fixture` runs the deterministic software fixture explicitly. Its run ID begins with `exp3-fixture-`; it cannot be mistaken for or resolved as a real fast run.
+- `python main.py full` uses the frozen real KuaiRand inputs and hard-fails on missing inputs or boundary contamination above the frozen limits.
+- `python main.py audit-inputs` performs a low-memory audit of the real history/evaluation files before a full run.
+- `python main.py self-check --mode ...` is only valid after the corresponding pipeline completes; otherwise it returns `SELF_CHECK_BLOCKED` rather than a missing-file traceback.
+- Full local self-check requires the event-level `processed` artifacts and
+  independently reconstructs every check. A slim archive deliberately omits
+  those large files and must use `archive-verify`; that command verifies frozen
+  hashes and the source-tree version and never claims independent reconstruction.
+
+The official files contain small epoch-time tails outside their named local
+date ranges. The audit reports the raw ranges, then the pipeline quarantines
+only history events before April 8 and evaluation events before April 22.
+Each exclusion is independently capped at 0.1%; larger contamination hard-fails.
+Both raw and normalized exclusion counts are persisted in the audit and run
+preflight artifacts.
+
+## Implementation safeguards added in the final repair
+
+- The target interval is explicitly left-closed and right-open: `[t,t+6h)`.
+- Calendar bins and split-end right-censoring use frozen Asia/Shanghai day
+  boundaries rather than the execution machine timezone or UTC midnight.
+- Outcome-reuse diagnostics are aligned after the final event sort.
+- Main-figure filled markers are full-sample estimates. Open markers and horizontal lines
+  are resampling medians and empirical sensitivity ranges. They are sensitivity
+  diagnostics rather than confidence intervals and need not contain the
+  full-sample estimate.
+- Bootstrap replication seeds depend only on `(bootstrap_seed, replication_id)`,
+  so results do not depend on thread scheduling.
+- Complete bootstrap chunks are persisted and can be resumed by run ID.
+- A full pipeline ends at `PENDING_SELF_CHECK`; scientific PASS is assigned
+  only by the independent self-check.
+- Self-check reconstructs the target-window contract and verifies that figure
+  source data reproduce the frozen numerical tables exactly.
+
+
+## 2026-07-27 boundary-preserving repair
+
+The scientific task boundary is unchanged: the same three routes, history-frozen design, honest two-fold held-out reference, support-qualified score/gap/ranking estimands, and user-cluster bootstrap remain active.
+
+Implementation repairs:
+
+- Ridge uses only action indicators, the most recent completed-bin proxy mean/count, and a missingness indicator. Unfrozen EWMA features were removed; no new model family was introduced.
+- Full-sample point estimates are primary. The displayed 2.5--97.5% user-cluster resampling ranges are sensitivity diagnostics and are not interpreted as formal confidence intervals.
+- Legacy basic-bootstrap reflections remain only in `checks/exp3_resampling_sensitivity_audit.csv` so earlier anomalies can be reconstructed. Centering warnings remain disclosed but do not invalidate the accepted sensitivity-only interface.
+- `tables/exp3_data_dependence_structure.csv`, `derived/exp3_outcome_reuse_quantiles.csv`, and `tables/exp3_resampling_structure_diagnostics.csv` disclose overlapping-target reuse and support/reference/selection switching under user resampling.
+- The old support-margin map was removed. The replacement reports formal full-design cell support and selected-action exposure-mass coverage separately.
+- Route-selection diagnostics disclose action collapse and Ridge–Historical-mean selection equivalence rather than tuning the model to avoid a null result.
+- Boundary quarantine, action-space scope, and target-reuse diagnostics are explicit report artifacts.
+- Run resolution ignores incomplete failed runs when choosing the latest run for self-check.
+- Every run freezes `code_version_type=source_tree_sha256` and the deterministic
+  source hash in its run manifest, artifact manifest, design freeze, report,
+  and figure metadata.
+- Core responsibilities were split into `input_normalization.py`, `evaluation_arrays.py`, `evaluation_artifacts.py`, `bootstrap_intervals.py`, `bootstrap_summary.py`, `run_registry.py`, and `self_check_helpers.py`; all Python files remain below 400 lines.

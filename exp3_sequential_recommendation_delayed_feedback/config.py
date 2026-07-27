@@ -1,15 +1,14 @@
-"""Configuration for Experiment 3: offline 6h target recoverability.
+"""Frozen configuration for Experiment 3.
 
-Experiment 3 is a logged-support, semi-synthetic diagnostic. It does not
-identify an online policy value, an off-policy estimate, or a causal effect of
-a deployed recommender.
+Experiment 3 is a logged-support diagnostic of score, held-out action-gap, and
+cross-fitted ranking recovery. It is not online policy evaluation, OPE, or an
+estimator of structural causal regret.
 """
-
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import asdict, dataclass, field
 from pathlib import Path
-from typing import Dict, List
+from typing import Any
 
 MS_HOUR = 60 * 60 * 1000
 MS_DAY = 24 * MS_HOUR
@@ -17,47 +16,43 @@ MS_DAY = 24 * MS_HOUR
 
 @dataclass(frozen=True)
 class ExperimentConfig:
-    """All prespecified settings for the Exp3 diagnostic."""
+    experiment_id: str = "exp3"
+    experiment_slug: str = "proxy_score_gap_ranking_recovery"
+    timezone_name: str = "Asia/Shanghai"
+    timezone_rule: str = "Asia/Shanghai_epoch_day"
+    history_start_local_date: str = "2022-04-08"
+    split_boundary_local_date: str = "2022-04-22"
+    max_prestart_history_fraction: float = 0.001
+    max_preboundary_evaluation_fraction: float = 0.001
 
-    # Required KuaiRand-1K inputs. The random-intervention stream is excluded
-    # from the primary target because the protocol has no matched random-feed
-    # history split for proxy fitting.
-    main_log: str = "log_standard_4_22_to_5_08_1k.csv"
+    # Required KuaiRand inputs.
     history_log: str = "log_standard_4_08_to_4_21_1k.csv"
+    evaluation_log: str = "log_standard_4_22_to_5_08_1k.csv"
     video_basic_file: str = "video_features_basic_1k.csv"
 
-    # Optional audit-only inputs.
-    random_log: str = "log_random_4_22_to_5_08_1k.csv"
-    user_feature_file: str = "user_features_1k.csv"
-    video_stat_file: str = "video_features_statistic_1k.csv"
-
-    # Core schema.
-    time_col: str = "time_ms"
-    date_col: str = "date"
+    # Raw schema.
     user_col: str = "user_id"
     video_col: str = "video_id"
-    action_source_col: str = "tag"
+    time_col: str = "time_ms"
+    tag_col: str = "tag"
+    duration_col: str = "duration_ms"
+    play_time_col: str = "play_time_ms"
     click_col: str = "is_click"
     long_view_col: str = "long_view"
-    play_time_col: str = "play_time_ms"
-    duration_col: str = "duration_ms"
     like_col: str = "is_like"
     follow_col: str = "is_follow"
     comment_col: str = "is_comment"
     forward_col: str = "is_forward"
 
-    # Fixed primary target.
-    primary_horizon: str = "6h"
-    primary_outcome_id: str = "long_value_log"
-    horizons_ms: Dict[str, int] = field(
-        default_factory=lambda: {
-            "1h": 1 * MS_HOUR,
-            "6h": 6 * MS_HOUR,
-            "1d": 1 * MS_DAY,
-            "3d": 3 * MS_DAY,
-        }
-    )
-    future_value_weights: Dict[str, float] = field(
+    # Target and action abstraction.
+    target_horizon_hours: int = 6
+    target_horizon_ms: int = 6 * MS_HOUR
+    action_top_k_full: int = 20
+    action_top_k_fast: int = 6
+    residual_action_bucket: str = "residual_action_bucket"
+    unknown_action_bucket: str = "unknown_action_bucket"
+    include_residual_in_candidate_set: bool = False
+    future_value_weights: dict[str, float] = field(
         default_factory=lambda: {
             "long_view": 0.5,
             "like": 1.0,
@@ -67,96 +62,98 @@ class ExperimentConfig:
         }
     )
 
-    # Action abstraction. The vocabulary is learned from history only. The
-    # residual bucket remains in feedback accounting but never in evaluation
-    # candidates.
-    action_top_k: int = 20
-    residual_action_bucket: str = "other"
-    unknown_action_bucket: str = "unknown"
-    sequential_bin_ms: int = 1 * MS_DAY
-    sequential_min_cell_count: int = 50
-    main_top_k: int = 10
+    # Audit design. Full values are the paper-scale specification. Fast values
+    # reduce real-data computation and are also used by the explicit software fixture;
+    # neither fast path is paper eligible.
+    user_group_candidates_full: tuple[int, ...] = (10, 5)
+    user_group_candidates_fast: tuple[int, ...] = (4, 2)
+    support_min_events_per_fold_full: int = 500
+    support_min_events_per_fold_fast: int = 15
+    history_support_pass_threshold: float = 0.80
+    support_limited_threshold: float = 0.50
+    group_hash_salt: str = "exp3-user-group-v1"
+    reference_fold_hash_salt: str = "exp3-reference-fold-v1"
+    reference_fold_count: int = 2
+    near_tie_multiplier: float = 0.10
 
-    # Semi-synthetic pseudo-arrival mechanisms. The delay begins only after the
-    # complete 6h target horizon, so an outcome cannot arrive before its target
-    # window has matured.
-    primary_delay_condition: str = "action_value_coupled_matched_delay_pool"
-    delay_conditions: List[str] = field(
-        default_factory=lambda: [
-            "independent_matched_delay_pool",
-            "action_value_coupled_matched_delay_pool",
-        ]
+    # Routes and model.
+    primary_route_ids: tuple[str, ...] = (
+        "arrival_carrier",
+        "history_mean_control",
+        "ridge_proxy",
     )
+    history_prior_count: float = 10.0
+    ridge_alpha: float = 4.0
+
+    # Pseudo-arrival construction.
+    pseudo_delay_seed: int = 20260725
     pseudo_delay_min_hours: float = 6.0
     pseudo_delay_max_hours: float = 10.0
 
-    # Main paper routes. The history-EWMA extension is an appendix robustness
-    # diagnostic because it need not change the action rank relative to the
-    # short-term ridge proxy.
-    main_methods: List[str] = field(
-        default_factory=lambda: [
-            "source_aware_reference",
-            "partial_source_label_q50",
-            "partial_source_label_q30",
-            "partial_source_label_q10",
-            "history_mean_static",
-            "short_term_ridge_proxy",
-            "short_term_composite_surrogate",
-        ]
-    )
-    all_methods: List[str] = field(
-        default_factory=lambda: [
-            "arrival_time_naive",
-            "source_labelled_empirical",
-            "source_aware_reference",
-            "partial_source_label_q10",
-            "partial_source_label_q30",
-            "partial_source_label_q50",
-            "history_mean_static",
-            "short_term_ridge_proxy",
-            "history_ewma_ridge_proxy",
-            "short_term_composite_surrogate",
-        ]
-    )
-    partial_label_rates: List[float] = field(default_factory=lambda: [0.10, 0.30, 0.50])
+    # User-cluster resampling sensitivity. The empirical percentile range is a
+    # stability diagnostic, not a formally validated confidence interval.
+    fast_bootstrap_repetitions: int = 100
+    full_bootstrap_repetitions: int = 1000
+    bootstrap_seed: int = 31072026
+    resampling_range_level: float = 0.95
+    resampling_range_method: str = "percentile_user_cluster_sensitivity"
+    resampling_output_role: str = "sensitivity_only"
+    formal_ci_validated: bool = False
+    valid_bootstrap_fraction_gate: float = 0.95
+    bootstrap_bias_sd_warning_threshold: float = 1.0
 
-    # Dynamic empirical state and proxy models.
-    empirical_prior_count: float = 10.0
-    ridge_alpha: float = 4.0
-    ewma_alpha: float = 0.30
+    # Fast fixture only.
+    fast_fixture_seed: int = 314159
+    fast_fixture_users: int = 48
+    fast_fixture_history_days: int = 8
+    fast_fixture_evaluation_days: int = 8
+    fast_fixture_events_per_user_day: int = 90
 
-    # The same seeds define the finite bank of independent event-level label
-    # masks used for point estimates and mask-bank resampling in uncertainty
-    # summaries. Full mode deliberately uses 30 independent trajectories.
-    fast_replication_seeds: List[int] = field(default_factory=lambda: [0, 1, 2])
-    full_replication_seeds: List[int] = field(default_factory=lambda: list(range(30)))
-    fast_bootstrap_n: int = 100
-    full_bootstrap_n: int = 1000
-    ci_level: float = 0.95
+    def action_top_k(self, run_tier: str) -> int:
+        return self.action_top_k_fast if run_tier == "fast" else self.action_top_k_full
 
-    # Fast mode uses all real users unless a development-only limit is set.
-    fast_users: int | None = None
-    full_users: int | None = None
+    def group_candidates(self, run_tier: str) -> tuple[int, ...]:
+        return (
+            self.user_group_candidates_fast
+            if run_tier == "fast"
+            else self.user_group_candidates_full
+        )
 
+    def support_min_events_per_fold(self, run_tier: str) -> int:
+        return (
+            self.support_min_events_per_fold_fast
+            if run_tier == "fast"
+            else self.support_min_events_per_fold_full
+        )
 
-def ensure_output_dirs(output_dir: Path) -> None:
-    """Create the complete output contract for one run directory."""
-    for subdir in [
-        "raw",
-        "processed",
-        "summaries",
-        "tables",
-        "checks",
-        "legacy",
-        "logs",
-        "metadata",
-        "reports",
-        "figures/pdf",
-        "figures/png",
-        "figures/data",
-        "figures/metadata",
-    ]:
-        (output_dir / subdir).mkdir(parents=True, exist_ok=True)
+    def bootstrap_repetitions(self, run_tier: str) -> int:
+        return (
+            self.fast_bootstrap_repetitions
+            if run_tier == "fast"
+            else self.full_bootstrap_repetitions
+        )
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
 
 
 DEFAULT_CONFIG = ExperimentConfig()
+
+
+def ensure_output_dirs(output_dir: Path) -> None:
+    for relative in (
+        "design",
+        "processed",
+        "derived",
+        "tables",
+        "figures/main",
+        "figures/appendix",
+        "figures/data",
+        "figures/metadata",
+        "diagnostics",
+        "checks",
+        "metadata",
+        "reports",
+        "legacy",
+    ):
+        (output_dir / relative).mkdir(parents=True, exist_ok=True)

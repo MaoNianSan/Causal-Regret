@@ -1,1 +1,0 @@
-Run a local SHA-256 tool after obtaining KuaiRand-1K and record the hashes here.

@@ -1,8 +1,47 @@
-1. Put the three required KuaiRand files under inputs/KuaiRand-1K/data/.
-2. Run: python code_check.py
-3. Run: python tests/test_temporal_contracts.py
-4. Run real fast: python reproduce_fast.py --n-jobs 12 --clean-output
-5. Inspect outputs/fast/metadata/run_manifest.json and outputs/fast/checks/self_check_report.csv.
-6. Only after validating real fast, run: python reproduce_full.py --n-jobs 24 --clean-output
+1. Put the three frozen KuaiRand files under inputs/KuaiRand-1K/data/.
 
-Read README.md and docs/rerun_output_guide.md before running full.
+2. Audit the real split before any run:
+   python main.py audit-inputs
+   PASS_WITH_BOUNDARY_QUARANTINE is allowed only within the frozen 0.1% caps.
+
+3. Run and audit the real-data fast specification:
+   python main.py fast --n-jobs 4
+   python main.py self-check --mode fast --run-id <RUN_ID printed above>
+
+4. Create and verify the slim archival package only after independent PASS:
+
+   python main.py archive --mode fast --run-id <RUN_ID>
+   python main.py archive-verify --package-dir deliverables/<RUN_ID>-archival --run-id <RUN_ID>
+
+   This is archival integrity verification, not independent reconstruction.
+
+5. Before full, inspect these fast artifacts:
+   diagnostics/exp3_full_design_support_preflight.json
+   tables/exp3_action_space_coverage.csv
+   checks/exp3_resampling_sensitivity_audit.csv
+   tables/exp3_data_dependence_structure.csv
+   tables/exp3_resampling_structure_diagnostics.csv
+   diagnostics/exp3_ridge_history_selection_overlap.json
+
+6. Interpret uncertainty correctly:
+   - primary result = full-sample point estimate
+   - displayed line = 95% empirical user-cluster resampling sensitivity range
+   - formal_ci_validated = false
+   - do not use the range for significance or confidence-coverage claims
+
+7. Optional software fixture only:
+   python main.py fast --synthetic-fixture --n-jobs 4
+   python main.py self-check --mode fast --output-dir outputs/<fixture_run_id>
+
+8. Run the formal specification only after engineering, input, support, and figure contracts pass:
+   python main.py full --n-jobs 12
+   python main.py self-check --mode full
+
+9. Resume an interrupted full user-resampling stage:
+   python main.py full --resume-bootstrap --output-dir outputs/<full_run_id> --n-jobs 12
+
+10. Promote only after the audited full run is eligible:
+   python promote.py --run-id <full_run_id>
+
+Real runs: outputs/exp3-<tier>-<UTC timestamp>/
+Fixture runs: outputs/exp3-fixture-<UTC timestamp>/; never paper eligible.

@@ -69,11 +69,8 @@ huggingface_cache/
 *.pth
 *.ckpt
 *.onnx
-*.pkl
-*.joblib
 *.npy
 *.npz
-*.parquet
 *.feather
 
 # Heavy experiment intermediates
@@ -88,6 +85,11 @@ huggingface_cache/
 **/outputs/**/derived/
 **/outputs/**/logs/
 **/run_manifest.json
+
+# Exp3 development artifacts (process trail, not experiment outputs)
+exp3_sequential_recommendation_delayed_feedback/audit/
+exp3_sequential_recommendation_delayed_feedback/deliverables/
+exp3_sequential_recommendation_delayed_feedback/validation/
 
 # Keep GitHub-facing lightweight outputs explicitly visible.
 !README.md

@@ -1,133 +1,107 @@
-"""Deterministic small KuaiRand-compatible fixture for end-to-end software tests.
-
-The fixture preserves the essential temporal contract used by the revised
-experiment: history precedes main; the primary target is constructed within
-each standard-log split. A random file may be emitted only to exercise optional
-input discovery; it is not used by the v4 target or methods.
-It is not a substitute for KuaiRand-1K and is hard-gated from paper results.
-"""
-
+"""Deterministic fast fixture for software and figure-contract testing only."""
 from __future__ import annotations
 
 from pathlib import Path
+
 import numpy as np
 import pandas as pd
 
-from config import DEFAULT_CONFIG, ExperimentConfig
+from config import DEFAULT_CONFIG, ExperimentConfig, MS_DAY
+from utilities import save_json
 
 
-def _make_log(
-    start_ms: int,
-    n_days: int,
-    n_users: int,
-    n_actions: int,
+def _make_split(
+    *,
+    start_day: str,
+    day_count: int,
+    user_count: int,
+    events_per_user_day: int,
+    action_count: int,
     seed: int,
     cfg: ExperimentConfig,
-    randomised: bool = False,
-    random_offset_ms: int = 0,
 ) -> pd.DataFrame:
     rng = np.random.default_rng(seed)
-    day_ms = 24 * 60 * 60 * 1000
-    rows: list[dict] = []
-    action_effect = np.linspace(-0.8, 0.9, n_actions)
-    for day in range(n_days):
-        for user in range(n_users):
-            user_effect = ((user % 11) - 5) * 0.04
-            actions = np.arange(n_actions)
-            if randomised:
-                rng.shuffle(actions)
-            for position, action in enumerate(actions):
-                time_ms = (
-                    start_ms
-                    + day * day_ms
-                    + (position + 1) * 3_600_000
-                    + (user % 13) * 17_000
-                    + random_offset_ms
-                )
-                latent = (
-                    -0.35
-                    + action_effect[action]
-                    + user_effect
-                    + 0.10 * np.sin(day / 2.0)
-                )
-                p_click = 1.0 / (1.0 + np.exp(-latent))
-                p_long = 1.0 / (1.0 + np.exp(-(latent - 0.15)))
-                is_click = int(rng.random() < p_click)
-                long_view = int(rng.random() < p_long)
-                is_like = int(rng.random() < min(0.35, 0.025 + 0.12 * p_long))
-                is_comment = int(rng.random() < min(0.18, 0.008 + 0.05 * p_long))
-                is_forward = int(rng.random() < min(0.12, 0.004 + 0.035 * p_long))
-                is_follow = int(rng.random() < min(0.15, 0.006 + 0.045 * p_long))
-                duration = int(20_000 + 1_000 * (action % 5))
-                ratio = np.clip(
-                    0.18 + 0.55 * long_view + 0.15 * is_click + rng.normal(0, 0.07),
-                    0.02,
-                    1.0,
-                )
+    start_ms = int(pd.Timestamp(start_day, tz=cfg.timezone_name).timestamp() * 1000)
+    rows: list[dict[str, object]] = []
+    action_quality = np.linspace(-0.6, 0.9, action_count)
+    for user_index in range(user_count):
+        user_id = f"user_{user_index:04d}"
+        user_shift = rng.normal(0.0, 0.18)
+        preferred = user_index % action_count
+        for day_index in range(day_count):
+            day_shift = 0.18 * np.sin(2.0 * np.pi * day_index / max(day_count, 2))
+            base = start_ms + day_index * MS_DAY
+            # Balanced cyclic actions guarantee that the fixture exercises the
+            # full support logic instead of passing through a degenerate action.
+            action_indices = (np.arange(events_per_user_day) + user_index + day_index) % action_count
+            jitter = np.sort(rng.integers(0, MS_DAY - 1, size=events_per_user_day))
+            for event_index, (action_index, offset) in enumerate(zip(action_indices, jitter)):
+                preference = 0.35 if int(action_index) == preferred else 0.0
+                latent = action_quality[int(action_index)] + user_shift + day_shift + preference
+                p_click = 1.0 / (1.0 + np.exp(-(latent - 0.15)))
+                p_long = 1.0 / (1.0 + np.exp(-(latent - 0.45)))
+                p_deep = 1.0 / (1.0 + np.exp(-(latent - 1.1)))
+                duration = int(rng.integers(8_000, 45_000))
+                watch_fraction = np.clip(rng.normal(0.48 + 0.18 * p_long, 0.18), 0.02, 1.0)
                 rows.append(
                     {
-                        cfg.user_col: str(user),
-                        cfg.video_col: f"video_{action:02d}",
-                        cfg.time_col: int(time_ms),
-                        cfg.date_col: f"fixture_day_{day:02d}",
+                        cfg.user_col: user_id,
+                        cfg.video_col: f"video_{int(action_index):02d}",
+                        cfg.time_col: int(base + int(offset)),
                         cfg.duration_col: duration,
-                        cfg.play_time_col: int(duration * ratio),
-                        cfg.click_col: is_click,
-                        cfg.long_view_col: long_view,
-                        cfg.like_col: is_like,
-                        cfg.comment_col: is_comment,
-                        cfg.forward_col: is_forward,
-                        cfg.follow_col: is_follow,
+                        cfg.play_time_col: int(duration * watch_fraction),
+                        cfg.click_col: int(rng.random() < p_click),
+                        cfg.long_view_col: int(rng.random() < p_long),
+                        cfg.like_col: int(rng.random() < 0.45 * p_deep),
+                        cfg.follow_col: int(rng.random() < 0.15 * p_deep),
+                        cfg.comment_col: int(rng.random() < 0.12 * p_deep),
+                        cfg.forward_col: int(rng.random() < 0.08 * p_deep),
+                        "fixture_event_index": event_index,
                     }
                 )
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows).sort_values([cfg.user_col, cfg.time_col], kind="stable").reset_index(drop=True)
 
 
-def create_fast_fixture(root: Path, cfg: ExperimentConfig = DEFAULT_CONFIG) -> Path:
-    """Create a deterministic, schema-compatible fixture under ``root/data``."""
-    data_dir = root / "data"
+def create_fast_fixture(input_root: Path, cfg: ExperimentConfig = DEFAULT_CONFIG) -> dict[str, object]:
+    data_dir = input_root / "data"
     data_dir.mkdir(parents=True, exist_ok=True)
-    n_users, n_actions, n_days = 60, 20, 12
-    day_ms = 24 * 60 * 60 * 1000
-    history_start = 1_700_000_000_000
-    main_start = history_start + n_days * day_ms
-    history = _make_log(history_start, n_days, n_users, n_actions, 20260301, cfg)
-    main = _make_log(main_start, n_days, n_users, n_actions, 20260302, cfg)
-    # Optional intervened file for schema discovery only; v4 does not use it in
-    # target construction because the primary protocol is standard-log only.
-    random = _make_log(
-        main_start,
-        n_days,
-        n_users,
-        n_actions,
-        20260303,
-        cfg,
-        randomised=True,
-        random_offset_ms=1_800_000,
+    action_count = cfg.action_top_k_fast + 2
+    video = pd.DataFrame(
+        {
+            cfg.video_col: [f"video_{index:02d}" for index in range(action_count)],
+            cfg.tag_col: [f"tag_{index:02d}" for index in range(action_count)],
+        }
+    )
+    history = _make_split(
+        start_day="2022-04-08",
+        day_count=cfg.fast_fixture_history_days,
+        user_count=cfg.fast_fixture_users,
+        events_per_user_day=cfg.fast_fixture_events_per_user_day,
+        action_count=action_count,
+        seed=cfg.fast_fixture_seed,
+        cfg=cfg,
+    )
+    evaluation = _make_split(
+        start_day="2022-04-22",
+        day_count=cfg.fast_fixture_evaluation_days,
+        user_count=cfg.fast_fixture_users,
+        events_per_user_day=cfg.fast_fixture_events_per_user_day,
+        action_count=action_count,
+        seed=cfg.fast_fixture_seed + 1,
+        cfg=cfg,
     )
     history.to_csv(data_dir / cfg.history_log, index=False)
-    main.to_csv(data_dir / cfg.main_log, index=False)
-    random.to_csv(data_dir / cfg.random_log, index=False)
-
-    tags = pd.DataFrame(
-        {
-            cfg.video_col: [f"video_{a:02d}" for a in range(n_actions)],
-            cfg.action_source_col: [
-                f"fixture_action_{a:02d}" for a in range(n_actions)
-            ],
-        }
-    )
-    tags.to_csv(data_dir / cfg.video_basic_file, index=False)
-    pd.DataFrame(
-        {
-            cfg.user_col: [str(u) for u in range(n_users)],
-            "fixture_user_feature": np.arange(n_users),
-        }
-    ).to_csv(data_dir / cfg.user_feature_file, index=False)
-    pd.DataFrame(
-        {
-            cfg.video_col: tags[cfg.video_col],
-            "fixture_video_feature": np.arange(n_actions),
-        }
-    ).to_csv(data_dir / cfg.video_stat_file, index=False)
-    return root
+    evaluation.to_csv(data_dir / cfg.evaluation_log, index=False)
+    video.to_csv(data_dir / cfg.video_basic_file, index=False)
+    payload = {
+        "fixture": True,
+        "paper_result": False,
+        "user_count": cfg.fast_fixture_users,
+        "history_day_count": cfg.fast_fixture_history_days,
+        "evaluation_day_count": cfg.fast_fixture_evaluation_days,
+        "events_per_user_day": cfg.fast_fixture_events_per_user_day,
+        "available_action_count": action_count,
+        "seed": cfg.fast_fixture_seed,
+    }
+    save_json(payload, input_root / "FAST_FIXTURE_MANIFEST.json")
+    return payload
