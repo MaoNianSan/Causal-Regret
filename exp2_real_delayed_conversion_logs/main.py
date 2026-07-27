@@ -2,38 +2,40 @@ from __future__ import annotations
 
 import argparse
 
-from src.runner import run
+from runner import run
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Run the complete Experiment 2 pipeline with isolated fast/full outputs."
+        description="Run Experiment 2: delayed-conversion attribution sensitivity."
     )
-    parser.add_argument("--mode", choices=["fast", "full"], required=True)
-    parser.add_argument(
-        "--config",
-        default=None,
-        help="Optional base configuration; local input path remains inputs/pcb_dataset_final.tsv.",
-    )
+    parser.add_argument("mode", choices=["fast", "full"])
+    parser.add_argument("--config", default=None, help="Optional configuration path.")
+    parser.add_argument("--input", default=None, help="Explicit TSV input path.")
     parser.add_argument(
         "--n-bootstrap",
         type=int,
         default=None,
-        help="Optional development override; omitted uses the configured value.",
+        help="Development override for bootstrap repetitions.",
     )
     parser.add_argument(
         "--n-jobs",
-        default="auto",
-        help="Worker count: positive integer or 'auto' (default; detects current logical CPUs).",
-    )
-    parser.add_argument(
-        "--input",
         default=None,
-        help="Optional development fixture path; omitted preserves the protected Criteo input path.",
+        help="Positive worker count or 'auto'.",
     )
-    args = parser.parse_args()
+    return parser
+
+
+def main() -> None:
+    args = build_parser().parse_args()
     raise SystemExit(
-        run(args.mode, args.config, args.n_bootstrap, args.n_jobs, args.input)
+        run(
+            args.mode,
+            config_path=args.config,
+            input_path=args.input,
+            n_bootstrap=args.n_bootstrap,
+            n_jobs=args.n_jobs,
+        )
     )
 
 

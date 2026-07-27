@@ -83,6 +83,12 @@ huggingface_cache/
 **/outputs/**/cache/
 **/outputs/**/raw_large/
 
+# Exp2-specific: audit diagnostics, derived data, and run logs in output trees
+**/outputs/**/audit/
+**/outputs/**/derived/
+**/outputs/**/logs/
+**/run_manifest.json
+
 # Keep GitHub-facing lightweight outputs explicitly visible.
 !README.md
 !LICENSE

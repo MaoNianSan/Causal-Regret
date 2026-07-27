@@ -1,0 +1,48 @@
+{
+  "ab_comparison": {
+    "frozen_support_constant_for_all_comparisons": true,
+    "frozen_support_nan_fraction_max": 0.0,
+    "point_estimates_changed": false,
+    "variant_a_reproduced_saved_draws_exactly": true
+  },
+  "allocation_tv_unchanged": "PASS",
+  "code_modified": true,
+  "engineering_status": "PASS",
+  "formal_full_rerun": {
+    "executed": false,
+    "reason": "Stopped at user request; the user will execute the repaired full pipeline.",
+    "required_scope": "full_run",
+    "stage_rerun_rejected_because": [
+      "the old manifest does not record a candidate-mapping hash",
+      "the old manifest does not record a route-credit artifact hash"
+    ]
+  },
+  "kendall_point_estimates_unchanged": "PASS",
+  "manuscript_ready": false,
+  "modified_modules": [
+    "contracts.py",
+    "metrics.py",
+    "bootstrap.py",
+    "runner.py",
+    "reporting.py",
+    "validation.py",
+    "promote.py"
+  ],
+  "paper_promotion_status": "NOT_RUN",
+  "promotion_consistency": "PASS",
+  "promotion_consistency_scope": "Regression-tested repaired promotion path; no repaired full run has been promoted.",
+  "root_cause": "MULTIPLE_CAUSES",
+  "scientific_status": "STOP_AND_REVIEW",
+  "single_next_action": "Run python main.py full from the Experiment 2 project root.",
+  "support_drift_confirmed": true,
+  "support_frozen": "PASS",
+  "tests": {
+    "fast_pipeline": {
+      "engineering_status": "PASS",
+      "run_id": "exp2-fast-20260727T095307+0800",
+      "scientific_status": "PASS"
+    },
+    "pytest": "15 passed"
+  },
+  "top_k_unchanged": "PASS"
+}

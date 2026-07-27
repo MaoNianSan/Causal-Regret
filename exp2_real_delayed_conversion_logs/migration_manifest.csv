@@ -1,0 +1,17 @@
+legacy_item,new_item,status,reason
+exp2_real_delayed_conversion_logs,exp2_delayed_conversion_attribution,renamed,Directory now names the scientific task rather than data modality
+action_id,decision_cell_id,renamed,Exp2 evaluates campaign-day cells rather than deployable actions
+candidate_action_id,decision_cell_id,renamed,Canonical decision-cell identifier
+arrival_anchor,arrival_bin_anchor,normalized,Explicit diagnostic-anchor role
+first_click,first_touch,normalized,First clicked event with earliest-touch fallback
+last_click,last_touch,normalized,Last clicked event with latest-touch fallback
+linear_attribution,linear_credit,normalized,Internal route ID
+time_decay_soft,time_decay_credit,normalized,Internal route ID
+soft_attribution_em,em_soft_credit,appendix_only,Diagnostic route is not a main-text comparator
+source_linked_reference,logged_attribution_reference,audit_only,Logged label is not complete causal ground truth
+pairwise_credit_allocation_tv_distance,mean_journey_assignment_tv,renamed,Legacy quantity was journey-level assignment divergence
+aggregate decision-cell TV,allocation_tv,recomputed,Primary allocation estimand
+candidate_campaign_count_requested,,retired,Top-campaign truncation removed
+modal campaign arrival anchor,,retired,Arrival anchor must not introduce campaign attribution
+cost utility outputs,,retired,Outside attribution-sensitivity task boundary
+sequential replay outputs,,retired,Outside attribution-sensitivity task boundary

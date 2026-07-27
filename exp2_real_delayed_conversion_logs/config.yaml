@@ -1,0 +1,114 @@
+experiment:
+  experiment_id: exp2
+  experiment_slug: delayed_conversion_attribution
+  title: Attribution Sensitivity in Delayed-Conversion Logs
+  claim: >-
+    Holding eligible conversion journeys and decision-cell support fixed,
+    alternative attribution routes may induce different source-time credit
+    allocations and different high-ranked campaign-day cells.
+  scope_boundary: >-
+    Logged attribution-sensitivity diagnostic only. This experiment does not
+    identify a causally correct attribution rule, structural causal regret,
+    deployment policy value, ROI, profit, uplift, or counterfactual conversion lift.
+
+input:
+  raw_file: inputs/pcb_dataset_final.tsv
+  separator: "\t"
+  timestamp_unit: seconds
+  timezone: UTC
+  chunk_size: 500000
+  columns:
+    timestamp: timestamp
+    uid: uid
+    campaign: campaign
+    conversion: conversion
+    conversion_timestamp: conversion_timestamp
+    conversion_id: conversion_id
+    attribution: attribution
+    click: click
+    cost: cost
+    cpo: cpo
+
+cohort:
+  primary_cohort_id: primary_common_journey_cohort
+  candidate_window_days: 30
+  targeted_candidate_window_days: [7]
+  require_complete_lookback: true
+  require_unique_uid_per_journey: true
+  require_unique_candidate_campaign: true
+  prohibit_modal_campaign_fallback: true
+
+fast:
+  synthetic_fixture: true
+  real_data_user_hash_numerator: 1
+  real_data_user_hash_denominator: 100
+  target_user_count: 10000
+
+decision_cell:
+  definition: campaign_id_x_source_date_utc
+  minimum_impressions: 50
+  minimum_eligible_cells: 60
+  support_sensitivity: [25, 100]
+
+routes:
+  primary:
+    - arrival_bin_anchor
+    - first_touch
+    - last_touch
+    - linear_credit
+    - time_decay_credit
+  appendix:
+    - em_soft_credit
+  audit_reference:
+    - logged_attribution_reference
+  time_decay_rate_per_day: 0.5
+  time_decay_cell_timestamp: latest_event_in_cell
+  em:
+    max_iter: 50
+    tolerance: 1.0e-8
+    click_coefficient: 0.5
+    recency_coefficient: 0.5
+    prior_strength: 1.0
+    prior_smoothing: 1.0e-6
+
+ranking:
+  score: credited_conversion_mass_per_eligible_impression
+  primary_top_k: 10
+  targeted_top_k: [20, 50]
+  kendall_variant: tau_b
+  kendall_support: union_positive_credit_cells
+
+statistics:
+  confidence_level: 0.95
+  bootstrap_unit: user_id
+  bootstrap_interval: percentile
+  bootstrap_seed: 20260725
+  fast_repetitions: 200
+  full_repetitions: 1000
+  bootstrap_batch_size: 20
+
+runtime:
+  progress_mode: normal
+  n_jobs: auto
+  reserve_cores: 2
+  paper_result: false
+
+storage:
+  fast_large_table_format: csv
+  full_large_table_format: parquet
+  require_pyarrow_for_full: true
+
+plots:
+  save_pdf: true
+  save_svg: true
+  save_png: true
+  dpi: 600
+  main_figure_width_in: 8.0
+  main_figure_height_in: 3.4
+  appendix_figure_width_in: 7.1
+  axis_label_font_size: 8.5
+  tick_font_size: 7.5
+  annotation_font_size: 7.0
+  panel_label_font_size: 9.0
+  line_width: 1.2
+  marker_size: 4.5

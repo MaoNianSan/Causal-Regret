@@ -1,181 +1,145 @@
-# Experiment 2: Source-Time Attribution Sensitivity in Delayed Conversion Logs
+# Experiment 2: Delayed-Conversion Attribution Sensitivity
 
-Experiment 2 is a **logged attribution-sensitivity diagnostic** on the Criteo Attribution Modeling for Bidding conversion log. It asks whether assigning an arriving conversion to different recorded **source-time decision cells** changes (i) the allocation of logged conversion credit and (ii) the induced top-10 decision-cell ranking.
+Experiment 2 asks a narrow logged-data question:
 
-It is **not** online policy evaluation, off-policy value estimation, causal-regret estimation, randomized causal identification, or an economic ROI analysis.
+> Holding eligible conversion journeys and decision-cell support fixed, do alternative attribution routes change source-time credit allocation and the ranking of campaign-day decision cells?
 
-## Why the Action Unit Is a Source-Time Cell
+It does **not** estimate causal regret, policy value, ROI, profit, uplift, or a causally correct attribution rule.
 
-The early campaign-only implementation was scientifically degenerate: retained conversion journeys could contain multiple touches but only one campaign. First, last, linear, time-decay, and EM then became mathematically indistinguishable at the campaign level. More bootstrap replicates could not repair that information collapse.
+## Scientific unit
 
-The primary action is therefore:
-
-```text
-campaign_source_day_cell = (mapped campaign, source calendar day)
-```
-
-Only candidate impressions carrying the same `conversion_id` are used. The code does not add arbitrary historical exposures from other journeys. This preserves the public log's recorded conversion-path semantics while retaining source time.
-
-## Valid Claim and Evidence Role
-
-The four-experiment evidence chain is:
+The decision cell is
 
 ```text
-source binding validity
-  -> logged attribution sensitivity
-  -> long-term proxy recoverability
-  -> recoverability boundary
+(campaign_id, source_date_utc)
 ```
 
-The supported Experiment 2 conclusion is:
+All primary routes use the same route-independent journey cohort, decision-cell universe, impression denominator, and UID-cluster bootstrap design.
 
-> On a common cohort of observed conversion journeys, different rules for assigning an arriving conversion to recorded source-time decision cells can change logged credit allocation and top-10 decision-cell ranking support.
+Primary routes:
 
-The result is conditional on the observed cohort. It does not imply that a new online policy would obtain the reported credit mass.
+1. Arrival-time anchor — diagnostic anchor only
+2. First click or touch
+3. Last click or touch
+4. Linear attribution across unique decision cells
+5. Time-decay attribution at the decision-cell level
 
-## Primary Action, Routes, and Outcome
+EM soft attribution is appendix-only. The logged attribution field is an audit reference, not complete causal ground truth.
 
-- **Arrival-bin anchor (diagnostic):** a constructed arrival-bin credit anchor; it is `diagnostic_only=true` and `deployable=false`.
-- **First click or touch:** earliest clicked source cell, otherwise earliest source touch.
-- **Last click or touch:** latest clicked source cell, otherwise latest source touch.
-- **Linear attribution:** equal credit across unique source-time cells.
-- **Time-decay attribution:** credit weighted by source-to-conversion recency.
-- **EM soft attribution:** computed only as an appendix route-validity diagnostic, not as a main-text comparator.
-- **Criteo-attributed cell reference:** unique-labelled audit-only reference; it is not complete source ground truth.
+## Main estimands
 
-The primary outcome is **binary credited-conversion mass**. Decision cells are ranked by credited mass per eligible cell impression. Criteo's transformed `cost` field appears only in an appendix robustness table and is never interpreted as profit or ROI.
-
-## Main Figure
-
-`fig_exp2_attribution_sensitivity` has two panels:
-
-1. source-to-conversion delay composition in the eligible cohort;
-2. each route's **credit-allocation total-variation distance from the constructed arrival-bin anchor** versus its **top-10 decision-cell overlap with that anchor**.
-
-This avoids treating route-specific top-k credited mass as a policy utility comparison.
-
-## Appendix Outputs
-
-- `fig_app_exp2_source_route_pairwise_overlap`: source-route pairwise TV and top-10 decision-cell overlap heatmaps.
-- `tbl_app_exp2_source_linked_audit`: bookkeeping audit for the unique-labelled subset; it may be attribution-nondiscriminative.
-- `tbl_app_exp2_top_k_sensitivity`: table-only top-k sensitivity diagnostic; values near the action-cell universe are not robustness evidence.
-- `tbl_app_exp2_candidate_window_sensitivity`: common-intersection window diagnostic, reported as a table so coverage and route effects are not conflated.
-- `tbl_app_exp2_em_assignment_diagnostic`: EM entropy/concentration audit table.
-- `tbl_app_exp2_cost_adjusted_credit_score`: transformed-cost robustness table only.
-
-## Scientific Gates
-
-A fast or full run must fail semantic validation when any of the following fails:
-
-1. at least 1% of main-cohort journeys have more than one candidate source-time decision cell;
-2. at least one pair among the core source routes (first, last, linear, time decay) has nonzero assignment total-variation distance;
-3. at least 0.1% of EM assignments have nonzero entropy;
-4. the action-cell universe is strictly larger than the largest top-k cutoff;
-5. UID integrity and every candidate-window UID audit have zero missing references and UID mismatches.
-
-These are validity gates, not performance targets.
-
-## Inputs
-
-Place the protected raw file at exactly:
+For route `r` and decision cell `c`:
 
 ```text
-inputs/pcb_dataset_final.tsv
+credited_conversion_mass C_r(c)
+allocation_share Q_r(c) = C_r(c) / total route credit
+decision_cell_score S_r(c) = C_r(c) / eligible_impression_count(c)
 ```
 
-The repository excludes the protected input and large processed intermediates. Lightweight saved summaries, figures, tables, checks, metadata, and notebooks are retained for GitHub inspection.
+Primary metrics:
 
-## Run Commands
+- aggregate decision-cell allocation TV;
+- top-10 decision-cell overlap;
+- top-10 ranking displacement;
+- Kendall tau-b on common active cell support.
 
-```powershell
-# Fast audit: 200 UID bootstrap replicates, always paper_result=false
-python main.py --mode fast --n-jobs auto
-python self_check.py --mode fast
-python code_check.py --mode fast
+`mean_journey_assignment_tv` is retained as an appendix mechanism diagnostic and is not used as a substitute for aggregate allocation TV.
 
-# Full run: 1,000 UID bootstrap replicates
-python main.py --mode full --n-jobs auto
-python self_check.py --mode full
-python code_check.py --mode full
+## Commands
+
+Install dependencies:
+
+```bash
+python -m pip install -r requirements.txt
 ```
 
-Full-mode figure bundles remain `paper_result=false` until the semantic check passes; `finalize_exp2.py` then promotes them to `paper_result=true`.
+Fast contract run:
 
-## Key Outputs
+```bash
+python main.py fast
+```
+
+Fast mode creates a deterministic synthetic fixture, performs 200 UID bootstrap replications, generates the complete figure/table interface, and always records:
 
 ```text
-outputs/<mode>/processed/exp2_action_cell_mapping.csv
-outputs/<mode>/processed/exp2_conversion_uid_integrity_summary.csv
-outputs/<mode>/summaries/exp2_route_sensitivity_summary.csv
-outputs/<mode>/summaries/exp2_main_route_divergence_audit.csv
-outputs/<mode>/summaries/exp2_source_route_pairwise_overlap.csv
-outputs/<mode>/summaries/exp2_candidate_window_sensitivity.csv
-outputs/<mode>/summaries/exp2_em_assignment_diagnostic.csv
-outputs/<mode>/figures/pdf/fig_exp2_attribution_sensitivity.pdf
-outputs/<mode>/figures/pdf/fig_app_exp2_source_route_pairwise_overlap.pdf
-outputs/<mode>/checks/exp2_self_check_report.md
+run_tier=fast
+paper_result=false
 ```
 
-Read `EXP2_MODIFICATION_RATIONALE_zh.md`, `REPAIR_NOTES.md`, `REPAIR_VALIDATION.md`, and `EXECUTION_GUIDE.md` before launching full mode.
+Full run after placing the Criteo TSV in `inputs/`:
 
-## GitHub Packaging Notes
-
-### Purpose
-
-Logged delayed-conversion attribution sensitivity diagnostic using externally obtained Criteo data.
-
-### Directory layout
-
-- `src/`: artifact contract, runner, plotting, and summarization helpers.
-- `inputs/`: local-only raw Criteo placement notes; protected data files are ignored.
-- `ipy/`: GitHub-facing result-check notebook.
-- `outputs/`: committed lightweight summaries, figures, tables, checks, metadata, and precheck previews; processed/raw intermediates are ignored.
-- `docs/`: metric and paper-interface documentation.
-
-### Input Data Requirement
-
-Full reproduction requires `inputs/pcb_dataset_final.tsv` or the documented Criteo attribution source file, obtained under the original data license. The data file is not redistributed.
-
-### How to Run Fast Validation
-
-Use `python reproduce_fast.py`, `python self_check.py --mode fast`, and `python code_check.py --mode fast` after placing required data or using the project-supported fixture path.
-
-### How to Run Full Reproduction
-
-Use `python reproduce_full.py`, then `python self_check.py --mode full` and `python code_check.py --mode full`. Full mode requires the external raw Criteo data and was not run during final packaging.
-
-### How to Inspect Existing Results
-
-Open `ipy/exp2_result_check.ipynb` or inspect `outputs/full/summaries/`, `outputs/full/figures/`, `outputs/full/tables/`, `outputs/full/checks/`, and `output_manifest.md`.
-
-### Expected Outputs
-
-Expected GitHub-facing outputs are route summaries, precheck summaries, attribution figures, appendix tables, validation checks, metadata, and output manifests.
-
-### What Is Committed to GitHub
-
-Source code, README/docs, notebooks, run logs when present, manifests, lightweight summaries, figures, tables, checks, metadata, and precheck reports.
-
-### What Remains Local and Why
-
-Criteo raw files, downloaded archives, processed timelines, route assignment intermediates, raw outputs, and cache/runtime state remain local because of size and data-license constraints.
-
-## Clean-Rerun Safeguards
-
-A clean run does not require a historical figure/table hash snapshot. The display-only SHA256 regression is enforced only when `outputs/<mode>/checks/figure_table_repair_core_hashes_before.csv` is deliberately supplied for a replot-only audit.
-
-The main delay-composition figure is a distribution over eligible source-event rows. Its summary fields are `n_eligible_source_events` and `source_event_share_percent`; it is not a unique-conversion distribution.
-
-UID values `-1` and `-1.0` are treated as missing for UID integrity and bootstrap clustering. Their row and conversion-ID counts are written to `exp2_conversion_uid_integrity_summary.csv`.
-
-Before any real run, execute:
-
-```powershell
-python tests\run_synthetic_integration.py
+```bash
+python main.py full
 ```
 
-This verifies the current fixture contract and identical UID-bootstrap output under `--n-jobs=1` and `--n-jobs=4`.
+Full mode requires `pyarrow` because the frozen large-table output contract is Parquet. There is no automatic CSV fallback.
 
-## Candidate-Window Diagnostic Runtime Contract
+Independent promotion of a completed full run:
 
-Candidate-window sensitivity is an appendix-only common-cohort point-estimate diagnostic. It does not run a separate nested UID bootstrap for every window. The main route-sensitivity summary remains the sole inferential Exp2 object and reports the configured UID-bootstrap confidence intervals. Candidate-window outputs record `window_bootstrap_replicates=0` and `window_uncertainty_status=not_computed_point_estimate_common_cohort_diagnostic`.
+```bash
+python promote.py --run-id <full_run_id>
+```
+
+Clean generated outputs:
+
+```bash
+python clean.py
+```
+
+## Output structure
+
+```text
+outputs/<run_id>/
+├── run_manifest.json
+├── derived/
+├── figures/
+├── tables/
+├── audit/
+└── logs/
+```
+
+The main paper figure contains:
+
+- Panel (a): allocation TV from the arrival-time diagnostic anchor with top-10 overlap annotations;
+- Panel (b): horizontal pairwise allocation-TV dot-and-whisker plot with directly labelled shared top-10 cell counts.
+
+Pairwise allocation TV, top-10 overlap, and Kendall tau-b matrices are appendix outputs. Delay composition is descriptive and remains in the appendix.
+
+## Validation
+
+Run unit and invariant tests:
+
+```bash
+pytest -q
+```
+
+The checks cover:
+
+- route-independent cohort construction;
+- unique UID and unique campaign requirements;
+- credit conservation;
+- cell-level time decay;
+- separation of aggregate allocation TV from journey-level assignment TV;
+- allocation normalization;
+- deterministic bootstrap results across worker counts;
+- location-independent input content identity;
+- complete synthetic coverage of all five delay bins;
+- consistent bootstrap repetition reporting across audit and manuscript outputs;
+- frozen configuration rules.
+
+## Key files
+
+| File | Responsibility |
+|---|---|
+| `data_io.py` | raw input scan, UTC parsing, candidate staging, input manifest |
+| `cohort.py` | common cohort and decision-cell universe |
+| `routes.py` | attribution route construction |
+| `metrics.py` | allocation, ranking, Kendall, ambiguity metrics |
+| `bootstrap.py` | UID-cluster bootstrap |
+| `targeted.py` | non-cartesian top-k, window, and support diagnostics |
+| `reporting.py` | paper figures, source data, metadata, CSV/LaTeX tables |
+| `validation.py` | engineering and scientific gates |
+| `runner.py` | staged fast/full orchestration |
+| `promote.py` | independent paper promotion |
+
+The detailed frozen specification is in `docs/EXP2_PROGRAMMING_MEMO.md`.

@@ -1,3 +1,0 @@
-cohort_id,n_conversion_events,n_users,candidate_source_event_count_median,candidate_source_event_count_p90,candidate_decision_cell_count_median,candidate_decision_cell_count_p90,candidate_campaign_count_median,ambiguous_decision_cell_rate,ambiguous_campaign_rate,arrival_bin_anchor_available_rate,unique_labelled_rate
-all_conversion_candidates,145248,109215,1.0,4.0,1.0,3.0,1.0,0.2772499449217889,0.0,1.0,0.3489204670632297
-unique_labelled_conversion_candidates,50680,41470,1.0,1.0,1.0,1.0,1.0,0.0,0.0,1.0,1.0
