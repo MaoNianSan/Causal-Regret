@@ -1,0 +1,21 @@
+{
+  "figure_code_hash": "74d1c298ffe6540c0f43324639e0cc4537d677d2ca4a8b36c603f474fc8d9acd",
+  "figure_data_hash": "7dcd0a5be962dad9ef98ceb8f9eadbdc7f4e0d1b7909b59576f17bf9a971184a",
+  "figure_id": "fig_exp1_alignment_transfer",
+  "generated_at": "2026-08-05T10:57:42.604912+00:00",
+  "panels": {
+    "A": "arrival-route action-gap alignment budget with right-aligned Mean delay and Conflict rate (route-optimal conflict rate) columns",
+    "B": "structural regret and the regret-transfer upper bound",
+    "C": "paired contextual Delayed EXP3 consequence under arrival-clock and source-round scalar-feedback binding"
+  },
+  "paper_result": true,
+  "pdf_sha256": "d983c16ee3215dd7a3f039b52b379629eea58889eaa6eec375b21046917da01c",
+  "png_sha256": "fdf6920f9d8e528507d5898fb72823539c49a340cd3aaf1506de09c19a88612e",
+  "presentation_source_lineage": "presentation:5ce3cadb8657587126a47a5cf82301a943fa6ec3e2e865fd3cfee83d6eebae62",
+  "promoted_at": "2026-08-05T10:59:06.651713+00:00",
+  "run_tier": "paper",
+  "scientific_artifact_manifest_hash": "b4bf2ad829be75d27f6ac4d3792968e90467c80f1b4949e56d7f1566f488630b",
+  "scientific_source_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
+  "source_figure_data": "figures/data/fig_exp1_alignment_transfer_data.csv",
+  "source_figure_data_sha256": "c2857a9d75ba662727c30a014d2f0371a7bc2184f66d57e7a74128c29fdeb835"
+}

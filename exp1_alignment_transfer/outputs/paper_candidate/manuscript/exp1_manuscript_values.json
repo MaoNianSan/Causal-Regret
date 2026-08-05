@@ -1,0 +1,49 @@
+{
+  "manuscript_values_available": true,
+  "mechanisms": {
+    "exact_valid_shift": {
+      "alignment_budget_rate": 5.5502171146063847e-17,
+      "arrival_minus_source_regret_rate": 0.06749504,
+      "margin_preservation_rate": 1.0,
+      "mean_delay": 14.970849673202611,
+      "ranking_reversal_rate": 0.0
+    },
+    "geometric_delay": {
+      "alignment_budget_rate": 0.2587714326563771,
+      "arrival_minus_source_regret_rate": 0.0544396969947972,
+      "margin_preservation_rate": 0.0460866666666666,
+      "mean_delay": 14.970849673202611,
+      "ranking_reversal_rate": 0.6680466666666667
+    },
+    "mixture_delay": {
+      "alignment_budget_rate": 0.2191296534230705,
+      "arrival_minus_source_regret_rate": 0.0436676890470432,
+      "margin_preservation_rate": 0.1015733333333333,
+      "mean_delay": 14.97058823529412,
+      "ranking_reversal_rate": 0.58616
+    },
+    "state_coupled_delay": {
+      "alignment_budget_rate": 0.2480882327850295,
+      "arrival_minus_source_regret_rate": 0.0516033582352001,
+      "margin_preservation_rate": 0.0530533333333333,
+      "mean_delay": 14.902045751633986,
+      "ranking_reversal_rate": 0.6517533333333333
+    },
+    "systematic_misbinding": {
+      "alignment_budget_rate": 0.5555703703703704,
+      "arrival_minus_source_regret_rate": 0.0713889711934156,
+      "margin_preservation_rate": 0.4999866666666666,
+      "mean_delay": 15.0,
+      "ranking_reversal_rate": 0.5000133333333333
+    },
+    "zero_delay": {
+      "alignment_budget_rate": 0.0,
+      "arrival_minus_source_regret_rate": 0.0,
+      "margin_preservation_rate": 1.0,
+      "mean_delay": 0.0,
+      "ranking_reversal_rate": 0.0
+    }
+  },
+  "paper_result": true,
+  "run_tier": "paper"
+}

@@ -11,7 +11,13 @@ import numpy as np
 import pandas as pd
 
 from config import MECHANISM_ORDER
-from src.artifact_io import atomic_write_json, refresh_output_manifest, sha256_file, utc_now
+from src.artifact_io import (
+    atomic_write_json,
+    hash_payload,
+    refresh_output_manifest,
+    sha256_file,
+    utc_now,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -26,6 +32,79 @@ def _row(data: pd.DataFrame, mechanism: str, panel: str, series: str) -> pd.Seri
     if len(subset) != 1:
         raise RuntimeError(f"Expected one row for {mechanism}/{panel}/{series}, got {len(subset)}")
     return subset.iloc[0]
+
+
+def _draw_panel_a_columns(
+    ax: plt.Axes,
+    data: pd.DataFrame,
+    mechanisms: list[str],
+    y: np.ndarray,
+    col1_x: float,
+    col2_x: float,
+    header_y: float | None = None,
+) -> list:
+    """Draw the two right-aligned auxiliary columns of Panel (a).
+
+    ``Mean delay`` (structural rounds, 1 decimal) and ``Conflict rate``
+    (route-optimal conflict rate, 2 decimals) are placed at fixed
+    axes-fraction x positions so the two headers and all numeric rows stay
+    aligned and never overlap.  Returns the created Text artists so tests can
+    verify non-overlap at render time.
+    """
+    if header_y is None:
+        header_y = float(y.max()) + 0.55
+    header_style = dict(fontsize=8.5, va="center", ha="right", clip_on=False, color="#333333")
+    value_style = dict(fontsize=8, va="center", ha="right", clip_on=False, color="#1f4e79")
+    panel_a = data[data.panel_id == "A"]
+    delay_rows = panel_a[panel_a.series_id == "generated_mean_delay"].set_index("mechanism_id")
+    conflict_rows = panel_a[panel_a.series_id == "ranking_reversal_rate"].set_index("mechanism_id")
+    # Blended transform: x in axes-fraction, y in data coordinates.  Using a
+    # plain transAxes transform with data y (0..N) would place the text many
+    # axes-heights above the panel and collapse constrained_layout.
+    transform = ax.get_yaxis_transform()
+    texts: list = [
+        ax.text(col1_x, header_y, "Mean delay", transform=transform, **header_style),
+        ax.text(col2_x, header_y, "Conflict rate", transform=transform, **header_style),
+    ]
+    for mechanism, yi in zip(mechanisms, y, strict=True):
+        texts.append(
+            ax.text(
+                col1_x,
+                yi,
+                f"{delay_rows.loc[mechanism, 'estimate']:.1f}",
+                transform=transform,
+                **value_style,
+            )
+        )
+        texts.append(
+            ax.text(
+                col2_x,
+                yi,
+                f"{conflict_rows.loc[mechanism, 'estimate']:.2f}",
+                transform=transform,
+                **value_style,
+            )
+        )
+    return texts
+
+
+def _scientific_source_lineage() -> str:
+    """Scientific lineage recorded when calibration was frozen."""
+    manifest_path = PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return manifest.get("code_lineage", "unavailable")
+
+
+def _presentation_source_lineage() -> str:
+    """Fingerprint of the presentation-only figure source in this package."""
+    import hashlib
+
+    h = hashlib.sha256()
+    for name in ("plot_main.py", "plot_appendix.py"):
+        file_path = PROJECT_ROOT / name
+        h.update(name.encode("utf-8"))
+        h.update(file_path.read_bytes())
+    return "presentation:" + h.hexdigest()
 
 
 def generate(run_tier: str) -> tuple[Path, Path]:
@@ -57,12 +136,16 @@ def generate(run_tier: str) -> tuple[Path, Path]:
         for yi in y:
             axis.axhline(yi, linewidth=0.45, alpha=0.12, zorder=0)
 
-    # Panel A: alignment budget, with delay and reversal annotations.
+    # Panel A: alignment budget with two right-aligned auxiliary columns.
+    # ``Mean delay`` and ``Conflict rate`` (route-optimal conflict rate) are
+    # drawn as separate aligned columns at fixed axes-fraction positions so the
+    # headers and numeric rows never overlap.
+    ANNOT_COL1_X = 0.70   # right edge of the ``Mean delay`` column
+    ANNOT_COL2_X = 0.955  # right edge of the ``Conflict rate`` column
+    DATA_WIDTH_FRACTION = 0.55  # alignment data occupies the left 55% of the panel
     ax = axes[0]
     for yi, mechanism in zip(y, mechanisms, strict=True):
         alignment = _row(data, mechanism, "A", "alignment_budget_rate")
-        delay = _row(data, mechanism, "A", "generated_mean_delay")
-        reversal = _row(data, mechanism, "A", "ranking_reversal_rate")
         ax.errorbar(
             alignment.estimate,
             yi,
@@ -74,16 +157,13 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             markerfacecolor="#1f4e79",
             markeredgecolor="#1f4e79",
         )
-        ax.annotate(
-            f"delay {delay.estimate:.1f}; rev. {reversal.estimate:.2f}",
-            (alignment.estimate, yi),
-            xytext=(7, 0),
-            textcoords="offset points",
-            va="center",
-            fontsize=8,
-        )
+    anchor = float(
+        data[(data.panel_id == "A") & (data.series_id == "alignment_budget_rate")].ci_upper.max()
+    )
+    ax.set_xlim(left=0, right=anchor / DATA_WIDTH_FRACTION)
+    ax.set_ylim(-0.6, float(y.max()) + 0.9)
+    _draw_panel_a_columns(ax, data, mechanisms, y, ANNOT_COL1_X, ANNOT_COL2_X)
     ax.set_yticks(y, labels)
-    ax.set_xlim(left=0)
     ax.set_xlabel(r"Alignment budget $\mathfrak{A}_T^{\mathrm{arr}}/T$")
     ax.set_title("(a) Route alignment")
     ax.grid(axis="x", alpha=0.25)
@@ -182,6 +262,9 @@ def generate(run_tier: str) -> tuple[Path, Path]:
     fig.savefig(pdf, bbox_inches="tight")
     plt.close(fig)
 
+    scientific_manifest = json.loads(
+        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(encoding="utf-8")
+    )
     metadata = {
         "figure_id": "fig_exp1_alignment_transfer",
         "run_tier": run_tier,
@@ -191,10 +274,21 @@ def generate(run_tier: str) -> tuple[Path, Path]:
         "png_sha256": sha256_file(png),
         "pdf_sha256": sha256_file(pdf),
         "generated_at": utc_now(),
+        "scientific_source_lineage": _scientific_source_lineage(),
+        "presentation_source_lineage": _presentation_source_lineage(),
+        "scientific_artifact_manifest_hash": hash_payload(scientific_manifest),
+        "figure_data_hash": sha256_file(data_path),
+        "figure_code_hash": sha256_file(PROJECT_ROOT / "plot_main.py"),
         "panels": {
-            "A": "arrival-route action-gap alignment budget with mean-delay and reversal annotations",
+            "A": (
+                "arrival-route action-gap alignment budget with right-aligned "
+                "Mean delay and Conflict rate (route-optimal conflict rate) columns"
+            ),
             "B": "structural regret and the regret-transfer upper bound",
-            "C": "paired contextual Delayed EXP3 consequence under two feedback bindings",
+            "C": (
+                "paired contextual Delayed EXP3 consequence under arrival-clock "
+                "and source-round scalar-feedback binding"
+            ),
         },
     }
     atomic_write_json(

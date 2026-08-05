@@ -1,0 +1,15 @@
+path,action,reason,tracked_before,tracked_after,consumer_check,replacement,risk
+status/calibration_status.json,untrack (git rm --cached),transient run status; covered by final reports and candidate manifests,yes,no,promote/self_check read from disk path only; file retained on disk,status/EXP1_V2_* reports; outputs/*/checks/exp1_validation_report.json,none
+status/fast_run_status.json,untrack (git rm --cached),transient run status,yes,no,no source consumer; disk file retained,outputs/fast/metadata/run_state.json,none
+status/full_run_status.json,untrack (git rm --cached),transient run status,yes,no,no source consumer; disk file retained,outputs/full/metadata/run_state.json,none
+status/fast_targeted_status.json,untrack (git rm --cached),transient run status,yes,no,no source consumer; disk file retained,outputs/fast/targeted/exp1_targeted_validation_report.json,none
+status/full_targeted_status.json,untrack (git rm --cached),transient run status,yes,no,no source consumer; disk file retained,outputs/full/targeted/exp1_targeted_validation_report.json,none
+status/fast_validation_status.json,untrack (git rm --cached),transient run status,yes,no,main.py reads it only when running full (not in this patch),outputs/fast/checks/exp1_validation_report.json,none
+status/full_validation_status.json,untrack (git rm --cached),transient run status; gate reads disk path,yes,no,promote.py reads disk path (file retained on disk) - promotion PASSED after untrack,outputs/full/checks/exp1_validation_report.json,none
+status/paper_promotion_status.json,untrack (git rm --cached),transient run status,yes,no,no source consumer; disk file retained,outputs/paper_candidate/exp1_promotion_manifest.json,none
+src/derived.py,edit (display-only),unused `import json`; .tex header `Conflict rate`; figure-data panel description,yes,yes,compileall + 10/10 tests + candidate integrity PASS,n/a,none (no scientific value/logic change)
+plot_appendix.py,edit (presentation),"conflict-margin terminology, DISPLAY_NAMES titles, lineage metadata, relative artifact paths, unused import removal",yes,yes,compileall + tests + figure regeneration PASS,n/a,none
+plot_main.py,edit (presentation),Panel (a) two-column Mean delay / Conflict rate layout; lineage metadata,yes,yes,compileall + tests + figure regeneration PASS,n/a,none
+outputs/full/tables/tab_exp1_mechanism_summary.tex,edit (presentation output),header `Reversal rate` -> `Conflict rate`,no (outputs ignored),no,self_check latex interval check unaffected; numbers unchanged,n/a,none
+outputs/full/figures/data/fig_exp1_alignment_transfer_metadata.json,edit (presentation output),panel A description; absolute -> relative derived paths,no (outputs ignored),no,json valid; self_check reads source_data_sha256 (unchanged),n/a,none
+outputs/full/figures/png/_panel_a_check.png,delete (temporary),temporary inspection crop created during verification,no,no,not referenced,n/a,none

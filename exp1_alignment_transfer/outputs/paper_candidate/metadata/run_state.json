@@ -1,0 +1,19 @@
+{
+  "calibration_manifest_hash": "b4bf2ad829be75d27f6ac4d3792968e90467c80f1b4949e56d7f1566f488630b",
+  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
+  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
+  "completed_at": "2026-07-26T11:58:22.759700+00:00",
+  "config_hash": "21563d9a7d6a3134d56776beef7f02b88fbe31e8f18ac118a957eac374c3df02",
+  "engineering_status": "PASS",
+  "n_learner_round_rows": 1800000,
+  "n_path_bundles": 180,
+  "n_route_round_rows": 300000,
+  "paper_result": true,
+  "promoted_at": "2026-08-05T10:59:06.659511+00:00",
+  "run_id": "exp1_alignment_transfer:full:2026-07-26T11:53:17.328965+00:00",
+  "run_tier": "paper",
+  "scientific_status": "PASS",
+  "status": "FULL_VALIDATED",
+  "validated_at": "2026-07-26T11:59:54.359169+00:00",
+  "validation_report": "checks/exp1_validation_report.json"
+}

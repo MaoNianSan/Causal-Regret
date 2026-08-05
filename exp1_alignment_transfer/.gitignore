@@ -1,7 +1,60 @@
+# Python
 __pycache__/
 *.py[cod]
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Environments
 .venv/
+venv/
+env/
+
+# Notebook / editor / OS
+.ipynb_checkpoints/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+*.part
+*.lock
+*.bak
+*.swp
+*~
+
+# Exp1 transient run outputs (kept locally for reproducibility, not tracked).
 outputs/fast/
 outputs/full/
-outputs/paper_candidate/
-.ipynb_checkpoints/
+outputs/dev*/
+outputs/tmp*/
+outputs/**/cache/
+outputs/**/logs/
+outputs/**/*.part
+outputs/**/*.tmp
+
+# The paper candidate IS tracked (small, authoritative). Whitelist it under
+# the otherwise-ignored outputs/ tree.
+outputs/*
+!outputs/paper_candidate/
+!outputs/paper_candidate/**
+
+# Transient status files (fully covered by final reports and candidate
+# manifests; see status/EXP1_V2_GIT_SYNC_READINESS.md).
+status/calibration_status.json
+status/fast_run_status.json
+status/full_run_status.json
+status/fast_targeted_status.json
+status/full_targeted_status.json
+status/fast_validation_status.json
+status/full_validation_status.json
+status/paper_promotion_status.json

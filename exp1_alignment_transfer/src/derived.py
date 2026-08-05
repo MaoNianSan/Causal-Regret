@@ -3,7 +3,6 @@ from __future__ import annotations
 """Seed aggregation, paired bootstrap, figure data, and manuscript artifacts."""
 
 import hashlib
-import json
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -289,7 +288,7 @@ def write_latex_table(path: Path, table: pd.DataFrame) -> None:
     lines = [
         r"\begin{tabular}{lrrrrr}",
         r"\toprule",
-        r"Mechanism & Mean delay & Alignment budget & Reversal rate & Margin preserved & Arrival $-$ source \\",
+        r"Mechanism & Mean delay & Alignment budget & Conflict rate & Margin preserved & Arrival $-$ source \\",
         r"\midrule",
     ]
     for row in table.itertuples(index=False):
@@ -417,7 +416,7 @@ def generate_all_derived(
         "source_derived_files": [str(paths["route_summary"]), str(paths["learner_summary"]), str(paths["learner_contrasts"])],
         "source_data_sha256": sha256_file(paths["figure_data"]),
         "panel_definitions": {
-            "A": "arrival-route alignment budget, with delay and reversal annotations",
+            "A": "arrival-route action-gap alignment budget with right-aligned Mean delay and Conflict rate (route-optimal conflict rate) columns",
             "B": "structural regret and regret-transfer upper bound",
             "C": "same contextual Delayed EXP3 under arrival-clock and source-round binding",
         },

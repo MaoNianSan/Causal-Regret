@@ -43,6 +43,32 @@ python promote.py --run full
 
 `promote.py` is intentionally independent. It does not rerun estimands and cannot promote a development CSV fallback.
 
+## Presentation-only rebuild
+
+After a presentation-only patch (figures, captions, terminology, repository hygiene), no scientific rerun is needed. Rebuild presentation artifacts from the existing frozen full outputs only:
+
+```bash
+python plot_main.py --run full
+python plot_appendix.py --run full
+python promote.py --run full --force
+```
+
+This never touches seed metrics, derived summaries, checks, targeted outputs, figure data, or manuscript numerical values. The distinction is:
+
+- **Scientific rerun** (`calibrate.py --force`, `main.py fast/full`, `targeted.py --run ...`) changes the frozen scientific artifacts and is forbidden for this patch.
+- **Presentation rebuild** (the three commands above) regenerates PDF/PNG figures, figure metadata, and the paper candidate from frozen figure data only.
+
+`outputs/full/` and `outputs/fast/` are kept locally for reproducibility but are not tracked by Git; `outputs/paper_candidate/` is the small, authoritative candidate and **is** tracked. See `.gitignore`.
+
+## Figure metadata lineage
+
+Figure metadata records two distinct lineages:
+
+- `scientific_source_lineage`: the package-local `code_lineage` recorded in `calibration/exp1_calibration_manifest.json` at freeze time.
+- `presentation_source_lineage`: a fingerprint of the presentation-only figure source (`plot_main.py`, `plot_appendix.py`).
+
+A presentation patch updates `presentation_source_lineage` while `scientific_source_lineage` and all scientific artifact hashes remain unchanged.
+
 ## Parquet requirement
 
 Formal runs require `pyarrow`. The code hard-fails if no parquet engine is installed.

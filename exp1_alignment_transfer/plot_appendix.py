@@ -3,17 +3,37 @@ from __future__ import annotations
 """Generate appendix mechanism-audit figures from frozen derived data only."""
 
 import argparse
+import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from config import MECHANISM_ORDER
-from src.artifact_io import atomic_write_json, refresh_output_manifest, sha256_file, utc_now
+from config import DISPLAY_NAMES
+from src.artifact_io import atomic_write_json, hash_payload, refresh_output_manifest, sha256_file, utc_now
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+
+
+def _scientific_source_lineage() -> str:
+    """Scientific lineage recorded when calibration was frozen."""
+    manifest_path = PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    return manifest.get("code_lineage", "unavailable")
+
+
+def _presentation_source_lineage() -> str:
+    """Fingerprint of the presentation-only figure source in this package."""
+    import hashlib
+
+    h = hashlib.sha256()
+    for name in ("plot_main.py", "plot_appendix.py"):
+        file_path = PROJECT_ROOT / name
+        h.update(name.encode("utf-8"))
+        h.update(file_path.read_bytes())
+    return "presentation:" + h.hexdigest()
 
 
 def _require_files(paths: list[Path], run_tier: str) -> None:
@@ -73,7 +93,7 @@ def generate_margin_reversal(output: Path) -> tuple[Path, Path]:
 
     summary = data[data.panel_id == "A"].copy()
     order = ["affected_round_fraction", "q10_reversal_margin", "near_zero_reversal_margin_share"]
-    labels = ["Affected-round fraction", "Q10 reversal margin", "Near-zero margin share"]
+    labels = ["Affected-round fraction", "Q10 conflict margin", "Near-zero conflict-margin share"]
     values = [float(summary.loc[summary.metric_id == metric, "estimate"].iloc[0]) for metric in order]
     lower = [float(summary.loc[summary.metric_id == metric, "ci_lower"].iloc[0]) for metric in order]
     upper = [float(summary.loc[summary.metric_id == metric, "ci_upper"].iloc[0]) for metric in order]
@@ -88,8 +108,8 @@ def generate_margin_reversal(output: Path) -> tuple[Path, Path]:
     axes[1].fill_between(distribution["quantile"], distribution.ci_lower, distribution.ci_upper, alpha=0.18)
     axes[1].axhline(0.20, linestyle="--", linewidth=1.0, alpha=0.7)
     axes[1].set_xlabel("Quantile")
-    axes[1].set_ylabel("Reversal margin")
-    axes[1].set_title("(b) Margin-separated reversals")
+    axes[1].set_ylabel("Conflict margin")
+    axes[1].set_title("(b) Margin-separated conflicts")
     axes[1].grid(alpha=0.25)
 
     boundary = data[data.panel_id == "C"].sort_values("t")
@@ -129,7 +149,7 @@ def generate_trajectory(output: Path) -> tuple[Path, Path]:
             step="post",
         )
         ax.set_ylabel("Action index")
-        ax.set_title(mechanism.replace("_", " ").title())
+        ax.set_title(DISPLAY_NAMES[mechanism])
         ax.grid(alpha=0.2)
     axes[0].legend(frameon=False, ncol=2)
     axes[-1].set_xlabel("Evaluation round")
@@ -204,12 +224,23 @@ def main() -> None:
     artifacts = []
     for function in (generate_delay_verification, generate_margin_reversal, generate_trajectory, generate_targeted_validation):
         artifacts.extend(function(output))
+    scientific_manifest = json.loads(
+        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(encoding="utf-8")
+    )
     metadata = {
         "run_tier": run_tier,
         "paper_result": False,
         "generated_at": utc_now(),
+        "scientific_source_lineage": _scientific_source_lineage(),
+        "presentation_source_lineage": _presentation_source_lineage(),
+        "scientific_artifact_manifest_hash": hash_payload(scientific_manifest),
+        "figure_code_hash": sha256_file(PROJECT_ROOT / "plot_appendix.py"),
         "artifacts": [
-            {"path": str(path), "sha256": sha256_file(path)} for path in artifacts
+            {
+                "path": str(path.relative_to(output)),
+                "sha256": sha256_file(path),
+            }
+            for path in artifacts
         ],
         "targeted_validation_status": "PASS" if (output / "targeted" / "exp1_targeted_validation_report.json").exists() else "NOT_RUN",
     }

@@ -1,0 +1,11 @@
+figure_id,panel_id,mechanism_id,state_decile,mean_state,metric_id,n_seeds,estimate,se,ci_lower,ci_upper,bootstrap_repetitions,ci_level,run_tier,paper_result
+fig_exp1_delay_verification,B,state_coupled_delay,1,-0.8493649500626906,mean_delay_by_state_decile,30,27.13346100560329,0.1688053408468146,26.80972925841274,27.452254577337413,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,2,-0.6534572070814902,mean_delay_by_state_decile,30,24.07264183533081,0.1450600810955723,23.793474508642348,24.348899973877806,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,3,-0.4678046822234378,mean_delay_by_state_decile,30,20.564210326297644,0.1776189700584319,20.228488006265685,20.91315805837568,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,4,-0.285715903874948,mean_delay_by_state_decile,30,17.765711557381287,0.1202908166072492,17.527887160229604,17.990243241461272,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,5,-0.1010771914212081,mean_delay_by_state_decile,30,14.879505861293444,0.1316062746830551,14.609772613471906,15.121158926090189,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,6,0.0827460564945912,mean_delay_by_state_decile,30,12.557919402770349,0.0903978961829016,12.38061652749501,12.736625022183988,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,7,0.2711477745937804,mean_delay_by_state_decile,30,10.346669431433812,0.1030483692575288,10.14257273509178,10.533035205519363,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,8,0.4626008217838352,mean_delay_by_state_decile,30,8.66066032516782,0.0482398782574748,8.570698745761945,8.753207681335391,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,9,0.6534512409037865,mean_delay_by_state_decile,30,7.115218567937392,0.0642690085043748,6.993055228076009,7.237255996247722,2000,0.95,paper,True
+fig_exp1_delay_verification,B,state_coupled_delay,10,0.8513687894062603,mean_delay_by_state_decile,30,5.813872475086759,0.0488074099726819,5.721710193535644,5.908123601394298,2000,0.95,paper,True

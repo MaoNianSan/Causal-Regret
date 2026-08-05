@@ -1,0 +1,373 @@
+{
+  "checks": [
+    {
+      "check": "path_manifest_nonempty",
+      "details": 180,
+      "status": "PASS"
+    },
+    {
+      "check": "route_round_nonempty",
+      "details": 1800000,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_round_nonempty",
+      "details": 1800000,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_seed_set",
+      "details": {
+        "expected": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ],
+        "observed": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25,
+          26,
+          27,
+          28,
+          29
+        ]
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "exact_mechanism_order",
+      "details": [
+        "zero_delay",
+        "exact_valid_shift",
+        "geometric_delay",
+        "mixture_delay",
+        "state_coupled_delay",
+        "systematic_misbinding"
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "complete_seed_mechanism_matrix",
+      "details": 180,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_route_round_count",
+      "details": 1800000,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_learner_round_count",
+      "details": 1800000,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_route_set",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_binding_set",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "full_structural_loss_bounds",
+      "details": [
+        0.0,
+        0.9983346940943096
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "no_loss_clipping",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_prehistory_policy_frozen",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "zero_delay_arrival_map_identity",
+      "details": 0.0,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_valid_alignment_budget_zero",
+      "details": 5.668260999458496e-17,
+      "status": "PASS"
+    },
+    {
+      "check": "source_bound_map_identity",
+      "details": 0.0,
+      "status": "PASS"
+    },
+    {
+      "check": "uniform_arrival_batch_weights",
+      "details": 2.220446049250313e-16,
+      "status": "PASS"
+    },
+    {
+      "check": "empty_clock_and_route_map_no_future_use",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "route_map_updated_audit",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "transfer_invariant_all_seed_route_mechanism",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_valid_geometric_shared_delay_path",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "zero_delay_learner_actions_identical",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "zero_delay_learner_probabilities_identical",
+      "details": 0.0,
+      "status": "PASS"
+    },
+    {
+      "check": "zero_delay_learner_states_identical",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_full_map_isolation",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_factual_loss_unit_interval",
+      "details": [
+        0.0,
+        0.9972500444642491
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "source_round_uses_source_action_and_probability",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "arrival_clock_uses_preaction_current_binding",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "shared_action_uniform_across_bindings",
+      "details": 1,
+      "status": "PASS"
+    },
+    {
+      "check": "route_raw_to_seed_reconstruction",
+      "details": 4.547473508864641e-13,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_raw_to_seed_reconstruction",
+      "details": 2.2737367544323206e-13,
+      "status": "PASS"
+    },
+    {
+      "check": "independent_delta_and_transfer_formula_checks",
+      "details": [
+        {
+          "delta_formula_error": 0.0,
+          "mechanism_id": "zero_delay",
+          "random_action_slack": 0.0
+        },
+        {
+          "delta_formula_error": 1.1102230246251565e-16,
+          "mechanism_id": "exact_valid_shift",
+          "random_action_slack": 4.5474735088646414e-17
+        },
+        {
+          "delta_formula_error": 1.1102230246251565e-16,
+          "mechanism_id": "geometric_delay",
+          "random_action_slack": 0.23949471290640617
+        },
+        {
+          "delta_formula_error": 1.1102230246251565e-16,
+          "mechanism_id": "mixture_delay",
+          "random_action_slack": 0.20395498128240938
+        },
+        {
+          "delta_formula_error": 1.1102230246251565e-16,
+          "mechanism_id": "state_coupled_delay",
+          "random_action_slack": 0.23899314212148115
+        },
+        {
+          "delta_formula_error": 0.0,
+          "mechanism_id": "systematic_misbinding",
+          "random_action_slack": 0.5608024691358023
+        }
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "nonpromoted_run_not_paper_eligible",
+      "details": [
+        false
+      ],
+      "status": "PASS"
+    },
+    {
+      "check": "calibration_evaluation_seed_separation",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "summary_to_figure_data_reconstruction",
+      "details": 0.0,
+      "status": "PASS"
+    },
+    {
+      "check": "summary_to_table_reconstruction",
+      "details": 0.0,
+      "status": "PASS"
+    },
+    {
+      "check": "figure_data_sha256_matches_metadata",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "latex_table_contains_intervals",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "nonpromoted_numerical_macros_withheld",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "nonpromoted_manuscript_values_withheld",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "path_calibration_lineage",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "path_generated_at_complete",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "route_calibration_lineage",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "route_generated_at_complete",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_calibration_lineage",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "learner_generated_at_complete",
+      "details": null,
+      "status": "PASS"
+    },
+    {
+      "check": "artifact_manifest_uses_relative_paths",
+      "details": [],
+      "status": "PASS"
+    },
+    {
+      "check": "calibration_artifact_hashes_match",
+      "details": {
+        "context": "37083f44f5610868af8afb9be102fc6b497e9f30c4f566ba04b019899df443f8",
+        "delay": "b4446316bc448871134b0b3cf1b11ac55a9754a930e89668cad99d68bd670efb",
+        "misbinding": "ceb71f724ae0fff0e80c482154ee4c1a2b612536e71763026d0215f4f1057275",
+        "structural": "346e65ece0c5392f65a9af37402f2de8543b67b2670d038b6b58f698439e6ef0"
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "all_change_memos_approved",
+      "details": 0,
+      "status": "PASS"
+    }
+  ],
+  "engineering_status": "PASS",
+  "experiment_id": "exp1_alignment_transfer",
+  "generated_at": "2026-07-26T11:59:54.356975+00:00",
+  "paper_promotion_status": "ELIGIBLE_FOR_PROMOTION_REVIEW",
+  "paper_result": true,
+  "promoted_at": "2026-08-05T10:59:06.645203+00:00",
+  "run_tier": "paper",
+  "scientific_status": "PASS"
+}

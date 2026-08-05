@@ -1,0 +1,25 @@
+mechanism_id,mechanism_display_name,feedback_binding_id,feedback_binding_display_name,metric_id,n_seeds,estimate,se,ci_lower,ci_upper,bootstrap_repetitions,ci_level,run_tier,paper_result
+zero_delay,Zero delay,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1128961344263348,0.0003197841216383,0.1123011636851251,0.1134929337931929,2000,0.95,paper,True
+zero_delay,Zero delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.0983372786618008,0.0003361116849287,0.097686754115815,0.0989943698422759,2000,0.95,paper,True
+zero_delay,Zero delay,source_round,Source-round binding,structural_regret_rate,30,0.1128961344263348,0.0003197841216383,0.1122714506325005,0.1135052120840204,2000,0.95,paper,True
+zero_delay,Zero delay,source_round,Source-round binding,context_constrained_regret_rate,30,0.0983372786618008,0.0003361116849287,0.0977072149126514,0.0989668396332814,2000,0.95,paper,True
+exact_valid_shift,Exact-valid shift,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1983179199999999,0.0007079707087648,0.1968407519999999,0.1996782959999999,2000,0.95,paper,True
+exact_valid_shift,Exact-valid shift,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.0878439999999999,0.0021206122972647,0.083828156,0.0918754079999999,2000,0.95,paper,True
+exact_valid_shift,Exact-valid shift,source_round,Source-round binding,structural_regret_rate,30,0.13082288,0.0002590520838058,0.1303489319999999,0.131373164,2000,0.95,paper,True
+exact_valid_shift,Exact-valid shift,source_round,Source-round binding,context_constrained_regret_rate,30,0.02034896,0.0018220429934592,0.016876264,0.0237596599999999,2000,0.95,paper,True
+geometric_delay,Geometric delay,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1681658529961595,0.0010037127688585,0.1662847102190587,0.1700214146542534,2000,0.95,paper,True
+geometric_delay,Geometric delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.1536069972316255,0.001038621654834,0.1516347291608356,0.1555706818861694,2000,0.95,paper,True
+geometric_delay,Geometric delay,source_round,Source-round binding,structural_regret_rate,30,0.1137261560013622,0.0003266584372667,0.1131115333422739,0.1143686861032218,2000,0.95,paper,True
+geometric_delay,Geometric delay,source_round,Source-round binding,context_constrained_regret_rate,30,0.0991673002368282,0.0003466427629741,0.0984749473167396,0.0998227448638669,2000,0.95,paper,True
+mixture_delay,Mixture delay,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1573205503792844,0.0007933470196862,0.1558475169703953,0.1588657811512377,2000,0.95,paper,True
+mixture_delay,Mixture delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.1427616946147504,0.0008232382232972,0.1412649138209096,0.144375432375913,2000,0.95,paper,True
+mixture_delay,Mixture delay,source_round,Source-round binding,structural_regret_rate,30,0.1136528613322411,0.0003257563696748,0.1130227272647566,0.1142489677981056,2000,0.95,paper,True
+mixture_delay,Mixture delay,source_round,Source-round binding,context_constrained_regret_rate,30,0.0990940055677071,0.0003453891983698,0.0984212603131491,0.0997550250426169,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1653264348077031,0.0011001984673942,0.1631857018214438,0.1674824916856372,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.1507675790431691,0.0011264790875672,0.1485804637310804,0.1529116902616848,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,source_round,Source-round binding,structural_regret_rate,30,0.1137230765725029,0.0003252434897987,0.1131346615089597,0.1143063980382236,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,source_round,Source-round binding,context_constrained_regret_rate,30,0.099164220807969,0.000345484609909,0.0984774395808265,0.0998348452843884,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1784710288065843,0.0006213467511389,0.1772179053497942,0.1796444506172839,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.1597921810699588,0.0006434676314305,0.1585673148148148,0.161028818930041,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,source_round,Source-round binding,structural_regret_rate,30,0.1070820576131687,0.0002778046672467,0.1065167407407407,0.1076132716049382,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,source_round,Source-round binding,context_constrained_regret_rate,30,0.0884032098765432,0.0002643740208271,0.0878505308641975,0.0888948230452675,2000,0.95,paper,True

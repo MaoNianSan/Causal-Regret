@@ -1,0 +1,60 @@
+path,action,category
+.gitignore,modified,source
+README.md,modified,source
+plot_appendix.py,modified,source
+plot_main.py,modified,source
+src/derived.py,modified,source
+exp1_alignment_transfer/status/calibration_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/fast_run_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/fast_targeted_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/fast_validation_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/full_run_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/full_targeted_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/full_validation_status.json,untracked (git rm --cached),status
+exp1_alignment_transfer/status/paper_promotion_status.json,untracked (git rm --cached),status
+CHANGE_MEMO_EXP1_002.md,added (untracked),memo
+outputs/paper_candidate/checks/exp1_validation_report.json,added (untracked),paper_candidate
+outputs/paper_candidate/derived/exp1_actual_learner_contrasts.csv,added (untracked),paper_candidate
+outputs/paper_candidate/derived/exp1_learner_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/derived/exp1_primary_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/derived/exp1_route_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/exp1_promotion_manifest.json,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_alignment_transfer_data.csv,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_alignment_transfer_metadata.json,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_delay_survival_data.csv,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_reversal_margin_data.csv,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_route_trajectory_data.csv,added (untracked),paper_candidate
+outputs/paper_candidate/figures/data/fig_exp1_state_coupling_data.csv,added (untracked),paper_candidate
+outputs/paper_candidate/figures/metadata/exp1_appendix_figures_metadata.json,added (untracked),paper_candidate
+outputs/paper_candidate/figures/metadata/fig_exp1_alignment_transfer_metadata.json,added (untracked),paper_candidate
+outputs/paper_candidate/figures/pdf/fig_exp1_alignment_transfer.pdf,added (untracked),paper_candidate
+outputs/paper_candidate/figures/pdf/fig_exp1_delay_verification.pdf,added (untracked),paper_candidate
+outputs/paper_candidate/figures/pdf/fig_exp1_reversal_margin.pdf,added (untracked),paper_candidate
+outputs/paper_candidate/figures/pdf/fig_exp1_route_trajectory.pdf,added (untracked),paper_candidate
+outputs/paper_candidate/figures/pdf/fig_exp1_targeted_validation.pdf,added (untracked),paper_candidate
+outputs/paper_candidate/figures/png/fig_exp1_alignment_transfer.png,added (untracked),paper_candidate
+outputs/paper_candidate/figures/png/fig_exp1_delay_verification.png,added (untracked),paper_candidate
+outputs/paper_candidate/figures/png/fig_exp1_reversal_margin.png,added (untracked),paper_candidate
+outputs/paper_candidate/figures/png/fig_exp1_route_trajectory.png,added (untracked),paper_candidate
+outputs/paper_candidate/figures/png/fig_exp1_targeted_validation.png,added (untracked),paper_candidate
+outputs/paper_candidate/manuscript/exp1_manuscript_macros.tex,added (untracked),paper_candidate
+outputs/paper_candidate/manuscript/exp1_manuscript_values.json,added (untracked),paper_candidate
+outputs/paper_candidate/metadata/artifact_manifest.json,added (untracked),paper_candidate
+outputs/paper_candidate/metadata/run_state.json,added (untracked),paper_candidate
+outputs/paper_candidate/seed_metrics/exp1_learner_seed_metrics.csv,added (untracked),paper_candidate
+outputs/paper_candidate/seed_metrics/exp1_learner_seed_metrics.parquet,added (untracked),paper_candidate
+outputs/paper_candidate/seed_metrics/exp1_route_seed_metrics.csv,added (untracked),paper_candidate
+outputs/paper_candidate/seed_metrics/exp1_route_seed_metrics.parquet,added (untracked),paper_candidate
+outputs/paper_candidate/tables/tab_exp1_mechanism_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/tables/tab_exp1_mechanism_summary.tex,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/exp1_targeted_horizon_seed_metrics.csv,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/exp1_targeted_horizon_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/exp1_targeted_mean_delay_seed_metrics.csv,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/exp1_targeted_mean_delay_summary.csv,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/exp1_targeted_validation_report.json,added (untracked),paper_candidate
+outputs/paper_candidate/targeted/fig_exp1_targeted_validation_data.csv,added (untracked),paper_candidate
+status/EXP1_V2_FROZEN_SCIENTIFIC_ARTIFACTS.json,added (untracked),status_report
+status/EXP1_V2_PRESENTATION_PATCH_BASELINE.json,added (untracked),status_report
+status/EXP1_V2_PRESENTATION_PATCH_BASELINE.md,added (untracked),status_report
+tests/test_main_figure_headers.py,added (untracked),test
+tests/test_presentation_hygiene.py,added (untracked),test
