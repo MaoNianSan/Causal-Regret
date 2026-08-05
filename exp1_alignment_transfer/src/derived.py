@@ -10,7 +10,12 @@ import numpy as np
 import pandas as pd
 
 from config import DISPLAY_NAMES, MECHANISM_ORDER
-from src.artifact_io import atomic_write_csv, atomic_write_json, atomic_write_text, sha256_file
+from src.artifact_io import (
+    atomic_write_csv,
+    atomic_write_json,
+    atomic_write_text,
+    sha256_file,
+)
 from src.contracts import ScientificInvariantError
 
 
@@ -29,11 +34,23 @@ def bootstrap_mean(
     values = values[np.isfinite(values)]
     n = int(values.size)
     if n == 0:
-        return {"n_seeds": 0, "estimate": np.nan, "se": np.nan, "ci_lower": np.nan, "ci_upper": np.nan}
+        return {
+            "n_seeds": 0,
+            "estimate": np.nan,
+            "se": np.nan,
+            "ci_lower": np.nan,
+            "ci_upper": np.nan,
+        }
     estimate = float(np.mean(values))
     se = float(np.std(values, ddof=1) / np.sqrt(n)) if n > 1 else 0.0
     if n == 1:
-        return {"n_seeds": n, "estimate": estimate, "se": se, "ci_lower": estimate, "ci_upper": estimate}
+        return {
+            "n_seeds": n,
+            "estimate": estimate,
+            "se": se,
+            "ci_lower": estimate,
+            "ci_upper": estimate,
+        }
     rng = np.random.default_rng(_stable_seed("bootstrap", *key, repetitions, ci_level))
     draws = values[rng.integers(0, n, size=(int(repetitions), n))].mean(axis=1)
     alpha = (1.0 - float(ci_level)) / 2.0
@@ -47,7 +64,9 @@ def bootstrap_mean(
     }
 
 
-def build_route_summary(route_seed: pd.DataFrame, repetitions: int, ci_level: float) -> pd.DataFrame:
+def build_route_summary(
+    route_seed: pd.DataFrame, repetitions: int, ci_level: float
+) -> pd.DataFrame:
     metrics = (
         "generated_mean_delay",
         "alignment_budget_rate",
@@ -63,10 +82,15 @@ def build_route_summary(route_seed: pd.DataFrame, repetitions: int, ci_level: fl
         "mean_route_map_age",
     )
     rows = []
-    for (mechanism, route), group in route_seed.groupby(["mechanism_id", "route_id"], sort=False):
+    for (mechanism, route), group in route_seed.groupby(
+        ["mechanism_id", "route_id"], sort=False
+    ):
         for metric in metrics:
             summary = bootstrap_mean(
-                group[metric], repetitions, ci_level, ("route", mechanism, route, metric)
+                group[metric],
+                repetitions,
+                ci_level,
+                ("route", mechanism, route, metric),
             )
             rows.append(
                 {
@@ -85,14 +109,19 @@ def build_route_summary(route_seed: pd.DataFrame, repetitions: int, ci_level: fl
     return pd.DataFrame(rows)
 
 
-def build_learner_summary(learner_seed: pd.DataFrame, repetitions: int, ci_level: float) -> tuple[pd.DataFrame, pd.DataFrame]:
+def build_learner_summary(
+    learner_seed: pd.DataFrame, repetitions: int, ci_level: float
+) -> tuple[pd.DataFrame, pd.DataFrame]:
     rows = []
     for (mechanism, binding), group in learner_seed.groupby(
         ["mechanism_id", "feedback_binding_id"], sort=False
     ):
         for metric in ("structural_regret_rate", "context_constrained_regret_rate"):
             summary = bootstrap_mean(
-                group[metric], repetitions, ci_level, ("learner", mechanism, binding, metric)
+                group[metric],
+                repetitions,
+                ci_level,
+                ("learner", mechanism, binding, metric),
             )
             rows.append(
                 {
@@ -143,7 +172,9 @@ def build_learner_summary(learner_seed: pd.DataFrame, repetitions: int, ci_level
     return pd.DataFrame(rows), pd.DataFrame(contrast_rows)
 
 
-def _metric_row(summary: pd.DataFrame, mechanism: str, route: str, metric: str) -> pd.Series:
+def _metric_row(
+    summary: pd.DataFrame, mechanism: str, route: str, metric: str
+) -> pd.Series:
     subset = summary[
         (summary.mechanism_id == mechanism)
         & (summary.route_id == route)
@@ -163,7 +194,11 @@ def build_figure_data(
 ) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     for mechanism in MECHANISM_ORDER:
-        for metric in ("alignment_budget_rate", "generated_mean_delay", "ranking_reversal_rate"):
+        for metric in (
+            "alignment_budget_rate",
+            "generated_mean_delay",
+            "ranking_reversal_rate",
+        ):
             row = _metric_row(route_summary, mechanism, "arrival_assigned", metric)
             rows.append(
                 {
@@ -272,7 +307,9 @@ def build_mechanism_table(
             data[output] = float(row.estimate)
             data[output + "_ci_lower"] = float(row.ci_lower)
             data[output + "_ci_upper"] = float(row.ci_upper)
-        contrast = learner_contrasts[learner_contrasts.mechanism_id == mechanism].iloc[0]
+        contrast = learner_contrasts[learner_contrasts.mechanism_id == mechanism].iloc[
+            0
+        ]
         data["arrival_minus_source_regret_rate"] = float(contrast.estimate)
         data["arrival_minus_source_ci_lower"] = float(contrast.ci_lower)
         data["arrival_minus_source_ci_upper"] = float(contrast.ci_upper)
@@ -298,7 +335,7 @@ def write_latex_table(path: Path, table: pd.DataFrame) -> None:
             f"{_format_ci(row.alignment_budget_rate, row.alignment_budget_rate_ci_lower, row.alignment_budget_rate_ci_upper)} & "
             f"{_format_ci(row.ranking_reversal_rate, row.ranking_reversal_rate_ci_lower, row.ranking_reversal_rate_ci_upper)} & "
             f"{_format_ci(row.margin_preservation_rate, row.margin_preservation_rate_ci_lower, row.margin_preservation_rate_ci_upper)} & "
-            f"{_format_ci(row.arrival_minus_source_regret_rate, row.arrival_minus_source_ci_lower, row.arrival_minus_source_ci_upper)} \\\\" 
+            f"{_format_ci(row.arrival_minus_source_regret_rate, row.arrival_minus_source_ci_lower, row.arrival_minus_source_ci_upper)} \\\\"
         )
     lines.extend([r"\bottomrule", r"\end{tabular}"])
     atomic_write_text(path, "\n".join(lines) + "\n")
@@ -314,16 +351,20 @@ def write_manuscript_artifacts(
         "run_tier": run_tier,
         "paper_result": bool(paper_result),
         "manuscript_values_available": bool(paper_result),
-        "mechanisms": ({
-            row.mechanism_id: {
-                "mean_delay": row.mean_delay,
-                "alignment_budget_rate": row.alignment_budget_rate,
-                "ranking_reversal_rate": row.ranking_reversal_rate,
-                "margin_preservation_rate": row.margin_preservation_rate,
-                "arrival_minus_source_regret_rate": row.arrival_minus_source_regret_rate,
+        "mechanisms": (
+            {
+                row.mechanism_id: {
+                    "mean_delay": row.mean_delay,
+                    "alignment_budget_rate": row.alignment_budget_rate,
+                    "ranking_reversal_rate": row.ranking_reversal_rate,
+                    "margin_preservation_rate": row.margin_preservation_rate,
+                    "arrival_minus_source_regret_rate": row.arrival_minus_source_regret_rate,
+                }
+                for row in table.itertuples(index=False)
             }
-            for row in table.itertuples(index=False)
-        } if paper_result else {}),
+            if paper_result
+            else {}
+        ),
     }
     atomic_write_json(output_dir / "exp1_manuscript_values.json", values)
     macros = [
@@ -341,8 +382,12 @@ def write_manuscript_artifacts(
                 f"\\newcommand{{\\ExpOne{key}LearnerContrast}}{{{row.arrival_minus_source_regret_rate:.3f}}}"
             )
     else:
-        macros.append("% Numerical manuscript macros are withheld until independent paper promotion.")
-    atomic_write_text(output_dir / "exp1_manuscript_macros.tex", "\n".join(macros) + "\n")
+        macros.append(
+            "% Numerical manuscript macros are withheld until independent paper promotion."
+        )
+    atomic_write_text(
+        output_dir / "exp1_manuscript_macros.tex", "\n".join(macros) + "\n"
+    )
 
 
 def generate_all_derived(
@@ -362,12 +407,16 @@ def generate_all_derived(
         directory.mkdir(parents=True, exist_ok=True)
 
     route_summary = build_route_summary(route_seed, repetitions, ci_level)
-    learner_summary, contrasts = build_learner_summary(learner_seed, repetitions, ci_level)
+    learner_summary, contrasts = build_learner_summary(
+        learner_seed, repetitions, ci_level
+    )
     figure_data = build_figure_data(route_summary, learner_summary, contrasts)
     mechanism_table = build_mechanism_table(route_summary, contrasts)
     delay_survival = build_delay_survival_data(delay_round, repetitions, ci_level)
     state_coupling = build_state_coupling_data(delay_round, repetitions, ci_level)
-    reversal_margin_data = build_reversal_margin_data(route_round, repetitions, ci_level)
+    reversal_margin_data = build_reversal_margin_data(
+        route_round, repetitions, ci_level
+    )
     trajectory_data = build_representative_trajectory_data(route_round)
 
     paths = {
@@ -413,7 +462,11 @@ def generate_all_derived(
     )
     metadata = {
         "figure_id": "fig_exp1_alignment_transfer",
-        "source_derived_files": [str(paths["route_summary"]), str(paths["learner_summary"]), str(paths["learner_contrasts"])],
+        "source_derived_files": [
+            str(paths["route_summary"]),
+            str(paths["learner_summary"]),
+            str(paths["learner_contrasts"]),
+        ],
         "source_data_sha256": sha256_file(paths["figure_data"]),
         "panel_definitions": {
             "A": "arrival-route action-gap alignment budget with right-aligned Mean delay and Conflict rate (route-optimal conflict rate) columns",
@@ -429,7 +482,9 @@ def generate_all_derived(
         "run_tier": str(route_seed["run_tier"].iloc[0]),
         "paper_result": bool(route_seed["paper_result"].iloc[0]),
     }
-    atomic_write_json(figure_dir / "fig_exp1_alignment_transfer_metadata.json", metadata)
+    atomic_write_json(
+        figure_dir / "fig_exp1_alignment_transfer_metadata.json", metadata
+    )
     return paths
 
 
@@ -438,7 +493,9 @@ def build_delay_survival_data(
     repetitions: int,
     ci_level: float,
 ) -> pd.DataFrame:
-    evaluation = delay_round[delay_round["is_evaluation_source"] == True].copy()  # noqa: E712
+    evaluation = delay_round[
+        delay_round["is_evaluation_source"] == True
+    ].copy()  # noqa: E712
     rows: list[dict[str, Any]] = []
     for mechanism in MECHANISM_ORDER:
         group = evaluation[evaluation.mechanism_id == mechanism]
@@ -490,8 +547,12 @@ def build_state_coupling_data(
     edges[0] = -np.inf
     edges[-1] = np.inf
     if np.any(np.diff(edges) <= 0):
-        raise ScientificInvariantError("state-coupling decile edges are not strictly increasing")
-    group["state_decile"] = np.searchsorted(edges[1:-1], group.structural_state, side="right") + 1
+        raise ScientificInvariantError(
+            "state-coupling decile edges are not strictly increasing"
+        )
+    group["state_decile"] = (
+        np.searchsorted(edges[1:-1], group.structural_state, side="right") + 1
+    )
     per_seed = group.groupby(["seed", "state_decile"], as_index=False).agg(
         mean_delay=("delay", "mean"),
         mean_state=("structural_state", "mean"),
@@ -544,7 +605,11 @@ def build_reversal_margin_data(
         affected_round_fraction=("ranking_reversal", "mean"),
         near_zero_reversal_margin_share=(
             "reversal_margin",
-            lambda x: float(np.mean(np.asarray(x)[np.asarray(x) > 0] < 0.05)) if np.any(np.asarray(x) > 0) else 0.0,
+            lambda x: (
+                float(np.mean(np.asarray(x)[np.asarray(x) > 0] < 0.05))
+                if np.any(np.asarray(x) > 0)
+                else 0.0
+            ),
         ),
     )
     q10 = (
@@ -555,56 +620,84 @@ def build_reversal_margin_data(
         .reset_index()
     )
     per_seed = per_seed.merge(q10, on="seed", how="left").fillna(0.0)
-    for metric in ("affected_round_fraction", "q10_reversal_margin", "near_zero_reversal_margin_share"):
-        summary = bootstrap_mean(per_seed[metric], repetitions, ci_level, ("systematic_reversal_gate", metric))
-        rows.append({
-            "figure_id": "fig_exp1_reversal_margin",
-            "panel_id": "A",
-            "mechanism_id": "systematic_misbinding",
-            "metric_id": metric,
-            **summary,
-            "bootstrap_repetitions": repetitions,
-            "ci_level": ci_level,
-            "run_tier": group.run_tier.iloc[0],
-            "paper_result": bool(group.paper_result.iloc[0]),
-        })
+    for metric in (
+        "affected_round_fraction",
+        "q10_reversal_margin",
+        "near_zero_reversal_margin_share",
+    ):
+        summary = bootstrap_mean(
+            per_seed[metric],
+            repetitions,
+            ci_level,
+            ("systematic_reversal_gate", metric),
+        )
+        rows.append(
+            {
+                "figure_id": "fig_exp1_reversal_margin",
+                "panel_id": "A",
+                "mechanism_id": "systematic_misbinding",
+                "metric_id": metric,
+                **summary,
+                "bootstrap_repetitions": repetitions,
+                "ci_level": ci_level,
+                "run_tier": group.run_tier.iloc[0],
+                "paper_result": bool(group.paper_result.iloc[0]),
+            }
+        )
     reversed_group = group[group.ranking_reversal.astype(bool)]
     for quantile in np.linspace(0.0, 1.0, 21):
-        seed_quantiles = reversed_group.groupby("seed")["reversal_margin"].quantile(quantile)
-        summary = bootstrap_mean(seed_quantiles, repetitions, ci_level, ("systematic_reversal_distribution", float(quantile)))
-        rows.append({
-            "figure_id": "fig_exp1_reversal_margin",
-            "panel_id": "B",
-            "mechanism_id": "systematic_misbinding",
-            "metric_id": "reversal_margin_quantile",
-            "quantile": float(quantile),
-            **summary,
-            "bootstrap_repetitions": repetitions,
-            "ci_level": ci_level,
-            "run_tier": group.run_tier.iloc[0],
-            "paper_result": bool(group.paper_result.iloc[0]),
-        })
+        seed_quantiles = reversed_group.groupby("seed")["reversal_margin"].quantile(
+            quantile
+        )
+        summary = bootstrap_mean(
+            seed_quantiles,
+            repetitions,
+            ci_level,
+            ("systematic_reversal_distribution", float(quantile)),
+        )
+        rows.append(
+            {
+                "figure_id": "fig_exp1_reversal_margin",
+                "panel_id": "B",
+                "mechanism_id": "systematic_misbinding",
+                "metric_id": "reversal_margin_quantile",
+                "quantile": float(quantile),
+                **summary,
+                "bootstrap_repetitions": repetitions,
+                "ci_level": ci_level,
+                "run_tier": group.run_tier.iloc[0],
+                "paper_result": bool(group.paper_result.iloc[0]),
+            }
+        )
     representative_seed = int(group.seed.min())
     rep = group[group.seed == representative_seed].sort_values("t").copy()
-    changes = np.flatnonzero(rep.structural_best_action.to_numpy()[1:] != rep.structural_best_action.to_numpy()[:-1]) + 1
+    changes = (
+        np.flatnonzero(
+            rep.structural_best_action.to_numpy()[1:]
+            != rep.structural_best_action.to_numpy()[:-1]
+        )
+        + 1
+    )
     center = int(changes[0]) if changes.size else int(rep.t.median())
     window = rep[(rep.t >= center - 30) & (rep.t <= center + 30)]
     for row in window.itertuples(index=False):
-        rows.append({
-            "figure_id": "fig_exp1_reversal_margin",
-            "panel_id": "C",
-            "mechanism_id": "systematic_misbinding",
-            "metric_id": "boundary_trajectory",
-            "seed": representative_seed,
-            "boundary_center": center,
-            "t": int(row.t),
-            "structural_best_action": int(row.structural_best_action),
-            "route_best_action": int(row.route_best_action),
-            "ranking_reversal": bool(row.ranking_reversal),
-            "reversal_margin": float(row.reversal_margin),
-            "run_tier": row.run_tier,
-            "paper_result": bool(row.paper_result),
-        })
+        rows.append(
+            {
+                "figure_id": "fig_exp1_reversal_margin",
+                "panel_id": "C",
+                "mechanism_id": "systematic_misbinding",
+                "metric_id": "boundary_trajectory",
+                "seed": representative_seed,
+                "boundary_center": center,
+                "t": int(row.t),
+                "structural_best_action": int(row.structural_best_action),
+                "route_best_action": int(row.route_best_action),
+                "ranking_reversal": bool(row.ranking_reversal),
+                "reversal_margin": float(row.reversal_margin),
+                "run_tier": row.run_tier,
+                "paper_result": bool(row.paper_result),
+            }
+        )
     return pd.DataFrame(rows)
 
 
@@ -613,7 +706,11 @@ def build_representative_trajectory_data(route_round: pd.DataFrame) -> pd.DataFr
     subset = route_round[
         (route_round.seed == min_seed)
         & (route_round.route_id == "arrival_assigned")
-        & (route_round.mechanism_id.isin(["exact_valid_shift", "systematic_misbinding"]))
+        & (
+            route_round.mechanism_id.isin(
+                ["exact_valid_shift", "systematic_misbinding"]
+            )
+        )
         & (route_round.t < 150)
     ].copy()
     keep = [

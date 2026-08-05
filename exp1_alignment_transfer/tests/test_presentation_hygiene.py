@@ -101,7 +101,9 @@ class TestLineageSeparation(unittest.TestCase):
         payload = json.loads(meta_path.read_text(encoding="utf-8"))
         scientific = payload.get("scientific_source_lineage", "")
         presentation = payload.get("presentation_source_lineage", "")
-        self.assertTrue(scientific.startswith("tree:"), f"scientific lineage: {scientific}")
+        self.assertTrue(
+            scientific.startswith("tree:"), f"scientific lineage: {scientific}"
+        )
         self.assertTrue(
             presentation.startswith("presentation:"),
             f"presentation lineage: {presentation}",

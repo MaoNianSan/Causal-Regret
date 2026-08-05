@@ -11,8 +11,13 @@ import numpy as np
 import pandas as pd
 
 from config import DISPLAY_NAMES
-from src.artifact_io import atomic_write_json, hash_payload, refresh_output_manifest, sha256_file, utc_now
-
+from src.artifact_io import (
+    atomic_write_json,
+    hash_payload,
+    refresh_output_manifest,
+    sha256_file,
+    utc_now,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
@@ -56,7 +61,11 @@ def generate_delay_verification(output: Path) -> tuple[Path, Path]:
     ax = axes[0]
     for mechanism in ("geometric_delay", "mixture_delay", "state_coupled_delay"):
         group = survival[survival.mechanism_id == mechanism]
-        ax.plot(group.delay_threshold, group.estimate, label=group.mechanism_display_name.iloc[0])
+        ax.plot(
+            group.delay_threshold,
+            group.estimate,
+            label=group.mechanism_display_name.iloc[0],
+        )
     ax.set_xlabel(r"Delay threshold $d$")
     ax.set_ylabel(r"$\Pr(\tau>d)$")
     ax.set_ylim(0, 1)
@@ -68,7 +77,10 @@ def generate_delay_verification(output: Path) -> tuple[Path, Path]:
     ax.errorbar(
         coupling.mean_state,
         coupling.estimate,
-        yerr=[coupling.estimate - coupling.ci_lower, coupling.ci_upper - coupling.estimate],
+        yerr=[
+            coupling.estimate - coupling.ci_lower,
+            coupling.ci_upper - coupling.estimate,
+        ],
         fmt="o-",
         capsize=3,
     )
@@ -92,20 +104,50 @@ def generate_margin_reversal(output: Path) -> tuple[Path, Path]:
     fig, axes = plt.subplots(1, 3, figsize=(13.4, 4.3), constrained_layout=True)
 
     summary = data[data.panel_id == "A"].copy()
-    order = ["affected_round_fraction", "q10_reversal_margin", "near_zero_reversal_margin_share"]
-    labels = ["Affected-round fraction", "Q10 conflict margin", "Near-zero conflict-margin share"]
-    values = [float(summary.loc[summary.metric_id == metric, "estimate"].iloc[0]) for metric in order]
-    lower = [float(summary.loc[summary.metric_id == metric, "ci_lower"].iloc[0]) for metric in order]
-    upper = [float(summary.loc[summary.metric_id == metric, "ci_upper"].iloc[0]) for metric in order]
+    order = [
+        "affected_round_fraction",
+        "q10_reversal_margin",
+        "near_zero_reversal_margin_share",
+    ]
+    labels = [
+        "Affected-round fraction",
+        "Q10 conflict margin",
+        "Near-zero conflict-margin share",
+    ]
+    values = [
+        float(summary.loc[summary.metric_id == metric, "estimate"].iloc[0])
+        for metric in order
+    ]
+    lower = [
+        float(summary.loc[summary.metric_id == metric, "ci_lower"].iloc[0])
+        for metric in order
+    ]
+    upper = [
+        float(summary.loc[summary.metric_id == metric, "ci_upper"].iloc[0])
+        for metric in order
+    ]
     x = np.arange(len(order))
-    axes[0].errorbar(x, values, yerr=[np.array(values)-np.array(lower), np.array(upper)-np.array(values)], fmt="o", capsize=3)
+    axes[0].errorbar(
+        x,
+        values,
+        yerr=[np.array(values) - np.array(lower), np.array(upper) - np.array(values)],
+        fmt="o",
+        capsize=3,
+    )
     axes[0].set_xticks(x, labels, rotation=18, ha="right")
     axes[0].set_title("(a) Persistent-conflict gates")
     axes[0].grid(axis="y", alpha=0.25)
 
     distribution = data[data.panel_id == "B"].sort_values("quantile")
-    axes[1].plot(distribution["quantile"], distribution.estimate, marker="o", markersize=3)
-    axes[1].fill_between(distribution["quantile"], distribution.ci_lower, distribution.ci_upper, alpha=0.18)
+    axes[1].plot(
+        distribution["quantile"], distribution.estimate, marker="o", markersize=3
+    )
+    axes[1].fill_between(
+        distribution["quantile"],
+        distribution.ci_lower,
+        distribution.ci_upper,
+        alpha=0.18,
+    )
     axes[1].axhline(0.20, linestyle="--", linewidth=1.0, alpha=0.7)
     axes[1].set_xlabel("Quantile")
     axes[1].set_ylabel("Conflict margin")
@@ -113,10 +155,29 @@ def generate_margin_reversal(output: Path) -> tuple[Path, Path]:
     axes[1].grid(alpha=0.25)
 
     boundary = data[data.panel_id == "C"].sort_values("t")
-    axes[2].step(boundary.t, boundary.structural_best_action, where="post", label="Structural best")
-    axes[2].step(boundary.t, boundary.route_best_action, where="post", label="Arrival-route best")
-    axes[2].fill_between(boundary.t, boundary.structural_best_action, boundary.route_best_action, where=boundary.ranking_reversal.astype(bool), alpha=0.18, step="post")
-    axes[2].axvline(float(boundary.boundary_center.iloc[0]), linestyle="--", linewidth=1.0, alpha=0.6)
+    axes[2].step(
+        boundary.t,
+        boundary.structural_best_action,
+        where="post",
+        label="Structural best",
+    )
+    axes[2].step(
+        boundary.t, boundary.route_best_action, where="post", label="Arrival-route best"
+    )
+    axes[2].fill_between(
+        boundary.t,
+        boundary.structural_best_action,
+        boundary.route_best_action,
+        where=boundary.ranking_reversal.astype(bool),
+        alpha=0.18,
+        step="post",
+    )
+    axes[2].axvline(
+        float(boundary.boundary_center.iloc[0]),
+        linestyle="--",
+        linewidth=1.0,
+        alpha=0.6,
+    )
     axes[2].set_xlabel("Evaluation round")
     axes[2].set_ylabel("Action index")
     axes[2].set_title("(c) Representative block boundary")
@@ -135,11 +196,25 @@ def generate_trajectory(output: Path) -> tuple[Path, Path]:
     data_path = output / "figures" / "data" / "fig_exp1_route_trajectory_data.csv"
     _require_files([data_path], output.name)
     data = pd.read_csv(data_path)
-    fig, axes = plt.subplots(2, 1, figsize=(10.5, 5.8), sharex=True, constrained_layout=True)
-    for ax, mechanism in zip(axes, ("exact_valid_shift", "systematic_misbinding"), strict=True):
+    fig, axes = plt.subplots(
+        2, 1, figsize=(10.5, 5.8), sharex=True, constrained_layout=True
+    )
+    for ax, mechanism in zip(
+        axes, ("exact_valid_shift", "systematic_misbinding"), strict=True
+    ):
         group = data[data.mechanism_id == mechanism]
-        ax.step(group.t, group.structural_best_action, where="post", label="Structural best action")
-        ax.step(group.t, group.route_best_action, where="post", label="Arrival-route best action")
+        ax.step(
+            group.t,
+            group.structural_best_action,
+            where="post",
+            label="Structural best action",
+        )
+        ax.step(
+            group.t,
+            group.route_best_action,
+            where="post",
+            label="Arrival-route best action",
+        )
         ax.fill_between(
             group.t,
             group.structural_best_action,
@@ -161,7 +236,6 @@ def generate_trajectory(output: Path) -> tuple[Path, Path]:
     return png, pdf
 
 
-
 def generate_targeted_validation(output: Path) -> tuple[Path, Path] | tuple[()]:
     data_path = output / "targeted" / "fig_exp1_targeted_validation_data.csv"
     _require_files([data_path], output.name)
@@ -172,9 +246,14 @@ def generate_targeted_validation(output: Path) -> tuple[Path, Path] | tuple[()]:
         & (data.metric_id == "structural_regret")
     ].copy()
     fig, axes = plt.subplots(1, 2, figsize=(10.8, 4.3), constrained_layout=True)
-    labels = {"arrival_clock": "Arrival-clock binding", "source_round": "Source-round binding"}
+    labels = {
+        "arrival_clock": "Arrival-clock binding",
+        "source_round": "Source-round binding",
+    }
     for binding in ("arrival_clock", "source_round"):
-        group = mean_data[mean_data.feedback_binding_id == binding].sort_values("target_mean_delay")
+        group = mean_data[mean_data.feedback_binding_id == binding].sort_values(
+            "target_mean_delay"
+        )
         axes[0].errorbar(
             group.target_mean_delay,
             group.estimate,
@@ -190,7 +269,9 @@ def generate_targeted_validation(output: Path) -> tuple[Path, Path] | tuple[()]:
     axes[0].legend(frameon=False)
 
     for binding in ("arrival_clock", "source_round"):
-        group = horizon_data[horizon_data.feedback_binding_id == binding].sort_values("target_horizon")
+        group = horizon_data[horizon_data.feedback_binding_id == binding].sort_values(
+            "target_horizon"
+        )
         axes[1].errorbar(
             group.target_horizon,
             group.estimate,
@@ -222,10 +303,17 @@ def main() -> None:
         parser.error("provide run tier positionally or with --run")
     output = PROJECT_ROOT / "outputs" / run_tier
     artifacts = []
-    for function in (generate_delay_verification, generate_margin_reversal, generate_trajectory, generate_targeted_validation):
+    for function in (
+        generate_delay_verification,
+        generate_margin_reversal,
+        generate_trajectory,
+        generate_targeted_validation,
+    ):
         artifacts.extend(function(output))
     scientific_manifest = json.loads(
-        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(
+            encoding="utf-8"
+        )
     )
     metadata = {
         "run_tier": run_tier,
@@ -242,9 +330,16 @@ def main() -> None:
             }
             for path in artifacts
         ],
-        "targeted_validation_status": "PASS" if (output / "targeted" / "exp1_targeted_validation_report.json").exists() else "NOT_RUN",
+        "targeted_validation_status": (
+            "PASS"
+            if (output / "targeted" / "exp1_targeted_validation_report.json").exists()
+            else "NOT_RUN"
+        ),
     }
-    atomic_write_json(output / "figures" / "metadata" / "exp1_appendix_figures_metadata.json", metadata)
+    atomic_write_json(
+        output / "figures" / "metadata" / "exp1_appendix_figures_metadata.json",
+        metadata,
+    )
     print("APPENDIX_FIGURES_COMPLETE")
     refresh_output_manifest(output)
     for path in artifacts:

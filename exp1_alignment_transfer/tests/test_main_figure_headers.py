@@ -9,6 +9,7 @@ import sys
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 
 import matplotlib.pyplot as plt
@@ -90,7 +91,8 @@ class TestMainFigureHeadersDoNotOverlap(unittest.TestCase):
         header1 = self._box(0)
         header2 = self._box(1)
         self.assertLess(
-            header1.x1, header2.x0,
+            header1.x1,
+            header2.x0,
             f"'Mean delay' right edge {header1.x1} must precede 'Conflict rate' "
             f"left edge {header2.x0}",
         )
@@ -108,8 +110,12 @@ class TestMainFigureHeadersDoNotOverlap(unittest.TestCase):
     def test_value_columns_right_aligned(self) -> None:
         col1_right = {self._box(i).x1 for i in range(2, len(self.texts), 2)}
         col2_right = {self._box(i).x1 for i in range(3, len(self.texts), 2)}
-        self.assertEqual(len(col1_right), 1, f"Mean delay column not aligned: {col1_right}")
-        self.assertEqual(len(col2_right), 1, f"Conflict rate column not aligned: {col2_right}")
+        self.assertEqual(
+            len(col1_right), 1, f"Mean delay column not aligned: {col1_right}"
+        )
+        self.assertEqual(
+            len(col2_right), 1, f"Conflict rate column not aligned: {col2_right}"
+        )
 
     def test_display_names_are_canonical(self) -> None:
         self.assertEqual(self.texts[0].get_text(), "Mean delay")

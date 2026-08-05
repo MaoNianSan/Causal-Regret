@@ -19,7 +19,6 @@ from src.artifact_io import (
     utc_now,
 )
 
-
 PROJECT_ROOT = Path(__file__).resolve().parent
 
 
@@ -30,7 +29,9 @@ def _row(data: pd.DataFrame, mechanism: str, panel: str, series: str) -> pd.Seri
         & (data.series_id == series)
     ]
     if len(subset) != 1:
-        raise RuntimeError(f"Expected one row for {mechanism}/{panel}/{series}, got {len(subset)}")
+        raise RuntimeError(
+            f"Expected one row for {mechanism}/{panel}/{series}, got {len(subset)}"
+        )
     return subset.iloc[0]
 
 
@@ -53,11 +54,19 @@ def _draw_panel_a_columns(
     """
     if header_y is None:
         header_y = float(y.max()) + 0.55
-    header_style = dict(fontsize=8.5, va="center", ha="right", clip_on=False, color="#333333")
-    value_style = dict(fontsize=8, va="center", ha="right", clip_on=False, color="#1f4e79")
+    header_style = dict(
+        fontsize=8.5, va="center", ha="right", clip_on=False, color="#333333"
+    )
+    value_style = dict(
+        fontsize=8, va="center", ha="right", clip_on=False, color="#1f4e79"
+    )
     panel_a = data[data.panel_id == "A"]
-    delay_rows = panel_a[panel_a.series_id == "generated_mean_delay"].set_index("mechanism_id")
-    conflict_rows = panel_a[panel_a.series_id == "ranking_reversal_rate"].set_index("mechanism_id")
+    delay_rows = panel_a[panel_a.series_id == "generated_mean_delay"].set_index(
+        "mechanism_id"
+    )
+    conflict_rows = panel_a[panel_a.series_id == "ranking_reversal_rate"].set_index(
+        "mechanism_id"
+    )
     # Blended transform: x in axes-fraction, y in data coordinates.  Using a
     # plain transAxes transform with data y (0..N) would place the text many
     # axes-heights above the panel and collapse constrained_layout.
@@ -140,7 +149,7 @@ def generate(run_tier: str) -> tuple[Path, Path]:
     # ``Mean delay`` and ``Conflict rate`` (route-optimal conflict rate) are
     # drawn as separate aligned columns at fixed axes-fraction positions so the
     # headers and numeric rows never overlap.
-    ANNOT_COL1_X = 0.70   # right edge of the ``Mean delay`` column
+    ANNOT_COL1_X = 0.70  # right edge of the ``Mean delay`` column
     ANNOT_COL2_X = 0.955  # right edge of the ``Conflict rate`` column
     DATA_WIDTH_FRACTION = 0.55  # alignment data occupies the left 55% of the panel
     ax = axes[0]
@@ -149,7 +158,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
         ax.errorbar(
             alignment.estimate,
             yi,
-            xerr=[[alignment.estimate - alignment.ci_lower], [alignment.ci_upper - alignment.estimate]],
+            xerr=[
+                [alignment.estimate - alignment.ci_lower],
+                [alignment.ci_upper - alignment.estimate],
+            ],
             fmt="o",
             capsize=3,
             color="#1f4e79",
@@ -158,7 +170,9 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             markeredgecolor="#1f4e79",
         )
     anchor = float(
-        data[(data.panel_id == "A") & (data.series_id == "alignment_budget_rate")].ci_upper.max()
+        data[
+            (data.panel_id == "A") & (data.series_id == "alignment_budget_rate")
+        ].ci_upper.max()
     )
     ax.set_xlim(left=0, right=anchor / DATA_WIDTH_FRACTION)
     ax.set_ylim(-0.6, float(y.max()) + 0.9)
@@ -174,11 +188,16 @@ def generate(run_tier: str) -> tuple[Path, Path]:
     for yi, mechanism in zip(y, mechanisms, strict=True):
         structural = _row(data, mechanism, "B", "structural_regret_rate")
         bound = _row(data, mechanism, "B", "transfer_bound_rate")
-        ax.plot([structural.estimate, bound.estimate], [yi, yi], linewidth=1.0, alpha=0.55)
+        ax.plot(
+            [structural.estimate, bound.estimate], [yi, yi], linewidth=1.0, alpha=0.55
+        )
         ax.errorbar(
             structural.estimate,
             yi - offset,
-            xerr=[[structural.estimate - structural.ci_lower], [structural.ci_upper - structural.estimate]],
+            xerr=[
+                [structural.estimate - structural.ci_lower],
+                [structural.ci_upper - structural.estimate],
+            ],
             fmt="o",
             capsize=3,
             color="#1f4e79",
@@ -197,7 +216,9 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             ecolor="#d97706",
             markerfacecolor="white",
             markeredgecolor="#d97706",
-            label=r"$(R_T^r+\mathfrak{A}_T^r)/T$" if mechanism == mechanisms[0] else None,
+            label=(
+                r"$(R_T^r+\mathfrak{A}_T^r)/T$" if mechanism == mechanisms[0] else None
+            ),
         )
     ax.set_yticks(y, [])
     ax.set_xlim(left=0)
@@ -212,11 +233,16 @@ def generate(run_tier: str) -> tuple[Path, Path]:
         arrival = _row(data, mechanism, "C", "arrival_clock")
         source = _row(data, mechanism, "C", "source_round")
         contrast = _row(data, mechanism, "C", "paired_contrast")
-        ax.plot([source.estimate, arrival.estimate], [yi, yi], linewidth=1.2, alpha=0.65)
+        ax.plot(
+            [source.estimate, arrival.estimate], [yi, yi], linewidth=1.2, alpha=0.65
+        )
         ax.errorbar(
             arrival.estimate,
             yi,
-            xerr=[[arrival.estimate - arrival.ci_lower], [arrival.ci_upper - arrival.estimate]],
+            xerr=[
+                [arrival.estimate - arrival.ci_lower],
+                [arrival.ci_upper - arrival.estimate],
+            ],
             fmt="o",
             capsize=3,
             color="#b54708",
@@ -228,7 +254,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
         ax.errorbar(
             source.estimate,
             yi,
-            xerr=[[source.estimate - source.ci_lower], [source.ci_upper - source.estimate]],
+            xerr=[
+                [source.estimate - source.ci_lower],
+                [source.ci_upper - source.estimate],
+            ],
             fmt="s",
             capsize=3,
             color="#2e7d32",
@@ -253,7 +282,9 @@ def generate(run_tier: str) -> tuple[Path, Path]:
     ax.grid(axis="x", alpha=0.25)
     ax.legend(frameon=False, fontsize=8, loc="upper left")
 
-    fig.suptitle("Controlled alignment, regret transfer, and learner consequences", fontsize=13)
+    fig.suptitle(
+        "Controlled alignment, regret transfer, and learner consequences", fontsize=13
+    )
     png = output / "figures" / "png" / "fig_exp1_alignment_transfer.png"
     pdf = output / "figures" / "pdf" / "fig_exp1_alignment_transfer.pdf"
     png.parent.mkdir(parents=True, exist_ok=True)
@@ -263,7 +294,9 @@ def generate(run_tier: str) -> tuple[Path, Path]:
     plt.close(fig)
 
     scientific_manifest = json.loads(
-        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(encoding="utf-8")
+        (PROJECT_ROOT / "calibration" / "exp1_calibration_manifest.json").read_text(
+            encoding="utf-8"
+        )
     )
     metadata = {
         "figure_id": "fig_exp1_alignment_transfer",
