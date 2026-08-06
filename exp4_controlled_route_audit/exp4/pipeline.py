@@ -107,16 +107,21 @@ def run_pipeline(
     aggregate_existing_run(context, calibration)
     render_existing_run(context)
     engineering, scientific = validate_run(context.run_dir)
-    # End-of-run source-consistency check: the complete source hash and git
-    # commit must still match the values frozen when the run was created.
-    source_changed = (
+    # End-of-run source-consistency check: the complete Exp4 source hash must
+    # still match the value frozen when the run was created. A git-commit
+    # change alone (e.g. an unrelated push to a different experiment) is
+    # recorded but does NOT invalidate the run.  If the source hash itself
+    # changed the run is internally inconsistent and cannot be promoted.
+    source_hash_changed = (
         compute_exp4_source_code_hash(base_dir) != context.source_code_hash
-        or git_commit(base_dir) != context.code_commit
     )
-    if source_changed:
+    git_commit_changed = git_commit(base_dir) != context.code_commit
+    source_changed = source_hash_changed
+    if source_hash_changed or git_commit_changed:
         write_json(
             {
-                "source_changed_during_run": True,
+                "source_changed_during_run": source_hash_changed,
+                "git_commit_changed_during_run": git_commit_changed,
                 "detected_at_stage": "final",
                 "frozen_complete_source_hash": context.source_code_hash,
                 "current_complete_source_hash": compute_exp4_source_code_hash(base_dir),

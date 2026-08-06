@@ -77,7 +77,8 @@ def compute_exp4_source_code_hash(base_dir: Path) -> str:
 
 
 def source_code_hash(base_dir: Path) -> str:
-    files = list((base_dir / "exp4").rglob("*.py"))
+    base = base_dir.resolve()
+    files = list((base / "exp4").rglob("*.py"))
     return hash_files(files)
 
 
@@ -153,11 +154,12 @@ def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
     This is the single source of truth for stage hashes: run creation, the
     stage provenance record, and the provenance audit all use it.
     """
-    all_files = list((base_dir / "exp4").rglob("*.py"))
+    base = base_dir.resolve()
+    all_files = list((base / "exp4").rglob("*.py"))
     hashes: dict[str, str] = {}
     for name, prefixes, files in _STAGE_SPECS:
         stage_files = [
-            path for path in all_files if _stage_file_matches(base_dir, path, prefixes, files)
+            path for path in all_files if _stage_file_matches(base, path, prefixes, files)
         ]
         hashes[name] = hash_files(stage_files)
     return hashes
