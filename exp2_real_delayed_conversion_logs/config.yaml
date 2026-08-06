@@ -1,11 +1,15 @@
 experiment:
   experiment_id: exp2
-  experiment_slug: delayed_conversion_attribution
+  experiment_slug: attribution_sensitivity_in_delayed_conversion_logs
   title: Attribution Sensitivity in Delayed-Conversion Logs
+  schema_version: exp2_attribution_sensitivity_v2
+  scope: within_campaign_source_day_attribution_sensitivity
   claim: >-
-    Holding eligible conversion journeys and decision-cell support fixed,
+    Holding eligible conversion journeys, candidate source cells,
+    decision-cell support, and impression denominators fixed,
     alternative attribution routes may induce different source-time credit
-    allocations and different high-ranked campaign-day cells.
+    allocations and different broader orderings of supported
+    campaign-source-day decision cells.
   scope_boundary: >-
     Logged attribution-sensitivity diagnostic only. This experiment does not
     identify a causally correct attribution rule, structural causal regret,
@@ -31,12 +35,12 @@ input:
 
 cohort:
   primary_cohort_id: primary_common_journey_cohort
-  candidate_window_days: 30
-  targeted_candidate_window_days: [7]
+  primary_candidate_window_days: 7
+  robustness_candidate_window_days: [30]
   require_complete_lookback: true
   require_unique_uid_per_journey: true
-  require_unique_candidate_campaign: true
-  prohibit_modal_campaign_fallback: true
+  require_single_campaign_per_journey: true
+  modal_campaign_fallback: false
 
 fast:
   synthetic_fixture: true
@@ -45,24 +49,27 @@ fast:
   target_user_count: 10000
 
 decision_cell:
-  definition: campaign_id_x_source_date_utc
+  definition: campaign_x_source_day_utc
   minimum_impressions: 50
   minimum_eligible_cells: 60
   support_sensitivity: [25, 100]
 
 routes:
   primary:
-    - arrival_bin_anchor
-    - first_touch
-    - last_touch
-    - linear_credit
-    - time_decay_credit
-  appendix:
+    - arrival_time_accounting_anchor
+    - first_click_or_touch
+    - last_click_or_touch
+    - linear_source_cell_credit
+    - time_decay_source_cell_credit
+  exploratory:
     - em_soft_credit
   audit_reference:
     - logged_attribution_reference
-  time_decay_rate_per_day: 0.5
-  time_decay_cell_timestamp: latest_event_in_cell
+  run_exploratory_by_default: false
+  time_decay:
+    half_life_days: 1.38629436112
+    robustness_half_life_days: [1.0, 3.0, 7.0]
+    cell_timestamp: latest_eligible_event_within_cell
   em:
     max_iter: 50
     tolerance: 1.0e-8
@@ -78,14 +85,14 @@ ranking:
   kendall_variant: tau_b
   kendall_support: union_positive_credit_cells
 
-statistics:
-  confidence_level: 0.95
-  bootstrap_unit: user_id
-  bootstrap_interval: percentile
-  bootstrap_seed: 20260725
+resampling:
+  unit: uid
+  seed: 20260725
   fast_repetitions: 200
   full_repetitions: 1000
-  bootstrap_batch_size: 20
+  batch_size: 20
+  reported_quantiles: [0.025, 0.5, 0.975]
+  inferential_interpretation: false
 
 runtime:
   progress_mode: normal

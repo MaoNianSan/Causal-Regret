@@ -6,6 +6,8 @@ import shutil
 from datetime import datetime
 from pathlib import Path
 
+from contracts import SCHEMA_VERSION
+
 
 def _load_json(path: Path) -> dict:
     with path.open("r", encoding="utf-8") as handle:
@@ -20,6 +22,7 @@ def promote_run(project_root: Path, run_id: str) -> Path:
     manifest = _load_json(manifest_path)
 
     required = {
+        "schema_version": SCHEMA_VERSION,
         "run_tier": "full",
         "status": "COMPLETE",
         "engineering_status": "PASS",
@@ -41,15 +44,19 @@ def promote_run(project_root: Path, run_id: str) -> Path:
         raise SystemExit("Run is already marked paper_result=true.")
 
     required_files = [
-        run_root / "figures" / "figure_exp2_main.pdf",
-        run_root / "figures" / "figure_exp2_main_data.csv",
-        run_root / "figures" / "figure_exp2_main_metadata.json",
-        run_root / "tables" / "table_exp2_cohort.tex",
+        run_root / "figures" / "figure_exp2_attribution_sensitivity.pdf",
+        run_root / "figures" / "figure_exp2_attribution_sensitivity_source.csv",
+        run_root / "figures" / "figure_exp2_attribution_sensitivity_metadata.json",
+        run_root / "figures" / "figure_exp2_ambiguity_mechanism.pdf",
+        run_root / "figures" / "figure_exp2_ambiguity_mechanism_source.csv",
+        run_root / "tables" / "table_exp2_cohort_flow.tex",
         run_root / "tables" / "table_exp2_primary_results.tex",
-        run_root / "derived" / "arrival_displacement.csv",
-        run_root / "derived" / "source_route_pairwise.csv",
-        run_root / "audit" / "self_check.json",
-        run_root / "audit" / "bootstrap_audit.json",
+        run_root / "derived" / "primary_comparisons.csv",
+        run_root / "derived" / "cohort_flow.csv",
+        run_root / "derived" / "temporal_coverage.csv",
+        run_root / "audit" / "scientific_validation.json",
+        run_root / "audit" / "resampling_audit.json",
+        run_root / "audit" / "artifact_manifest.json",
     ]
     missing = [str(path) for path in required_files if not path.exists()]
     if missing:
@@ -62,12 +69,16 @@ def promote_run(project_root: Path, run_id: str) -> Path:
     for folder in ("figures", "tables"):
         shutil.copytree(run_root / folder, paper_root / folder)
     for relative in (
-        "derived/cohort_summary.csv",
-        "derived/arrival_displacement.csv",
-        "derived/source_route_pairwise.csv",
+        "derived/cohort_flow.csv",
+        "derived/cohort_scope.json",
+        "derived/temporal_coverage.csv",
+        "derived/primary_comparisons.csv",
+        "derived/ambiguity_mechanism.csv",
+        "derived/targeted_robustness.csv",
         "derived/kendall_support.csv",
-        "audit/self_check.json",
-        "audit/bootstrap_audit.json",
+        "audit/scientific_validation.json",
+        "audit/resampling_audit.json",
+        "audit/artifact_manifest.json",
     ):
         source = run_root / relative
         destination = paper_root / relative
@@ -86,7 +97,7 @@ def promote_run(project_root: Path, run_id: str) -> Path:
     )
     with (paper_root / "run_manifest.json").open("w", encoding="utf-8") as handle:
         json.dump(paper_manifest, handle, ensure_ascii=False, indent=2, sort_keys=True)
-    paper_self_check_path = paper_root / "audit" / "self_check.json"
+    paper_self_check_path = paper_root / "audit" / "scientific_validation.json"
     paper_self_check = _load_json(paper_self_check_path)
     paper_self_check.update(
         {

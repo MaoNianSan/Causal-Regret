@@ -19,5 +19,5 @@ def test_primary_routes_share_cohort_and_conserve_credit(experiment_objects):
 
 def test_time_decay_is_cell_level(experiment_objects):
     assignments = experiment_objects["routes"].assignments
-    decay = assignments.loc[assignments["route_id"].eq("time_decay_credit")]
+    decay = assignments.loc[assignments["route_id"].eq("time_decay_source_cell_credit")]
     assert not decay.duplicated(["journey_id", "decision_cell_id"]).any()

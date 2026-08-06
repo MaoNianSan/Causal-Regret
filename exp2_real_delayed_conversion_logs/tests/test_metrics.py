@@ -40,7 +40,7 @@ def test_frozen_support_leaves_point_estimates_unchanged(experiment_objects):
         )
         assert dynamic_tau == frozen_tau
         assert dynamic_support == frozen_support
-        if state.route_left == "arrival_bin_anchor":
+        if state.route_left == "arrival_time_accounting_anchor":
             assert frozen_tau == arrival.loc[state.route_right, "kendall_tau_b_vs_arrival"]
         else:
             assert frozen_tau == pairwise.loc[
@@ -54,7 +54,7 @@ def test_allocation_tv_and_top_k_are_independent_of_kendall_support(experiment_o
     pairwise = metrics.source_route_pairwise.set_index(["route_left", "route_right"])
     top_k = int(experiment_objects["config"]["ranking"]["primary_top_k"])
     for state in metrics.kendall_metric_states:
-        if state.route_left == "arrival_bin_anchor":
+        if state.route_left == "arrival_time_accounting_anchor":
             continue
         left = allocations.loc[allocations["route_id"].eq(state.route_left)].sort_values(
             "decision_cell_id"

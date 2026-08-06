@@ -1,71 +1,28 @@
-# Experiment 4: Controlled Route Alignment and Evidence-Qualified Audit
+# Experiment 4: Route Alignment and Evidence-Qualified Audit
 
-Experiment 4 is a controlled synthetic audit. It separates the population alignment of an operational route from the reliability of an audit based on limited source-grounded comparison evidence.
+Exp4 v2 is a controlled simulation and audit simulation. It does not identify a real-world causal attribution rule, prove proxy impossibility, or treat calibration improvement as route validity.
 
-Its evidence chain is:
+## Exp1-Exp4 Boundary
 
-$$
-\text{controlled route boundary}
-\longrightarrow
-\text{finite/selective audit evidence}
-\longrightarrow
-\text{affine calibration diagnostics}.
-$$
+Exp1 owns learner consequences, regret transfer, and delay-mechanism comparisons. Exp4 owns three different quantities:
 
-This experiment does **not** establish a general proxy-impossibility theorem, identify a real-world causal attribution rule, or treat calibration improvement as proof of route validity.
+1. **Module A: Controlled Route-Alignment Boundary** varies route-label retention and source-signature noise, with population action-gap defect as the primary estimand.
+2. **Module B: Evidence-Qualified Audit Reliability** holds the route fixed and estimates audit bias, RMSE, and effective support under finite/selective evidence.
+3. **Module C: Calibration-Family Controls** evaluates out-of-fold affine discrepancy reduction without constructing a policy or coherent corrected loss map.
 
-## Scientific modules
+The three modules are not combined into a composite score.
 
-### Module A: controlled route boundary
+## Frozen v2 Design
 
-The simulator provides the complete structural loss map
+- Module A: `T=5000`, `W=250`, 100 formal shared seeds.
+- Module B/C: `T=2000`, `W=100`, 1000 formal replications.
+- Route-label rates: `0`, `0.3`, `0.7`, `1`.
+- Source-signature noise SDs: `0`, `0.10`, `0.25`, `1.00`.
+- Audit rates: `0.10`, `0.30`, `0.50`, `1.00`.
+- Calibration uses 20 independent seed IDs, a median-distance kernel bandwidth, an empirical smoothed delay PMF, and five contiguous temporal folds.
+- V2 schema: `exp4_controlled_route_audit_v2`.
 
-$$
-L_t^c(a)=L^c(a;S_t),
-$$
-
-and constructs simulator-only full-map routes:
-
-- `arrival_time` — arrival-clock assignment with equal aggregation and last observation carried forward;
-- `history_surrogate` — an anonymous observable-history route;
-- `proxy_label` — partial source labels plus fixed proxy attribution;
-- `source_bound` — the source-binding reference.
-
-The primary estimand is
-
-$$
-d_ {\mathrm{pop,raw}}^r
-=
-\frac{1}{T-W}
-\sum_{t=W}^{T-1}
-\max_{a<b}
-\left|G_t^r(a,b)-G_t^c(a,b)\right|.
-$$
-
-The full-map routes are diagnostics. They are not online methods that observe counterfactual action maps.
-
-### Module B: audit reliability
-
-The primary audited route is `proxy_label` with route-label rate `0.30` and attribution-proxy noise standard deviation `0.25`. Audit evidence is generated independently at rates `0.10`, `0.30`, `0.50`, and `1.00`.
-
-The main audit designs are:
-
-1. MCAR, unweighted;
-2. ambiguity-biased inclusion, unweighted;
-3. ambiguity-biased inclusion, inverse-probability weighted with the known simulated inclusion probability.
-
-Pair-specific affine calibration uses five contiguous temporal folds. The calibrated population target is conditional on the fold-specific fitted maps. Pairwise calibrated signals are not converted into a policy or a coherent corrected loss map.
-
-## Information and interpretation boundaries
-
-- Structural loss maps and realized noisy feedback are stored separately.
-- The observation clock is extended to `T + maximum_candidate_delay`, so every source outcome completes route processing.
-- Route-construction labels and audit-evidence labels use independent random streams.
-- The ambiguity score is based on label-blind observable attribution weights and does not read latent states, structural gaps, route-label masks, or future outcomes.
-- Source identity does not automatically identify counterfactual action gaps in ordinary logs. The controlled design supplies those gaps directly.
-- `effective_labelled_sample_size` and `labelled_support_coefficient` quantify evidence support. They are not probabilities of validity or confidence levels.
-- Fast outputs are never paper eligible.
-- Full execution does not perform paper promotion.
+See [MIGRATION_V1_TO_V2.md](MIGRATION_V1_TO_V2.md) for the field and machine-ID migration.
 
 ## Install
 
@@ -73,103 +30,75 @@ Pair-specific affine calibration uses five contiguous temporal folds. The calibr
 python -m pip install -r requirements.txt
 ```
 
-Parquet output is part of the frozen artifact contract, so `pyarrow` is required.
-
-## Run
+## Run Tiers
 
 ```powershell
-# Smoke test and scientific invariant check
-python main.py fast
-
-# Formal run: 30 shared Module A seeds and 200 Module B replications
-python main.py full
+python main.py fast --n-jobs 4
+python main.py middle --n-jobs 8
+python main.py full --n-jobs 8
 ```
 
-The current v1 runner is deterministic and sequential. `--n-jobs` is accepted and recorded for interface stability but does not alter execution.
+| Tier | Module A seeds | Module B/C replications | Bootstrap | Promotion |
+|---|---:|---:|---:|---|
+| fast | 3 | 10 | 0 | refused |
+| middle | 20 | 100 | 500 | refused |
+| full | 100 | 1000 | 2000 | separate approval only |
 
-Each command creates an isolated directory:
+All tiers use the formal scientific horizons. A completed full run remains `paper_result=false`.
+
+## Stage Commands
+
+```powershell
+python main.py validate --run-dir outputs/runs/<run_id>
+python main.py aggregate --run-dir outputs/runs/<run_id>
+python main.py plot --run-dir outputs/runs/<run_id>
+python main.py tables --run-dir outputs/runs/<run_id>
+python main.py report --run-dir outputs/runs/<run_id>
+```
+
+Resume a partially completed tier with explicit stage manifests:
+
+```powershell
+python main.py middle --resume-run-dir outputs/runs/<middle_run_id> --n-jobs 8
+```
+
+## Outputs
+
+Module outputs are separated under:
 
 ```text
-outputs/runs/<run_id>/
+derived/calibration/
+derived/module_a/
+derived/module_b/
+derived/module_c/
 ```
 
-with:
+The main figure is:
 
 ```text
-raw/trajectories/
-raw/route_maps/
-derived/
-figures/pdf/
-figures/png/
-figures/data/
-figures/metadata/
-tables/
-checks/
-reports/
-logs/
+figures/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf
 ```
 
-## Paper promotion
-
-A passed full run remains:
+The main table is:
 
 ```text
-paper_result=false
+tables/tbl_exp4_calibration_controls.tex
 ```
 
-Promotion is a separate explicit action:
+Every figure bundle contains PDF, PNG, source CSV, metadata JSON, source hashes, config hash, calibration hash, code commit, schema, tier, and paper status. Figure and table code reads frozen derived outputs and does not import simulation, route, audit, or calibration engines.
+
+## Scientific Gates
+
+The run validates source-bound and full-label zero defect, all 45 action pairs, positive attribution mass, no future candidates, independent route/audit streams, label-blind ambiguity, the Definition 4.3 defect formula, shared selective masks, IPW positivity, no temporal leakage, affine parameter recovery, blocked correspondence destruction, reconstructable figures, Monte Carlo precision, and the Exp1-Exp4 boundary.
+
+Calibration never falls back silently. Non-estimable folds retain explicit status and missing numeric outputs.
+
+## Promotion
+
+Promotion is a separate manual action and accepts only a passed full v2 run whose Monte Carlo precision gate is `PASS`:
 
 ```powershell
 python promote_results.py --run-dir outputs/runs/<full_run_id> --approve-claims
 ```
 
-The `--approve-claims` flag confirms that manuscript claims remain within the frozen experimental scope. Promotion checks engineering status, scientific status, primary runs, reconstructable figures and tables, current result schema, and claim scope.
-
-## Main paper artifacts
-
-```text
-figures/pdf/fig_exp4_route_alignment_and_audit.pdf
-tables/tbl_exp4_audit_reliability.tex
-reports/exp4_run_summary.md
-```
-
-The main figure contains:
-
-- (a) route-alignment boundary;
-- (b1) raw-defect estimation bias;
-- (b2) raw-defect estimation RMSE;
-- (c) calibration controls.
-
-All figure scripts read frozen derived files. They do not refit models or recompute scientific estimands.
-
-## Hard scientific invariants
-
-The run stops unless:
-
-$$
-d_{\mathrm{pop,raw}}^{\mathrm{source\_bound}}<10^{-12},
-$$
-
-and, for all primary proxy-noise values,
-
-$$
-q_{\mathrm{route}}=1
-\Longrightarrow
-d_{\mathrm{pop,raw}}^{\mathrm{proxy\_label}}<10^{-12}.
-$$
-
-It also checks complete 45-pair support, positive proxy-attribution mass, valid inclusion probabilities, honest temporal cross-fitting, independent route/audit streams, reconstructable population targets, and equality of the full-label Proxy-label learner and Source-bound learner action traces.
-
-## Cleaning
-
-`clean.py` is independent and is never called by the runner:
-
-```powershell
-python clean.py
-```
-
-Type `CLEAN` when prompted.
-
-## Legacy migration
-
-The old directory `exp4_proxy_sufficiency_impossibility` and schema `legacy_exp4_v1` are superseded. See `MIGRATION_RECORD.md`. Legacy outputs cannot be used for the new action-gap estimands or paper promotion.
+Fast, middle, v1, and legacy outputs are refused.

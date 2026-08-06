@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from contracts import SCHEMA_VERSION
 from promote import promote_run
 
 
@@ -16,6 +17,7 @@ def test_promotion_manifest_self_check_and_audit_are_consistent(tmp_path: Path):
     run_root = tmp_path / "outputs" / run_id
     manifest = {
         "run_id": run_id,
+        "schema_version": SCHEMA_VERSION,
         "run_tier": "full",
         "status": "COMPLETE",
         "engineering_status": "PASS",
@@ -30,7 +32,7 @@ def test_promotion_manifest_self_check_and_audit_are_consistent(tmp_path: Path):
     }
     _write_json(run_root / "run_manifest.json", manifest)
     _write_json(
-        run_root / "audit" / "self_check.json",
+        run_root / "audit" / "scientific_validation.json",
         {
             "engineering_status": "PASS",
             "scientific_status": "PASS",
@@ -38,16 +40,22 @@ def test_promotion_manifest_self_check_and_audit_are_consistent(tmp_path: Path):
             "checks": [],
         },
     )
-    _write_json(run_root / "audit" / "bootstrap_audit.json", {"support_frozen": True})
+    _write_json(run_root / "audit" / "resampling_audit.json", {"support_frozen": True})
+    _write_json(run_root / "audit" / "artifact_manifest.json", {"artifacts": []})
     required = [
-        "figures/figure_exp2_main.pdf",
-        "figures/figure_exp2_main_data.csv",
-        "figures/figure_exp2_main_metadata.json",
-        "tables/table_exp2_cohort.tex",
+        "figures/figure_exp2_attribution_sensitivity.pdf",
+        "figures/figure_exp2_attribution_sensitivity_source.csv",
+        "figures/figure_exp2_attribution_sensitivity_metadata.json",
+        "figures/figure_exp2_ambiguity_mechanism.pdf",
+        "figures/figure_exp2_ambiguity_mechanism_source.csv",
+        "tables/table_exp2_cohort_flow.tex",
         "tables/table_exp2_primary_results.tex",
-        "derived/cohort_summary.csv",
-        "derived/arrival_displacement.csv",
-        "derived/source_route_pairwise.csv",
+        "derived/cohort_flow.csv",
+        "derived/cohort_scope.json",
+        "derived/temporal_coverage.csv",
+        "derived/primary_comparisons.csv",
+        "derived/ambiguity_mechanism.csv",
+        "derived/targeted_robustness.csv",
         "derived/kendall_support.csv",
     ]
     for relative in required:
@@ -57,7 +65,7 @@ def test_promotion_manifest_self_check_and_audit_are_consistent(tmp_path: Path):
 
     paper_root = promote_run(tmp_path, run_id)
     paper_manifest = json.loads((paper_root / "run_manifest.json").read_text())
-    self_check = json.loads((paper_root / "audit" / "self_check.json").read_text())
+    self_check = json.loads((paper_root / "audit" / "scientific_validation.json").read_text())
     promotion_audit = json.loads(
         (paper_root / "audit" / "promotion_audit.json").read_text()
     )

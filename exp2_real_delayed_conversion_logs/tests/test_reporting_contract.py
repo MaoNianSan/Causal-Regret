@@ -27,7 +27,7 @@ def test_input_identity_is_location_independent(tmp_path: Path):
 
 
 def test_synthetic_fixture_covers_all_delay_bins(experiment_objects):
-    lags = experiment_objects["cohort"].eligible_candidates["source_lag_days"]
+    lags = experiment_objects["prepared"].candidates["source_lag_days"]
     bins = [-float("inf"), 1 / 24, 6 / 24, 1, 7, 30]
     labels = ["<=1h", "1-6h", "6-24h", "1-7d", "7-30d"]
     counts = pd.cut(lags, bins=bins, labels=labels, include_lowest=True).value_counts(
@@ -64,8 +64,8 @@ def test_manuscript_tables_use_actual_fast_bootstrap_count(experiment_objects, t
         tmp_path,
         bootstrap_audit=bootstrap.audit,
     )
-    cohort_table = pd.read_csv(tmp_path / "table_exp2_cohort.csv")
+    cohort_table = pd.read_csv(tmp_path / "table_exp2_cohort_flow.csv")
     repetitions = cohort_table.loc[
-        cohort_table["Cohort characteristic"].eq("Bootstrap repetitions"), "Value"
+        cohort_table["Cohort characteristic"].eq("Resampling repetitions"), "Value"
     ].iloc[0]
     assert str(repetitions) == "8"
