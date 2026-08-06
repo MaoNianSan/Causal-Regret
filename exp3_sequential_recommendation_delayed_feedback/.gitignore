@@ -2,8 +2,15 @@
 outputs/
 
 # Original and synthetic data
-inputs/KuaiRand-1K/data/*.csv
-inputs/_fast_fixture/
+inputs/**
+!inputs/
+!inputs/README.md
+!inputs/README_local_data.md
+
+# Local audit, validation, and archive workspaces
+audit/
+deliverables/
+validation/
 
 # Python caches
 __pycache__/
