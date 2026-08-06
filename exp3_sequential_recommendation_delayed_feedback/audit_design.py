@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 
 from config import DEFAULT_CONFIG, ExperimentConfig
+from support_metrics import summarize_support_table
 from utilities import read_frame, save_frame, save_json, stable_group
 
 
@@ -39,26 +40,6 @@ def load_audit_design(output_dir: Path) -> AuditDesign:
     )
 
 
-
-def summarize_support_table(support_table: pd.DataFrame) -> dict[str, float | int]:
-    """Aggregate support metrics with equal weight over every audit unit."""
-    if support_table.empty:
-        return {
-            "action_coverage": 0.0,
-            "pair_coverage": 0.0,
-            "audit_unit_coverage": 0.0,
-            "supported_action_count_mean": 0.0,
-            "total_audit_unit_count": 0,
-            "valid_audit_unit_count": 0,
-        }
-    return {
-        "action_coverage": float(support_table["action_coverage"].mean()),
-        "pair_coverage": float(support_table["pair_coverage"].mean()),
-        "audit_unit_coverage": float(support_table["is_valid_audit_unit"].astype(bool).mean()),
-        "supported_action_count_mean": float(support_table["supported_action_count"].mean()),
-        "total_audit_unit_count": int(len(support_table)),
-        "valid_audit_unit_count": int(support_table["is_valid_audit_unit"].astype(bool).sum()),
-    }
 
 def _attach_group(frame: pd.DataFrame, group_count: int, cfg: ExperimentConfig) -> pd.DataFrame:
     out = frame.copy()
@@ -117,6 +98,7 @@ def _history_support(
                 "audit_unit_id": f"{day}__group_{int(group_id):02d}",
                 "supported_action_count": len(supported),
                 "action_coverage": action_coverage,
+                "reference_pair_coverage": pair_coverage,
                 "pair_coverage": pair_coverage,
                 "is_valid_audit_unit": is_valid,
             }

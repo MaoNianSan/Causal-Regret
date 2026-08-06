@@ -2,11 +2,13 @@
 from __future__ import annotations
 
 import hashlib
+import os
 from pathlib import Path
 
 
 SOURCE_SUFFIXES = {".py", ".md", ".txt", ".ini"}
 SOURCE_FILENAMES = {"requirements.txt"}
+EXCLUDED_SOURCE_RELATIVE_PATHS = {"docs/EXP3_REDESIGN_IMPLEMENTATION_REPORT.md"}
 EXCLUDED_PARTS = {
     ".git",
     ".pytest_cache",
@@ -23,14 +25,18 @@ def source_files(project_root: Path) -> list[Path]:
     """Return the sorted code, configuration, test, and documentation source set."""
     project_root = project_root.resolve()
     selected: list[Path] = []
-    for path in project_root.rglob("*"):
-        if not path.is_file():
-            continue
-        relative = path.relative_to(project_root)
-        if any(part in EXCLUDED_PARTS for part in relative.parts):
-            continue
-        if path.name in SOURCE_FILENAMES or path.suffix.lower() in SOURCE_SUFFIXES:
-            selected.append(path)
+    for root, directories, filenames in os.walk(project_root):
+        directories[:] = sorted(
+            directory for directory in directories if directory not in EXCLUDED_PARTS
+        )
+        root_path = Path(root)
+        for filename in sorted(filenames):
+            path = root_path / filename
+            relative = path.relative_to(project_root)
+            if relative.as_posix() in EXCLUDED_SOURCE_RELATIVE_PATHS:
+                continue
+            if path.name in SOURCE_FILENAMES or path.suffix.lower() in SOURCE_SUFFIXES:
+                selected.append(path)
     return sorted(selected, key=lambda path: path.relative_to(project_root).as_posix())
 
 

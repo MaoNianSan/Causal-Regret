@@ -18,6 +18,22 @@ class MetricBounds:
     upper: float | None = None
 
 
+CANONICAL_ROUTE_METRIC_BOUNDS: dict[str, MetricBounds] = {
+    "pooled_supported_cell_spearman": MetricBounds(-1.0, 1.0),
+    "pooled_supported_cell_mae": MetricBounds(0.0, None),
+    "exposure_weighted_supported_cell_mae": MetricBounds(0.0, None),
+    "within_audit_unit_centered_spearman": MetricBounds(-1.0, 1.0),
+    "calibration_intercept": MetricBounds(None, None),
+    "calibration_slope": MetricBounds(None, None),
+    "maximum_heldout_reference_pair_gap_error": MetricBounds(0.0, None),
+    "mean_absolute_reference_pair_gap_error": MetricBounds(0.0, None),
+    "p90_absolute_reference_pair_gap_error": MetricBounds(0.0, None),
+    "heldout_reference_pair_sign_agreement": MetricBounds(0.0, 1.0),
+    "near_tie_pair_share": MetricBounds(0.0, 1.0),
+    "signed_cross_fitted_reference_minus_route_value_difference": MetricBounds(None, None),
+    "top_action_agreement_with_fold_reference": MetricBounds(0.0, 1.0),
+}
+
 ROUTE_METRIC_BOUNDS: dict[str, MetricBounds] = {
     "score_spearman_correlation": MetricBounds(-1.0, 1.0),
     "score_calibration_mae": MetricBounds(0.0, None),
@@ -27,6 +43,12 @@ ROUTE_METRIC_BOUNDS: dict[str, MetricBounds] = {
     "cross_fitted_ranking_shortfall": MetricBounds(None, None),
     "top_action_match_rate": MetricBounds(0.0, 1.0),
 }
+
+
+def metric_bounds(metric_id: str) -> MetricBounds:
+    if metric_id in CANONICAL_ROUTE_METRIC_BOUNDS:
+        return CANONICAL_ROUTE_METRIC_BOUNDS[metric_id]
+    return ROUTE_METRIC_BOUNDS[metric_id]
 
 
 def _finite(values: np.ndarray) -> np.ndarray:

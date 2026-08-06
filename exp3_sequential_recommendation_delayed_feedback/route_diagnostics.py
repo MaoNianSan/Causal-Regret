@@ -27,6 +27,7 @@ def summarize_route_selection(unit_metrics: pd.DataFrame) -> tuple[pd.DataFrame,
                 "unique_selected_action_count": int(len(counts)),
                 "dominant_selected_action_id": str(counts.index[0]) if total else "",
                 "dominant_selected_action_share": float(counts.iloc[0] / total) if total else np.nan,
+                "maximum_selected_action_share": float(counts.iloc[0] / total) if total else np.nan,
                 "selected_action_entropy": entropy,
                 "all_directions_same_action": bool(len(counts) == 1),
             }
@@ -55,6 +56,7 @@ def summarize_route_selection(unit_metrics: pd.DataFrame) -> tuple[pd.DataFrame,
         "selected_action_difference_rate": 1.0 - match_rate if np.isfinite(match_rate) else np.nan,
         "complete_selection_equivalence": bool(np.isfinite(match_rate) and np.isclose(match_rate, 1.0)),
     }
+    summary["ridge_history_selected_action_agreement"] = match_rate
     return summary, contrast
 
 

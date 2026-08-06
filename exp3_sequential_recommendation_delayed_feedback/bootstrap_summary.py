@@ -6,32 +6,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from bootstrap_intervals import MetricBounds, ROUTE_METRIC_BOUNDS, interval_audit
+from bootstrap_intervals import MetricBounds, interval_audit, metric_bounds
+from bootstrap_metric_registry import CANONICAL_ROUTE_METRICS, ROUTE_METRICS, support_status
 from config import ExperimentConfig
 from dependence_diagnostics import summarize_resampling_structure
 from evaluation_artifacts import MetricResult
 from utilities import save_frame, save_json
-
-
-ROUTE_METRICS = (
-    "score_spearman_correlation",
-    "score_calibration_mae",
-    "heldout_gap_defect",
-    "gap_sign_agreement",
-    "gap_reversal_rate",
-    "cross_fitted_ranking_shortfall",
-    "top_action_match_rate",
-)
-
-
-def support_status(support: pd.DataFrame, cfg: ExperimentConfig) -> str:
-    row = support.iloc[0]
-    values = [float(row.action_coverage), float(row.pair_coverage), float(row.audit_unit_coverage)]
-    if any(value < cfg.support_limited_threshold for value in values):
-        return "STOP_AND_REVIEW"
-    if any(value < cfg.history_support_pass_threshold for value in values):
-        return "PASS_WITH_LIMITED_SUPPORT"
-    return "PASS"
 
 
 def _audit(metric: str, point: float, values: np.ndarray, cfg: ExperimentConfig, bounds: MetricBounds) -> dict[str, object]:
@@ -58,7 +38,10 @@ def _route_summaries(
             "route_id": route_id,
             "route_display_name": point["route_display_name"],
             "route_role": point["route_role"],
-            "is_deployable": bool(point["is_deployable"]),
+            "uses_predecision_available_information": bool(
+                point["uses_predecision_available_information"]
+            ),
+            "deployment_value_estimated": bool(point["deployment_value_estimated"]),
             "uses_future_outcome": bool(point["uses_future_outcome"]),
             "uses_source_identity": bool(point.get("uses_source_identity", False)),
             "valid_resampling_count": valid_count,
@@ -70,13 +53,13 @@ def _route_summaries(
             "resampling_unit": "user_cluster",
         }
         draws = route_draws[route_draws["route_id"] == route_id]
-        for metric in ROUTE_METRICS:
+        for metric in CANONICAL_ROUTE_METRICS:
             audit = _audit(
                 metric,
                 float(point[metric]),
                 draws[metric].to_numpy(float),
                 cfg,
-                ROUTE_METRIC_BOUNDS[metric],
+                metric_bounds(metric),
             )
             audit.update({"object_type": "route_metric", "object_id": route_id})
             audit_rows.append(audit)
@@ -84,9 +67,25 @@ def _route_summaries(
             row[f"{metric}_resampling_median"] = audit["resampling_median"]
             row[f"{metric}_sensitivity_lower"] = audit["sensitivity_lower"]
             row[f"{metric}_sensitivity_upper"] = audit["sensitivity_upper"]
-        row["valid_gap_pair_count"] = int(point["valid_gap_pair_count"])
+        for metric in ROUTE_METRICS:
+            row[metric] = point[metric]
+            canonical = {
+                "score_spearman_correlation": "pooled_supported_cell_spearman",
+                "score_calibration_mae": "pooled_supported_cell_mae",
+                "heldout_gap_defect": "maximum_heldout_reference_pair_gap_error",
+                "gap_sign_agreement": "heldout_reference_pair_sign_agreement",
+                "cross_fitted_ranking_shortfall": "signed_cross_fitted_reference_minus_route_value_difference",
+                "top_action_match_rate": "top_action_agreement_with_fold_reference",
+            }.get(metric)
+            if canonical:
+                for suffix in ("resampling_median", "sensitivity_lower", "sensitivity_upper"):
+                    row[f"{metric}_{suffix}"] = row[f"{canonical}_{suffix}"]
+        row["valid_reference_pair_count"] = int(point["valid_reference_pair_count"])
+        row["valid_gap_pair_count"] = int(point["valid_reference_pair_count"])
         row["near_tie_pair_count"] = int(point["near_tie_pair_count"])
+        row["near_tie_pair_share"] = float(point["near_tie_pair_share"])
         row["valid_audit_unit_count"] = int(point["valid_audit_unit_count"])
+        row["valid_direction_count"] = int(point["valid_direction_count"])
         summary_rows.append(row)
     return pd.DataFrame(summary_rows), audit_rows
 
@@ -99,28 +98,31 @@ def _paired_summary(
     pivot = route_draws.pivot(
         index="replication_id",
         columns="route_id",
-        values="cross_fitted_ranking_shortfall",
+        values="signed_cross_fitted_reference_minus_route_value_difference",
     )
     paired_values = (
         pivot["history_mean_control"] - pivot["ridge_proxy"]
         if {"history_mean_control", "ridge_proxy"}.issubset(pivot.columns)
         else pd.Series(dtype=float)
     )
-    point_pivot = point_result.route_metrics.set_index("route_id")["cross_fitted_ranking_shortfall"]
+    point_pivot = point_result.route_metrics.set_index("route_id")[
+        "signed_cross_fitted_reference_minus_route_value_difference"
+    ]
     paired_point = float(point_pivot["history_mean_control"] - point_pivot["ridge_proxy"])
     audit = _audit(
-        "ranking_improvement_vs_history",
+        "ridge_over_historical_paired_value_gain",
         paired_point,
         paired_values.to_numpy(float),
         cfg,
         MetricBounds(),
     )
-    audit.update({"object_type": "paired_contrast", "object_id": "ridge_proxy_vs_history_mean_control"})
+    audit.update({"object_type": "paired_contrast", "object_id": "ridge_over_historical"})
     paired = pd.DataFrame(
         [
             {
-                "contrast_id": "ridge_proxy_vs_history_mean_control",
-                "metric_id": "ranking_improvement_vs_history",
+                "contrast_id": "ridge_over_historical",
+                "metric_id": "ridge_over_historical_paired_value_gain",
+                "full_sample_estimate": paired_point,
                 "point_estimate": paired_point,
                 "resampling_median": audit["resampling_median"],
                 "sensitivity_lower": audit["sensitivity_lower"],
@@ -129,6 +131,7 @@ def _paired_summary(
                 "uncertainty_role": cfg.resampling_output_role,
                 "formal_ci_validated": cfg.formal_ci_validated,
                 "positive_favors": "ridge_proxy",
+                "valid_replication_count": int(paired_values.notna().sum()),
                 "valid_resampling_count": int(paired_values.notna().sum()),
             }
         ]
@@ -196,7 +199,7 @@ def _support_summary(
         ]
     )
     audits: list[dict[str, object]] = []
-    for column in ("action_coverage", "pair_coverage", "audit_unit_coverage"):
+    for column in ("action_coverage", "reference_pair_coverage", "audit_unit_coverage"):
         audit = _audit(
             column,
             float(point[column]),
@@ -209,6 +212,15 @@ def _support_summary(
         summary[f"{column}_resampling_median"] = audit["resampling_median"]
         summary[f"{column}_sensitivity_lower"] = audit["sensitivity_lower"]
         summary[f"{column}_sensitivity_upper"] = audit["sensitivity_upper"]
+    summary["pair_coverage_resampling_median"] = summary[
+        "reference_pair_coverage_resampling_median"
+    ]
+    summary["pair_coverage_sensitivity_lower"] = summary[
+        "reference_pair_coverage_sensitivity_lower"
+    ]
+    summary["pair_coverage_sensitivity_upper"] = summary[
+        "reference_pair_coverage_sensitivity_upper"
+    ]
     return summary, audits, status
 
 
@@ -250,6 +262,7 @@ def summarize_bootstrap(
         "bootstrap_reconstructs_reference_action": True,
         "bootstrap_reconstructs_pair_set": True,
         "bootstrap_retrains_proxy_model": False,
+        "ridge_refit_in_resampling": False,
         "bootstrap_parallel_jobs": n_jobs,
         "replication_seed_rule": "SeedSequence([bootstrap_seed, replication_id])",
         "resume_supported": True,

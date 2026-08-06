@@ -162,6 +162,11 @@ def write_run_report(output_dir: Path, manifest: dict[str, Any]) -> Path:
     )
     coverage_path = output_dir / "tables" / "exp3_action_space_coverage.csv"
     coverage = pd.read_csv(coverage_path) if coverage_path.exists() else pd.DataFrame()
+    support_path = output_dir / "tables" / "exp3_support_coverage.csv"
+    support = pd.read_csv(support_path).iloc[0] if support_path.exists() else pd.Series(dtype=float)
+    ridge_selection = _load_json(
+        output_dir / "metadata" / "exp3_ridge_selection_manifest.json"
+    )
 
     def exposure(scope: str) -> tuple[int, float]:
         if coverage.empty:
@@ -216,6 +221,7 @@ def write_run_report(output_dir: Path, manifest: dict[str, Any]) -> Path:
 - Artifact manifest status: **{manifest.get('artifact_manifest_status', 'NOT_EVALUATED')}**
 - Code version type: `{manifest.get('code_version_type', 'unknown')}`
 - Code version: `{manifest.get('code_version', 'unknown')}`
+- Selected Ridge alpha: **{ridge_selection.get('selected_alpha', 'unknown')}** (history-only rolling temporal validation)
 
 ## Uncertainty interpretation
 
@@ -223,9 +229,10 @@ The full-sample estimates are the primary results. The open markers and horizont
 
 ## Selected-action exposure scope
 
-- Primary support is complete within the selected top-{active_action_count} action space; these actions cover **{active_exposure:.1%}** of evaluation exposure mass.
+- The selected top-{active_action_count} action space covers **{active_exposure:.1%}** of evaluation exposure mass.
+- Within that action space, common-supported action coverage is **{float(support.get('action_coverage', float('nan'))):.1%}**, reference-pair coverage is **{float(support.get('reference_pair_coverage', float('nan'))):.1%}**, audit-unit coverage is **{float(support.get('audit_unit_coverage', float('nan'))):.1%}**, and mean supported actions are **{float(support.get('supported_action_count_mean', float('nan'))):.2f}**.
 - The top-{full_action_count} full-design preflight action space covers **{full_exposure:.1%}** of evaluation exposure mass.
-- Action, pair, and audit-unit coverage refer to support inside the selected action space; they do not claim coverage of the entire event log.
+- Action, reference-pair, and audit-unit coverage refer to support inside the selected action space; they do not claim coverage of the entire event log.
 
 ## Boundary quarantine disclosure
 
@@ -246,8 +253,8 @@ The full-sample estimates are the primary results. The open markers and horizont
 
 - Support-set switch rate: **{switch_rate('arrival_carrier', 'support_set_switch_rate_mean'):.1%}**; valid audit-unit change rate: **{switch_rate('arrival_carrier', 'valid_audit_unit_change_rate_mean'):.1%}**.
 - Held-out reference-action switch rate: **{switch_rate('arrival_carrier', 'reference_action_switch_rate_mean'):.1%}**.
-- Route selected-action switch rate: Arrival carrier **{switch_rate('arrival_carrier', 'route_selected_action_switch_rate_mean'):.1%}**; Historical mean **{switch_rate('history_mean_control', 'route_selected_action_switch_rate_mean'):.1%}**; Ridge proxy **{switch_rate('ridge_proxy', 'route_selected_action_switch_rate_mean'):.1%}**.
-- The offset between the resampling distribution and the full-sample statistic reflects highly overlapping target windows, cell-mean changes under user resampling, held-out reference-action switching, the max-type gap statistic, and Arrival carrier selected-action switching. It is not attributed to support-set switching when that rate is zero.
+- Route selected-action switch rate: Arrival carrier--misbinding control **{switch_rate('arrival_carrier', 'route_selected_action_switch_rate_mean'):.1%}**; Historical mean **{switch_rate('history_mean_control', 'route_selected_action_switch_rate_mean'):.1%}**; Ridge proxy **{switch_rate('ridge_proxy', 'route_selected_action_switch_rate_mean'):.1%}**.
+- The offset between the resampling distribution and the full-sample statistic reflects highly overlapping target windows, cell-mean changes under user resampling, held-out reference-action switching, the max-type gap statistic, and arrival-carrier selected-action switching. It is not attributed to support-set switching when that rate is zero.
 
 Fast outputs are never paper results. Exp3 remains a logged-support recoverability diagnostic, not OPE or structural causal regret.
 """

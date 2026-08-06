@@ -83,7 +83,11 @@ class ExperimentConfig:
         "ridge_proxy",
     )
     history_prior_count: float = 10.0
-    ridge_alpha: float = 4.0
+    ridge_alpha_grid: tuple[float, ...] = (0.1, 0.3, 1.0, 3.0, 10.0, 30.0)
+    ridge_cv_min_train_days: int = 7
+    ridge_cv_metric: str = "macro_supported_cell_mae"
+    ridge_cv_tie_tolerance: float = 1e-4
+    ridge_cv_tie_break: str = "larger_alpha"
 
     # Pseudo-arrival construction.
     pseudo_delay_seed: int = 20260725

@@ -8,12 +8,18 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from bootstrap_intervals import ROUTE_METRIC_BOUNDS, interval_audit
-from bootstrap_summary import ROUTE_METRICS
+from bootstrap_intervals import interval_audit, metric_bounds
+from bootstrap_metric_registry import CANONICAL_ROUTE_METRICS, ROUTE_METRICS
 from config import DEFAULT_CONFIG
 from construct_delayed_targets import _target_one_user
 from plot_appendix_results import _prepare_full_support_preflight
 from route_diagnostics import summarize_route_selection
+from self_check_redesign import (
+    main_figure_data_matches,
+    ridge_selection_contract_matches,
+    target_component_audit_matches,
+    two_fold_contract_matches,
+)
 from utilities import read_frame, sha256_file
 
 
@@ -77,49 +83,6 @@ def target_contract_matches(frame: pd.DataFrame, split_end_ms: int) -> tuple[boo
         checked += len(actual)
     return True, f"verified_events={checked}; window=[t,t+6h)"
 
-
-def main_figure_data_matches(output_dir: Path) -> tuple[bool, str]:
-    primary = pd.read_csv(output_dir / "tables" / "exp3_primary_route_results.csv")
-    calibration = pd.read_csv(output_dir / "tables" / "exp3_decile_calibration.csv")
-    figure = pd.read_csv(output_dir / "figures" / "data" / "exp3_main_score_gap_ranking_data.csv")
-    distribution_columns = [
-        "route_id", "full_sample_estimate", "resampling_median", "sensitivity_lower", "sensitivity_upper"
-    ]
-    gap = figure[figure["panel_id"] == "panel_b_gap"][distribution_columns]
-    gap_expected = primary[[
-        "route_id",
-        "heldout_gap_defect",
-        "heldout_gap_defect_resampling_median",
-        "heldout_gap_defect_sensitivity_lower",
-        "heldout_gap_defect_sensitivity_upper",
-    ]].rename(columns={
-        "heldout_gap_defect": "full_sample_estimate",
-        "heldout_gap_defect_resampling_median": "resampling_median",
-        "heldout_gap_defect_sensitivity_lower": "sensitivity_lower",
-        "heldout_gap_defect_sensitivity_upper": "sensitivity_upper",
-    })
-    rank = figure[figure["panel_id"] == "panel_c_ranking"][distribution_columns]
-    rank_expected = primary[[
-        "route_id",
-        "cross_fitted_ranking_shortfall",
-        "cross_fitted_ranking_shortfall_resampling_median",
-        "cross_fitted_ranking_shortfall_sensitivity_lower",
-        "cross_fitted_ranking_shortfall_sensitivity_upper",
-    ]].rename(columns={
-        "cross_fitted_ranking_shortfall": "full_sample_estimate",
-        "cross_fitted_ranking_shortfall_resampling_median": "resampling_median",
-        "cross_fitted_ranking_shortfall_sensitivity_lower": "sensitivity_lower",
-        "cross_fitted_ranking_shortfall_sensitivity_upper": "sensitivity_upper",
-    })
-    score_columns = ["route_id", "calibration_decile", "mean_predicted_target", "mean_observed_target"]
-    score = figure[figure["panel_id"] == "panel_a_score"][score_columns]
-    score_expected = calibration[calibration["route_id"].isin(["history_mean_control", "ridge_proxy"])][score_columns]
-    passed = (
-        frames_equal(gap, gap_expected, ["route_id"])
-        and frames_equal(rank, rank_expected, ["route_id"])
-        and frames_equal(score, score_expected, ["route_id", "calibration_decile"])
-    )
-    return passed, "main figure separates full-sample points from empirical resampling medians/ranges"
 
 def full_preflight_figure_data_matches(output_dir: Path) -> tuple[bool, str]:
     action_path = output_dir / "derived" / "exp3_full_design_support_by_action.csv"
@@ -321,16 +284,22 @@ def bootstrap_interval_audit_matches(output_dir: Path) -> tuple[bool, str]:
     draws = read_frame(output_dir / "derived" / "exp3_bootstrap_route_draws.parquet")
     audit = pd.read_csv(output_dir / "checks" / "exp3_resampling_sensitivity_audit.csv")
     route_audit = audit[audit["object_type"] == "route_metric"].copy()
+    metrics = (
+        CANONICAL_ROUTE_METRICS
+        if set(CANONICAL_ROUTE_METRICS).issubset(primary.columns)
+        and set(CANONICAL_ROUTE_METRICS).issubset(draws.columns)
+        else ROUTE_METRICS
+    )
     expected_rows: list[dict[str, object]] = []
     for point in primary.itertuples():
         route_draws = draws[draws["route_id"] == point.route_id]
-        for metric in ROUTE_METRICS:
+        for metric in metrics:
             expected = interval_audit(
                 metric_id=metric,
                 point_estimate=float(getattr(point, metric)),
                 values=route_draws[metric].to_numpy(float),
                 range_level=DEFAULT_CONFIG.resampling_range_level,
-                bounds=ROUTE_METRIC_BOUNDS[metric],
+                bounds=metric_bounds(metric),
             )
             expected.update({"object_type": "route_metric", "object_id": point.route_id})
             expected_rows.append(expected)

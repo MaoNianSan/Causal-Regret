@@ -80,6 +80,7 @@ def _support_cells(
         (unit["supported_action_count"] - 1) / float(max(action_count - 1, 1)),
         0.0,
     )
+    unit["reference_pair_coverage"] = unit["pair_coverage"]
     unit["is_valid_audit_unit"] = unit["supported_action_count"] >= 2
     return pivot, unit, summarize_support_table(unit)
 
@@ -213,6 +214,7 @@ def run_full_design_support_preflight(
         "support_limited_threshold": cfg.support_limited_threshold,
         "evaluation_action_coverage": evaluation_summary["action_coverage"],
         "evaluation_pair_coverage": evaluation_summary["pair_coverage"],
+        "evaluation_reference_pair_coverage": evaluation_summary["reference_pair_coverage"],
         "evaluation_audit_unit_coverage": evaluation_summary["audit_unit_coverage"],
         "selection_uses_evaluation_data": False,
     }

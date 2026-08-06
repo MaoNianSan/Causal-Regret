@@ -1,7 +1,7 @@
 """Immutable evaluation-array types and frozen point-estimate I/O."""
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 import numpy as np
@@ -35,6 +35,7 @@ class MetricResult:
     audit_unit_metrics: pd.DataFrame
     action_cell_metrics: pd.DataFrame
     decile_calibration: pd.DataFrame
+    gap_error_distribution: pd.DataFrame = field(default_factory=pd.DataFrame)
 
 
 def save_evaluation_arrays(arrays: EvaluationArrays, output_dir: Path) -> Path:
@@ -92,6 +93,7 @@ def load_point_estimates(output_dir: Path) -> MetricResult:
         audit_unit_metrics=read_frame(output_dir / "derived" / "exp3_audit_unit_metrics.parquet"),
         action_cell_metrics=read_frame(output_dir / "derived" / "exp3_action_cell_metrics.parquet"),
         decile_calibration=read_frame(output_dir / "derived" / "exp3_decile_calibration_point.csv"),
+        gap_error_distribution=read_frame(output_dir / "tables" / "exp3_gap_error_distribution.csv"),
     )
 
 
@@ -103,4 +105,5 @@ def write_point_estimates(result: MetricResult, output_dir: Path) -> None:
     save_frame(result.audit_unit_metrics, output_dir / "derived" / "exp3_audit_unit_metrics.parquet")
     save_frame(result.action_cell_metrics, output_dir / "derived" / "exp3_action_cell_metrics.parquet")
     save_frame(result.decile_calibration, output_dir / "derived" / "exp3_decile_calibration_point.csv")
+    save_frame(result.gap_error_distribution, output_dir / "tables" / "exp3_gap_error_distribution.csv")
     write_route_selection_diagnostics(result.audit_unit_metrics, output_dir)
