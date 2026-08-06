@@ -8,6 +8,7 @@ from typing import Any
 
 import pandas as pd
 
+from design_contract import ROUTE_SPECS
 from utilities import save_frame
 
 
@@ -253,7 +254,7 @@ The full-sample estimates are the primary results. The open markers and horizont
 
 - Support-set switch rate: **{switch_rate('arrival_carrier', 'support_set_switch_rate_mean'):.1%}**; valid audit-unit change rate: **{switch_rate('arrival_carrier', 'valid_audit_unit_change_rate_mean'):.1%}**.
 - Held-out reference-action switch rate: **{switch_rate('arrival_carrier', 'reference_action_switch_rate_mean'):.1%}**.
-- Route selected-action switch rate: Arrival carrier--misbinding control **{switch_rate('arrival_carrier', 'route_selected_action_switch_rate_mean'):.1%}**; Historical mean **{switch_rate('history_mean_control', 'route_selected_action_switch_rate_mean'):.1%}**; Ridge proxy **{switch_rate('ridge_proxy', 'route_selected_action_switch_rate_mean'):.1%}**.
+- Route selected-action switch rate: {ROUTE_SPECS['arrival_carrier'].route_display_name} **{switch_rate('arrival_carrier', 'route_selected_action_switch_rate_mean'):.1%}**; Historical mean **{switch_rate('history_mean_control', 'route_selected_action_switch_rate_mean'):.1%}**; Ridge proxy **{switch_rate('ridge_proxy', 'route_selected_action_switch_rate_mean'):.1%}**.
 - The offset between the resampling distribution and the full-sample statistic reflects highly overlapping target windows, cell-mean changes under user resampling, held-out reference-action switching, the max-type gap statistic, and arrival-carrier selected-action switching. It is not attributed to support-set switching when that rate is zero.
 
 Fast outputs are never paper results. Exp3 remains a logged-support recoverability diagnostic, not OPE or structural causal regret.

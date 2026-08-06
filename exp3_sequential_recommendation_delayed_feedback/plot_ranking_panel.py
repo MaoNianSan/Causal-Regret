@@ -4,7 +4,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from plot_contract import COLORS, draw_route_metric, validated_range
+from plot_contract import COLORS, MAIN_FIGURE_RANKING_METRICS, draw_route_metric, validated_range
 
 
 def draw_ranking_panels(
@@ -16,7 +16,7 @@ def draw_ranking_panels(
     rows = draw_route_metric(
         top,
         primary,
-        "top_action_agreement_with_fold_reference",
+        MAIN_FIGURE_RANKING_METRICS[0],
         "Agreement (higher is better)",
         show_labels=False,
     )
@@ -43,7 +43,7 @@ def draw_ranking_panels(
         {
             "panel_id": "panel_c_ranking",
             "contrast_id": contrast["contrast_id"],
-            "metric_id": "ridge_over_historical_paired_value_gain",
+            "metric_id": MAIN_FIGURE_RANKING_METRICS[1],
             "full_sample_estimate": point,
             "resampling_median": median,
             "sensitivity_lower": low,

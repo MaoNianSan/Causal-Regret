@@ -20,7 +20,24 @@ COLORS = {
     "history_mean_control": "#4C72B0",
     "ridge_proxy": "#2A7F62",
 }
-PANEL_A_TITLE = "History-based score calibration on common held-out support"
+PANEL_A_TITLE = "Score recovery on common logged support"
+MAIN_FIGURE_SCORE_METRICS = (
+    "pooled_supported_cell_spearman",
+    "pooled_supported_cell_mae",
+)
+MAIN_FIGURE_GAP_METRICS = (
+    "maximum_heldout_reference_pair_gap_error",
+    "heldout_reference_pair_sign_agreement",
+)
+MAIN_FIGURE_RANKING_METRICS = (
+    "top_action_agreement_with_fold_reference",
+    "ridge_over_historical_paired_value_gain",
+)
+MAIN_FIGURE_METRICS = (
+    *MAIN_FIGURE_SCORE_METRICS,
+    *MAIN_FIGURE_GAP_METRICS,
+    *MAIN_FIGURE_RANKING_METRICS,
+)
 SENSITIVITY_CAPTION = (
     "The open markers and horizontal ranges summarize the empirical user-cluster "
     "resampling distribution. They are sensitivity diagnostics rather than confidence "
@@ -78,6 +95,16 @@ def load_main_figure_inputs(output_dir: Path) -> MainFigureInputs:
     if missing:
         raise RuntimeError(f"Main figure is missing routes: {missing}")
     primary = primary.set_index("route_id").loc[ROUTE_ORDER].reset_index()
+    registry = read_table(paths[4])
+    deprecated = registry["deprecated"].astype(str).str.lower().isin({"true", "1"})
+    active_registry = registry[~deprecated]
+    missing_metrics = set(MAIN_FIGURE_METRICS).difference(
+        active_registry["metric_id"].astype(str)
+    )
+    if missing_metrics:
+        raise RuntimeError(
+            f"Main figure metric registry is missing canonical metrics: {sorted(missing_metrics)}"
+        )
     manifest_path = output_dir / "metadata" / "run_manifest.json"
     selection_path = output_dir / "metadata" / "exp3_ridge_selection_manifest.json"
     return MainFigureInputs(
@@ -85,7 +112,7 @@ def load_main_figure_inputs(output_dir: Path) -> MainFigureInputs:
         paired=read_table(paths[1]),
         support=read_table(paths[2]).iloc[0],
         action_coverage=read_table(paths[3]),
-        registry=read_table(paths[4]),
+        registry=registry,
         manifest=json.loads(manifest_path.read_text(encoding="utf-8")),
         selection=json.loads(selection_path.read_text(encoding="utf-8")),
         source_paths=paths,

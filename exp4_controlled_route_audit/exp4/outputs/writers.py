@@ -53,18 +53,39 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
-def hash_files(paths: Iterable[Path]) -> str:
+def hash_files(paths: Iterable[Path], *, root: Path, algorithm_version: str) -> str:
     digest = hashlib.sha256()
-    for path in sorted(paths):
-        digest.update(path.as_posix().encode("utf-8"))
-        digest.update(path.read_bytes())
+    root = root.resolve()
+    normalized: list[tuple[str, Path]] = []
+    seen: set[str] = set()
+    for path in paths:
+        resolved = path.resolve()
+        try:
+            relative = resolved.relative_to(root).as_posix()
+        except ValueError as exc:
+            raise ValueError(
+                f"path {resolved} is outside root {root}"
+            ) from exc
+        if relative in seen:
+            raise ValueError(f"duplicate normalized path: {relative}")
+        seen.add(relative)
+        normalized.append((relative, resolved))
+
+    digest.update(algorithm_version.encode("utf-8"))
+    digest.update(b"\0")
+
+    for relative, resolved in sorted(normalized):
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(resolved.read_bytes())
+        digest.update(b"\0")
     return digest.hexdigest()
 
 
 # Version tag for the source-code hash algorithm. It is recorded in run
 # configs, provenance audits, and promotion checks so that a future algorithm
 # change cannot silently invalidate or re-interpret stored hashes.
-SOURCE_HASH_ALGORITHM_VERSION = "exp4-source-code-v1"
+SOURCE_HASH_ALGORITHM_VERSION = "exp4-source-code-v2"
 
 
 def compute_exp4_source_code_hash(base_dir: Path) -> str:
@@ -79,7 +100,11 @@ def compute_exp4_source_code_hash(base_dir: Path) -> str:
 def source_code_hash(base_dir: Path) -> str:
     base = base_dir.resolve()
     files = list((base / "exp4").rglob("*.py"))
-    return hash_files(files)
+    return hash_files(
+        files,
+        root=base,
+        algorithm_version=SOURCE_HASH_ALGORITHM_VERSION,
+    )
 
 
 # Stage-level source-hash definitions. Configuration is a shared dependency of
@@ -161,7 +186,11 @@ def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
         stage_files = [
             path for path in all_files if _stage_file_matches(base, path, prefixes, files)
         ]
-        hashes[name] = hash_files(stage_files)
+        hashes[name] = hash_files(
+            stage_files,
+            root=base,
+            algorithm_version=SOURCE_HASH_ALGORITHM_VERSION,
+        )
     return hashes
 
 

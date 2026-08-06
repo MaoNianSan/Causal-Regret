@@ -33,7 +33,7 @@ The three routes are:
 
 | Route | Role | Uses predecision-available information | Deployment value estimated |
 |---|---|---:|---:|
-| Arrival carrier--misbinding control | deliberate source-misbinding control | true | false |
+| Arrival carrier—misbinding control | deliberate source-misbinding control | true | false |
 | Historical mean | simple history control | true | false |
 | Ridge proxy | history-fitted proxy route | true | false |
 
@@ -52,10 +52,10 @@ reconstructed by self-check.
 ## Ridge selection
 
 Ridge alpha is selected only from history calendar days by rolling-origin temporal
-validation. Training dates are strictly earlier than each validation date. The
-selection metric is macro supported-cell MAE, and candidates within `1e-4` of the
-best value use the larger alpha. The selected value is a run artifact, not source
-configuration.
+validation. Training dates are strictly earlier than each validation date, and
+validation scores use only history common-supported action cells. The selection
+metric is macro supported-cell MAE, and candidates within `1e-4` of the best value
+use the larger alpha. The selected value is a run artifact, not source configuration.
 
 ```text
 tables/exp3_ridge_history_cv.csv
@@ -64,6 +64,10 @@ metadata/exp3_ridge_selection_manifest.json
 
 Evaluation data cannot be passed to the selector. The selected model is refit on
 the complete history split before evaluation scoring.
+
+The target component audit independently reconstructs the six-hour component
+windows, reports P0/P25/P50/P75/P90/P95/P99 and the target zero rate, and discloses
+that LongView appears in both the constructed target and the observable proxy.
 
 ## Canonical outputs
 

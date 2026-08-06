@@ -71,7 +71,9 @@ def fit_routes(
         raise RuntimeError("Ridge feature construction produced no rows.")
     selection = select_ridge_alpha(training, len(actions), cfg)
     persist_ridge_selection(selection, output_dir)
-    beta, feature_names = fit_ridge_coefficients(training, len(actions), selection.selected_alpha)
+    beta, feature_names = refit_final_ridge(
+        training, len(actions), selection.selected_alpha
+    )
     x_score, _ = design_matrix(scoring, len(actions))
     scoring["ridge_proxy_score"] = x_score @ beta
     scoring["history_mean_score"] = [
@@ -108,11 +110,22 @@ def fit_routes(
             "feature_schema_hash": selection.manifest["feature_schema_hash"],
             "history_design_hash": selection.manifest["history_design_hash"],
             "training_cell_count": int(len(training)),
+            "final_refit_scope": "full_history_training_cells",
+            "final_refit_cell_count": int(len(training)),
             "scoring_cell_count": int(len(scoring)),
         },
         output_dir / "metadata" / "exp3_model_manifest.json",
     )
     return FittedRoutes(history_scores, beta, route_scores, feature_names, selection.selected_alpha)
+
+
+def refit_final_ridge(
+    training: pd.DataFrame,
+    action_count: int,
+    selected_alpha: float,
+) -> tuple[np.ndarray, tuple[str, ...]]:
+    """Fit the frozen Ridge design once on every available history training cell."""
+    return fit_ridge_coefficients(training, action_count, selected_alpha)
 
 
 _history_mean_scores = history_mean_scores

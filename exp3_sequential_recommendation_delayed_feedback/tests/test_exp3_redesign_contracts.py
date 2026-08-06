@@ -9,10 +9,12 @@ import pytest
 
 from audit_design import AuditDesign
 from config import DEFAULT_CONFIG
+from design_contract import metric_registry_frame
 from evaluate_recoverability import compute_metrics
 from evaluation_artifacts import EvaluationArrays
 from ranking_metrics import ridge_over_historical_paired_value_gain
 from ridge_selection import choose_alpha, rolling_origin_splits, select_ridge_alpha
+from route_fitting import refit_final_ridge
 from target_audit import audit_target_components
 
 
@@ -120,6 +122,7 @@ def _ridge_training(days: int = 10) -> pd.DataFrame:
                     "lag_proxy_missing": 0.0,
                     "target_mean": 0.2 * day + 0.5 * action_rank,
                     "target_count": 20 + action_rank,
+                    "is_common_supported": True,
                 }
             )
     return pd.DataFrame(rows)
@@ -129,6 +132,10 @@ def test_ridge_alpha_selection_uses_history_only() -> None:
     selection = select_ridge_alpha(_ridge_training(), 2, DEFAULT_CONFIG)
     assert selection.manifest["selection_scope"] == "history_only"
     assert selection.manifest["evaluation_data_used"] is False
+    assert (
+        selection.manifest["validation_support_scope"]
+        == "history_common_supported_action_cells"
+    )
 
 
 def test_ridge_selector_rejects_evaluation_frame() -> None:
@@ -165,6 +172,38 @@ def test_selected_alpha_is_persisted_not_source_mutated() -> None:
     assert not hasattr(DEFAULT_CONFIG, "ridge_alpha")
 
 
+def test_ridge_history_cv_uses_only_common_supported_validation_cells() -> None:
+    training = _ridge_training()
+    validation_day = training["calendar_day"].max()
+    training.loc[
+        (training["calendar_day"] == validation_day)
+        & (training["action_id"] == "a1"),
+        "is_common_supported",
+    ] = False
+    selection = select_ridge_alpha(training, 2, DEFAULT_CONFIG)
+    origin = selection.cv_results[
+        selection.cv_results["validation_date"] == validation_day
+    ]
+    assert not origin.empty
+    assert set(origin["supported_cell_count"]) == {1}
+
+
+def test_final_ridge_refits_on_full_history(monkeypatch: pytest.MonkeyPatch) -> None:
+    training = _ridge_training()
+    captured: dict[str, object] = {}
+
+    def fake_fit(frame: pd.DataFrame, action_count: int, alpha: float):
+        captured.update(frame=frame, action_count=action_count, alpha=alpha)
+        return np.zeros(action_count + 4), tuple(f"f{i}" for i in range(action_count + 4))
+
+    monkeypatch.setattr("route_fitting.fit_ridge_coefficients", fake_fit)
+    refit_final_ridge(training, 2, 3.0)
+    assert captured["frame"] is training
+    assert len(captured["frame"]) == len(training)
+    assert captured["action_count"] == 2
+    assert captured["alpha"] == 3.0
+
+
 def test_paired_gain_sign_convention() -> None:
     metrics = pd.DataFrame(
         {
@@ -185,10 +224,28 @@ def test_paired_gain_zero_when_routes_identical() -> None:
     assert ridge_over_historical_paired_value_gain(metrics) == 0.0
 
 
+def test_paired_gain_positive_when_ridge_is_better() -> None:
+    metrics = pd.DataFrame(
+        {
+            "route_id": ["history_mean_control", "ridge_proxy"],
+            "signed_cross_fitted_reference_minus_route_value_difference": [0.4, 0.1],
+        }
+    )
+    assert ridge_over_historical_paired_value_gain(metrics) > 0
+
+
+def test_metric_registry_marks_pair_coverage_alias_deprecated() -> None:
+    registry = metric_registry_frame().set_index("metric_id")
+    assert registry.loc["pair_coverage", "canonical_metric_id"] == "reference_pair_coverage"
+    assert bool(registry.loc["pair_coverage", "deprecated"])
+
+
 def _target_frame() -> pd.DataFrame:
     cfg = DEFAULT_CONFIG
     return pd.DataFrame(
         {
+            cfg.user_col: ["u1", "u1"],
+            cfg.time_col: [0, 1],
             cfg.long_view_col: [1.0, 0.0],
             cfg.like_col: [0.0, 1.0],
             cfg.comment_col: [0.0, 0.0],
@@ -212,4 +269,12 @@ def test_target_audit_matches_constructed_target_formula() -> None:
     audit = audit_target_components(_target_frame(), "history")
     contract = audit[audit["record_type"] == "contract"].iloc[0]
     assert bool(contract["constructed_formula_matches"])
+    assert bool(contract["component_formula_matches"])
     assert contract["target_interval"] == "[t,t+6h)"
+    summary = audit[audit["record_type"] == "target_summary"].iloc[0]
+    assert summary["eligible_source_event_count"] == 1
+    assert summary["target_zero_rate"] == 0.0
+    assert np.isclose(summary["target_p25"], np.log1p(1.5))
+    components = audit[audit["record_type"] == "component"].set_index("component_id")
+    assert np.isclose(components.loc["long_view", "raw_weighted_contribution"], 0.5)
+    assert np.isclose(components.loc["like", "raw_weighted_contribution"], 1.0)

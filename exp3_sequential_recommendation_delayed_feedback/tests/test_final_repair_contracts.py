@@ -35,7 +35,7 @@ def test_panel_title_sensitivity_caption_and_dynamic_exposure_contract() -> None
             "selected_action_exposure_mass_coverage": [0.1234],
         }
     )
-    assert PANEL_A_TITLE == "History-based score calibration on common held-out support"
+    assert PANEL_A_TITLE == "Score recovery on common logged support"
     assert _evaluation_exposure_scope(table, "active_run") == (7, 0.1234)
     assert "sensitivity diagnostics rather than confidence intervals" in SENSITIVITY_CAPTION
     assert "need not contain the full-sample estimate" in SENSITIVITY_CAPTION

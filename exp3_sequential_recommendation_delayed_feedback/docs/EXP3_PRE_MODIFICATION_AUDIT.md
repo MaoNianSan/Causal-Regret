@@ -74,3 +74,49 @@ action vocabulary, support thresholds, six-hour horizon, pseudo-delay range and 
 Retain legacy aliases for one compatibility release while making canonical metric and
 route metadata names authoritative. Do not run full, promote, archive, or modify Exp1,
 Exp2, Exp4, paper sources, raw inputs, or promoted historical outputs.
+
+## Contract-completion audit before the 2026-08-06 verification pass
+
+This second read-only audit was performed before any contract-completion edits in the
+current pass. The repository already contained commit `49d1898` (`exp3 redesign`), so
+the task boundary is to verify that implementation against the supplied design contract
+and repair remaining discrepancies without changing the scientific task.
+
+- Current Git commit: `d303550215c9dd3a050e919d44a25994f00d2087`.
+- Current source-tree SHA-256: `546332ccb503f1d5c0da2d79f72de45d31af75df59f0b05f5612c6382229cead`.
+- Worktree at audit start contained one pre-existing untracked file:
+  `docs/EXP3_REDESIGN_IMPLEMENTATION_REPORT.md`.
+- Active tests: `test_contracts.py`, `test_exp3_redesign_contracts.py`,
+  `test_final_repair_contracts.py`, and `test_target_and_figure_contracts.py`.
+- Baseline verification: `python -m compileall .` passed and `pytest -q` reported
+  `45 passed`.
+
+Current design/config contracts are frozen at Asia/Shanghai calendar days, a six-hour
+left-closed/right-open target window, history-defined candidate actions, two reference
+folds, the existing fast/full support thresholds, pseudo-delay seed `20260725`, and the
+Ridge grid `(0.1, 0.3, 1.0, 3.0, 10.0, 30.0)`. Route metadata is centralized in
+`design_contract.py`; the two-fold implementation is in `evaluate_recoverability.py`
+around the `selection_fold`/`evaluation_fold` loop; figures read frozen tables through
+`plot_contract.py`; resume compatibility checks are in `pipeline_contract.py` and
+`pipeline_resume.py`; promoted outputs remain protected by immutable-run checks.
+
+The audit identified the following contract-completion gaps:
+
+1. `ridge_features.py` creates history CV rows from every nonempty target cell rather
+   than explicitly restricting validation to history common-supported action cells.
+2. `target_audit.py` reports weighted source-event component totals, not the component
+   totals inside each constructed six-hour target window, and omits several required
+   distribution quantiles and the target zero rate.
+3. `design_contract.py` maps deprecated `pair_coverage` internally but does not emit a
+   corresponding deprecated row in `exp3_metric_registry.csv`.
+4. Required behavioral tests are missing for final full-history Ridge refit, positive
+   paired gain, no Ridge refit during resampling, support/action reconstruction during
+   resampling, frozen-table-only figure loading, and figure/table reproduction.
+5. The current hard 300-line gate is exceeded by `plot_appendix_results.py` (311),
+   `self_check_helpers.py` (324), and `tests/test_target_and_figure_contracts.py` (343).
+
+Potentially affected files in this completion pass are limited to the Exp3 directory:
+`design_contract.py`, `ridge_features.py`, `ridge_selection.py`, `route_fitting.py`,
+`target_audit.py`, bootstrap/plot/self-check helpers, tests, README/schema documentation,
+and this implementation report. Full, promotion, archive, old outputs, raw inputs, and
+all other experiments remain outside the allowed execution boundary.

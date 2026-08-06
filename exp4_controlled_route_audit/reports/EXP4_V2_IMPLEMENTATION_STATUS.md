@@ -2,7 +2,7 @@
 
 Status date: 2026-08-06T17:58:32
 Schema: `exp4_controlled_route_audit_v2`
-Source hash algorithm: `exp4-source-code-v1`
+Source hash algorithm: `exp4-source-code-v2`
 Scope: `exp4_controlled_route_audit` only
 
 ## Run Registry

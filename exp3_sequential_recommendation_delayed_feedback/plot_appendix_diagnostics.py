@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from design_contract import ROUTE_SPECS
 
 ACTION_COLOR = "#4C72B0"
 
@@ -78,11 +79,7 @@ def draw_dependence_structure(
     ax_reuse.grid(alpha=0.18)
     ax_reuse.legend(frameon=False, fontsize=7)
     route_order = ["arrival_carrier", "history_mean_control", "ridge_proxy"]
-    display = {
-        "arrival_carrier": "Arrival carrier--misbinding control",
-        "history_mean_control": "Historical mean",
-        "ridge_proxy": "Ridge proxy",
-    }
+    display = {route_id: ROUTE_SPECS[route_id].route_display_name for route_id in route_order}
     metrics = (
         ("support_set_switch_rate_mean", "Support set", "o"),
         ("reference_action_switch_rate_mean", "Reference action", "s"),

@@ -125,6 +125,12 @@ def compute_metrics(
                 continue
             combined_sum = source_sum[day_index, group_id].sum(axis=0)
             combined_count = source_count[day_index, group_id].sum(axis=0)
+            combined_observed = np.divide(
+                combined_sum,
+                combined_count,
+                out=np.full_like(combined_sum, np.nan, dtype=float),
+                where=combined_count > 0,
+            )
             cell_rows.extend(
                 _cell_rows(
                     day,
@@ -132,7 +138,7 @@ def compute_metrics(
                     str(support["audit_unit_id"]),
                     supported,
                     arrays.candidate_actions,
-                    combined_sum / combined_count,
+                    combined_observed,
                     combined_count,
                     route_arrays,
                     day_index,

@@ -196,6 +196,16 @@ METRIC_SPECS = (
         "secondary",
     ),
     MetricSpec(
+        "reference_pair_coverage",
+        "Reference-pair coverage",
+        "support",
+        "Available reference-versus-supported-alternative pairs divided by the frozen candidate reference-pair count.",
+        "audit_unit",
+        "descriptive",
+        "secondary",
+        deprecated_aliases=("pair_coverage",),
+    ),
+    MetricSpec(
         "signed_cross_fitted_reference_minus_route_value_difference",
         "Signed cross-fitted reference-minus-route value difference",
         "ranking",
@@ -230,7 +240,6 @@ METRIC_BY_ID = {spec.metric_id: spec for spec in METRIC_SPECS}
 DEPRECATED_ALIASES = {
     alias: spec.metric_id for spec in METRIC_SPECS for alias in spec.deprecated_aliases
 }
-DEPRECATED_ALIASES["pair_coverage"] = "reference_pair_coverage"
 
 
 def route_metadata(route_id: str) -> dict[str, object]:

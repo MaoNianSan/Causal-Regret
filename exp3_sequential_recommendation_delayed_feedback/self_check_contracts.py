@@ -142,8 +142,23 @@ def check_metrics_and_routes(rows: list[dict[str, object]], output_dir: Path) ->
         add_check(rows, check_id, passed, detail, "scientific")
     registry = pd.read_csv(output_dir / "tables/exp3_metric_registry.csv")
     paired_metric = "ridge_over_historical_paired_value_gain"
-    route_metric_ids = set(METRIC_BY_ID) - {paired_metric}
-    canonical = route_metric_ids.issubset(primary.columns) and set(METRIC_BY_ID).issubset(set(registry["metric_id"].astype(str)))
+    route_metric_ids = {
+        metric_id
+        for metric_id, spec in METRIC_BY_ID.items()
+        if spec.estimand_level != "support" and metric_id != paired_metric
+    }
+    registry_ids = set(registry["metric_id"].astype(str))
+    alias = registry[registry["metric_id"] == "pair_coverage"]
+    alias_ok = (
+        len(alias) == 1
+        and bool(alias.iloc[0]["deprecated"])
+        and alias.iloc[0]["canonical_metric_id"] == "reference_pair_coverage"
+    )
+    canonical = (
+        route_metric_ids.issubset(primary.columns)
+        and set(METRIC_BY_ID).issubset(registry_ids)
+        and alias_ok
+    )
     add_check(rows, "canonical_metric_registry_and_schema", canonical, f"canonical={canonical}", "engineering")
     paired = pd.read_csv(output_dir / "tables/exp3_paired_ranking_contrast.csv").iloc[0]
     values = primary.set_index("route_id")["signed_cross_fitted_reference_minus_route_value_difference"]

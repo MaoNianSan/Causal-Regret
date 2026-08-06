@@ -32,7 +32,9 @@ Definition:
 ```
 
 `pair_coverage` remains a deprecated compatibility alias for one release. It
-does not mean coverage over all unordered action pairs.
+does not mean coverage over all unordered action pairs. The metric registry emits
+an explicit deprecated alias row whose `canonical_metric_id` is
+`reference_pair_coverage`.
 
 ## Route metrics
 
@@ -106,6 +108,16 @@ tables/exp3_ridge_history_cv.csv
 metadata/exp3_ridge_selection_manifest.json
 metadata/exp3_model_manifest.json
 ```
+
+Rolling validation rows are evaluated only on history common-supported action
+cells. The final model manifest records `final_refit_scope=full_history_training_cells`.
+
+## Target component audit
+
+`tables/exp3_target_component_audit.csv` now reconstructs component totals inside
+each `[t,t+6h)` source window. It reports the complete frozen quantile set, target
+zero rate, right-censoring count, component nonzero rates, mean and total weighted
+contributions, contribution shares, and the LongView shared-component disclosure.
 
 ## Resume compatibility
 

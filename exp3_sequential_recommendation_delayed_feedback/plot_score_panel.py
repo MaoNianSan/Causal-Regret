@@ -4,7 +4,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from plot_contract import draw_route_metric
+from plot_contract import MAIN_FIGURE_SCORE_METRICS, draw_route_metric
 
 
 def draw_score_panels(
@@ -15,14 +15,14 @@ def draw_score_panels(
     rows = draw_route_metric(
         top,
         primary,
-        "pooled_supported_cell_spearman",
+        MAIN_FIGURE_SCORE_METRICS[0],
         "Spearman (higher is better)",
         show_labels=True,
     )
     rows += draw_route_metric(
         bottom,
         primary,
-        "pooled_supported_cell_mae",
+        MAIN_FIGURE_SCORE_METRICS[1],
         "MAE (lower is better)",
         show_labels=True,
     )

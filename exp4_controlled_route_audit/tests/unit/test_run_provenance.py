@@ -9,7 +9,12 @@ import pandas as pd
 import pytest
 
 from exp4.configuration.schema import MAIN_TABLE_ID
-from exp4.outputs.writers import compute_exp4_source_code_hash, hash_files, source_code_hash
+from exp4.outputs.writers import (
+    SOURCE_HASH_ALGORITHM_VERSION,
+    compute_exp4_source_code_hash,
+    hash_files,
+    source_code_hash,
+)
 from exp4.reporting.tables import _write_table
 from exp4.validation.run_provenance import (
     audit_run_provenance,
@@ -43,7 +48,11 @@ def test_source_hash_function_is_shared_across_run_and_audit() -> None:
     # Run creation, provenance audit, and promotion all use the same canonical
     # source hash function over the same file set.
     assert compute_exp4_source_code_hash(ROOT) == source_code_hash(ROOT)
-    expected = hash_files(list((ROOT / "exp4").rglob("*.py")))
+    expected = hash_files(
+        list((ROOT / "exp4").rglob("*.py")),
+        root=ROOT,
+        algorithm_version=SOURCE_HASH_ALGORITHM_VERSION,
+    )
     assert compute_exp4_source_code_hash(ROOT) == expected
 
 

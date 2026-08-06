@@ -61,6 +61,29 @@ def make_feature_frames(
     history_proxy = _daily_cells(history, actions, "proxy")
     evaluation_proxy = _daily_cells(evaluation, actions, "proxy")
     history_target = _daily_cells(history, actions, "target")
+    history_support = (
+        history[
+            history["is_target_eligible"]
+            & history["action_id"].isin(actions)
+        ]
+        .groupby(
+            ["calendar_day", "user_group_id", "reference_fold_id", "action_id"],
+            observed=True,
+        )
+        .size()
+        .rename("target_count")
+        .reset_index()
+    )
+    reference_fold_count = int(design.design_freeze.get("reference_fold_count", 2))
+    support_map: dict[tuple[str, int, str], bool] = {}
+    for (day, group_id, action), counts in history_support.groupby(
+        ["calendar_day", "user_group_id", "action_id"], observed=True
+    ):
+        by_fold = counts.set_index("reference_fold_id")["target_count"]
+        support_map[(str(day), int(group_id), str(action))] = all(
+            float(by_fold.get(fold_id, 0.0)) >= design.support_min_events_per_fold
+            for fold_id in range(reference_fold_count)
+        )
     hist_proxy_map = {
         (str(row.calendar_day), int(row.user_group_id), str(row.action_id)): (
             float(row.proxy_sum),
@@ -93,7 +116,15 @@ def make_feature_frames(
                 row = _feature_row(day, group_id, action, action_rank, last_sum, last_count)
                 target = target_map.get((day, group_id, action))
                 if target is not None:
-                    row.update({"target_mean": target[0], "target_count": target[1]})
+                    row.update(
+                        {
+                            "target_mean": target[0],
+                            "target_count": target[1],
+                            "is_common_supported": support_map.get(
+                                (day, group_id, action), False
+                            ),
+                        }
+                    )
                     training_rows.append(row)
                 current = hist_proxy_map.get((day, group_id, action), (0.0, 0.0))
                 if current[1] > 0:
@@ -145,6 +176,7 @@ def history_design_hash(training: pd.DataFrame) -> str:
         "lag_proxy_missing",
         "target_mean",
         "target_count",
+        "is_common_supported",
     ]
     ordered = training[columns].sort_values(columns[:4]).reset_index(drop=True)
     hashed = pd.util.hash_pandas_object(ordered, index=False).to_numpy(np.uint64)

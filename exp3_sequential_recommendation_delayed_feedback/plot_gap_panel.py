@@ -4,7 +4,7 @@ from __future__ import annotations
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from plot_contract import draw_route_metric
+from plot_contract import MAIN_FIGURE_GAP_METRICS, draw_route_metric
 
 
 def draw_gap_panels(
@@ -15,7 +15,7 @@ def draw_gap_panels(
     rows = draw_route_metric(
         top,
         primary,
-        "maximum_heldout_reference_pair_gap_error",
+        MAIN_FIGURE_GAP_METRICS[0],
         "Maximum error (lower is better)",
         show_labels=False,
         include_zero=True,
@@ -23,7 +23,7 @@ def draw_gap_panels(
     rows += draw_route_metric(
         bottom,
         primary,
-        "heldout_reference_pair_sign_agreement",
+        MAIN_FIGURE_GAP_METRICS[1],
         "Sign agreement (higher is better)",
         show_labels=False,
     )

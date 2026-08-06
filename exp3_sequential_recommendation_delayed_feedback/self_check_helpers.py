@@ -1,9 +1,7 @@
 """Reusable reconstruction helpers for the independent Exp3 self-check."""
 from __future__ import annotations
 
-import json
 from pathlib import Path
-from typing import Any
 
 import numpy as np
 import pandas as pd
@@ -12,52 +10,21 @@ from bootstrap_intervals import interval_audit, metric_bounds
 from bootstrap_metric_registry import CANONICAL_ROUTE_METRICS, ROUTE_METRICS
 from config import DEFAULT_CONFIG
 from construct_delayed_targets import _target_one_user
-from plot_appendix_results import _prepare_full_support_preflight
 from route_diagnostics import summarize_route_selection
+from self_check_common import add_check, frames_equal, load_json
+from self_check_figure_helpers import (
+    arrival_figure_data_matches,
+    dependence_figure_data_matches,
+    figure_metadata_hashes_match,
+    full_preflight_figure_data_matches,
+)
 from self_check_redesign import (
     main_figure_data_matches,
     ridge_selection_contract_matches,
     target_component_audit_matches,
     two_fold_contract_matches,
 )
-from utilities import read_frame, sha256_file
-
-
-def load_json(path: Path) -> dict[str, Any]:
-    if not path.exists():
-        raise FileNotFoundError(path)
-    return json.loads(path.read_text(encoding="utf-8"))
-
-
-def add_check(
-    rows: list[dict[str, object]],
-    check_id: str,
-    passed: bool,
-    detail: str,
-    category: str,
-) -> None:
-    rows.append(
-        {
-            "check_id": check_id,
-            "category": category,
-            "status": "PASS" if passed else "FAIL",
-            "detail": detail,
-        }
-    )
-
-
-def frames_equal(left: pd.DataFrame, right: pd.DataFrame, keys: list[str]) -> bool:
-    left = left.sort_values(keys).reset_index(drop=True)
-    right = right.sort_values(keys).reset_index(drop=True)
-    if list(left.columns) != list(right.columns) or len(left) != len(right):
-        return False
-    for column in left.columns:
-        if left[column].dtype == object or right[column].dtype == object:
-            if not left[column].astype(str).equals(right[column].astype(str)):
-                return False
-        elif not np.allclose(left[column].to_numpy(float), right[column].to_numpy(float), equal_nan=True):
-            return False
-    return True
+from utilities import read_frame
 
 
 def target_contract_matches(frame: pd.DataFrame, split_end_ms: int) -> tuple[bool, str]:
@@ -82,97 +49,6 @@ def target_contract_matches(frame: pd.DataFrame, split_end_ms: int) -> tuple[boo
             return False, f"first mismatch after {checked} source events"
         checked += len(actual)
     return True, f"verified_events={checked}; window=[t,t+6h)"
-
-
-def full_preflight_figure_data_matches(output_dir: Path) -> tuple[bool, str]:
-    action_path = output_dir / "derived" / "exp3_full_design_support_by_action.csv"
-    figure_path = output_dir / "figures" / "data" / "exp3_appendix_full_design_support_preflight_data.csv"
-    if not action_path.exists() or pd.read_csv(action_path).empty:
-        return (not figure_path.exists()), "full-design support figure correctly omitted when preflight is not evaluable"
-    expected_actions, expected_metrics = _prepare_full_support_preflight(
-        pd.read_csv(action_path),
-        pd.read_csv(output_dir / "tables" / "exp3_full_design_support_preflight.csv"),
-        pd.read_csv(output_dir / "tables" / "exp3_action_space_coverage.csv"),
-        pd.read_csv(output_dir / "design" / "exp3_full_design_action_vocabulary.csv"),
-    )
-    figure = pd.read_csv(figure_path)
-    action_columns = [
-        "action_id",
-        "audit_unit_count",
-        "supported_unit_rate",
-        "minimum_fold_count_min",
-        "minimum_fold_count_p10",
-        "minimum_fold_count_median",
-        "minimum_fold_count_p90",
-        "minimum_fold_count_max",
-        "action_display_name",
-        "action_rank",
-    ]
-    metric_columns = ["metric_id", "display_name", "value"]
-    actual_action_rows = figure[
-        figure["panel_id"] == "panel_a_full_design_action_support"
-    ].reset_index(drop=True)
-    expected_action_rows = expected_actions.reset_index(drop=True)
-    actual_actions = actual_action_rows[action_columns]
-    actual_metrics = figure[figure["panel_id"] == "panel_b_full_design_readiness"][metric_columns]
-    scientific_match = frames_equal(
-        actual_actions, expected_actions[action_columns], ["action_rank"]
-    ) and frames_equal(
-        actual_metrics, expected_metrics[metric_columns], ["metric_id"]
-    )
-    provenance_match = True
-    for column in ("run_id", "run_tier", "paper_result", "analysis_tier", "experiment_id", "config_hash", "input_manifest_hash"):
-        if column in expected_actions.columns:
-            provenance_match = provenance_match and actual_action_rows[column].astype(str).equals(
-                expected_action_rows[column].astype(str)
-            )
-    provenance_match = bool(
-        provenance_match
-        and "figure_analysis_tier" in figure.columns
-        and set(figure["figure_analysis_tier"].dropna().astype(str)) == {"appendix"}
-    )
-    passed = scientific_match and provenance_match
-    return passed, "full-design figure scientific fields reconstruct and display provenance remains separate"
-
-
-def arrival_figure_data_matches(output_dir: Path) -> tuple[bool, str]:
-    figure = pd.read_csv(
-        output_dir / "figures" / "data" / "exp3_appendix_arrival_carrier_diagnostic_data.csv"
-    )
-    expected = {
-        "panel_a_carrier_lag": pd.read_csv(
-            output_dir / "diagnostics" / "exp3_arrival_carrier_audit.csv"
-        ),
-        "panel_b_action_match": pd.read_csv(
-            output_dir / "diagnostics" / "exp3_arrival_carrier_action_audit.csv"
-        ),
-    }
-    for panel_id, source in expected.items():
-        actual = figure[figure["panel_id"] == panel_id]
-        columns = [column for column in source.columns if column in actual.columns]
-        if not columns or not frames_equal(actual[columns], source[columns], columns[:1]):
-            return False, f"arrival-carrier figure mismatch: {panel_id}"
-    return True, "arrival-carrier figure scientific fields reconstruct from frozen diagnostics"
-
-
-def dependence_figure_data_matches(output_dir: Path) -> tuple[bool, str]:
-    figure = pd.read_csv(
-        output_dir / "figures" / "data" / "exp3_appendix_dependence_and_selection_structure_data.csv"
-    )
-    expected = {
-        "panel_a_outcome_reuse": pd.read_csv(
-            output_dir / "derived" / "exp3_outcome_reuse_quantiles.csv"
-        ),
-        "panel_b_selection_instability": pd.read_csv(
-            output_dir / "tables" / "exp3_resampling_structure_diagnostics.csv"
-        ),
-    }
-    for panel_id, source in expected.items():
-        actual = figure[figure["panel_id"] == panel_id]
-        columns = [column for column in source.columns if column in actual.columns]
-        if not columns or not frames_equal(actual[columns], source[columns], columns[:1]):
-            return False, f"dependence figure mismatch: {panel_id}"
-    return True, "dependence and selection figure scientific fields reconstruct from frozen tables"
 
 
 def target_reuse_summary_matches(output_dir: Path) -> tuple[bool, str]:
@@ -262,21 +138,6 @@ def boundary_quarantine_summary_matches(output_dir: Path) -> tuple[bool, str]:
         and retained.all()
     )
     return passed, "boundary quarantine table reconstructs counts, fractions, policy, and frozen tolerances"
-
-
-def figure_metadata_hashes_match(output_dir: Path) -> tuple[bool, str]:
-    metadata_dir = output_dir / "figures" / "metadata"
-    files = sorted(metadata_dir.glob("*.json"))
-    if not files:
-        return False, "no figure metadata files found"
-    for path in files:
-        metadata = load_json(path)
-        hashes = metadata.get("source_file_hashes", {})
-        for relative, expected in hashes.items():
-            source = output_dir / relative
-            if not source.exists() or sha256_file(source) != expected:
-                return False, f"source hash mismatch: {relative}"
-    return True, f"verified {len(files)} figure metadata bundles"
 
 
 def bootstrap_interval_audit_matches(output_dir: Path) -> tuple[bool, str]:

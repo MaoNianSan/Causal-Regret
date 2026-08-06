@@ -68,6 +68,10 @@ def select_ridge_alpha(
 ) -> RidgeSelection:
     if evaluation_frame is not None:
         raise ValueError("Ridge selector rejects evaluation data; selection_scope=history_only.")
+    if "is_common_supported" not in training.columns:
+        raise ValueError(
+            "Ridge history validation requires an explicit is_common_supported column."
+        )
     splits = rolling_origin_splits(training, cfg.ridge_cv_min_train_days)
     if not splits:
         raise RuntimeError(
@@ -77,7 +81,10 @@ def select_ridge_alpha(
     rows: list[dict[str, object]] = []
     for origin_id, (train_days, validation_day) in enumerate(splits):
         train = training[training["calendar_day"].astype(str).isin(train_days)]
-        validation = training[training["calendar_day"].astype(str) == validation_day]
+        validation = training[
+            (training["calendar_day"].astype(str) == validation_day)
+            & training["is_common_supported"].astype(bool)
+        ]
         if train.empty or validation.empty:
             continue
         x_valid, _ = design_matrix(validation, action_count)
@@ -132,7 +139,8 @@ def select_ridge_alpha(
         "tie_tolerance": cfg.ridge_cv_tie_tolerance,
         "tie_break_rule": cfg.ridge_cv_tie_break,
         "tie_break_applied": tie_applied,
-        "origin_count": len(splits),
+        "origin_count": int(results["validation_origin"].nunique()),
+        "validation_support_scope": "history_common_supported_action_cells",
         "feature_schema_hash": feature_schema_hash(feature_names),
         "history_design_hash": history_design_hash(training),
     }
