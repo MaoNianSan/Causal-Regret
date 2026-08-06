@@ -12,6 +12,7 @@ import pandas as pd
 from exp4.configuration.parameters import CALIBRATION, MODULE_A, MODULE_B, REPORTING, SHARED_DGP
 from exp4.metrics.action_gaps import compute_action_gap_defect
 from exp4.routes.partial_label_proxy import _label_blind_assignments
+from exp4.validation.precision_checks import validate_monte_carlo_precision
 
 
 def _manual_defect_check() -> tuple[bool, str]:
@@ -75,6 +76,7 @@ def scientific_checks(run_dir: Path) -> list[tuple[str, bool, str]]:
         ("EXACT_MEAN_DELAY", bool(np.allclose(manifest["mean_delay"], SHARED_DGP.target_mean_delay)), f"range=[{manifest['mean_delay'].min():.3f},{manifest['mean_delay'].max():.3f}]"),
     ]
     primary = contrasts[contrasts["is_primary_contrast"].astype(bool)]
-    precision_status = str(primary["monte_carlo_precision_gate"].iloc[0])
-    checks.append(("MONTE_CARLO_PRECISION", precision_status in {"PASS", "NOT_APPLICABLE_NON_FULL"}, precision_status))
+    run_tier = str(json.loads((run_dir / "logs" / "run_config.json").read_text(encoding="utf-8"))["run_tier"])
+    precision = validate_monte_carlo_precision(contrasts, run_tier)
+    checks.append(("MONTE_CARLO_PRECISION", precision.status == "PASS", precision.details))
     return checks

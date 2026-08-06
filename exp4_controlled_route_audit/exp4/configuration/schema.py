@@ -15,6 +15,14 @@ MODULE_C_ID = "module_c_calibration_controls"
 
 MAIN_FIGURE_ID = "fig_exp4_route_alignment_and_audit_reliability"
 MAIN_TABLE_ID = "tbl_exp4_calibration_controls"
+
+# Exact control IDs that appear in the paper main calibration table, in row
+# order. Selection is by exact ID (no fuzzy matching); nonlinear_monotone is
+# appendix-only.
+MAIN_CALIBRATION_CONTROL_IDS = (
+    "affine_linked",
+    "blocked_correspondence_destroyed",
+)
 APPENDIX_FIGURE_IDS = (
     "fig_app_exp4_module_a_heatmap",
     "fig_app_exp4_paired_contrasts",

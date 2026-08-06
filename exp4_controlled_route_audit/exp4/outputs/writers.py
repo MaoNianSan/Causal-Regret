@@ -59,6 +59,21 @@ def hash_files(paths: Iterable[Path]) -> str:
     return digest.hexdigest()
 
 
+# Version tag for the source-code hash algorithm. It is recorded in run
+# configs, provenance audits, and promotion checks so that a future algorithm
+# change cannot silently invalidate or re-interpret stored hashes.
+SOURCE_HASH_ALGORITHM_VERSION = "exp4-source-code-v1"
+
+
+def compute_exp4_source_code_hash(base_dir: Path) -> str:
+    """Canonical Exp4 v2 source-code hash.
+
+    This single function is the source of truth for the full Exp4 source hash:
+    run creation, provenance audit, and promotion validation all use it.
+    """
+    return source_code_hash(base_dir)
+
+
 def source_code_hash(base_dir: Path) -> str:
     files = list((base_dir / "exp4").rglob("*.py"))
     return hash_files(files)
@@ -207,6 +222,7 @@ def write_run_config(context: RunContext) -> None:
             "code_commit": context.code_commit,
             "config_hash": context.config_hash,
             "source_code_hash": context.source_code_hash,
+            "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
             "generated_at": utc_now_iso(),
             "n_jobs": context.n_jobs,
             "mode_settings": settings.as_dict(),
@@ -220,7 +236,7 @@ def attach_metadata(
     frame: pd.DataFrame,
     context: RunContext,
     module_id: str,
-    analysis_tier: str,
+    analysis_tier: str | None = None,
     task_column: str | None = None,
     calibration_hash: str | None = None,
 ) -> pd.DataFrame:
@@ -230,7 +246,11 @@ def attach_metadata(
     output["paper_result"] = False
     output["experiment_id"] = EXPERIMENT_ID
     output["module_id"] = module_id
-    output["analysis_tier"] = analysis_tier
+    if analysis_tier is not None:
+        # Preserve an existing per-row analysis_tier column when the caller does
+        # not supply a blanket tier (e.g. the Module C control summary, whose
+        # rows carry per-control tiers from the frozen control registry).
+        output["analysis_tier"] = analysis_tier
     output["code_commit"] = context.code_commit
     output["config_hash"] = context.config_hash
     output["source_code_hash"] = context.source_code_hash

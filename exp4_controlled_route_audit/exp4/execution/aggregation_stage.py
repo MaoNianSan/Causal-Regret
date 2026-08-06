@@ -98,7 +98,9 @@ def _module_c_frames(
         aggregate_parameter_recovery(parameters),
         aggregate_correspondence_checks(correspondence),
     ]
-    tiers = ("mixed", "diagnostic", "diagnostic")
+    # The control summary keeps its per-control analysis_tier (from the frozen
+    # CONTROL_REGISTRY); the other Module C frames are diagnostic.
+    tiers: tuple[str | None, ...] = (None, "diagnostic", "diagnostic")
     frames = [
         attach_metadata(
             frame,

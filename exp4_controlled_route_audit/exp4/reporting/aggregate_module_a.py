@@ -147,10 +147,16 @@ def summarize_paired_contrasts(
     contrasts["is_primary_contrast"] = contrasts["contrast_id"].eq(primary_id)
     contrasts["primary_contrast_half_width"] = np.nan
     contrasts["primary_contrast_relative_half_width"] = np.nan
-    contrasts["monte_carlo_precision_gate"] = "NOT_APPLICABLE_NON_FULL"
+    # Non-primary contrasts are always REPORTED_NOT_GATED: their MCSE and
+    # interval are still reported, but they never gate promotion and their
+    # status is independent of run tier.
+    contrasts["monte_carlo_precision_gate"] = "REPORTED_NOT_GATED"
     primary_rows = contrasts["is_primary_contrast"]
-    if not primary_rows.empty:
-        index = primary_rows.index[0]
+    if primary_rows.any():
+        # Locate the actual primary row (first index where the flag is True);
+        # contrasts["is_primary_contrast"].index[0] would be the first index
+        # label, not the primary row.
+        index = primary_rows[primary_rows].index[0]
         row = contrasts.loc[index]
         half_width = (
             0.5 * float(row["ci_upper"] - row["ci_lower"])
@@ -166,6 +172,12 @@ def summarize_paired_contrasts(
             contrasts.loc[index, "monte_carlo_precision_gate"] = (
                 "PASS" if half_width <= threshold else "STOP_AND_REVIEW"
             )
+        else:
+            # Fast/Middle do not gate precision; the status is explicitly
+            # qualified as non-full rather than being reported as gated.
+            contrasts.loc[index, "monte_carlo_precision_gate"] = "NOT_APPLICABLE_NON_FULL"
+    else:
+        raise RuntimeError("Paired-contrast aggregation produced no primary contrast")
     direction = (
         contrasts.groupby(["contrast_family", "expected_direction"], sort=True)
         .agg(

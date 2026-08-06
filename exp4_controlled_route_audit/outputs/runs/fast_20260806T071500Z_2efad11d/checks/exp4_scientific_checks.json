@@ -1,0 +1,106 @@
+{
+  "check_type": "scientific",
+  "checks": [
+    {
+      "check_name": "SOURCE_BOUND_DEFECT_ZERO",
+      "details": "max=0.000e+00",
+      "status": "PASS"
+    },
+    {
+      "check_name": "FULL_LABEL_PROXY_DEFECT_ZERO",
+      "details": "max=0.000e+00",
+      "status": "PASS"
+    },
+    {
+      "check_name": "COMPLETE_45_PAIR_SUPPORT",
+      "details": "pair_count=45",
+      "status": "PASS"
+    },
+    {
+      "check_name": "POSITIVE_ATTRIBUTION_MASS",
+      "details": "all proxy route rows have positive mass",
+      "status": "PASS"
+    },
+    {
+      "check_name": "NO_FUTURE_INFORMATION",
+      "details": "true source is always in the historical candidate set",
+      "status": "PASS"
+    },
+    {
+      "check_name": "ROUTE_AND_AUDIT_STREAMS_INDEPENDENT",
+      "details": "stream hashes differ",
+      "status": "PASS"
+    },
+    {
+      "check_name": "AMBIGUITY_SCORE_LABEL_BLIND",
+      "details": "label-blind assignment function excludes labels and defects",
+      "status": "PASS"
+    },
+    {
+      "check_name": "DEFECT_FORMULA_CODE_THEORY_MATCH",
+      "details": "max_difference=0.000e+00",
+      "status": "PASS"
+    },
+    {
+      "check_name": "MODULE_A_B_HORIZONS_EXPLICIT",
+      "details": "A=(5000,250), B=(2000,100)",
+      "status": "PASS"
+    },
+    {
+      "check_name": "NESTED_ROUTE_LABEL_MASKS",
+      "details": "q=0.3 mask is nested in q=0.7 and q=1",
+      "status": "PASS"
+    },
+    {
+      "check_name": "SELECTIVE_MASK_SHARED_BETWEEN_UNWEIGHTED_AND_IPW",
+      "details": "maximum unique hashes=1",
+      "status": "PASS"
+    },
+    {
+      "check_name": "IPW_POSITIVITY",
+      "details": "bounds=[0.05,0.95]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "TEMPORAL_CROSSFIT_NO_LEAKAGE",
+      "details": "all parameter rows exclude the held-out fold",
+      "status": "PASS"
+    },
+    {
+      "check_name": "AFFINE_PARAMETER_RECOVERY",
+      "details": "intercept_bias=0.000, slope_bias=0.000",
+      "status": "PASS"
+    },
+    {
+      "check_name": "BLOCKED_SHUFFLE_CORRESPONDENCE_DESTROYED",
+      "details": "pre=0.988, post=0.059",
+      "status": "PASS"
+    },
+    {
+      "check_name": "CALIBRATION_EVALUATION_SEEDS_DISJOINT",
+      "details": "overlap=False",
+      "status": "PASS"
+    },
+    {
+      "check_name": "EXACT_MEAN_DELAY",
+      "details": "range=[2.000,2.000]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "MONTE_CARLO_PRECISION",
+      "details": "run_tier=fast; primary_contrasts=1; passed=0; failed=1; ids=['q_0.7_to_1__sigma_0.25']; gates=['NOT_APPLICABLE_NON_FULL']",
+      "status": "PASS"
+    },
+    {
+      "check_name": "FIGURE_SOURCE_RECONSTRUCTABLE",
+      "details": "all figure sources match stored hashes",
+      "status": "PASS"
+    },
+    {
+      "check_name": "EXP1_EXP4_BOUNDARY",
+      "details": "banned_terms_present=[]",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

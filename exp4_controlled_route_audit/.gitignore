@@ -23,3 +23,17 @@ outputs/runs/*/
 !outputs/runs/full_20260806T021401Z_5627f17b/derived/
 !outputs/runs/full_20260806T021401Z_5627f17b/derived/**
 outputs/runs/full_20260806T021401Z_5627f17b/derived/**/*.parquet
+# Curated fast regression run for the post-full-fix (exp4v3) validation
+# (results only, no raw/logs/parquet).
+!outputs/runs/fast_20260806T071500Z_2efad11d/
+!outputs/runs/fast_20260806T071500Z_2efad11d/figures/
+!outputs/runs/fast_20260806T071500Z_2efad11d/figures/**
+!outputs/runs/fast_20260806T071500Z_2efad11d/tables/
+!outputs/runs/fast_20260806T071500Z_2efad11d/tables/**
+!outputs/runs/fast_20260806T071500Z_2efad11d/reports/
+!outputs/runs/fast_20260806T071500Z_2efad11d/reports/**
+!outputs/runs/fast_20260806T071500Z_2efad11d/checks/
+!outputs/runs/fast_20260806T071500Z_2efad11d/checks/**
+!outputs/runs/fast_20260806T071500Z_2efad11d/derived/
+!outputs/runs/fast_20260806T071500Z_2efad11d/derived/**
+outputs/runs/fast_20260806T071500Z_2efad11d/derived/**/*.parquet

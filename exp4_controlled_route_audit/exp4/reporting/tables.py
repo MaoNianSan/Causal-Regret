@@ -7,7 +7,17 @@ from pathlib import Path
 import pandas as pd
 
 from exp4.configuration.parameters import parameter_payload
-from exp4.configuration.schema import MAIN_TABLE_ID
+from exp4.configuration.schema import MAIN_CALIBRATION_CONTROL_IDS, MAIN_TABLE_ID
+from exp4.outputs.writers import sha256_file, write_json
+
+MAIN_TABLE_COLUMNS = (
+    "control_display_name",
+    "correspondence_status",
+    "raw_defect",
+    "oof_calibrated_defect",
+    "recoverability",
+    "estimability_rate",
+)
 
 
 def _format_value(value: object) -> str:
@@ -31,30 +41,19 @@ def _write_table(frame: pd.DataFrame, stem: Path, caption: str, label: str) -> N
     stem.with_suffix(".tex").write_text(latex, encoding="utf-8")
 
 
-def _parameter_frame() -> pd.DataFrame:
-    records: list[dict[str, object]] = []
-    for section, values in parameter_payload().items():
-        for parameter, value in values.items():
-            records.append({"section": section, "parameter": parameter, "value": value})
-    return pd.DataFrame.from_records(records)
+def select_main_calibration_rows(controls: pd.DataFrame) -> pd.DataFrame:
+    """Select the paper main-table control rows by exact control ID.
 
-
-def make_tables(run_dir: Path) -> None:
-    module_a = run_dir / "derived" / "module_a"
-    module_b = run_dir / "derived" / "module_b"
-    module_c = run_dir / "derived" / "module_c"
-    tables = run_dir / "tables"
-    controls = pd.read_csv(module_c / "exp4_module_c_control_summary.csv")
-    main = controls[controls["analysis_tier"] == "primary"][
-        [
-            "control_display_name",
-            "correspondence_status",
-            "raw_defect",
-            "oof_calibrated_defect",
-            "recoverability",
-            "estimability_rate",
-        ]
-    ].rename(
+    Order follows MAIN_CALIBRATION_CONTROL_IDS exactly; selection is by exact
+    ID match, never by string matching or analysis_tier. Any row outside the
+    tuple (e.g. nonlinear_monotone) is excluded from the main table.
+    """
+    frame = controls.set_index("control_id")
+    missing = [control_id for control_id in MAIN_CALIBRATION_CONTROL_IDS if control_id not in frame.index]
+    if missing:
+        raise ValueError(f"Missing main-table control IDs in Module C summary: {missing}")
+    selected = frame.loc[list(MAIN_CALIBRATION_CONTROL_IDS)].reset_index()
+    return selected[list(MAIN_TABLE_COLUMNS)].rename(
         columns={
             "control_display_name": "Control",
             "correspondence_status": "Unit-level correspondence",
@@ -64,12 +63,41 @@ def make_tables(run_dir: Path) -> None:
             "estimability_rate": "Estimability rate",
         }
     )
+
+
+def _parameter_frame() -> pd.DataFrame:
+    records: list[dict[str, object]] = []
+    for section, values in parameter_payload().items():
+        for parameter, value in values.items():
+            records.append({"section": section, "parameter": parameter, "value": value})
+    return pd.DataFrame.from_records(records)
+
+
+def _write_main_table_hashes(run_dir: Path, csv_path: Path, tex_path: Path) -> None:
+    write_json(
+        {
+            "main_table_id": MAIN_TABLE_ID,
+            "main_table_csv_sha256": sha256_file(csv_path),
+            "main_table_tex_sha256": sha256_file(tex_path),
+        },
+        run_dir / "logs" / "exp4_main_table_manifest.json",
+    )
+
+
+def make_tables(run_dir: Path) -> None:
+    module_a = run_dir / "derived" / "module_a"
+    module_b = run_dir / "derived" / "module_b"
+    module_c = run_dir / "derived" / "module_c"
+    tables = run_dir / "tables"
+    controls = pd.read_csv(module_c / "exp4_module_c_control_summary.csv")
+    main = select_main_calibration_rows(controls)
     _write_table(
         main,
         tables / MAIN_TABLE_ID,
         "Calibration-family controls and correspondence status.",
         "tab:exp4_calibration_controls",
     )
+    _write_main_table_hashes(run_dir, tables / f"{MAIN_TABLE_ID}.csv", tables / f"{MAIN_TABLE_ID}.tex")
     appendix_sources = (
         ("tbl_app_exp4_parameters", _parameter_frame(), "Frozen Exp4 v2 parameters."),
         ("tbl_app_exp4_paired_contrasts", pd.read_csv(module_a / "exp4_module_a_paired_contrasts.csv"), "Shared-seed paired contrasts."),

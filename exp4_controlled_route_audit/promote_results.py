@@ -1,4 +1,12 @@
-"""Independent paper-promotion command for an approved full Exp4 v2 run."""
+"""Independent paper-promotion command for an approved full Exp4 v2 run.
+
+Promotion validation does not trust the previously written check files alone:
+it re-derives the main-table semantics, the Monte Carlo precision gates, and
+the simulation provenance from the run artifacts and the current source tree.
+``--dry-run`` writes only ``checks/exp4_promotion_check.json`` and never
+modifies ``run_config.json``, ``exp4_result_status.json``, or the output
+manifest.
+"""
 
 from __future__ import annotations
 
@@ -6,15 +14,34 @@ import argparse
 import json
 from pathlib import Path
 
+import pandas as pd
+
 from exp4.configuration.schema import MAIN_FIGURE_ID, MAIN_TABLE_ID, REQUIRED_DERIVED_FILES, RESULT_SCHEMA
 from exp4.outputs.manifests import write_output_manifest
-from exp4.outputs.writers import write_json
+from exp4.outputs.writers import (
+    SOURCE_HASH_ALGORITHM_VERSION,
+    write_json,
+)
+from exp4.validation.precision_checks import promotion_precision_checks
+from exp4.validation.run_provenance import audit_run_provenance
+from exp4.validation.table_checks import validate_main_calibration_table
 
 
-def validate_paper_promotion(run_dir: Path, approve_claims: bool) -> dict[str, object]:
+def validate_paper_promotion(
+    run_dir: Path, approve_claims: bool, base_dir: Path, dry_run: bool = True
+) -> dict[str, object]:
     run_config = json.loads((run_dir / "logs" / "run_config.json").read_text(encoding="utf-8"))
     engineering = json.loads((run_dir / "checks" / "exp4_engineering_checks.json").read_text(encoding="utf-8"))
     scientific = json.loads((run_dir / "checks" / "exp4_scientific_checks.json").read_text(encoding="utf-8"))
+    contrasts = pd.read_csv(run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv")
+    control_summary = pd.read_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv")
+    table_result = validate_main_calibration_table(
+        control_summary,
+        run_dir / "tables" / f"{MAIN_TABLE_ID}.csv",
+        run_dir / "tables" / f"{MAIN_TABLE_ID}.tex",
+    )
+    precision = promotion_precision_checks(run_config, contrasts)
+    provenance = audit_run_provenance(run_dir, base_dir)
     checks = {
         "run_tier_is_full": run_config["run_tier"] == "full",
         "result_schema_is_v2": run_config["result_schema"] == RESULT_SCHEMA,
@@ -22,21 +49,59 @@ def validate_paper_promotion(run_dir: Path, approve_claims: bool) -> dict[str, o
         "scientific_status_pass": scientific["status"] == "PASS",
         "all_required_derived_files_complete": all((run_dir / path).exists() for path in REQUIRED_DERIVED_FILES),
         "main_figure_complete": (run_dir / "figures" / "pdf" / f"{MAIN_FIGURE_ID}.pdf").exists(),
-        "main_table_complete": (run_dir / "tables" / f"{MAIN_TABLE_ID}.tex").exists(),
+        "main_table_exists": table_result.checks.get("main_table_csv_exists", False) and table_result.checks.get("main_table_tex_exists", False),
+        "main_table_has_required_rows": table_result.checks.get("main_table_has_exactly_two_rows", False),
+        "main_table_values_finite": table_result.checks.get("main_table_values_finite", False),
+        "main_table_matches_source": table_result.checks.get("main_table_matches_source", False),
+        "main_table_latex_nonempty": table_result.checks.get("main_table_latex_has_two_data_rows", False) and table_result.checks.get("main_table_latex_has_data_beyond_rules", False),
+        "main_table_complete": table_result.passed,
         "paper_claims_within_scope": bool(approve_claims),
-        "monte_carlo_precision_pass": any(
-            row["check_name"] == "MONTE_CARLO_PRECISION" and row["status"] == "PASS"
-            for row in scientific["checks"]
+        "primary_contrast_contract_valid": precision["primary_contrast_contract_valid"],
+        "primary_monte_carlo_precision_pass": precision["primary_monte_carlo_precision_pass"],
+        "no_nonfull_precision_status_in_full_run": precision["no_nonfull_precision_status_in_full_run"],
+        "monte_carlo_precision_pass": all(
+            precision[key] for key in ("primary_contrast_contract_valid", "primary_monte_carlo_precision_pass", "no_nonfull_precision_status_in_full_run")
         ),
+        "simulation_provenance_verified": bool(
+            provenance["source_hash_match"] and provenance["config_hash_match"]
+        ),
+        "downstream_stage_provenance_complete": all(
+            provenance["stage_source_hashes"].values()
+        ),
+        "source_hash_algorithm_version_present": bool(
+            provenance["source_hash_algorithm_version_present"]
+        )
+        and provenance["expected_source_hash_algorithm_version"]
+        == SOURCE_HASH_ALGORITHM_VERSION,
     }
-    return {"status": "PASS" if all(checks.values()) else "FAIL", "checks": checks}
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "checks": checks,
+        "provenance": {
+            key: provenance[key]
+            for key in (
+                "stored_source_code_hash",
+                "current_pre_fix_source_code_hash",
+                "source_hash_match",
+                "config_hash_match",
+                "full_simulation_reuse_decision",
+                "source_hash_algorithm_version_present",
+                "stage_source_hashes",
+            )
+        },
+        "table": table_result.as_dict(),
+        "precision": precision,
+    }
 
 
-def promote(run_dir: Path, approve_claims: bool) -> None:
-    result = validate_paper_promotion(run_dir, approve_claims)
+def promote(run_dir: Path, approve_claims: bool, base_dir: Path, dry_run: bool) -> None:
+    result = validate_paper_promotion(run_dir, approve_claims, base_dir, dry_run=dry_run)
     write_json(result, run_dir / "checks" / "exp4_promotion_check.json")
     if result["status"] != "PASS":
         raise SystemExit("Exp4 v2 paper promotion refused; inspect exp4_promotion_check.json")
+    if dry_run:
+        print(f"Paper promotion dry-run PASS (no state written): {run_dir}")
+        return
     run_config_path = run_dir / "logs" / "run_config.json"
     run_config = json.loads(run_config_path.read_text(encoding="utf-8"))
     run_config["paper_result"] = True
@@ -55,5 +120,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-dir", type=Path, required=True)
     parser.add_argument("--approve-claims", action="store_true")
+    parser.add_argument("--dry-run", action="store_true")
     arguments = parser.parse_args()
-    promote(arguments.run_dir, arguments.approve_claims)
+    base_dir = Path(__file__).resolve().parent
+    promote(arguments.run_dir, arguments.approve_claims, base_dir, dry_run=arguments.dry_run)

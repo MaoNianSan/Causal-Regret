@@ -15,9 +15,11 @@ from exp4.pipeline import (
     render_existing_run,
     run_pipeline,
 )
+from exp4.reporting.implementation_status import write_implementation_status
 from exp4.reporting.run_summary import write_run_summary
 from exp4.simulation.calibration import load_proxy_route_calibration
 from exp4.validation.runner import validate_run
+from exp4.validation.run_provenance import audit_run_provenance, write_stage_provenance_record
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -38,11 +40,28 @@ def main() -> None:
         command = subparsers.add_parser(tier)
         command.add_argument("--n-jobs", type=int, default=_default_jobs())
         command.add_argument("--resume-run-dir", type=Path, default=None)
-    for command_name in ("validate", "aggregate", "plot", "tables", "report"):
+    for command_name in ("validate", "aggregate", "plot", "tables", "report", "provenance"):
         command = subparsers.add_parser(command_name)
         command.add_argument("--run-dir", type=Path, required=True)
         command.add_argument("--n-jobs", type=int, default=None)
+    subparsers.add_parser("status")
     arguments = parser.parse_args()
+
+    if arguments.command == "status":
+        status = write_implementation_status(
+            BASE_DIR, BASE_DIR / "reports" / "EXP4_V2_IMPLEMENTATION_STATUS.md"
+        )
+        print(json.dumps(status, indent=2, default=str))
+        return
+
+    if arguments.command == "provenance":
+        context = _existing_context(arguments.run_dir, arguments.n_jobs)
+        audit = audit_run_provenance(context.run_dir, BASE_DIR)
+        from exp4.outputs.writers import write_json
+
+        write_json(audit, context.run_dir / "logs" / "exp4_provenance_audit.json")
+        print(json.dumps(audit, indent=2, default=str))
+        return
 
     if arguments.command in {"fast", "middle", "full"}:
         if arguments.resume_run_dir is not None:
@@ -84,6 +103,7 @@ def main() -> None:
         render_existing_run(context)
     elif arguments.command == "report":
         write_run_summary(context.run_dir)
+    write_stage_provenance_record(context.run_dir, BASE_DIR)
     write_output_manifest(context.run_dir)
 
 

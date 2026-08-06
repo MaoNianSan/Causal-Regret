@@ -5,13 +5,14 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
+from exp4.configuration.registries import CONTROL_REGISTRY
 from exp4.metrics.monte_carlo import mean_mcse
 
 
 def aggregate_control_summary(replication_level: pd.DataFrame) -> pd.DataFrame:
-    return (
+    summary = (
         replication_level.groupby(
-            ["control_id", "control_display_name", "analysis_tier", "correspondence_status"],
+            ["control_id", "control_display_name", "correspondence_status"],
             sort=True,
         )
         .agg(
@@ -25,6 +26,13 @@ def aggregate_control_summary(replication_level: pd.DataFrame) -> pd.DataFrame:
         )
         .reset_index()
     )
+    # Authoritative per-control analysis tier from the frozen control registry.
+    # This repairs any stale tier value carried on replication-level rows and
+    # guarantees exactly one row per control with a consistent tier.
+    summary["analysis_tier"] = summary["control_id"].map(
+        lambda control_id: CONTROL_REGISTRY[control_id]["analysis_tier"]
+    )
+    return summary
 
 
 def aggregate_parameter_recovery(parameter_level: pd.DataFrame) -> pd.DataFrame:

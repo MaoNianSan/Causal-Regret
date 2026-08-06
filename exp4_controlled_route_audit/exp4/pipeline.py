@@ -20,6 +20,7 @@ from exp4.reporting.run_summary import write_run_summary
 from exp4.reporting.tables import make_tables
 from exp4.simulation.calibration import ProxyRouteCalibration
 from exp4.validation.runner import validate_run
+from exp4.validation.run_provenance import write_stage_provenance_record
 from exp4.validation.static_checks import run_static_checks
 
 
@@ -67,6 +68,7 @@ def run_pipeline(
     render_existing_run(context)
     engineering, scientific = validate_run(context.run_dir)
     write_run_summary(context.run_dir)
+    write_stage_provenance_record(context.run_dir, base_dir)
     status = _write_final_status(context, engineering, scientific)
     write_output_manifest(context.run_dir)
     return status

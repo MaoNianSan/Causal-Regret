@@ -18,6 +18,7 @@ from exp4.configuration.schema import (
 from exp4.outputs.writers import write_json
 from exp4.validation.boundary_checks import exp1_exp4_boundary_check
 from exp4.validation.invariants import scientific_checks
+from exp4.validation.precision_checks import validate_monte_carlo_precision, write_precision_checks
 from exp4.validation.provenance_checks import (
     figure_sources_reconstructable,
     manifest_paths_are_relative_and_exist,
@@ -28,6 +29,10 @@ from exp4.validation.schema_checks import (
     MODULE_B_UNIT_COLUMNS,
     MODULE_C_COLUMNS,
     has_columns,
+)
+from exp4.validation.table_checks import (
+    validate_and_write_table_checks,
+    ValidationResult,
 )
 
 
@@ -73,6 +78,11 @@ def validate_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         ("module_b_condition_schema", *has_columns(condition_level, MODULE_B_CONDITION_COLUMNS)),
         ("module_c_schema", *has_columns(c_replication, MODULE_C_COLUMNS)),
     )
+    control_summary = pd.read_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv")
+    table_result: ValidationResult = validate_and_write_table_checks(run_dir, control_summary)
+    contrasts = pd.read_csv(run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv")
+    precision_result = validate_monte_carlo_precision(contrasts, str(run_config["run_tier"]))
+    write_precision_checks(run_dir, precision_result)
     engineering_rows = [
         _row("required_derived_files_complete", all(path.exists() for path in required), f"missing={[path.relative_to(run_dir).as_posix() for path in required if not path.exists()]}"),
         _row("result_schema_is_v2", run_config["result_schema"] == RESULT_SCHEMA and set(seed_level["result_schema"]) == {RESULT_SCHEMA}, f"run_schema={run_config['result_schema']}"),
@@ -80,7 +90,15 @@ def validate_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
         _row("figure_bundles_complete", figure_complete, f"figure_count={len(figure_ids)}"),
         _row("figure_sources_reconstructable", sources_ok, sources_details),
         _row("path_manifests_portable", paths_ok, paths_details),
-        _row("main_table_complete", (run_dir / "tables" / f"{MAIN_TABLE_ID}.csv").exists() and (run_dir / "tables" / f"{MAIN_TABLE_ID}.tex").exists(), MAIN_TABLE_ID),
+        _row("main_table_exists", bool(table_result.checks.get("main_table_csv_exists", False) and table_result.checks.get("main_table_tex_exists", False)), MAIN_TABLE_ID),
+        _row("main_table_has_required_rows", bool(table_result.checks.get("main_table_has_exactly_two_rows", False)), f"rows={table_result.details.get('main_table_row_count')}"),
+        _row("main_table_values_finite", bool(table_result.checks.get("main_table_values_finite", False)), f"has_nan={table_result.details.get('main_table_has_nan')}"),
+        _row("main_table_matches_source", bool(table_result.checks.get("main_table_matches_source", False)), f"mismatches={table_result.details.get('value_mismatches')}"),
+        _row("main_table_latex_nonempty", bool(table_result.checks.get("main_table_latex_has_two_data_rows", False)) and bool(table_result.checks.get("main_table_latex_has_data_beyond_rules", False)), f"data_rows={table_result.details.get('main_table_latex_data_row_count')}"),
+        _row("main_table_complete", table_result.passed, f"semantic_checks={sum(table_result.checks.values())}/{len(table_result.checks)}"),
+        _row("primary_contrast_contract_valid", bool(precision_result.checks.get("primary_contrast_contract_valid", False)), f"count={precision_result.primary_contrast_count}"),
+        _row("primary_monte_carlo_precision_pass", precision_result.engineering_pass(), precision_result.details),
+        _row("no_nonfull_precision_status_in_full_run", bool(precision_result.checks.get("no_nonfull_precision_status_in_full_run", False)), f"run_tier={precision_result.run_tier}"),
     ]
     engineering_rows.extend(_row(name, passed, details) for name, passed, details in schema_checks)
     scientific_rows = [_row(name, passed, details) for name, passed, details in scientific_checks(run_dir)]

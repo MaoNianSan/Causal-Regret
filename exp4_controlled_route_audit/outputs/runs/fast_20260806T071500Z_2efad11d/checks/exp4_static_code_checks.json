@@ -1,0 +1,40 @@
+{
+  "active_python_files": 69,
+  "check_type": "static_code_contract",
+  "checks": [
+    {
+      "check_name": "result_schema_v2",
+      "status": "PASS"
+    },
+    {
+      "check_name": "single_defect_implementation",
+      "status": "PASS"
+    },
+    {
+      "check_name": "dormant_oracle_registry_removed",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_packages_present",
+      "status": "PASS"
+    },
+    {
+      "check_name": "plotting_does_not_import_scientific_engines",
+      "status": "PASS"
+    },
+    {
+      "check_name": "learner_logic_excluded_from_v2_package",
+      "status": "PASS"
+    },
+    {
+      "check_name": "source_signature_semantics_present",
+      "status": "PASS"
+    },
+    {
+      "check_name": "middle_mode_present",
+      "status": "PASS"
+    }
+  ],
+  "import_graph_nodes": 69,
+  "status": "PASS"
+}

@@ -1,0 +1,43 @@
+{
+  "checks": {
+    "correspondence_status_nonempty": true,
+    "main_table_columns_complete": true,
+    "main_table_control_order_correct": true,
+    "main_table_csv_exists": true,
+    "main_table_has_exactly_two_rows": true,
+    "main_table_hashes_recorded": true,
+    "main_table_latex_has_data_beyond_rules": true,
+    "main_table_latex_has_two_data_rows": true,
+    "main_table_matches_source": true,
+    "main_table_tex_exists": true,
+    "main_table_values_finite": true,
+    "required_controls_each_exactly_once_in_summary": true
+  },
+  "details": {
+    "hashes": {
+      "main_table_csv_sha256": "e30e0c173db4af9d643f303b2ea4b415ec779f65828a59c5fd143571766b7591",
+      "main_table_id": "tbl_exp4_calibration_controls",
+      "main_table_tex_sha256": "a73b2671fd91a575dab895aeeb85eded3f34fc79682a3a1477a6fdc09033fd05"
+    },
+    "main_table_display_names": [
+      "Affine-linked control",
+      "Temporally blocked correspondence-destroyed control"
+    ],
+    "main_table_has_nan": false,
+    "main_table_latex_data_row_count": 2,
+    "main_table_row_count": 2,
+    "missing_columns": [],
+    "summary_control_counts": {
+      "affine_linked": 1,
+      "blocked_correspondence_destroyed": 1
+    },
+    "value_mismatches": []
+  },
+  "main_table_manifest": {
+    "main_table_csv_sha256": "e30e0c173db4af9d643f303b2ea4b415ec779f65828a59c5fd143571766b7591",
+    "main_table_id": "tbl_exp4_calibration_controls",
+    "main_table_tex_sha256": "a73b2671fd91a575dab895aeeb85eded3f34fc79682a3a1477a6fdc09033fd05"
+  },
+  "status": "PASS",
+  "validation": "exp4_main_calibration_table"
+}
