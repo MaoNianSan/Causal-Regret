@@ -9,7 +9,13 @@ from pathlib import Path
 
 from exp4.configuration.schema import EXPERIMENT_DISPLAY_NAME
 from exp4.outputs.manifests import write_output_manifest
-from exp4.outputs.writers import create_run_context, load_run_context
+from exp4.outputs.writers import (
+    create_run_context,
+    exp4_worktree_clean,
+    git_commit_available,
+    load_run_context,
+    write_json,
+)
 from exp4.pipeline import (
     aggregate_existing_run,
     render_existing_run,
@@ -19,7 +25,10 @@ from exp4.reporting.implementation_status import write_implementation_status
 from exp4.reporting.run_summary import write_run_summary
 from exp4.simulation.calibration import load_proxy_route_calibration
 from exp4.validation.runner import validate_run
-from exp4.validation.run_provenance import audit_run_provenance, write_stage_provenance_record
+from exp4.validation.run_provenance import (
+    audit_run_provenance,
+    record_downstream_rebuild,
+)
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -31,6 +40,31 @@ def _default_jobs() -> int:
 
 def _existing_context(run_dir: Path, n_jobs: int | None):
     return load_run_context(BASE_DIR, run_dir.resolve(), n_jobs=n_jobs)
+
+
+def _refuse_dirty_full_worktree() -> None:
+    """Formal Full must start from a clean, committed Exp4 worktree."""
+    _assert_full_worktree_ready(BASE_DIR)
+
+
+def _assert_full_worktree_ready(base_dir: Path) -> None:
+    from exp4.outputs.writers import exp4_dirty_files
+
+    if not exp4_worktree_clean(base_dir):
+        dirty = exp4_dirty_files(base_dir)
+        details = "\n".join(dirty) if dirty else "(git status unavailable)"
+        raise SystemExit(
+            "FORMAL_FULL_REFUSED_DIRTY_EXP4_WORKTREE\n"
+            "Formal Full requires a clean Exp4 worktree. Dirty files:\n"
+            f"{details}\n"
+            "Fast and Middle may run on a dirty worktree and record "
+            "exp4_worktree_clean_at_start=false."
+        )
+    if not git_commit_available(base_dir):
+        raise SystemExit(
+            "FORMAL_FULL_REFUSED_UNRESOLVABLE_GIT_COMMIT\n"
+            "Formal Full requires a resolvable, non-placeholder git commit."
+        )
 
 
 def main() -> None:
@@ -56,20 +90,22 @@ def main() -> None:
 
     if arguments.command == "provenance":
         context = _existing_context(arguments.run_dir, arguments.n_jobs)
-        audit = audit_run_provenance(context.run_dir, BASE_DIR)
-        from exp4.outputs.writers import write_json
-
+        audit = audit_run_provenance(context.run_dir, BASE_DIR, recompute_calibration=True)
         write_json(audit, context.run_dir / "logs" / "exp4_provenance_audit.json")
         print(json.dumps(audit, indent=2, default=str))
         return
 
     if arguments.command in {"fast", "middle", "full"}:
+        if arguments.command == "full":
+            _refuse_dirty_full_worktree()
         if arguments.resume_run_dir is not None:
             context = _existing_context(arguments.resume_run_dir, arguments.n_jobs)
             if context.run_tier != arguments.command:
                 raise SystemExit(
                     f"Resume tier mismatch: run={context.run_tier}, command={arguments.command}"
                 )
+            if arguments.command == "full":
+                _refuse_dirty_full_worktree()
             resume = True
         else:
             context = create_run_context(BASE_DIR, arguments.command, arguments.n_jobs)
@@ -79,6 +115,7 @@ def main() -> None:
         print(f"Run tier: {context.run_tier}")
         print(f"Workers: {context.n_jobs}")
         print(f"Output: {context.run_dir}")
+        print(f"Exp4 worktree clean at start: {context.exp4_worktree_clean_at_start}")
         status = run_pipeline(context, BASE_DIR, resume=resume)
         print(json.dumps(status, indent=2))
         if status["engineering_status"] != "PASS" or status["scientific_status"] != "PASS":
@@ -103,7 +140,10 @@ def main() -> None:
         render_existing_run(context)
     elif arguments.command == "report":
         write_run_summary(context.run_dir)
-    write_stage_provenance_record(context.run_dir, BASE_DIR)
+    # Downstream stages were (re)built for this run; refresh the stage records
+    # and lineage so downstream provenance reflects the rebuild without
+    # touching the original simulation stage record.
+    record_downstream_rebuild(context.run_dir, BASE_DIR)
     write_output_manifest(context.run_dir)
 
 

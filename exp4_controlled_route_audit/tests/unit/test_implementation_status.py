@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from exp4.outputs.run_lineage import fresh_lineage, write_run_lineage
 from exp4.reporting.implementation_status import (
     build_implementation_status,
     scan_runs,
@@ -72,3 +73,39 @@ def test_status_reflects_promotion_state(tmp_path: Path) -> None:
     status = build_implementation_status(tmp_path)
     assert status["PAPER_PROMOTION_EXECUTED"] == "YES"
     assert status["paper_result"] is True
+
+
+def test_reuse_eligibility_does_not_imply_actual_reuse(tmp_path: Path) -> None:
+    """Eligibility is a hash property; execution mode is a lineage fact."""
+    _make_run(tmp_path, "full", "full_elig")
+    run_dir = tmp_path / "outputs" / "runs" / "full_elig"
+    write_run_lineage(run_dir, fresh_lineage("full_elig", "full", "x", True))
+    status = build_implementation_status(tmp_path)
+    # Stored hashes do not match the current tree, so the run is not eligible
+    # for reuse...
+    assert status["FULL_SIMULATION_REUSE_ELIGIBLE"] == "NO"
+    # ...but the lineage still records that it actually executed its own
+    # simulation fresh.
+    assert status["FULL_SIMULATION_EXECUTION_MODE"] == "FRESH"
+    assert status["FULL_SIMULATION_SOURCE_RUN_ID"] == "NONE"
+    assert status["FULL_SIMULATION_RERUN_REQUIRED"] is True
+
+
+def test_unknown_lineage_is_not_reported_as_reused(tmp_path: Path) -> None:
+    _make_run(tmp_path, "full", "full_unknown")
+    status = build_implementation_status(tmp_path)
+    assert status["FULL_SIMULATION_EXECUTION_MODE"] == "UNKNOWN"
+    assert status["FULL_SIMULATION_REUSE_ELIGIBLE"] == "UNKNOWN"
+    assert status["FULL_SIMULATION_SOURCE_RUN_ID"] == "UNKNOWN"
+    assert status["DOWNSTREAM_ARTIFACTS_EXECUTION_MODE"] == "UNKNOWN"
+    assert status["FULL_SIMULATION_RERUN_REQUIRED"] is True
+
+
+def test_fresh_full_without_provenance_requires_rerun(tmp_path: Path) -> None:
+    _make_run(tmp_path, "full", "full_fresh_no_prov")
+    run_dir = tmp_path / "outputs" / "runs" / "full_fresh_no_prov"
+    write_run_lineage(run_dir, fresh_lineage("full_fresh_no_prov", "full", "x", True))
+    status = build_implementation_status(tmp_path)
+    assert status["FULL_SIMULATION_EXECUTION_MODE"] == "FRESH"
+    assert status["FULL_SIMULATION_RERUN_REQUIRED"] is True
+    assert status["provenance_status"] == "UNVERIFIED"

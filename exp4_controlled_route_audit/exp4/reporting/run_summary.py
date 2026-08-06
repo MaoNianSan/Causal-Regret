@@ -17,6 +17,8 @@ def write_run_summary(run_dir: Path) -> None:
     performance = pd.read_csv(run_dir / "derived" / "module_b" / "exp4_module_b_audit_performance.csv")
     controls = pd.read_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv")
     q1 = boundary[(boundary["route_id"] == "proxy_label") & np.isclose(boundary["route_label_rate"], 1.0)]
+    lineage = _load_lineage(run_dir)
+    stage_record = _load_stage_record(run_dir)
     lines = [
         "# Experiment 4 v2 Run Summary",
         "",
@@ -27,6 +29,18 @@ def write_run_summary(run_dir: Path) -> None:
         f"- Scientific status: `{scientific['status']}`",
         "- Paper promotion: `NOT_RUN`",
         "- Paper result: `false`",
+        "",
+        "## Run lineage",
+        "",
+        f"- Lineage schema: `{lineage.get('schema', 'MISSING')}`",
+        f"- Simulation execution mode: `{lineage.get('simulation_execution_mode', 'UNKNOWN')}`",
+        f"- Simulation source run: `{lineage.get('simulation_source_run_id') or 'NONE'}`",
+        f"- Downstream execution mode: `{lineage.get('downstream_execution_mode', 'UNKNOWN')}`",
+        f"- Downstream source run: `{lineage.get('downstream_source_run_id') or 'NONE'}`",
+        f"- Created from commit: `{lineage.get('created_from_commit', 'UNKNOWN')}`",
+        f"- Exp4 worktree clean at start: `{lineage.get('exp4_worktree_clean_at_start', False)}`",
+        f"- Formal Full clean-worktree required: `{run_config.get('formal_full_clean_worktree_required', False)}`",
+        f"- Source unchanged during run: `{stage_record.get('source_unchanged_during_run', False) if stage_record else False}`",
         "",
         "## Core diagnostics",
         "",
@@ -50,3 +64,18 @@ def write_run_summary(run_dir: Path) -> None:
     (run_dir / "reports" / "exp4_run_summary.md").write_text(
         "\n".join(lines) + "\n", encoding="utf-8"
     )
+
+
+def _load_lineage(run_dir: Path) -> dict[str, object]:
+    from exp4.outputs.run_lineage import RUN_LINEAGE_SCHEMA, load_run_lineage
+
+    lineage = load_run_lineage(run_dir)
+    if lineage is None:
+        return {}
+    return {"schema": RUN_LINEAGE_SCHEMA, **lineage.as_dict()}
+
+
+def _load_stage_record(run_dir: Path) -> dict[str, object] | None:
+    from exp4.validation.run_provenance import load_stage_provenance_record
+
+    return load_stage_provenance_record(run_dir)

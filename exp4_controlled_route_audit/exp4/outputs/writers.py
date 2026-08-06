@@ -37,6 +37,8 @@ class RunContext:
     source_code_hash: str
     n_jobs: int
     paper_result: bool = False
+    exp4_worktree_clean_at_start: bool = True
+    stage_source_hashes: dict[str, str] | None = None
 
 
 def utc_now_iso() -> str:
@@ -79,6 +81,88 @@ def source_code_hash(base_dir: Path) -> str:
     return hash_files(files)
 
 
+# Stage-level source-hash definitions. Configuration is a shared dependency of
+# every stage and is included in every stage hash so that a frozen-config
+# change is detected by all stages.
+_STAGE_SHARED_PREFIXES = ("exp4/configuration/",)
+
+_STAGE_SPECS: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
+    (
+        "simulation_source_hash",
+        _STAGE_SHARED_PREFIXES
+        + (
+            "exp4/simulation/",
+            "exp4/routes/",
+            "exp4/audit/",
+            "exp4/calibration/",
+            "exp4/modules/",
+            "exp4/execution/calibration_stage.py",
+            "exp4/execution/module_a_stage.py",
+            "exp4/execution/module_bc_stage.py",
+            "exp4/execution/common.py",
+        ),
+        ("exp4/metrics/action_gaps.py",),
+    ),
+    (
+        "aggregation_source_hash",
+        _STAGE_SHARED_PREFIXES
+        + (
+            "exp4/reporting/aggregate_module_a.py",
+            "exp4/reporting/aggregate_module_b.py",
+            "exp4/reporting/aggregate_module_c.py",
+            "exp4/execution/aggregation_stage.py",
+        ),
+        ("exp4/metrics/monte_carlo.py", "exp4/outputs/writers.py"),
+    ),
+    (
+        "reporting_source_hash",
+        _STAGE_SHARED_PREFIXES
+        + (
+            "exp4/reporting/",
+            "exp4/outputs/writers.py",
+            "exp4/outputs/manifests.py",
+            "exp4/pipeline.py",
+        ),
+        (),
+    ),
+    (
+        "validation_source_hash",
+        _STAGE_SHARED_PREFIXES
+        + (
+            "exp4/validation/",
+            "exp4/outputs/writers.py",
+            "exp4/pipeline.py",
+        ),
+        (),
+    ),
+)
+
+
+def _stage_file_matches(
+    base_dir: Path, path: Path, prefixes: tuple[str, ...], files: tuple[str, ...]
+) -> bool:
+    relative = path.relative_to(base_dir).as_posix()
+    if relative in files:
+        return True
+    return any(relative.startswith(prefix) for prefix in prefixes)
+
+
+def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
+    """Per-stage source hashes over the current working tree.
+
+    This is the single source of truth for stage hashes: run creation, the
+    stage provenance record, and the provenance audit all use it.
+    """
+    all_files = list((base_dir / "exp4").rglob("*.py"))
+    hashes: dict[str, str] = {}
+    for name, prefixes, files in _STAGE_SPECS:
+        stage_files = [
+            path for path in all_files if _stage_file_matches(base_dir, path, prefixes, files)
+        ]
+        hashes[name] = hash_files(stage_files)
+    return hashes
+
+
 def frozen_config_payload() -> dict[str, object]:
     return {
         "experiment_id": EXPERIMENT_ID,
@@ -108,6 +192,57 @@ def git_commit(base_dir: Path) -> str:
         return result.stdout.strip()
     except Exception:
         return "UNAVAILABLE"
+
+
+def git_commit_available(base_dir: Path) -> bool:
+    """A formal run needs a resolvable non-placeholder commit."""
+    commit = git_commit(base_dir)
+    return bool(commit) and commit not in {"UNAVAILABLE", "UNKNOWN", ""} and len(commit) >= 7
+
+
+def _git_root(base_dir: Path) -> Path | None:
+    try:
+        result = subprocess.run(
+            ("git", "rev-parse", "--show-toplevel"),
+            cwd=base_dir,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        root = result.stdout.strip()
+        return Path(root) if root else None
+    except Exception:
+        return None
+
+
+def exp4_dirty_files(base_dir: Path) -> list[str]:
+    """Relative paths of uncommitted Exp4 changes (empty when clean/unknown)."""
+    git_root = _git_root(base_dir)
+    if git_root is None:
+        return []
+    try:
+        relative = base_dir.resolve().relative_to(git_root.resolve())
+    except ValueError:
+        relative = Path(".")
+    try:
+        result = subprocess.run(
+            ("git", "status", "--porcelain", "--", str(relative)),
+            cwd=git_root,
+            capture_output=True,
+            text=True,
+        )
+    except Exception:
+        return []
+    return [line.strip() for line in result.stdout.splitlines() if line.strip()]
+
+
+def exp4_worktree_clean(base_dir: Path) -> bool:
+    """True only when the Exp4 worktree has no uncommitted changes.
+
+    ``base_dir`` is the experiment directory (may be a subdirectory of the
+    git work tree). Returns False when git is unavailable (conservative).
+    """
+    return not exp4_dirty_files(base_dir)
 
 
 def write_json(payload: object, path: Path) -> None:
@@ -189,6 +324,8 @@ def create_run_context(base_dir: Path, run_tier: str, n_jobs: int) -> RunContext
         config_hash=config_hash(),
         source_code_hash=source_code_hash(base_dir),
         n_jobs=max(1, int(n_jobs)),
+        exp4_worktree_clean_at_start=exp4_worktree_clean(base_dir),
+        stage_source_hashes=compute_stage_source_hashes(base_dir),
     )
     write_run_config(context)
     return context
@@ -205,11 +342,24 @@ def load_run_context(base_dir: Path, run_dir: Path, n_jobs: int | None = None) -
         source_code_hash=payload["source_code_hash"],
         n_jobs=int(n_jobs if n_jobs is not None else payload.get("n_jobs", 1)),
         paper_result=bool(payload.get("paper_result", False)),
+        exp4_worktree_clean_at_start=bool(payload.get("exp4_worktree_clean_at_start", False)),
+        stage_source_hashes={
+            key: str(payload[key])
+            for key in (
+                "simulation_source_hash",
+                "aggregation_source_hash",
+                "reporting_source_hash",
+                "validation_source_hash",
+            )
+            if payload.get(key)
+        }
+        or None,
     )
 
 
 def write_run_config(context: RunContext) -> None:
     settings = mode_settings(context.run_tier)
+    stage_hashes = context.stage_source_hashes or {}
     write_json(
         {
             "run_id": context.run_id,
@@ -223,6 +373,12 @@ def write_run_config(context: RunContext) -> None:
             "config_hash": context.config_hash,
             "source_code_hash": context.source_code_hash,
             "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
+            "formal_full_clean_worktree_required": context.run_tier == "full",
+            "exp4_worktree_clean_at_start": context.exp4_worktree_clean_at_start,
+            "simulation_stage_hash": stage_hashes.get("simulation_source_hash", ""),
+            "aggregation_stage_hash": stage_hashes.get("aggregation_source_hash", ""),
+            "reporting_stage_hash": stage_hashes.get("reporting_source_hash", ""),
+            "validation_stage_hash": stage_hashes.get("validation_source_hash", ""),
             "generated_at": utc_now_iso(),
             "n_jobs": context.n_jobs,
             "mode_settings": settings.as_dict(),

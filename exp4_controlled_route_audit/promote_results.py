@@ -42,6 +42,7 @@ def validate_paper_promotion(
     )
     precision = promotion_precision_checks(run_config, contrasts)
     provenance = audit_run_provenance(run_dir, base_dir)
+    stages = provenance["stages"]
     checks = {
         "run_tier_is_full": run_config["run_tier"] == "full",
         "result_schema_is_v2": run_config["result_schema"] == RESULT_SCHEMA,
@@ -62,18 +63,55 @@ def validate_paper_promotion(
         "monte_carlo_precision_pass": all(
             precision[key] for key in ("primary_contrast_contract_valid", "primary_monte_carlo_precision_pass", "no_nonfull_precision_status_in_full_run")
         ),
-        "simulation_provenance_verified": bool(
-            provenance["source_hash_match"] and provenance["config_hash_match"]
-        ),
-        "downstream_stage_provenance_complete": all(
-            provenance["stage_source_hashes"].values()
-        ),
+        # --- Run lineage contract ---
+        "run_lineage_present": bool(provenance["run_lineage_present"]),
+        "run_lineage_valid": bool(provenance["run_lineage_valid"]),
+        "formal_full_started_clean": bool(provenance["formal_full_started_clean"]),
+        # --- Stage provenance records and stored-vs-current hash comparisons ---
+        "simulation_stage_record_present": bool(stages["simulation"]["record_present"]),
+        "aggregation_stage_record_present": bool(stages["aggregation"]["record_present"]),
+        "reporting_stage_record_present": bool(stages["reporting"]["record_present"]),
+        "validation_stage_record_present": bool(stages["validation"]["record_present"]),
+        "simulation_stage_hash_match": bool(stages["simulation"]["hash_match"]),
+        "aggregation_stage_hash_match": bool(stages["aggregation"]["hash_match"]),
+        "reporting_stage_hash_match": bool(stages["reporting"]["hash_match"]),
+        "validation_stage_hash_match": bool(stages["validation"]["hash_match"]),
+        "simulation_provenance_verified": bool(provenance["simulation_provenance_verified"]),
+        "downstream_provenance_verified": bool(provenance["downstream_provenance_verified"]),
+        "source_unchanged_during_run": bool(provenance["source_unchanged_during_run"]),
         "source_hash_algorithm_version_present": bool(
             provenance["source_hash_algorithm_version_present"]
         )
         and provenance["expected_source_hash_algorithm_version"]
         == SOURCE_HASH_ALGORITHM_VERSION,
     }
+    # Mode-specific requirements: a FRESH full must have executed its own
+    # simulation from a clean, committed worktree; a REUSED run must point at a
+    # verified source run with a reconciliation artifact. Unknown modes fail.
+    if provenance["simulation_execution_mode"] == "FRESH":
+        checks.update(
+            {
+                "fresh_simulation_source_run_id_absent": provenance["simulation_source_run_id"] is None,
+                "fresh_recorded_commit_matches_run_config": provenance["stored_git_head_commit"]
+                == str(run_config.get("code_commit", "")),
+                "fresh_complete_source_hash_match": bool(provenance["source_hash_match"]),
+                "fresh_config_hash_match": bool(provenance["config_hash_match"]),
+                "fresh_calibration_hash_consistent": bool(
+                    provenance["calibration_hash_consistent"]
+                ),
+            }
+        )
+    elif provenance["simulation_execution_mode"] == "REUSED":
+        checks.update(
+            {
+                "reused_source_run_id_present": bool(provenance["simulation_source_run_id"]),
+                "reused_reconciliation_artifact_present": bool(
+                    provenance["reconciliation_artifact_present"]
+                ),
+            }
+        )
+    else:
+        checks["simulation_execution_mode_known"] = False
     return {
         "status": "PASS" if all(checks.values()) else "FAIL",
         "checks": checks,
@@ -85,8 +123,20 @@ def validate_paper_promotion(
                 "source_hash_match",
                 "config_hash_match",
                 "full_simulation_reuse_decision",
+                "full_simulation_reuse_eligibility",
+                "simulation_execution_mode",
+                "simulation_source_run_id",
+                "downstream_execution_mode",
+                "downstream_source_run_id",
+                "run_lineage_present",
+                "run_lineage_valid",
+                "formal_full_started_clean",
+                "source_unchanged_during_run",
+                "simulation_provenance_verified",
+                "downstream_provenance_verified",
                 "source_hash_algorithm_version_present",
                 "stage_source_hashes",
+                "stages",
             )
         },
         "table": table_result.as_dict(),

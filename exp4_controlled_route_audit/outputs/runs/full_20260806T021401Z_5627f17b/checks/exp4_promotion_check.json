@@ -1,8 +1,11 @@
 {
   "checks": {
+    "aggregation_stage_hash_match": false,
+    "aggregation_stage_record_present": false,
     "all_required_derived_files_complete": true,
-    "downstream_stage_provenance_complete": true,
+    "downstream_provenance_verified": false,
     "engineering_status_pass": true,
+    "formal_full_started_clean": false,
     "main_figure_complete": true,
     "main_table_complete": false,
     "main_table_exists": true,
@@ -15,11 +18,21 @@
     "paper_claims_within_scope": true,
     "primary_contrast_contract_valid": true,
     "primary_monte_carlo_precision_pass": false,
+    "reporting_stage_hash_match": false,
+    "reporting_stage_record_present": false,
     "result_schema_is_v2": true,
+    "run_lineage_present": false,
+    "run_lineage_valid": false,
     "run_tier_is_full": true,
     "scientific_status_pass": true,
+    "simulation_execution_mode_known": false,
     "simulation_provenance_verified": false,
-    "source_hash_algorithm_version_present": false
+    "simulation_stage_hash_match": false,
+    "simulation_stage_record_present": false,
+    "source_hash_algorithm_version_present": false,
+    "source_unchanged_during_run": false,
+    "validation_stage_hash_match": false,
+    "validation_stage_record_present": false
   },
   "precision": {
     "no_nonfull_precision_status_in_full_run": false,
@@ -28,15 +41,60 @@
   },
   "provenance": {
     "config_hash_match": true,
-    "current_pre_fix_source_code_hash": "9f449fa0ef13523eb6544f0abd018e671816b02700640b0215b7f6f9e560ddf9",
-    "full_simulation_reuse_decision": "DO_NOT_REUSE",
+    "current_pre_fix_source_code_hash": "19d12588b041cce8456cd3d83495fba45908cff2376b7c33cc2405d88d29f4ac",
+    "downstream_execution_mode": "UNKNOWN",
+    "downstream_provenance_verified": false,
+    "downstream_source_run_id": null,
+    "formal_full_started_clean": false,
+    "full_simulation_reuse_decision": "UNKNOWN",
+    "full_simulation_reuse_eligibility": "UNKNOWN",
+    "run_lineage_present": false,
+    "run_lineage_valid": false,
+    "simulation_execution_mode": "UNKNOWN",
+    "simulation_provenance_verified": false,
+    "simulation_source_run_id": null,
     "source_hash_algorithm_version_present": false,
     "source_hash_match": false,
+    "source_unchanged_during_run": false,
     "stage_source_hashes": {
-      "aggregation_source_hash": "8e4930f7b2cde8b07b64467276808749c1d825040053560fe6526695e4e6a695",
-      "reporting_source_hash": "d6525f969ad892a965b2d9d46b4865409f5471e41e17cd40bad3476caca178d9",
+      "aggregation_source_hash": "7ee3458d1a24cf49a01f81174c622fc230482accc16d56389aaa528e679330de",
+      "reporting_source_hash": "1b79aeecc1fea95d96830676a49d5f5df06f1076422c78ab00a06e6940a2e99f",
       "simulation_source_hash": "98967c2f20089047a6a967cb1b42e5dc0afc045ca3f6f2d3d84acb6852f8019e",
-      "validation_source_hash": "abf7357c0d6e08c511a8462c5cf100ecfb05b402e9cc81a0d2124550cc7055ea"
+      "validation_source_hash": "eb79c871db2f1d647bd6994fffb9943a80293ed83ddfd3c5b7357f11a4387174"
+    },
+    "stages": {
+      "aggregation": {
+        "current_hash": "7ee3458d1a24cf49a01f81174c622fc230482accc16d56389aaa528e679330de",
+        "execution_mode": "UNKNOWN",
+        "hash_match": false,
+        "record_present": false,
+        "source_run_id": null,
+        "stored_hash": null
+      },
+      "reporting": {
+        "current_hash": "1b79aeecc1fea95d96830676a49d5f5df06f1076422c78ab00a06e6940a2e99f",
+        "execution_mode": "UNKNOWN",
+        "hash_match": false,
+        "record_present": false,
+        "source_run_id": null,
+        "stored_hash": null
+      },
+      "simulation": {
+        "current_hash": "98967c2f20089047a6a967cb1b42e5dc0afc045ca3f6f2d3d84acb6852f8019e",
+        "execution_mode": "UNKNOWN",
+        "hash_match": false,
+        "record_present": false,
+        "source_run_id": null,
+        "stored_hash": null
+      },
+      "validation": {
+        "current_hash": "eb79c871db2f1d647bd6994fffb9943a80293ed83ddfd3c5b7357f11a4387174",
+        "execution_mode": "UNKNOWN",
+        "hash_match": false,
+        "record_present": false,
+        "source_run_id": null,
+        "stored_hash": null
+      }
     },
     "stored_source_code_hash": "52e2ca0be113392807336020532d3996823a4d02465ecae60b1fa37dcbffdd9c"
   },

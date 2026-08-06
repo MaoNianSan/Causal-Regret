@@ -120,8 +120,29 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
             and (full_dir / "logs" / "exp4_stage_provenance.json").exists()
         )
 
-    reuse_decision = str(provenance.get("full_simulation_reuse_decision", "UNKNOWN"))
-    simulation_rerun_required = reuse_decision != "REUSE"
+    full_provenance_verified = bool(
+        provenance
+        and provenance.get("run_lineage_valid")
+        and provenance.get("simulation_provenance_verified")
+        and provenance.get("downstream_provenance_verified")
+        and provenance.get("source_unchanged_during_run")
+    )
+    simulation_execution_mode = str(
+        provenance.get("simulation_execution_mode", "UNKNOWN") if provenance else "UNKNOWN"
+    )
+    simulation_source_run_id = (
+        provenance.get("simulation_source_run_id") if provenance else None
+    )
+    downstream_execution_mode = str(
+        provenance.get("downstream_execution_mode", "UNKNOWN") if provenance else "UNKNOWN"
+    )
+    downstream_source_run_id = (
+        provenance.get("downstream_source_run_id") if provenance else None
+    )
+    reuse_eligibility = str(
+        provenance.get("full_simulation_reuse_eligibility", "UNKNOWN") if provenance else "UNKNOWN"
+    )
+    simulation_rerun_required = not full_provenance_verified
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
         "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
@@ -133,14 +154,33 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
         "full_run_checks_stale": checks_stale,
         "paper_promotion_status": paper_promotion_status,
         "paper_result": paper_result,
-        "full_simulation_reuse_decision": reuse_decision,
+        "full_simulation_reuse_eligibility": reuse_eligibility,
+        "full_simulation_execution_mode": simulation_execution_mode,
+        "full_simulation_source_run_id": simulation_source_run_id,
+        "downstream_execution_mode": downstream_execution_mode,
+        "downstream_source_run_id": downstream_source_run_id,
         "FULL_SIMULATION_RERUN_REQUIRED": simulation_rerun_required,
-        "provenance_status": "VERIFIED" if provenance.get("source_hash_match") else "UNVERIFIED",
+        "provenance_status": "VERIFIED" if full_provenance_verified else "UNVERIFIED",
         "table_status": table_status,
         "monte_carlo_precision_status": precision_status,
         "FULL_RUN_EXECUTED": "YES" if full_run_id != "NONE" else "NO",
-        "FULL_SIMULATION_REUSED": "YES" if reuse_decision == "REUSE" else "NO",
-        "DOWNSTREAM_ARTIFACTS_REBUILT": "YES" if reuse_decision == "REUSE" else "NO",
+        "FULL_SIMULATION_REUSE_ELIGIBLE": {
+            "ELIGIBLE": "YES",
+            "NOT_ELIGIBLE": "NO",
+            "UNKNOWN": "UNKNOWN",
+        }.get(reuse_eligibility, "UNKNOWN"),
+        "FULL_SIMULATION_EXECUTION_MODE": simulation_execution_mode,
+        "FULL_SIMULATION_SOURCE_RUN_ID": (
+            simulation_source_run_id
+            if simulation_source_run_id
+            else ("NONE" if simulation_execution_mode == "FRESH" else "UNKNOWN")
+        ),
+        "DOWNSTREAM_ARTIFACTS_EXECUTION_MODE": downstream_execution_mode,
+        "DOWNSTREAM_SOURCE_RUN_ID": (
+            downstream_source_run_id
+            if downstream_source_run_id
+            else ("NONE" if downstream_execution_mode in {"INLINE_FRESH", "REBUILT_FROM_OWN_SIMULATION"} else "UNKNOWN")
+        ),
         "PAPER_PROMOTION_EXECUTED": "YES" if paper_promotion_status == "PASS" else "NO",
     }
 
@@ -171,14 +211,20 @@ def write_implementation_status(base_dir: Path, path: Path) -> dict[str, object]
         f"- Table semantic check: `{status['table_status']}`",
         f"- Monte Carlo precision check: `{status['monte_carlo_precision_status']}`",
         f"- Provenance: `{status['provenance_status']}`",
-        f"- Simulation reuse decision: `{status['full_simulation_reuse_decision']}`",
+        f"- Simulation reuse eligibility: `{status['full_simulation_reuse_eligibility']}`",
+        f"- Simulation execution mode: `{status['full_simulation_execution_mode']}`",
+        f"- Simulation source run: `{status['full_simulation_source_run_id']}`",
+        f"- Downstream execution mode: `{status['downstream_execution_mode']}`",
         "",
         "## Execution Flags",
         "",
         f"FULL_RUN_EXECUTED={status['FULL_RUN_EXECUTED']}",
-        f"FULL_SIMULATION_REUSED={status['FULL_SIMULATION_REUSED']}",
+        f"FULL_SIMULATION_REUSE_ELIGIBLE={status['FULL_SIMULATION_REUSE_ELIGIBLE']}",
+        f"FULL_SIMULATION_EXECUTION_MODE={status['FULL_SIMULATION_EXECUTION_MODE']}",
+        f"FULL_SIMULATION_SOURCE_RUN_ID={status['FULL_SIMULATION_SOURCE_RUN_ID']}",
         f"FULL_SIMULATION_RERUN_REQUIRED={'YES' if status['FULL_SIMULATION_RERUN_REQUIRED'] else 'NO'}",
-        f"DOWNSTREAM_ARTIFACTS_REBUILT={status['DOWNSTREAM_ARTIFACTS_REBUILT']}",
+        f"DOWNSTREAM_ARTIFACTS_EXECUTION_MODE={status['DOWNSTREAM_ARTIFACTS_EXECUTION_MODE']}",
+        f"DOWNSTREAM_SOURCE_RUN_ID={status['DOWNSTREAM_SOURCE_RUN_ID']}",
         f"PAPER_PROMOTION_EXECUTED={status['PAPER_PROMOTION_EXECUTED']}",
         "GIT_COMMIT_EXECUTED=NO",
         "GIT_PUSH_EXECUTED=NO",
