@@ -1,9 +1,15 @@
+# Python and test caches
 __pycache__/
 .pytest_cache/
 *.py[cod]
+
+# Raw input datasets are large / licensed; keep only the README on GitHub.
 inputs/*.tsv
 inputs/*.csv
 inputs/*.parquet
+inputs/*.tsv.gz
+inputs/*.gz
+inputs/*.ipynb
 !inputs/README.md
 
 # Ignore per-run outputs; whitelist curated paper results for GitHub.
@@ -11,3 +17,11 @@ outputs/*
 !outputs/.gitkeep
 !outputs/paper/
 !outputs/paper/**
+
+# Exp2 v3 generated run artifacts (already covered by outputs/*; explicit
+# entries document the v3 layouts for cohort checks and refactor audits).
+outputs/cohort-check-*/
+outputs/refactor_audit/
+outputs/exp2-fast-*/
+outputs/exp2-middle-*/
+outputs/exp2-full-*/
