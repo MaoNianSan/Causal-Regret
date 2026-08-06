@@ -1,0 +1,61 @@
+{
+  "check_type": "engineering",
+  "checks": [
+    {
+      "check_name": "required_derived_files_complete",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "result_schema_is_v2",
+      "details": "run_schema=exp4_controlled_route_audit_v2",
+      "status": "PASS"
+    },
+    {
+      "check_name": "run_remains_nonpaper",
+      "details": "paper_result=False",
+      "status": "PASS"
+    },
+    {
+      "check_name": "figure_bundles_complete",
+      "details": "figure_count=11",
+      "status": "PASS"
+    },
+    {
+      "check_name": "figure_sources_reconstructable",
+      "details": "all figure sources match stored hashes",
+      "status": "PASS"
+    },
+    {
+      "check_name": "path_manifests_portable",
+      "details": "all stored paths are relative and exist",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_complete",
+      "details": "tbl_exp4_calibration_controls",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_a_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_b_unit_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_b_condition_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_c_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

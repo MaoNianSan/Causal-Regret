@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "all_required_derived_files_complete": true,
+    "engineering_status_pass": true,
+    "main_figure_complete": true,
+    "main_table_complete": true,
+    "monte_carlo_precision_pass": true,
+    "paper_claims_within_scope": true,
+    "result_schema_is_v2": true,
+    "run_tier_is_full": true,
+    "scientific_status_pass": true
+  },
+  "status": "PASS"
+}

@@ -1,0 +1,34 @@
+{
+  "axis_definitions": {
+    "a_x": "allocation_tv_vs_arrival",
+    "b_x": "allocation_tv",
+    "b_y": "fixed source-route pair order"
+  },
+  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
+  "cohort_hash": "bcf51353ba81832643232bf27bcf2ef55265fe7baff59ea9b5d15f9706aa61de",
+  "config_hash": "c2d28d375d9f3e3537d5bf7a4cf69b84cd81f6e3361203a977562d30de3f953a",
+  "decision_cell_universe_hash": "0df7f4a170a678bff27dae269cdc6586301e29663421226f81c8429516274d40",
+  "experiment_id": "exp2",
+  "figure_files": {
+    "figure_exp2_main.pdf": "e2ffad0d871ee678e7c209ab07e1b2ad9fdde804f0d9f170b4baafbb9407792d",
+    "figure_exp2_main.png": "6b78149fcbea3a76c779000fac359c1542ec31a35cfefe671f9e0471413bceb0",
+    "figure_exp2_main.svg": "167a66ab4a816d93a3ccd19d6aac293e7a787d238dd9dbc7589778dab5153a39"
+  },
+  "figure_id": "figure_exp2_main",
+  "generated_at": "2026-07-27T10:29:31.304573+08:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "panel_b_x_limit": [
+    0.0,
+    0.3
+  ],
+  "panel_definitions": {
+    "a": "UID-bootstrap allocation TV from the arrival-time diagnostic anchor; annotations report shared top-k cells and their interval.",
+    "b": "Horizontal dot-and-whisker comparisons of pairwise source-route allocation TV; annotations report shared top-k cells and their interval."
+  },
+  "paper_result": false,
+  "run_id": "exp2-full-20260727T100920+0800",
+  "run_tier": "full",
+  "source_data": "figure_exp2_main_data.csv",
+  "source_data_sha256": "ddc16c9d3bd3427eebe5304fa341e48844c9e66b63c366c63a3dd6e13e1a444b",
+  "uncertainty_definition": "95% percentile UID-cluster bootstrap intervals."
+}

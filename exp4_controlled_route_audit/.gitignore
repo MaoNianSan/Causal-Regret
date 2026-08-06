@@ -1,7 +1,25 @@
 __pycache__/
 *.py[cod]
 .ipynb_checkpoints/
-outputs/runs/*/
-!outputs/runs/.gitkeep
 .DS_Store
 Thumbs.db
+
+# Ignore per-run outputs; whitelist curated results for GitHub.
+# Note: git does not descend into ignored directories, so each run dir
+# must be unignored before its subdirectories can be whitelisted.
+# raw/, logs/, and *.parquet stay ignored (root .gitignore covers them).
+outputs/runs/*/
+!outputs/runs/.gitkeep
+# Curated full run to publish (results only, no raw/logs/parquet).
+!outputs/runs/full_20260806T021401Z_5627f17b/
+!outputs/runs/full_20260806T021401Z_5627f17b/figures/
+!outputs/runs/full_20260806T021401Z_5627f17b/figures/**
+!outputs/runs/full_20260806T021401Z_5627f17b/tables/
+!outputs/runs/full_20260806T021401Z_5627f17b/tables/**
+!outputs/runs/full_20260806T021401Z_5627f17b/reports/
+!outputs/runs/full_20260806T021401Z_5627f17b/reports/**
+!outputs/runs/full_20260806T021401Z_5627f17b/checks/
+!outputs/runs/full_20260806T021401Z_5627f17b/checks/**
+!outputs/runs/full_20260806T021401Z_5627f17b/derived/
+!outputs/runs/full_20260806T021401Z_5627f17b/derived/**
+outputs/runs/full_20260806T021401Z_5627f17b/derived/**/*.parquet

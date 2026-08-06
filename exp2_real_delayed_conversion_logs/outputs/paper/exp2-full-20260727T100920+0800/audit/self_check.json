@@ -1,0 +1,127 @@
+{
+  "checks": [
+    {
+      "check": "primary_route_order",
+      "status": "PASS"
+    },
+    {
+      "check": "modal_campaign_fallback_prohibited",
+      "status": "PASS"
+    },
+    {
+      "check": "utc_time_standard",
+      "status": "PASS"
+    },
+    {
+      "check": "primary_top_k",
+      "status": "PASS"
+    },
+    {
+      "check": "kendall_tau_b",
+      "status": "PASS"
+    },
+    {
+      "check": "time_decay_rate",
+      "status": "PASS"
+    },
+    {
+      "check": "primary_cohort_nonempty",
+      "status": "PASS",
+      "value": 11392
+    },
+    {
+      "check": "valid_bootstrap_users",
+      "status": "PASS"
+    },
+    {
+      "check": "unique_campaign_primary_cohort",
+      "status": "PASS"
+    },
+    {
+      "check": "attribution_ambiguity_present",
+      "status": "PASS",
+      "value": 3570
+    },
+    {
+      "check": "decision_cell_support_for_top_k",
+      "status": "PASS"
+    },
+    {
+      "check": "common_route_cohort",
+      "status": "PASS"
+    },
+    {
+      "check": "credit_conservation",
+      "status": "PASS"
+    },
+    {
+      "check": "allocation_normalization",
+      "status": "PASS"
+    },
+    {
+      "check": "common_ranking_denominator",
+      "status": "PASS"
+    },
+    {
+      "check": "arrival_tv_range",
+      "status": "PASS"
+    },
+    {
+      "check": "pairwise_metric_symmetry",
+      "status": "PASS"
+    },
+    {
+      "check": "no_out_of_scope_result_terms",
+      "status": "PASS"
+    },
+    {
+      "check": "kendall_bootstrap_support_frozen",
+      "comparison_count": 10,
+      "maximum_nan_fraction": 0.0,
+      "nan_fraction_limit": 0.05,
+      "status": "PASS"
+    },
+    {
+      "check": "bootstrap_complete",
+      "status": "PASS",
+      "value": 1000
+    },
+    {
+      "check": "kendall_percentile_bootstrap_behavior",
+      "note": "Point estimates outside fixed-support percentile intervals are reported as sampling-distribution behavior and do not change the frozen interval method.",
+      "status": "WARNING",
+      "value": 6
+    },
+    {
+      "check": "reported_bootstrap_repetitions_consistent",
+      "status": "PASS",
+      "value": {
+        "arrival_displacement": 1000,
+        "bootstrap_audit": 1000,
+        "bootstrap_draws": 1000,
+        "source_route_pairwise": 1000
+      }
+    },
+    {
+      "check": "percentile_bootstrap_bias_diagnostic",
+      "note": "Warnings do not fail the run; they record point estimates outside percentile bootstrap intervals for the non-smooth allocation-TV diagnostic.",
+      "status": "WARNING",
+      "value": 6
+    },
+    {
+      "check": "explicit_paper_promotion_only",
+      "status": "PASS"
+    },
+    {
+      "check": "promotion_consistency",
+      "paper_promotion_status": "PROMOTED",
+      "paper_result": true,
+      "status": "PASS"
+    }
+  ],
+  "engineering_status": "PASS",
+  "paper_promotion_status": "PROMOTED",
+  "paper_result": true,
+  "scientific_status": "PASS",
+  "source_full_run_id": "exp2-full-20260727T100920+0800"
+}

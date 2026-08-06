@@ -5,5 +5,9 @@ inputs/*.tsv
 inputs/*.csv
 inputs/*.parquet
 !inputs/README.md
+
+# Ignore per-run outputs; whitelist curated paper results for GitHub.
 outputs/*
 !outputs/.gitkeep
+!outputs/paper/
+!outputs/paper/**

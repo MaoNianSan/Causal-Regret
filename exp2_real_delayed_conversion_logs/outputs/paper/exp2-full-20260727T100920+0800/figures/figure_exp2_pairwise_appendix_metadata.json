@@ -1,0 +1,26 @@
+{
+  "allocation_tv_color_limit": [
+    0.0,
+    0.25
+  ],
+  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
+  "cohort_hash": "bcf51353ba81832643232bf27bcf2ef55265fe7baff59ea9b5d15f9706aa61de",
+  "config_hash": "c2d28d375d9f3e3537d5bf7a4cf69b84cd81f6e3361203a977562d30de3f953a",
+  "decision_cell_universe_hash": "0df7f4a170a678bff27dae269cdc6586301e29663421226f81c8429516274d40",
+  "experiment_id": "exp2",
+  "figure_files": {
+    "figure_exp2_pairwise_appendix.pdf": "b02c10575d811b06b1607916f6c048bd3965a3127338984c613c9d39a88d689c",
+    "figure_exp2_pairwise_appendix.png": "ae35dea90e545511b420ad55b44fed08867882fdfe7a3d27f4c4149b4814b336",
+    "figure_exp2_pairwise_appendix.svg": "0fd03e82ee33e4cb341e701bd63df3d5a26c5d7c82deaf96d737f197a79dbfc6"
+  },
+  "figure_id": "figure_exp2_pairwise_appendix",
+  "generated_at": "2026-07-27T10:29:31.304573+08:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "matrix_display": "Upper triangle only; the underlying pairwise metrics are symmetric.",
+  "paper_result": false,
+  "run_id": "exp2-full-20260727T100920+0800",
+  "run_tier": "full",
+  "source_data": "figure_exp2_pairwise_appendix_data.csv",
+  "source_data_sha256": "87469a1dd6bda96623c6cec5223bd99a5ace4e6faea985f092bfded5408df461",
+  "uncertainty_definition": "Point estimates shown; intervals are reported in the appendix table."
+}

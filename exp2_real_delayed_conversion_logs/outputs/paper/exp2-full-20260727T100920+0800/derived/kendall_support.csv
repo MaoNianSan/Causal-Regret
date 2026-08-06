@@ -1,0 +1,7 @@
+route_left,route_right,kendall_tau_b,common_active_support_count,left_positive_credit_cell_count,right_positive_credit_cell_count,common_positive_credit_cell_count
+first_touch,last_touch,0.298453140541172,4177,3713,3018,2554
+first_touch,linear_credit,0.6044263768055713,5106,3713,5106,3713
+first_touch,time_decay_credit,0.41974209474551927,5106,3713,5106,3713
+last_touch,linear_credit,0.6238902237195868,5106,3018,5106,3018
+last_touch,time_decay_credit,0.834000493907727,5106,3018,5106,3018
+linear_credit,time_decay_credit,0.6863008657174995,5106,5106,5106,5106

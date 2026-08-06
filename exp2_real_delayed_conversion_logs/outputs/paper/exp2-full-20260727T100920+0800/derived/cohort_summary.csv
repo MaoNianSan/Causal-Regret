@@ -1,0 +1,17 @@
+metric,value
+retained_journey_count,11392.0
+retained_user_count,10971.0
+eligible_campaign_count,665.0
+eligible_decision_cell_count,19307.0
+candidate_cells_1_count,7822.0
+candidate_cells_2_count,1873.0
+candidate_cells_3plus_count,1697.0
+ambiguous_journey_count,3570.0
+ambiguous_journey_rate,0.31337780898876405
+candidate_cell_count_median,1.0
+candidate_cell_count_p90,3.0
+minimum_impressions_per_cell,50.0
+excluded_incomplete_lookback_count,336110.0
+excluded_invalid_or_cross_user_id_count,1856.0
+excluded_arrival_anchor_outside_cell_universe_count,66.0
+excluded_no_support_eligible_source_cell_count,39.0
