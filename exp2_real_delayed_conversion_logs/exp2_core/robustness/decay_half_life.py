@@ -3,9 +3,9 @@ from __future__ import annotations
 from copy import deepcopy
 from typing import Any
 
-from cohort import CohortBuildResult
-from metrics import compute_primary_metrics
-from routes import build_attribution_routes
+from ..cohort import CohortBuildResult
+from ..metrics import compute_primary_metrics
+from ..routes import build_attribution_routes
 
 from .common import metric_rows
 

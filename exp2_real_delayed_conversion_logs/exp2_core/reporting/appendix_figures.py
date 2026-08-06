@@ -9,7 +9,7 @@ import numpy as np
 import pandas as pd
 
 from contracts import PRIMARY_SOURCE_ROUTE_ORDER
-from data_io import write_json
+from ..data.io import write_json
 
 from .artifact_metadata import save_figure, sha256
 from .style import dynamic_tv_upper, set_publication_style

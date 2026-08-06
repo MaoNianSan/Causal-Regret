@@ -5,10 +5,10 @@ from typing import Any
 
 import pandas as pd
 
-from cohort import CohortBuildResult, build_primary_cohort
+from ..cohort import CohortBuildResult, build_primary_cohort
 from contracts import DataContractError, ScientificInvariantError
-from metrics import compute_primary_metrics
-from routes import build_attribution_routes
+from ..metrics import compute_primary_metrics
+from ..routes import build_attribution_routes
 
 from .common import metric_rows, restrict_cohort
 

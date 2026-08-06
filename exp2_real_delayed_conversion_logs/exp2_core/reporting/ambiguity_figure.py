@@ -6,7 +6,7 @@ from typing import Any
 import matplotlib.pyplot as plt
 import pandas as pd
 
-from data_io import write_json
+from ..data.io import write_json
 
 from .artifact_metadata import save_figure, sha256
 from .source_data import PAIR_LABELS, build_ambiguity_figure_source

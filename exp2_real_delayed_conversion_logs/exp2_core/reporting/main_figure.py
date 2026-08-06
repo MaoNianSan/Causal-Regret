@@ -8,7 +8,7 @@ import numpy as np
 import pandas as pd
 
 from contracts import PRIMARY_SOURCE_ROUTE_ORDER, route_display_label
-from data_io import write_json
+from ..data.io import write_json
 
 from .artifact_metadata import save_figure, sha256
 from .source_data import build_main_figure_source

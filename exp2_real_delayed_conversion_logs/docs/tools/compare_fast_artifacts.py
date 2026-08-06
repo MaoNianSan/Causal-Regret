@@ -13,6 +13,7 @@ from pandas.testing import assert_frame_equal
 
 CSV_SPECS = {
     "derived/cohort_flow.csv": ["stage"],
+    "derived/exclusion_summary.csv": ["primary_exclusion_reason"],
     "derived/temporal_coverage.csv": ["quantity"],
     "derived/primary_comparisons.csv": ["comparison_group", "route_left", "route_right", "route_id"],
     "derived/ambiguity_mechanism.csv": ["record_type", "ambiguity_stratum", "route_id", "route_left", "route_right"],
@@ -31,6 +32,31 @@ CSV_SPECS = {
     "tables/table_exp2_primary_results.csv": ["route_id"],
     "tables/table_exp2_pairwise_appendix.csv": ["route_left", "route_right"],
     "tables/table_exp2_robustness_summary.csv": ["dimension", "comparison_group"],
+}
+
+ALLOWED_COLUMN_DROPS = {
+    "derived/journey_manifest.csv": {"is_temporally_valid"},
+}
+
+EXPECTED_COHORT_STAGES = [
+    "candidate_journeys_after_temporal_filters",
+    "complete_lookback_journeys",
+    "unique_uid_journeys",
+    "single_campaign_journeys",
+    "source_cell_support_eligible_journeys",
+    "unique_arrival_anchor_journeys",
+    "arrival_anchor_support_eligible_journeys",
+    "final_retained_journeys",
+]
+
+ALLOWED_EXCLUSION_REASONS = {
+    "incomplete_lookback",
+    "invalid_or_cross_user_id",
+    "multi_campaign_or_missing_campaign",
+    "no_support_eligible_source_cell",
+    "nonunique_arrival_anchor",
+    "arrival_anchor_outside_cell_universe",
+    "retained",
 }
 
 JSON_FILES = (
@@ -86,28 +112,102 @@ def _canonical_sort(frame: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
     return frame.sort_values(present, kind="stable", na_position="last").reset_index(drop=True)
 
 
-def compare_csv(baseline: Path, candidate: Path, relative: str, keys: list[str]) -> dict[str, Any]:
-    left = _normalize_frame(pd.read_csv(baseline / relative))
-    right = _normalize_frame(pd.read_csv(candidate / relative))
-    result: dict[str, Any] = {
-        "columns_equal": list(left.columns) == list(right.columns),
+def _compare_cohort_flow(left: pd.DataFrame, right: pd.DataFrame, relative: str) -> dict[str, Any]:
+    stage_column = "Cohort stage" if relative.startswith("tables/") else "stage"
+    count_column = "Journey count" if relative.startswith("tables/") else "journey_count"
+    columns_equal = list(left.columns) == list(right.columns)
+    candidate_stages = right[stage_column].astype(str).tolist() if columns_equal else []
+    counts = pd.to_numeric(right[count_column], errors="coerce") if columns_equal else pd.Series(dtype=float)
+    baseline_counts = pd.to_numeric(left[count_column], errors="coerce") if columns_equal else pd.Series(dtype=float)
+    monotone = bool((counts.diff().dropna() <= 0).all()) if len(counts) else False
+    endpoints_equal = bool(
+        len(counts)
+        and len(baseline_counts)
+        and int(counts.iloc[0]) == int(baseline_counts.iloc[0])
+        and int(counts.iloc[-1]) == int(baseline_counts.iloc[-1])
+    )
+    expected_order = candidate_stages == EXPECTED_COHORT_STAGES
+    status = columns_equal and monotone and endpoints_equal and expected_order
+    return {
+        "status": "PASS" if status else "FAIL",
+        "columns_equal": columns_equal,
         "row_count_equal": len(left) == len(right),
-        "row_order_equal": False,
-        "canonical_values_equal": False,
+        "allowed_semantic_change": "cohort_stage_order_and_temporal_stage_cleanup",
+        "candidate_stage_order_valid": expected_order,
+        "candidate_counts_monotone_nonincreasing": monotone,
+        "candidate_and_final_counts_equal": endpoints_equal,
         "baseline_hash": _scientific_hash(left),
         "candidate_hash": _scientific_hash(right),
     }
-    if not result["columns_equal"] or not result["row_count_equal"]:
+
+
+def _compare_exclusion_summary(left: pd.DataFrame, right: pd.DataFrame) -> dict[str, Any]:
+    columns_equal = list(left.columns) == list(right.columns)
+    left_counts = left.set_index("primary_exclusion_reason")["journey_count"]
+    right_counts = right.set_index("primary_exclusion_reason")["journey_count"]
+    reasons_valid = set(right_counts.index.astype(str)).issubset(ALLOWED_EXCLUSION_REASONS)
+    totals_equal = int(left_counts.sum()) == int(right_counts.sum())
+    retained_equal = int(left_counts.get("retained", 0)) == int(right_counts.get("retained", 0))
+    status = columns_equal and reasons_valid and totals_equal and retained_equal
+    return {
+        "status": "PASS" if status else "FAIL",
+        "columns_equal": columns_equal,
+        "row_count_equal": len(left) == len(right),
+        "allowed_semantic_change": "primary_reason_precedence_from_frozen_stage_order",
+        "candidate_reasons_valid": reasons_valid,
+        "candidate_total_equal": totals_equal,
+        "retained_count_equal": retained_equal,
+        "baseline_hash": _scientific_hash(left),
+        "candidate_hash": _scientific_hash(right),
+    }
+
+
+def compare_csv(baseline: Path, candidate: Path, relative: str, keys: list[str]) -> dict[str, Any]:
+    left = _normalize_frame(pd.read_csv(baseline / relative))
+    right = _normalize_frame(pd.read_csv(candidate / relative))
+    if relative in {"derived/cohort_flow.csv", "tables/table_exp2_cohort_flow.csv"}:
+        return _compare_cohort_flow(left, right, relative)
+    if relative == "derived/exclusion_summary.csv":
+        return _compare_exclusion_summary(left, right)
+    candidate_window_status_valid = True
+    if relative == "derived/targeted_robustness.csv":
+        left_status = left["analysis_status"].eq("NOT_RUN_IN_FAST") & left[
+            "targeted_dimension"
+        ].eq("candidate_window_days")
+        right_status = right["analysis_status"].eq("NOT_RUN_IN_FAST") & right[
+            "targeted_dimension"
+        ].eq("candidate_window_days")
+        candidate_window_status_valid = bool(
+            right_status.sum() == 1
+            and right.loc[right_status, "targeted_value"].astype(str).eq("30").all()
+        )
+        left.loc[left_status, "targeted_value"] = "30"
+    allowed_drops = ALLOWED_COLUMN_DROPS.get(relative, set())
+    expected_right_columns = [column for column in left.columns if column not in allowed_drops]
+    schema_compatible = list(right.columns) == expected_right_columns
+    comparable_left = left[expected_right_columns] if schema_compatible else left
+    result: dict[str, Any] = {
+        "columns_equal": list(left.columns) == list(right.columns),
+        "schema_compatible": schema_compatible,
+        "allowed_column_drops": sorted(allowed_drops),
+        "row_count_equal": len(left) == len(right),
+        "row_order_equal": False,
+        "canonical_values_equal": False,
+        "candidate_window_status_valid": candidate_window_status_valid,
+        "baseline_hash": _scientific_hash(left),
+        "candidate_hash": _scientific_hash(right),
+    }
+    if not schema_compatible or not result["row_count_equal"] or not candidate_window_status_valid:
         result["status"] = "FAIL"
         return result
     try:
-        assert_frame_equal(left, right, check_dtype=False, check_exact=False, rtol=0.0, atol=1e-12)
+        assert_frame_equal(comparable_left, right, check_dtype=False, check_exact=False, rtol=0.0, atol=1e-12)
         result["row_order_equal"] = True
     except AssertionError as exc:
         result["row_order_error"] = str(exc)[:2000]
     try:
         assert_frame_equal(
-            _canonical_sort(left, keys),
+            _canonical_sort(comparable_left, keys),
             _canonical_sort(right, keys),
             check_dtype=False,
             check_exact=False,
@@ -124,8 +224,32 @@ def compare_csv(baseline: Path, candidate: Path, relative: str, keys: list[str])
 def compare_json(baseline: Path, candidate: Path, relative: str) -> dict[str, Any]:
     left = _normalize_json(json.loads((baseline / relative).read_text(encoding="utf-8")))
     right = _normalize_json(json.loads((candidate / relative).read_text(encoding="utf-8")))
+    allowed_change: str | None = None
+    allowed_change_valid = True
+    if relative == "audit/cohort_audit.json":
+        allowed_change = "cohort_flow_reconciliation_status"
+        allowed_change_valid = right.pop("cohort_flow_reconciliation_status", None) == "PASS"
+    elif relative == "audit/scientific_validation.json":
+        allowed_change = "cohort_flow_exclusion_reconciliation_check"
+        extra_checks = [
+            item
+            for item in right.get("checks", [])
+            if item.get("check") == "cohort_flow_exclusion_reconciliation"
+        ]
+        allowed_change_valid = len(extra_checks) == 1 and extra_checks[0].get("status") == "PASS"
+        right["checks"] = [
+            item
+            for item in right.get("checks", [])
+            if item.get("check") != "cohort_flow_exclusion_reconciliation"
+        ]
     equal = left == right
-    return {"status": "PASS" if equal else "FAIL", "equal": equal}
+    status = equal and allowed_change_valid
+    return {
+        "status": "PASS" if status else "FAIL",
+        "equal_after_allowed_changes": equal,
+        "allowed_change": allowed_change,
+        "allowed_change_valid": allowed_change_valid,
+    }
 
 
 def build_report(baseline: Path, candidate: Path) -> dict[str, Any]:

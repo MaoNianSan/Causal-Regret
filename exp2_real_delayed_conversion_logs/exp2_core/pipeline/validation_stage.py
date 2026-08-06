@@ -29,6 +29,7 @@ def run_validation_stage(
         expected_bootstrap_repetitions=int(resampling.bootstrap.audit["resampling_repetitions"]),
         bootstrap_audit=resampling.bootstrap.audit,
         development_override=bool(context.manifest["development_override"]),
+        cohort_flow=cohort.cohort_flow,
     )
     write_json(
         {

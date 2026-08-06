@@ -8,6 +8,12 @@ import pandas as pd
 
 from contracts import DataContractError, ScientificInvariantError
 
+from .cohort_stages import (
+    assign_cohort_stage_outcomes,
+    build_cohort_flow,
+    validate_cohort_flow_reconciliation,
+)
+
 
 @dataclass(frozen=True)
 class CohortBuildResult:
@@ -146,7 +152,6 @@ def build_primary_cohort(
     ):
         manifest[column] = manifest[column].fillna(0).astype(np.int64)
 
-    manifest["is_temporally_valid"] = True
     manifest["has_unique_uid"] = manifest["nonmissing_user_count"].eq(1)
     manifest["has_single_campaign"] = manifest["candidate_campaign_count"].eq(1)
     manifest["has_source_support"] = manifest["has_support_eligible_source_cell"]
@@ -156,41 +161,7 @@ def build_primary_cohort(
     manifest["is_attribution_degenerate"] = manifest["candidate_cell_count"].eq(1)
     manifest["ambiguity_stratum"] = _ambiguity_stratum(manifest["candidate_cell_count"])
 
-    conditions = [
-        manifest["nonmissing_user_count"].ne(1),
-        ~manifest["has_complete_lookback"],
-        ~manifest["has_support_eligible_source_cell"],
-        manifest["candidate_campaign_count"].ne(1),
-        manifest["arrival_anchor_cell_count"].ne(1),
-        ~manifest["has_support_eligible_arrival_cell"],
-    ]
-    reasons = [
-        "invalid_or_cross_user_id",
-        "incomplete_lookback",
-        "no_support_eligible_source_cell",
-        "multi_campaign_or_missing_campaign",
-        "nonunique_arrival_anchor",
-        "arrival_anchor_outside_cell_universe",
-    ]
-    manifest["primary_exclusion_reason"] = np.select(conditions, reasons, default="retained")
-    manifest["all_exclusion_reasons"] = [
-        "|".join(reason for condition, reason in zip(
-            (
-                not bool(row.has_unique_uid),
-                not bool(row.has_complete_lookback),
-                not bool(row.has_source_support),
-                not bool(row.has_single_campaign),
-                not bool(row.has_unique_arrival_anchor),
-                not bool(row.has_arrival_support),
-            ),
-            reasons,
-        ) if condition) or "retained"
-        for row in manifest.itertuples(index=False)
-    ]
-    # Legacy name is retained only as an internal read adapter; v2 artifacts use
-    # primary_exclusion_reason/all_exclusion_reasons.
-    manifest["exclusion_reason"] = manifest["primary_exclusion_reason"]
-    manifest["is_primary_eligible"] = manifest["primary_exclusion_reason"].eq("retained")
+    manifest = assign_cohort_stage_outcomes(manifest)
 
     primary_journey_ids = set(
         manifest.loc[manifest["is_primary_eligible"], "journey_id"].astype(str)
@@ -271,7 +242,9 @@ def build_primary_cohort(
         },
         "analysis_window_days": analysis_window_days,
     }
-    flow = _build_cohort_flow(manifest, len(grouped_all))
+    flow = build_cohort_flow(manifest, len(grouped_all))
+    reconciliation = validate_cohort_flow_reconciliation(manifest, flow)
+    audit["cohort_flow_reconciliation_status"] = reconciliation["status"]
     return CohortBuildResult(
         journey_manifest=manifest.sort_values("journey_id", kind="stable").reset_index(drop=True),
         eligible_candidates=eligible_candidates.sort_values(
@@ -283,32 +256,3 @@ def build_primary_cohort(
         audit=audit,
         cohort_flow=flow,
     )
-
-
-def _build_cohort_flow(manifest: pd.DataFrame, candidate_journey_count: int) -> pd.DataFrame:
-    stages = [
-        ("candidate_conversion_journeys", pd.Series(True, index=manifest.index)),
-        ("temporally_valid_journeys", manifest["is_temporally_valid"]),
-        ("complete_lookback_journeys", manifest["has_complete_lookback"]),
-        ("unique_uid_journeys", manifest["has_unique_uid"]),
-        ("single_campaign_journeys", manifest["has_single_campaign"]),
-        ("source_cell_support_eligible_journeys", manifest["has_source_support"]),
-        ("arrival_anchor_support_eligible_journeys", manifest["has_arrival_support"]),
-        ("final_retained_journeys", manifest["is_primary_eligible"]),
-    ]
-    previous = float(candidate_journey_count)
-    cumulative = pd.Series(True, index=manifest.index)
-    rows: list[dict[str, object]] = []
-    for stage, mask in stages:
-        cumulative &= mask.fillna(False).astype(bool)
-        count = int(cumulative.sum())
-        rows.append(
-            {
-                "stage": stage,
-                "journey_count": count,
-                "retention_from_previous_stage": count / previous if previous else np.nan,
-                "retention_from_candidate_journeys": count / candidate_journey_count if candidate_journey_count else np.nan,
-            }
-        )
-        previous = float(count)
-    return pd.DataFrame(rows)

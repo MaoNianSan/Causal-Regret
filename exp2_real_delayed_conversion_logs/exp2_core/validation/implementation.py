@@ -11,6 +11,7 @@ from .artifacts import validate_resampling_artifacts
 from .schema import validate_frozen_configuration
 from .scientific import validate_primary_science
 from .terminology import check_no_disallowed_columns
+from ..cohort_stages import validate_cohort_flow_reconciliation
 
 
 @dataclass(frozen=True)
@@ -39,6 +40,7 @@ def validate_run(
     expected_bootstrap_repetitions: int | None = None,
     bootstrap_audit: dict[str, Any] | None = None,
     development_override: bool = False,
+    cohort_flow: pd.DataFrame | None = None,
 ) -> ValidationResult:
     checks = validate_frozen_configuration(config)
     checks.extend(
@@ -52,6 +54,10 @@ def validate_run(
             source_route_pairwise=source_route_pairwise,
         )
     )
+    if cohort_flow is not None:
+        checks.append(
+            validate_cohort_flow_reconciliation(journey_manifest, cohort_flow)
+        )
     checks.append(
         check_no_disallowed_columns(
             {

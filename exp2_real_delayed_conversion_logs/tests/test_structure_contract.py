@@ -8,6 +8,18 @@ from pathlib import Path
 EXP2_ROOT = Path(__file__).resolve().parents[1]
 CORE_ROOT = EXP2_ROOT / "exp2_core"
 
+TOP_LEVEL_COMPATIBILITY_MODULES = {
+    "bootstrap",
+    "cohort",
+    "data_io",
+    "metrics",
+    "reporting",
+    "routes",
+    "runner",
+    "targeted",
+    "validation",
+}
+
 SCIENTIFIC_FUNCTIONS = {
     "allocation_tv",
     "build_attribution_routes",
@@ -69,4 +81,25 @@ def test_legacy_result_terms_are_not_reintroduced_as_identifiers():
         for node in ast.walk(tree):
             if isinstance(node, ast.Name) and node.id in forbidden:
                 violations.append(f"{path.relative_to(EXP2_ROOT).as_posix()}:{node.lineno}:{node.id}")
+    assert not violations
+
+
+def test_exp2_core_does_not_import_through_top_level_compatibility_facades():
+    violations: list[str] = []
+    for path in _production_python_files():
+        tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
+        for node in ast.walk(tree):
+            if isinstance(node, ast.ImportFrom) and node.level == 0 and node.module:
+                root = node.module.split(".", 1)[0]
+                if root in TOP_LEVEL_COMPATIBILITY_MODULES:
+                    violations.append(
+                        f"{path.relative_to(EXP2_ROOT).as_posix()}:{node.lineno}:{node.module}"
+                    )
+            elif isinstance(node, ast.Import):
+                for alias in node.names:
+                    root = alias.name.split(".", 1)[0]
+                    if root in TOP_LEVEL_COMPATIBILITY_MODULES:
+                        violations.append(
+                            f"{path.relative_to(EXP2_ROOT).as_posix()}:{node.lineno}:{alias.name}"
+                        )
     assert not violations

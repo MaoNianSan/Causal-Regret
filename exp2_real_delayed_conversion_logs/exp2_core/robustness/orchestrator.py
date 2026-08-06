@@ -4,8 +4,8 @@ from typing import Any
 
 import pandas as pd
 
-from cohort import CohortBuildResult
-from metrics import MetricResult
+from ..cohort import CohortBuildResult
+from ..metrics import MetricResult
 
 from .candidate_window import run_candidate_window
 from .decay_half_life import run_decay_half_life
@@ -25,13 +25,22 @@ def run_targeted_analyses(
 ) -> pd.DataFrame:
     records = run_ranking_depth(primary_cohort, primary_metrics, config)
     if mode != "full":
+        alternative_windows = [
+            int(value)
+            for value in config["cohort"].get("robustness_candidate_window_days", [])
+        ]
+        candidate_window_status: int | str = (
+            alternative_windows[0]
+            if len(alternative_windows) == 1
+            else "|".join(str(value) for value in alternative_windows)
+        )
         records.extend(
             [
                 {
                     "analysis_tier": "targeted",
                     "analysis_status": "NOT_RUN_IN_FAST",
                     "targeted_dimension": "candidate_window_days",
-                    "targeted_value": 7,
+                    "targeted_value": candidate_window_status,
                     "record_type": "run_status",
                 },
                 {

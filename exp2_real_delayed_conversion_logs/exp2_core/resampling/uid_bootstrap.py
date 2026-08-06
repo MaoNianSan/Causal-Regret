@@ -8,7 +8,7 @@ from joblib import Parallel, delayed
 from tqdm.auto import tqdm
 
 from contracts import ScientificInvariantError
-from metrics import PairwiseMetricState
+from ..metrics import PairwiseMetricState
 
 from .audit import build_bootstrap_bias_audit, build_resampling_audit
 from .draws import (

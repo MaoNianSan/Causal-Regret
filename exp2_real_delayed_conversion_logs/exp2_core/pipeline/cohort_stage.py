@@ -5,6 +5,7 @@ import pandas as pd
 from contracts import SCHEMA_VERSION
 
 from ..cohort import CohortBuildResult, build_primary_cohort
+from ..cohort_stages import build_exclusion_summary
 from ..raw_data import PreparedRawData, write_frame, write_json
 from .context import RunContext, write_csv
 
@@ -19,10 +20,7 @@ def run_cohort_stage(context: RunContext, prepared: PreparedRawData) -> CohortBu
         table_format=context.table_format,
     )
     write_csv(
-        cohort.journey_manifest["primary_exclusion_reason"]
-        .value_counts(dropna=False)
-        .rename_axis("primary_exclusion_reason")
-        .reset_index(name="journey_count"),
+        build_exclusion_summary(cohort.journey_manifest),
         context.paths.derived / "exclusion_summary.csv",
     )
     if cohort.cohort_flow is not None:

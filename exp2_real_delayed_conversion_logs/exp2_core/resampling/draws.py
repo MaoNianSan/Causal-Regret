@@ -9,7 +9,7 @@ import pandas as pd
 from scipy.sparse import csr_matrix
 
 from contracts import PRIMARY_ROUTE_ORDER, PRIMARY_SOURCE_ROUTE_ORDER, ScientificInvariantError
-from metrics import PairwiseMetricState
+from ..metrics import PairwiseMetricState
 
 
 @dataclass(frozen=True)

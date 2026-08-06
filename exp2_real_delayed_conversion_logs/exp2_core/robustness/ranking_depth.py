@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from typing import Any
 
-from cohort import CohortBuildResult
-from metrics import MetricResult, compute_targeted_top_k_metrics
+from ..cohort import CohortBuildResult
+from ..metrics import MetricResult, compute_targeted_top_k_metrics
 
 
 def run_ranking_depth(

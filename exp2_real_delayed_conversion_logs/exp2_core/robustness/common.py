@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pandas as pd
 
-from cohort import CohortBuildResult
-from metrics import MetricResult
+from ..cohort import CohortBuildResult
+from ..metrics import MetricResult
 
 
 def restrict_cohort(cohort: CohortBuildResult, common_ids: set[str]) -> CohortBuildResult:

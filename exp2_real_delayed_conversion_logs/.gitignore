@@ -11,6 +11,9 @@ inputs/*.tsv.gz
 inputs/*.gz
 inputs/*.ipynb
 !inputs/README.md
+!inputs/README_local_data.md
+# Keep the empty-directory placeholder so the inputs/ layout survives on GitHub.
+!inputs/.gitkeep
 
 # Ignore per-run outputs; whitelist curated paper results for GitHub.
 outputs/*
