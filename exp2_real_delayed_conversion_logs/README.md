@@ -31,5 +31,5 @@ python exp2_real_delayed_conversion_logs/main.py full
 ```
 
 ## 9. Known Limitations
-Changing the primary window from 30 to 7 days requires a complete Exp2 rerun. Exp2 does not require rerunning Exp1, Exp3, or Exp4.
+The primary attribution window is fixed at 7 days, with the 30-day window retained as a robustness analysis. Any future change to the primary attribution window requires a complete Exp2 rerun. Exp2 does not require rerunning Exp1, Exp3, or Exp4.
 

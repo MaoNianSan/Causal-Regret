@@ -11,7 +11,7 @@ import pandas as pd
 from utilities import save_frame
 
 
-EXPERIMENT_TITLE = "Experiment 3: Proxy Score Recovery versus Ranking Recovery"
+EXPERIMENT_TITLE = "Experiment 3: Logged-Supported Ranking Recovery"
 EVIDENCE_CHAIN = (
     "score recovery",
     "held-out reference-pair gap recovery",

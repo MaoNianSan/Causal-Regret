@@ -30,7 +30,7 @@ validation/self-check, and running commands.
   full run instructions for Exp2–Exp4.
 - [docs/REPOSITORY_ARTIFACT_AND_CLEANUP_POLICY.md](docs/REPOSITORY_ARTIFACT_AND_CLEANUP_POLICY.md) —
   artifact and cleanup policy.
-- [docs/DOCUMENTATION_CLEANUP_REPORT.md](docs/DOCUMENTATION_CLEANUP_REPORT.md) —
-  documentation cleanup record.
+- [docs/REPOSITORY_CLEANUP_HISTORY.md](docs/REPOSITORY_CLEANUP_HISTORY.md) —
+  repository cleanup history.
 - [docs/EXPERIMENT_DOCUMENTATION_INVENTORY.csv](docs/EXPERIMENT_DOCUMENTATION_INVENTORY.csv) —
   experiment documentation inventory.
