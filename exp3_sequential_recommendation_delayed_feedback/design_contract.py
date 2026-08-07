@@ -1,4 +1,5 @@
 """Canonical scientific names and metadata for Experiment 3."""
+
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass
@@ -9,7 +10,6 @@ from pathlib import Path
 import pandas as pd
 
 from utilities import save_frame
-
 
 EXPERIMENT_TITLE = "Experiment 3: Logged-Supported Ranking Recovery"
 EVIDENCE_CHAIN = (
@@ -271,7 +271,9 @@ def metric_registry_frame() -> pd.DataFrame:
     if "canonical_metric_id" not in frame:
         frame["canonical_metric_id"] = frame["metric_id"]
     else:
-        frame["canonical_metric_id"] = frame["canonical_metric_id"].fillna(frame["metric_id"])
+        frame["canonical_metric_id"] = frame["canonical_metric_id"].fillna(
+            frame["metric_id"]
+        )
     return frame
 
 
@@ -288,4 +290,6 @@ def design_contract_hash() -> str:
 
 
 def write_metric_registry(output_dir: Path) -> Path:
-    return save_frame(metric_registry_frame(), output_dir / "tables" / "exp3_metric_registry.csv")
+    return save_frame(
+        metric_registry_frame(), output_dir / "tables" / "exp3_metric_registry.csv"
+    )
