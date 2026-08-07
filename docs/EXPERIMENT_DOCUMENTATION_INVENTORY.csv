@@ -1,0 +1,18 @@
+experiment,file_path,file_type,purpose,status,keep/delete/rewrite,reason
+exp1,exp1_alignment_transfer/README.md,documentation,experiment overview,IMPLEMENTED,keep,primary experiment documentation
+exp2,exp2_real_delayed_conversion_logs/README.md,documentation,experiment overview,IMPLEMENTED,keep,primary experiment documentation
+exp3,exp3_sequential_recommendation_delayed_feedback/README.md,documentation,experiment overview,IMPLEMENTED,keep,primary experiment documentation
+exp4,exp4_controlled_route_audit/README.md,documentation,experiment overview,IMPLEMENTED,keep,primary experiment documentation
+exp3,exp3_sequential_recommendation_delayed_feedback/docs/EXP3_PRE_MODIFICATION_AUDIT.md,documentation,pre-change audit history,LEGACY,delete,obsolete audit narrative with no current workflow dependency
+exp3,exp3_sequential_recommendation_delayed_feedback/docs/EXP3_REDESIGN_IMPLEMENTATION_REPORT.md,documentation,implementation report,LEGACY,delete,implementation history superseded by current contract docs
+exp3,exp3_sequential_recommendation_delayed_feedback/docs/IMPLEMENTATION_MAP.md,documentation,implementation map,LEGACY,delete,redundant with current README and code structure
+exp4,exp4_controlled_route_audit/reports/EXP4_V2_PRE_REFACTOR_AUDIT.md,documentation,pre-refactor audit,LEGACY,delete,obsolete audit record not needed for current validation
+exp4,exp4_controlled_route_audit/reports/EXP4_POST_FULL_FIX_REPORT.md,documentation,post-fix report,LEGACY,delete,temporary regression report superseded by current provenance docs
+exp4,exp4_controlled_route_audit/reports/EXP4_FINAL_PROVENANCE_FIX_REPORT.md,documentation,provenance fix report,LEGACY,delete,implementation history not part of current scientific contract
+exp3,exp3_sequential_recommendation_delayed_feedback/code_check.py,code,static code audit,LEGACY,delete,not part of the main self-check and validation workflow
+exp3,exp3_sequential_recommendation_delayed_feedback/target_audit.py,code,target audit helper,VALIDATED,keep,used by self-check and pipeline validation
+exp4,exp4_controlled_route_audit/audit_engine.py,code,compatibility exports,LEGACY,delete,deprecated compatibility wrapper with no active pipeline dependency
+exp4,exp4_controlled_route_audit/aggregate_results.py,code,compatibility exports,LEGACY,delete,deprecated compatibility wrapper with no active pipeline dependency
+exp4,exp4_controlled_route_audit/reproduce_all.py,code,compatibility entry point,LEGACY,delete,legacy CLI alias replaced by canonical main entrypoint
+exp4,exp4_controlled_route_audit/run_experiment4.py,code,compatibility entry point,LEGACY,delete,legacy wrapper with no active workflow dependency
+exp4,exp4_controlled_route_audit/write_run_summary.py,code,compatibility entry point,LEGACY,delete,replaced by exp4/reporting/run_summary.py
