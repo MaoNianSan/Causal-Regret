@@ -1,0 +1,32 @@
+{
+  "calibration_hash": "805a7fc583bb99acdf6f15864a33f0c96033d74e87dbf8fb4601ef6b19d69c2a",
+  "code_commit": "7915d9f10d3f70094c057f75655f791b44f9997c",
+  "config_hash": "0f87d5b27c36a5e6857bd889a8ee48a0b2b2e6abb10d8d08a7980998c1458db9",
+  "deterministic_endpoints": {
+    "q_route_1": true,
+    "rho_audit_1": true
+  },
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_id": "fig_exp4_route_alignment_and_audit_reliability",
+  "generated_at": "2026-08-07T05:42:32+00:00",
+  "panel_definitions": {
+    "a": "Population action-gap defect across shared structural seeds.",
+    "b": "Monte Carlo bias of the population-defect audit estimator.",
+    "c": "Monte Carlo RMSE of the population-defect audit estimator.",
+    "d": "Effective support relative to labelled support."
+  },
+  "paper_result": false,
+  "result_schema": "exp4_controlled_route_audit_v2",
+  "run_tier": "full",
+  "source_derived_files": [
+    "derived/module_a/exp4_module_a_population_summary.csv",
+    "derived/module_b/exp4_module_b_audit_performance.csv",
+    "derived/module_b/exp4_module_b_weight_diagnostics.csv"
+  ],
+  "source_file_hashes": {
+    "derived/module_a/exp4_module_a_population_summary.csv": "49bc5527f75c1f78a069a28168a737fbc1b3c60b48c52a471133f1355cf6793b",
+    "derived/module_b/exp4_module_b_audit_performance.csv": "27b4cb28fb065ec7659277bd038a53f35640d84e3da31945f80a6000ec84cea8",
+    "derived/module_b/exp4_module_b_weight_diagnostics.csv": "df4a7865463f76cc0ccdd744d0ef91bc0e6c3bf2dc8efa603e22a5d5ddc329fe"
+  },
+  "uncertainty_definition": "Panel a uses paired-seed bootstrap when enabled; panels b and c use Monte Carlo standard errors. Endpoints q=1 and rho=1 are controlled invariants."
+}

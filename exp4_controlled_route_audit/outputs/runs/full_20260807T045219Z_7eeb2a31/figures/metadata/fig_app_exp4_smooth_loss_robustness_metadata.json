@@ -1,0 +1,20 @@
+{
+  "calibration_hash": "805a7fc583bb99acdf6f15864a33f0c96033d74e87dbf8fb4601ef6b19d69c2a",
+  "code_commit": "7915d9f10d3f70094c057f75655f791b44f9997c",
+  "config_hash": "0f87d5b27c36a5e6857bd889a8ee48a0b2b2e6abb10d8d08a7980998c1458db9",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_id": "fig_app_exp4_smooth_loss_robustness",
+  "generated_at": "2026-08-07T05:42:35+00:00",
+  "panel_definitions": {
+    "main": "Smooth-loss robustness without parity-dependent floors."
+  },
+  "paper_result": false,
+  "result_schema": "exp4_controlled_route_audit_v2",
+  "run_tier": "full",
+  "source_derived_files": [
+    "derived/module_a/exp4_module_a_population_summary.csv"
+  ],
+  "source_file_hashes": {
+    "derived/module_a/exp4_module_a_population_summary.csv": "49bc5527f75c1f78a069a28168a737fbc1b3c60b48c52a471133f1355cf6793b"
+  }
+}

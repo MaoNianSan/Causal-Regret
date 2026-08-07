@@ -1,0 +1,20 @@
+{
+  "calibration_hash": "805a7fc583bb99acdf6f15864a33f0c96033d74e87dbf8fb4601ef6b19d69c2a",
+  "code_commit": "7915d9f10d3f70094c057f75655f791b44f9997c",
+  "config_hash": "0f87d5b27c36a5e6857bd889a8ee48a0b2b2e6abb10d8d08a7980998c1458db9",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_id": "fig_app_exp4_correspondence",
+  "generated_at": "2026-08-07T05:42:35+00:00",
+  "panel_definitions": {
+    "main": "Correspondence before and after blocked permutation."
+  },
+  "paper_result": false,
+  "result_schema": "exp4_controlled_route_audit_v2",
+  "run_tier": "full",
+  "source_derived_files": [
+    "derived/module_c/exp4_module_c_correspondence_checks.csv"
+  ],
+  "source_file_hashes": {
+    "derived/module_c/exp4_module_c_correspondence_checks.csv": "a35384fe1504fda6097a811cac9777cef2da4bee5ed1914226d9e36d08fb554e"
+  }
+}
