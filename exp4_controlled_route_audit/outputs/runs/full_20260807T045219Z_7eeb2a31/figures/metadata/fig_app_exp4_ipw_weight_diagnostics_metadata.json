@@ -4,7 +4,7 @@
   "config_hash": "0f87d5b27c36a5e6857bd889a8ee48a0b2b2e6abb10d8d08a7980998c1458db9",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_id": "fig_app_exp4_ipw_weight_diagnostics",
-  "generated_at": "2026-08-07T05:42:34+00:00",
+  "generated_at": "2026-08-07T07:33:01+00:00",
   "panel_definitions": {
     "main": "IPW weight diagnostics and positivity support."
   },

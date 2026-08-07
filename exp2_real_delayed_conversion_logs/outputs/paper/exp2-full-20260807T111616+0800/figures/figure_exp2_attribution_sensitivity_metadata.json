@@ -1,0 +1,34 @@
+{
+  "axis_definitions": {
+    "columns": [
+      "allocation_tv",
+      "kendall_tau_b",
+      "top_k_overlap"
+    ],
+    "rows": "fixed comparison order within each panel"
+  },
+  "code_identity": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "cohort_hash": "ca60f184d8a00d34a31038b07fe1a1b68916a8a36948e13419eb4f65ee7f4503",
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "decision_cell_universe_hash": "0df7f4a170a678bff27dae269cdc6586301e29663421226f81c8429516274d40",
+  "experiment_id": "exp2",
+  "figure_files": {
+    "figure_exp2_attribution_sensitivity.pdf": "a148661397cf99b6f68f8ec150cfa96ae3b8ffc0b820810842e340eae7422142",
+    "figure_exp2_attribution_sensitivity.png": "69b5e41966ba74a55ed3b9f92bb9e21f86175a97a676f1b381a1215b1842f684",
+    "figure_exp2_attribution_sensitivity.svg": "a202f006ce19b2acfa030d6ce67930f2dbf08e0303d6075ea9795667087cf6cb"
+  },
+  "figure_id": "figure_exp2_attribution_sensitivity",
+  "generated_at": "2026-08-07T11:38:03.946867+08:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "panel_definitions": {
+    "a": "Source-time routes versus the arrival-time accounting anchor.",
+    "b": "Pairwise source-time route comparisons."
+  },
+  "paper_result": false,
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "full",
+  "schema_version": "exp2_attribution_sensitivity_v2",
+  "source_data": "figure_exp2_attribution_sensitivity_source.csv",
+  "source_data_sha256": "a25e7b75795629779fd1dd648f39c94ff58b92dff87e0c335eaa3976a2df1ae7",
+  "uncertainty_definition": "Empirical 2.5%–97.5% UID-resampling range."
+}

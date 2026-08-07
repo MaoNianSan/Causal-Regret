@@ -1,0 +1,14 @@
+\begin{tabular}{lrllrrrrrrr}
+\toprule
+dimension & primary\_specification & alternative\_specification & comparison\_group & allocation\_tv\_min & allocation\_tv\_max & kendall\_tau\_b\_min & kendall\_tau\_b\_max & top\_k\_overlap\_min & top\_k\_overlap\_max & qualitative\_conclusion\_preserved \\
+\midrule
+top\_k & 10.000000 & 20.0|50.0 & arrival\_displacement & 0.102917 & 0.138310 & 0.482419 & 0.589145 & 0.600000 & 0.800000 & True \\
+top\_k & 10.000000 & 20.0|50.0 & source\_route\_pair & 0.016654 & 0.061768 & 0.717426 & 0.925017 & 0.840000 & 1.000000 & True \\
+candidate\_window\_days & 7.000000 & 30.0|7.0 & arrival\_displacement & 0.102917 & 0.654494 & 0.115596 & 0.589145 & 0.500000 & 0.900000 & True \\
+candidate\_window\_days & 7.000000 & 30.0|7.0 & source\_route\_pair & 0.016654 & 0.267250 & 0.298453 & 0.925017 & 0.800000 & 1.000000 & True \\
+time\_decay\_half\_life\_days & 1.386294 & 1.0|1.38629436112|3.0|7.0 & arrival\_displacement & 0.102917 & 0.138310 & 0.482419 & 0.593097 & 0.500000 & 0.600000 & True \\
+time\_decay\_half\_life\_days & 1.386294 & 1.0|1.38629436112|3.0|7.0 & source\_route\_pair & 0.004929 & 0.061768 & 0.717426 & 0.978172 & 0.800000 & 1.000000 & True \\
+minimum\_impressions & 50.000000 & 100.0|25.0|50.0 & arrival\_displacement & 0.101382 & 0.137026 & 0.497702 & 0.616309 & 0.500000 & 0.700000 & True \\
+minimum\_impressions & 50.000000 & 100.0|25.0|50.0 & source\_route\_pair & 0.016370 & 0.061368 & 0.708122 & 0.928719 & 0.800000 & 1.000000 & True \\
+\bottomrule
+\end{tabular}

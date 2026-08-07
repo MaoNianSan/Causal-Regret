@@ -1,0 +1,21 @@
+{
+  "code_identity": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "cohort_hash": "ca60f184d8a00d34a31038b07fe1a1b68916a8a36948e13419eb4f65ee7f4503",
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "decision_cell_universe_hash": "0df7f4a170a678bff27dae269cdc6586301e29663421226f81c8429516274d40",
+  "experiment_id": "exp2",
+  "figure_files": {
+    "figure_exp2_delay_appendix.pdf": "8aaaff4d81fc384fa8604ca611ad660005fe1ca71dfb3560fd68092c540e198f",
+    "figure_exp2_delay_appendix.png": "af72d4f1f3849d242821e41b83ca67981dd084c8753380d731bb30545780d2f6",
+    "figure_exp2_delay_appendix.svg": "545505c4e2444248feddaf38def561208abd3d43c143c1856da9b1f971c9f5e8"
+  },
+  "figure_id": "figure_exp2_delay_appendix",
+  "generated_at": "2026-08-07T11:38:03.946867+08:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "paper_result": false,
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "full",
+  "schema_version": "exp2_attribution_sensitivity_v2",
+  "source_data": "figure_exp2_delay_appendix_data.csv",
+  "source_data_sha256": "eb2a07a9061d93f1263dd5ce437a8203bdb2dcdc9e307e25ed499447d6972097"
+}

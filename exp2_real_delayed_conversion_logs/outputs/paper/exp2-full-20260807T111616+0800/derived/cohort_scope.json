@@ -1,0 +1,13 @@
+{
+  "analysis_window_days": 7.0,
+  "eligible_cell_count": 19307,
+  "primary_candidate_window_days": 7,
+  "require_complete_lookback": true,
+  "require_single_campaign_per_journey": true,
+  "retained_journey_count": 240981,
+  "retained_uid_count": 183533,
+  "robustness_candidate_window_days": [
+    30
+  ],
+  "schema_version": "exp2_attribution_sensitivity_v2"
+}

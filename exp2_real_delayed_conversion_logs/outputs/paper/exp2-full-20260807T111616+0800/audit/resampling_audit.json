@@ -1,0 +1,137 @@
+{
+  "comparisons": [
+    {
+      "bootstrap_support_max": 16062,
+      "bootstrap_support_min": 16062,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 16062,
+      "nan_fraction": 0.0,
+      "record_type": "arrival_displacement",
+      "route_left": "arrival_time_accounting_anchor",
+      "route_right": "first_click_or_touch",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15400,
+      "bootstrap_support_min": 15400,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15400,
+      "nan_fraction": 0.0,
+      "record_type": "arrival_displacement",
+      "route_left": "arrival_time_accounting_anchor",
+      "route_right": "last_click_or_touch",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 16369,
+      "bootstrap_support_min": 16369,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 16369,
+      "nan_fraction": 0.0,
+      "record_type": "arrival_displacement",
+      "route_left": "arrival_time_accounting_anchor",
+      "route_right": "linear_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 16369,
+      "bootstrap_support_min": 16369,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 16369,
+      "nan_fraction": 0.0,
+      "record_type": "arrival_displacement",
+      "route_left": "arrival_time_accounting_anchor",
+      "route_right": "time_decay_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15490,
+      "bootstrap_support_min": 15490,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15490,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "first_click_or_touch",
+      "route_right": "last_click_or_touch",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15728,
+      "bootstrap_support_min": 15728,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15728,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "first_click_or_touch",
+      "route_right": "linear_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15728,
+      "bootstrap_support_min": 15728,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15728,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "first_click_or_touch",
+      "route_right": "time_decay_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15728,
+      "bootstrap_support_min": 15728,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15728,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "last_click_or_touch",
+      "route_right": "linear_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15728,
+      "bootstrap_support_min": 15728,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15728,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "last_click_or_touch",
+      "route_right": "time_decay_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    },
+    {
+      "bootstrap_support_max": 15728,
+      "bootstrap_support_min": 15728,
+      "constant_vector_fraction": 0.0,
+      "full_sample_support_count": 15728,
+      "nan_fraction": 0.0,
+      "record_type": "source_route_pair",
+      "route_left": "linear_source_cell_credit",
+      "route_right": "time_decay_source_cell_credit",
+      "support_frozen": true,
+      "zero_mass_vector_fraction": 0.0
+    }
+  ],
+  "inferential_interpretation": false,
+  "n_jobs": 8,
+  "n_users": 183533,
+  "reported_quantiles": [
+    0.025,
+    0.5,
+    0.975
+  ],
+  "resampling_repetitions": 1000,
+  "resampling_seed": 20260725,
+  "resampling_unit": "uid",
+  "support_definition": "full_sample_union_positive_credit_cells",
+  "support_frozen": true
+}

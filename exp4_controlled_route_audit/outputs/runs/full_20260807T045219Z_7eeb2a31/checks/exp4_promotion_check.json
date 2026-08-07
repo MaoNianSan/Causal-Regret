@@ -1,0 +1,144 @@
+{
+  "checks": {
+    "aggregation_stage_hash_match": true,
+    "aggregation_stage_record_present": true,
+    "all_required_derived_files_complete": true,
+    "downstream_provenance_verified": true,
+    "engineering_status_pass": true,
+    "formal_full_started_clean": true,
+    "fresh_calibration_hash_consistent": true,
+    "fresh_complete_source_hash_match": true,
+    "fresh_config_hash_match": true,
+    "fresh_recorded_commit_matches_run_config": true,
+    "fresh_simulation_source_run_id_absent": true,
+    "main_figure_complete": true,
+    "main_table_complete": true,
+    "main_table_exists": true,
+    "main_table_has_required_rows": true,
+    "main_table_latex_nonempty": true,
+    "main_table_matches_source": true,
+    "main_table_values_finite": true,
+    "monte_carlo_precision_pass": true,
+    "no_nonfull_precision_status_in_full_run": true,
+    "paper_claims_within_scope": true,
+    "primary_contrast_contract_valid": true,
+    "primary_monte_carlo_precision_pass": true,
+    "reporting_stage_hash_match": true,
+    "reporting_stage_record_present": true,
+    "result_schema_is_v2": true,
+    "run_lineage_present": true,
+    "run_lineage_valid": true,
+    "run_tier_is_full": true,
+    "scientific_status_pass": true,
+    "simulation_provenance_verified": true,
+    "simulation_stage_hash_match": true,
+    "simulation_stage_record_present": true,
+    "source_hash_algorithm_version_present": true,
+    "source_unchanged_during_run": true,
+    "validation_stage_hash_match": true,
+    "validation_stage_record_present": true
+  },
+  "precision": {
+    "no_nonfull_precision_status_in_full_run": true,
+    "primary_contrast_contract_valid": true,
+    "primary_monte_carlo_precision_pass": true
+  },
+  "provenance": {
+    "config_hash_match": true,
+    "current_pre_fix_source_code_hash": "1b265647b85ce479a9571526f7d30430e6fe18afac75d069195d3368c75f2965",
+    "downstream_execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+    "downstream_provenance_verified": true,
+    "downstream_source_run_id": null,
+    "formal_full_started_clean": true,
+    "full_simulation_reuse_decision": "REUSE",
+    "full_simulation_reuse_eligibility": "ELIGIBLE",
+    "run_lineage_present": true,
+    "run_lineage_valid": true,
+    "simulation_execution_mode": "FRESH",
+    "simulation_provenance_verified": true,
+    "simulation_source_run_id": null,
+    "source_hash_algorithm_version_present": true,
+    "source_hash_match": true,
+    "source_unchanged_during_run": true,
+    "stage_source_hashes": {
+      "aggregation_source_hash": "b15393e44dd4707c77d0f0c4a76a928d8cf8ba18333028b7382d79cfd107ed4c",
+      "reporting_source_hash": "df6620b14212d690e7e83899da40b8703bf2e1e287baa657f1cdbff25d4ade71",
+      "simulation_source_hash": "ed4c1ca604fdce4343132bc857a4708a9b9256f6fdbf3f839afab9e61cbffec4",
+      "validation_source_hash": "76065a06e433e8858ec331deb013000238b7373af97977bb60daaee4cfdfe4bc"
+    },
+    "stages": {
+      "aggregation": {
+        "current_hash": "b15393e44dd4707c77d0f0c4a76a928d8cf8ba18333028b7382d79cfd107ed4c",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "b15393e44dd4707c77d0f0c4a76a928d8cf8ba18333028b7382d79cfd107ed4c"
+      },
+      "reporting": {
+        "current_hash": "df6620b14212d690e7e83899da40b8703bf2e1e287baa657f1cdbff25d4ade71",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "df6620b14212d690e7e83899da40b8703bf2e1e287baa657f1cdbff25d4ade71"
+      },
+      "simulation": {
+        "current_hash": "ed4c1ca604fdce4343132bc857a4708a9b9256f6fdbf3f839afab9e61cbffec4",
+        "execution_mode": "FRESH",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "ed4c1ca604fdce4343132bc857a4708a9b9256f6fdbf3f839afab9e61cbffec4"
+      },
+      "validation": {
+        "current_hash": "76065a06e433e8858ec331deb013000238b7373af97977bb60daaee4cfdfe4bc",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "76065a06e433e8858ec331deb013000238b7373af97977bb60daaee4cfdfe4bc"
+      }
+    },
+    "stored_source_code_hash": "1b265647b85ce479a9571526f7d30430e6fe18afac75d069195d3368c75f2965"
+  },
+  "status": "PASS",
+  "table": {
+    "checks": {
+      "correspondence_status_nonempty": true,
+      "main_table_columns_complete": true,
+      "main_table_control_order_correct": true,
+      "main_table_csv_exists": true,
+      "main_table_has_exactly_two_rows": true,
+      "main_table_hashes_recorded": true,
+      "main_table_latex_has_data_beyond_rules": true,
+      "main_table_latex_has_two_data_rows": true,
+      "main_table_matches_source": true,
+      "main_table_tex_exists": true,
+      "main_table_values_finite": true,
+      "required_controls_each_exactly_once_in_summary": true
+    },
+    "details": {
+      "hashes": {
+        "main_table_csv_sha256": "37fc4adb5062e2de810ea855f0f494012f4a2dfc9d5b5eb81b8140a656700f2c",
+        "main_table_id": "tbl_exp4_calibration_controls",
+        "main_table_tex_sha256": "75b137298bad088cac4b5ee071c82b904eea1274ee56b8d3418268c70813a2fe"
+      },
+      "main_table_display_names": [
+        "Affine-linked control",
+        "Temporally blocked correspondence-destroyed control"
+      ],
+      "main_table_has_nan": false,
+      "main_table_latex_data_row_count": 2,
+      "main_table_row_count": 2,
+      "missing_columns": [],
+      "summary_control_counts": {
+        "affine_linked": 1,
+        "blocked_correspondence_destroyed": 1
+      },
+      "value_mismatches": []
+    },
+    "status": "PASS",
+    "validation": "exp4_main_calibration_table"
+  }
+}

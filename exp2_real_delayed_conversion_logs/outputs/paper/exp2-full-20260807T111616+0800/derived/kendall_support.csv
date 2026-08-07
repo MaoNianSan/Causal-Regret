@@ -1,0 +1,7 @@
+route_left,route_right,kendall_tau_b,common_active_cell_count,left_positive_credit_cell_count,right_positive_credit_cell_count,common_positive_credit_cell_count
+first_click_or_touch,last_click_or_touch,0.7174258471978646,15490,14912,14521,13943
+first_click_or_touch,linear_source_cell_credit,0.8475712249359046,15728,14912,15728,14912
+first_click_or_touch,time_decay_source_cell_credit,0.7741811188326542,15728,14912,15728,14912
+last_click_or_touch,linear_source_cell_credit,0.8545082113377596,15728,14521,15728,14521
+last_click_or_touch,time_decay_source_cell_credit,0.9250167745648283,15728,14521,15728,14521
+linear_source_cell_credit,time_decay_source_cell_credit,0.9165681733115445,15728,15728,15728,15728

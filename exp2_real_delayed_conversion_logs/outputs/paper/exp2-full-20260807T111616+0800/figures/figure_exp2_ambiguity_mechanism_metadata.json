@@ -1,0 +1,21 @@
+{
+  "code_identity": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "cohort_hash": "ca60f184d8a00d34a31038b07fe1a1b68916a8a36948e13419eb4f65ee7f4503",
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "decision_cell_universe_hash": "0df7f4a170a678bff27dae269cdc6586301e29663421226f81c8429516274d40",
+  "experiment_id": "exp2",
+  "figure_files": {
+    "figure_exp2_ambiguity_mechanism.pdf": "97fffe3b194b481b8cfec32b62030102937af5cbcbbec25513401e25e1f63084",
+    "figure_exp2_ambiguity_mechanism.png": "1f061fbdfbf85d0a766bd0506db2e53c20f65914757f0850f555cdb07c5f6d0d",
+    "figure_exp2_ambiguity_mechanism.svg": "817e7089228cbf00654e7480ed3458a2d8b1995c37b4e932752b6220ac0d573e"
+  },
+  "figure_id": "figure_exp2_ambiguity_mechanism",
+  "generated_at": "2026-08-07T11:38:03.946867+08:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "paper_result": false,
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "full",
+  "schema_version": "exp2_attribution_sensitivity_v2",
+  "source_data": "figure_exp2_ambiguity_mechanism_source.csv",
+  "source_data_sha256": "01bc3c749e12c0bb00b88647e3e3e3dd4e33659db8e3010b7982bc6d0eb545e2"
+}

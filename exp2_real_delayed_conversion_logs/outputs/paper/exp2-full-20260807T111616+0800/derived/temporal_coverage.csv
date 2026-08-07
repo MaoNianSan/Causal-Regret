@@ -1,0 +1,7 @@
+quantity,value
+observed_exposure_start_utc,1970-01-01T00:00:00+00:00
+observed_exposure_end_utc,1970-01-31T21:59:59+00:00
+candidate_conversion_start_utc,1970-01-01 00:00:41+00:00
+candidate_conversion_end_utc,1970-01-31 21:59:50+00:00
+retained_conversion_start_utc,1970-01-08 00:00:18+00:00
+retained_conversion_end_utc,1970-01-31 21:59:50+00:00

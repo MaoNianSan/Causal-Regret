@@ -5,8 +5,8 @@
 - Result schema: `exp4_controlled_route_audit_v2`
 - Engineering status: `PASS`
 - Scientific status: `PASS`
-- Paper promotion: `NOT_RUN`
-- Paper result: `false`
+- Paper promotion: `PASS`
+- Paper result: `true`
 
 ## Run lineage
 
@@ -35,6 +35,6 @@
 - Known simulated IPW probabilities do not establish validity under an unknown real-world inclusion mechanism.
 
 FULL_RUN_EXECUTED=YES
-PAPER_PROMOTION_EXECUTED=NO
+PAPER_PROMOTION_EXECUTED=YES
 GIT_COMMIT_EXECUTED=NO
 GIT_PUSH_EXECUTED=NO

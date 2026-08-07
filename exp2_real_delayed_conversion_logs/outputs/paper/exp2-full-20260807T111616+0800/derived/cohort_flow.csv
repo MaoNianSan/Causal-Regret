@@ -1,0 +1,9 @@
+stage,journey_count,retention_from_previous_stage,retention_from_candidate_journeys
+candidate_journeys_after_temporal_filters,308605,1.0,1.0
+complete_lookback_journeys,243298,0.7883799679201569,0.7883799679201569
+unique_uid_journeys,242419,0.9963871466267704,0.7855316666936699
+single_campaign_journeys,241590,0.9965803010490102,0.7828453848771083
+source_cell_support_eligible_journeys,241590,1.0,0.7828453848771083
+unique_arrival_anchor_journeys,241590,1.0,0.7828453848771083
+arrival_anchor_support_eligible_journeys,240981,0.9974792002980256,0.780871988464218
+final_retained_journeys,240981,1.0,0.780871988464218
