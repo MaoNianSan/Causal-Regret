@@ -63,9 +63,7 @@ def hash_files(paths: Iterable[Path], *, root: Path, algorithm_version: str) -> 
         try:
             relative = resolved.relative_to(root).as_posix()
         except ValueError as exc:
-            raise ValueError(
-                f"path {resolved} is outside root {root}"
-            ) from exc
+            raise ValueError(f"path {resolved} is outside root {root}") from exc
         if relative in seen:
             raise ValueError(f"duplicate normalized path: {relative}")
         seen.add(relative)
@@ -184,7 +182,9 @@ def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
     hashes: dict[str, str] = {}
     for name, prefixes, files in _STAGE_SPECS:
         stage_files = [
-            path for path in all_files if _stage_file_matches(base, path, prefixes, files)
+            path
+            for path in all_files
+            if _stage_file_matches(base, path, prefixes, files)
         ]
         hashes[name] = hash_files(
             stage_files,
@@ -207,7 +207,9 @@ def frozen_config_payload() -> dict[str, object]:
 
 
 def config_hash() -> str:
-    serialized = json.dumps(frozen_config_payload(), sort_keys=True, separators=(",", ":"))
+    serialized = json.dumps(
+        frozen_config_payload(), sort_keys=True, separators=(",", ":")
+    )
     return hashlib.sha256(serialized.encode("utf-8")).hexdigest()
 
 
@@ -228,7 +230,11 @@ def git_commit(base_dir: Path) -> str:
 def git_commit_available(base_dir: Path) -> bool:
     """A formal run needs a resolvable non-placeholder commit."""
     commit = git_commit(base_dir)
-    return bool(commit) and commit not in {"UNAVAILABLE", "UNKNOWN", ""} and len(commit) >= 7
+    return (
+        bool(commit)
+        and commit not in {"UNAVAILABLE", "UNKNOWN", ""}
+        and len(commit) >= 7
+    )
 
 
 def _git_root(base_dir: Path) -> Path | None:
@@ -362,8 +368,12 @@ def create_run_context(base_dir: Path, run_tier: str, n_jobs: int) -> RunContext
     return context
 
 
-def load_run_context(base_dir: Path, run_dir: Path, n_jobs: int | None = None) -> RunContext:
-    payload = json.loads((run_dir / "logs" / "run_config.json").read_text(encoding="utf-8"))
+def load_run_context(
+    base_dir: Path, run_dir: Path, n_jobs: int | None = None
+) -> RunContext:
+    payload = json.loads(
+        (run_dir / "logs" / "run_config.json").read_text(encoding="utf-8")
+    )
     return RunContext(
         run_id=payload["run_id"],
         run_tier=payload["run_tier"],
@@ -373,7 +383,9 @@ def load_run_context(base_dir: Path, run_dir: Path, n_jobs: int | None = None) -
         source_code_hash=payload["source_code_hash"],
         n_jobs=int(n_jobs if n_jobs is not None else payload.get("n_jobs", 1)),
         paper_result=bool(payload.get("paper_result", False)),
-        exp4_worktree_clean_at_start=bool(payload.get("exp4_worktree_clean_at_start", False)),
+        exp4_worktree_clean_at_start=bool(
+            payload.get("exp4_worktree_clean_at_start", False)
+        ),
         stage_source_hashes={
             key: str(payload[key])
             for key in (
@@ -444,6 +456,8 @@ def attach_metadata(
     output["calibration_hash"] = calibration_hash
     output["result_schema"] = RESULT_SCHEMA
     output["seed_or_replication"] = (
-        output[task_column] if task_column and task_column in output.columns else "aggregate"
+        output[task_column]
+        if task_column and task_column in output.columns
+        else "aggregate"
     )
     return output

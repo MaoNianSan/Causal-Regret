@@ -34,13 +34,21 @@ def _make_minimal_exp4_package(tmp_path: Path) -> Path:
     (base / "reporting").mkdir(parents=True)
     (base / "validation").mkdir(parents=True)
     (base / "configuration" / "__init__.py").write_text("", encoding="utf-8")
-    (base / "configuration" / "parameters.py").write_text("FROZEN = 1\n", encoding="utf-8")
+    (base / "configuration" / "parameters.py").write_text(
+        "FROZEN = 1\n", encoding="utf-8"
+    )
     (base / "simulation" / "__init__.py").write_text("", encoding="utf-8")
-    (base / "simulation" / "trajectory.py").write_text("def sim():\n    return 1\n", encoding="utf-8")
+    (base / "simulation" / "trajectory.py").write_text(
+        "def sim():\n    return 1\n", encoding="utf-8"
+    )
     (base / "reporting" / "__init__.py").write_text("", encoding="utf-8")
-    (base / "reporting" / "tables.py").write_text("def table():\n    return 1\n", encoding="utf-8")
+    (base / "reporting" / "tables.py").write_text(
+        "def table():\n    return 1\n", encoding="utf-8"
+    )
     (base / "validation" / "__init__.py").write_text("", encoding="utf-8")
-    (base / "validation" / "invariants.py").write_text("def check():\n    return True\n", encoding="utf-8")
+    (base / "validation" / "invariants.py").write_text(
+        "def check():\n    return True\n", encoding="utf-8"
+    )
     return tmp_path
 
 
@@ -90,21 +98,42 @@ def test_promotion_rejects_unverified_simulation_provenance(tmp_path: Path) -> N
             "monte_carlo_precision_gate": ["PASS"],
         }
     )
-    contrasts.to_csv(run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv", index=False)
+    contrasts.to_csv(
+        run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv",
+        index=False,
+    )
     summary = pd.DataFrame(
         {
             "control_id": ["affine_linked", "blocked_correspondence_destroyed"],
-            "control_display_name": ["Affine-linked control", "Temporally blocked correspondence-destroyed control"],
+            "control_display_name": [
+                "Affine-linked control",
+                "Temporally blocked correspondence-destroyed control",
+            ],
             "analysis_tier": ["primary", "primary"],
-            "correspondence_status": ["preserved by construction", "destroyed within temporal blocks"],
+            "correspondence_status": [
+                "preserved by construction",
+                "destroyed within temporal blocks",
+            ],
             "raw_defect": [0.5, 1.4],
             "oof_calibrated_defect": [0.1, 0.9],
             "recoverability": [0.7, 0.4],
             "estimability_rate": [1.0, 1.0],
         }
     )
-    summary.to_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv", index=False)
-    main = summary[["control_display_name", "correspondence_status", "raw_defect", "oof_calibrated_defect", "recoverability", "estimability_rate"]].rename(
+    summary.to_csv(
+        run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv",
+        index=False,
+    )
+    main = summary[
+        [
+            "control_display_name",
+            "correspondence_status",
+            "raw_defect",
+            "oof_calibrated_defect",
+            "recoverability",
+            "estimability_rate",
+        ]
+    ].rename(
         columns={
             "control_display_name": "Control",
             "correspondence_status": "Unit-level correspondence",
@@ -115,14 +144,23 @@ def test_promotion_rejects_unverified_simulation_provenance(tmp_path: Path) -> N
         }
     )
     _write_table(main, run_dir / "tables" / MAIN_TABLE_ID, "caption", "label")
-    (run_dir / "figures" / "pdf" / "fig_exp4_route_alignment_and_audit_reliability.pdf").write_bytes(b"x")
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    (
+        run_dir
+        / "figures"
+        / "pdf"
+        / "fig_exp4_route_alignment_and_audit_reliability.pdf"
+    ).write_bytes(b"x")
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["simulation_provenance_verified"] is False
     assert result["checks"]["source_hash_algorithm_version_present"] is False
     assert result["status"] == "FAIL"
 
 
-def test_reconciliation_does_not_overwrite_original_run_metadata(tmp_path: Path) -> None:
+def test_reconciliation_does_not_overwrite_original_run_metadata(
+    tmp_path: Path,
+) -> None:
     run_dir = tmp_path / "run"
     (run_dir / "logs").mkdir(parents=True)
     original = {
@@ -133,12 +171,18 @@ def test_reconciliation_does_not_overwrite_original_run_metadata(tmp_path: Path)
         "calibration_hash": "ghi",
         "code_commit": "old",
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(original), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(original), encoding="utf-8"
+    )
     write_provenance_reconciliation(run_dir, ROOT)
-    after = json.loads((run_dir / "logs" / "run_config.json").read_text(encoding="utf-8"))
+    after = json.loads(
+        (run_dir / "logs" / "run_config.json").read_text(encoding="utf-8")
+    )
     assert after == original
     reconciliation = json.loads(
-        (run_dir / "logs" / "exp4_provenance_reconciliation.json").read_text(encoding="utf-8")
+        (run_dir / "logs" / "exp4_provenance_reconciliation.json").read_text(
+            encoding="utf-8"
+        )
     )
     assert reconciliation["original_run_id"] == "full_x"
     assert reconciliation["original_recorded_commit"] == "old"
@@ -148,7 +192,12 @@ def test_reconciliation_does_not_overwrite_original_run_metadata(tmp_path: Path)
 def test_stage_level_source_hashes_present(tmp_path: Path) -> None:
     base = _make_minimal_exp4_package(tmp_path)
     hashes = compute_stage_source_hashes(base)
-    for name in ("simulation_source_hash", "aggregation_source_hash", "reporting_source_hash", "validation_source_hash"):
+    for name in (
+        "simulation_source_hash",
+        "aggregation_source_hash",
+        "reporting_source_hash",
+        "validation_source_hash",
+    ):
         assert hashes[name], name
         assert len(hashes[name]) == 64
 
@@ -187,7 +236,9 @@ def test_audit_reports_stored_vs_current_hash(tmp_path: Path) -> None:
         "config_hash": "0" * 64,
         "code_commit": "old",
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(run_config), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(run_config), encoding="utf-8"
+    )
     audit = audit_run_provenance(run_dir, ROOT)
     assert audit["source_hash_match"] is False
     # No lineage artifact exists: eligibility is UNKNOWN, never inferred.
@@ -233,7 +284,9 @@ def test_nonempty_current_stage_hashes_alone_do_not_pass(tmp_path: Path) -> None
         "reporting_source_hash": current["reporting_source_hash"],
         "validation_source_hash": current["validation_source_hash"],
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(run_config), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(run_config), encoding="utf-8"
+    )
     audit = audit_run_provenance(run_dir, base)
     for name in ("simulation", "aggregation", "reporting", "validation"):
         assert audit["stages"][name]["record_present"] is False, name

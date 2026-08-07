@@ -1,52 +1,33 @@
-# Experiment 4: Route Alignment and Evidence-Qualified Audit
+# Experiment 4: Recoverability Boundary Diagnostic
 
-Exp4 v2 is a controlled simulation and audit simulation. It does not identify a real-world causal attribution rule, prove proxy impossibility, or treat calibration improvement as route validity.
+## 1. Experiment Objective
+This experiment studies the recoverability boundary of route alignment and audit reliability under controlled simulation settings. It evaluates whether route-label retention, source-signature noise, and finite evidence produce recoverable diagnostics without claiming causal identification.
 
-## Exp1-Exp4 Boundary
+## 2. Scientific Boundary
+Experiment 4 is a recoverability boundary diagnostic. It does not identify a real-world causal attribution rule, prove proxy impossibility, or treat calibration improvement as route validity.
 
-Exp1 owns learner consequences, regret transfer, and delay-mechanism comparisons. Exp4 owns three different quantities:
+## 3. Data and Split
+The design uses controlled simulation settings for module A, module B, and module C, with frozen route-label rates, source-signature noise levels, audit rates, and calibration-fold structure. The v2 schema is maintained for the formal outputs.
 
-1. **Module A: Controlled Route-Alignment Boundary** varies route-label retention and source-signature noise, with population action-gap defect as the primary estimand.
-2. **Module B: Evidence-Qualified Audit Reliability** holds the route fixed and estimates audit bias, RMSE, and effective support under finite/selective evidence.
-3. **Module C: Calibration-Family Controls** evaluates out-of-fold affine discrepancy reduction without constructing a policy or coherent corrected loss map.
+## 4. Estimand / Metrics
+The primary estimands are action-gap defect, audit bias and RMSE under selective evidence, and calibration-family discrepancy diagnostics. The outputs are reported as recoverability diagnostics rather than policy value estimates.
 
-The three modules are not combined into a composite score.
+## 5. Implementation Contract
+The pipeline validates source-bound and full-label zero defect, action-pair invariants, positivity, temporal leakage constraints, affine recovery, and the Exp1-Exp4 boundary. The run and figure outputs are generated from frozen derived data and validated by the self-check mechanism.
 
-## Frozen v2 Design
+## 6. Output Artifacts
+Outputs are separated into calibration, module A, module B, and module C results, with figure bundles and tables written from the frozen derived outputs.
 
-- Module A: `T=5000`, `W=250`, 100 formal shared seeds.
-- Module B/C: `T=2000`, `W=100`, 1000 formal replications.
-- Route-label rates: `0`, `0.3`, `0.7`, `1`.
-- Source-signature noise SDs: `0`, `0.10`, `0.25`, `1.00`.
-- Audit rates: `0.10`, `0.30`, `0.50`, `1.00`.
-- Calibration uses 20 independent seed IDs, a median-distance kernel bandwidth, an empirical smoothed delay PMF, and five contiguous temporal folds.
-- V2 schema: `exp4_controlled_route_audit_v2`.
+## 7. Validation and Self-check
+The self-check validates scientific invariants and output consistency. Promotion remains a separate manual action that accepts only a completed full v2 run that passes the relevant gates.
 
-See [MIGRATION_V1_TO_V2.md](MIGRATION_V1_TO_V2.md) for the field and machine-ID migration.
-
-## Install
-
+## 8. Running Commands
 ```powershell
 python -m pip install -r requirements.txt
-```
-
-## Run Tiers
-
-```powershell
 python main.py fast --n-jobs 4
 python main.py middle --n-jobs 8
 python main.py full --n-jobs 8
 ```
-
-| Tier | Module A seeds | Module B/C replications | Bootstrap | Promotion |
-|---|---:|---:|---:|---|
-| fast | 3 | 10 | 0 | refused |
-| middle | 20 | 100 | 500 | refused |
-| full | 100 | 1000 | 2000 | separate approval only |
-
-All tiers use the formal scientific horizons. A completed full run remains `paper_result=false`.
-
-## Stage Commands
 
 ```powershell
 python main.py validate --run-dir outputs/runs/<run_id>
@@ -56,49 +37,6 @@ python main.py tables --run-dir outputs/runs/<run_id>
 python main.py report --run-dir outputs/runs/<run_id>
 ```
 
-Resume a partially completed tier with explicit stage manifests:
+## 9. Known Limitations
+The experiment is limited to controlled recoverability diagnostics and does not support claims about real-world causal identification or policy validity.
 
-```powershell
-python main.py middle --resume-run-dir outputs/runs/<middle_run_id> --n-jobs 8
-```
-
-## Outputs
-
-Module outputs are separated under:
-
-```text
-derived/calibration/
-derived/module_a/
-derived/module_b/
-derived/module_c/
-```
-
-The main figure is:
-
-```text
-figures/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf
-```
-
-The main table is:
-
-```text
-tables/tbl_exp4_calibration_controls.tex
-```
-
-Every figure bundle contains PDF, PNG, source CSV, metadata JSON, source hashes, config hash, calibration hash, code commit, schema, tier, and paper status. Figure and table code reads frozen derived outputs and does not import simulation, route, audit, or calibration engines.
-
-## Scientific Gates
-
-The run validates source-bound and full-label zero defect, all 45 action pairs, positive attribution mass, no future candidates, independent route/audit streams, label-blind ambiguity, the Definition 4.3 defect formula, shared selective masks, IPW positivity, no temporal leakage, affine parameter recovery, blocked correspondence destruction, reconstructable figures, Monte Carlo precision, and the Exp1-Exp4 boundary.
-
-Calibration never falls back silently. Non-estimable folds retain explicit status and missing numeric outputs.
-
-## Promotion
-
-Promotion is a separate manual action and accepts only a passed full v2 run whose Monte Carlo precision gate is `PASS`:
-
-```powershell
-python promote_results.py --run-dir outputs/runs/<full_run_id> --approve-claims
-```
-
-Fast, middle, v1, and legacy outputs are refused.
