@@ -13,7 +13,9 @@ from exp4.reporting.implementation_status import (
 )
 
 
-def _make_run(base: Path, tier: str, run_id: str, paper_promotion: str = "NOT_RUN") -> Path:
+def _make_run(
+    base: Path, tier: str, run_id: str, paper_promotion: str = "NOT_RUN"
+) -> Path:
     run_dir = base / "outputs" / "runs" / run_id
     (run_dir / "logs").mkdir(parents=True)
     (run_dir / "checks").mkdir(parents=True)
@@ -27,16 +29,25 @@ def _make_run(base: Path, tier: str, run_id: str, paper_promotion: str = "NOT_RU
         "config_hash": "0" * 64,
         "code_commit": "x",
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(run_config), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(run_config), encoding="utf-8"
+    )
     (run_dir / "logs" / "exp4_result_status.json").write_text(
-        json.dumps({"paper_promotion": paper_promotion, "paper_result": paper_promotion == "PASS"}),
+        json.dumps(
+            {
+                "paper_promotion": paper_promotion,
+                "paper_result": paper_promotion == "PASS",
+            }
+        ),
         encoding="utf-8",
     )
     for name, status in (
         ("exp4_engineering_checks.json", "PASS"),
         ("exp4_scientific_checks.json", "PASS"),
     ):
-        (run_dir / "checks" / name).write_text(json.dumps({"status": status, "checks": []}), encoding="utf-8")
+        (run_dir / "checks" / name).write_text(
+            json.dumps({"status": status, "checks": []}), encoding="utf-8"
+        )
     return run_dir
 
 
