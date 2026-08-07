@@ -1,0 +1,44 @@
+{
+  "figure_id": "exp3_main_score_gap_ranking",
+  "figure_section": "main",
+  "figure_pdf": "figures/main/exp3_main_score_gap_ranking.pdf",
+  "figure_png": "figures/main/exp3_main_score_gap_ranking.png",
+  "figure_source_data": "figures/data/exp3_main_score_gap_ranking_data.csv",
+  "experiment_id": "exp3",
+  "run_tier": "full",
+  "paper_result": true,
+  "evidence_chain": [
+    "score recovery",
+    "held-out reference-pair gap recovery",
+    "logged-supported ranking recovery"
+  ],
+  "source_derived_files": [
+    "tables/exp3_primary_route_results.csv",
+    "tables/exp3_paired_ranking_contrast.csv",
+    "tables/exp3_support_coverage.csv",
+    "tables/exp3_action_space_coverage.csv",
+    "tables/exp3_metric_registry.csv"
+  ],
+  "source_file_hashes": {
+    "tables/exp3_primary_route_results.csv": "9a49107f4060c7f9ca99bb6622bced4786ad1d40c317ec80da6efd73c5d6a8b7",
+    "tables/exp3_paired_ranking_contrast.csv": "1511ff5308f6442adc981dc6a4f1c3b6d959a0c6ab7de93159b9de21c9153667",
+    "tables/exp3_support_coverage.csv": "ce5c29b90c99cd92f6b07c11c89f1a10b2ee1e5f05d60210028ae2e41bc67331",
+    "tables/exp3_action_space_coverage.csv": "b5289d641275fbeb4474768598282ebd86e8342ac70c55288eb9253213e05151",
+    "tables/exp3_metric_registry.csv": "dbfb7c6c5341708df687c5fe19239a105ec9a69da23f872a97aee41766b1a81e"
+  },
+  "metric_registry_hash": "dbfb7c6c5341708df687c5fe19239a105ec9a69da23f872a97aee41766b1a81e",
+  "selected_alpha": 30.0,
+  "design_hash": "7a4fba9917b5609d7badc074b9e0aeb6636217758651e254a627eb0d8b243000",
+  "full_sample_role": "primary_estimate",
+  "resampling_role": "empirical_user_resampling_sensitivity_distribution",
+  "formal_ci_validated": false,
+  "ridge_refit_in_resampling": false,
+  "support_scope": "common_logged_supported_action_cells",
+  "code_source_tree_hash": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "scope_note": "Top-20 actions cover 85.0% of evaluation exposures. Common-supported action coverage 92.5%; reference-pair coverage 92.1%; audit-unit coverage 100.0%; mean supported actions 18.49.",
+  "uncertainty_definition": "The open markers and horizontal ranges summarize the empirical user-cluster resampling distribution. They are sensitivity diagnostics rather than confidence intervals and need not contain the full-sample estimate.",
+  "interpretation_boundary": "logged-supported recovery; not OPE, deployment value, or structural causal regret",
+  "generated_at_utc": "2026-08-07T07:55:35.418877+00:00"
+}

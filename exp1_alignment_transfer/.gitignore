@@ -49,7 +49,7 @@ outputs/*
 !outputs/paper_candidate/**
 
 # Transient status files (fully covered by final reports and candidate
-# manifests; see status/EXP1_V2_GIT_SYNC_READINESS.md).
+# manifests).
 status/calibration_status.json
 status/fast_run_status.json
 status/full_run_status.json

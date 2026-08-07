@@ -1,0 +1,25 @@
+{
+  "figure_id": "exp3_appendix_score_calibration",
+  "figure_section": "appendix",
+  "figure_pdf": "figures/appendix/exp3_appendix_score_calibration.pdf",
+  "figure_png": "figures/appendix/exp3_appendix_score_calibration.png",
+  "figure_source_data": "figures/data/exp3_appendix_score_calibration_data.csv",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "paper_result": true,
+  "analysis_tier": "appendix",
+  "experiment_id": "exp3",
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "generated_at_utc": "2026-08-07T07:55:36.709284+00:00",
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "source_derived_files": [
+    "tables/exp3_decile_calibration.csv"
+  ],
+  "source_file_hashes": {
+    "tables/exp3_decile_calibration.csv": "3728e5a71ecf5fe3facd0a4ace9025d9f6a820b8ab4f9b520c4d6a35564364c9"
+  },
+  "interpretation": "Decile calibration diagnostic; not a separate primary estimand.",
+  "formal_ci_validated": false
+}

@@ -1,0 +1,3 @@
+split_id,unique_user_count,source_event_count,eligible_source_event_count,positive_outcome_event_count,right_censoring_rate,outcome_event_reuse_rate,mean_source_windows_per_outcome_event,median_source_windows_per_outcome_event,p90_source_windows_per_outcome_event,maximum_source_windows_per_outcome_event,mean_source_events_per_user,p90_source_events_per_user
+history,983,4643582,4522259,1330808,0.026127028660202445,0.9992733737699202,206.5864685213795,136.0,475.0,3723.0,4723.888097660224,10504.80000000001
+evaluation,1000,6127661,5997212,1733718,0.021288547130789426,0.9993078459126571,210.662984406922,137.0,475.0,5534.0,6127.661,12856.1

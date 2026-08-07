@@ -1,0 +1,25 @@
+# Frozen environment used for the reported paper results.
+#
+# Recorded from the actual working environment (Python 3.11.6) used to run
+# the four experiments. Per-experiment requirements.txt files specify
+# compatible dependency ranges for users who prefer pip.
+#
+#   conda env create -f environment.yml
+#   conda activate causal-regret
+name: causal-regret
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11.6
+  - numpy=2.4.4
+  - pandas=2.3.3
+  - scipy=1.17.1
+  - matplotlib=3.10.9
+  - pyarrow=24.0.0
+  - pyyaml=6.0.3
+  - tqdm=4.67.3
+  - joblib=1.5.3
+  - jinja2=3.1.6
+  - pytest=8.4.2
+  - pip

@@ -18,6 +18,8 @@ The pipeline reconstructs the design contract, applies the route scores, audits 
 ## 6. Output Artifacts
 Canonical outputs include the metric registry, primary route results, paired ranking contrast, support coverage, gap error distribution, target audit, ridge history cross-validation summary, and diagnostics tables.
 
+The paper-facing artifact set is curated in [`paper_candidate/`](paper_candidate/) (main and appendix figures, figure source data, paper tables, and `manifest.json`) from the canonical full run `exp3-full-20260807T072340Z`.
+
 ## 7. Validation and Self-check
 The independent self-check validates the frozen design, route support, ridge selection, target audit, and figure-data contract. Fast runs are engineering gates only and are not paper results.
 

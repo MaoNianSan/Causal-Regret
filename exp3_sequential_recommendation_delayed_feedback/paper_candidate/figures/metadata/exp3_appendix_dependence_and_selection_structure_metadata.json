@@ -1,0 +1,33 @@
+{
+  "figure_id": "exp3_appendix_dependence_and_selection_structure",
+  "figure_section": "appendix",
+  "figure_pdf": "figures/appendix/exp3_appendix_dependence_and_selection_structure.pdf",
+  "figure_png": "figures/appendix/exp3_appendix_dependence_and_selection_structure.png",
+  "figure_source_data": "figures/data/exp3_appendix_dependence_and_selection_structure_data.csv",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "paper_result": true,
+  "analysis_tier": "appendix",
+  "experiment_id": "exp3",
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "generated_at_utc": "2026-08-07T07:55:36.709284+00:00",
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "source_derived_files": [
+    "derived/exp3_outcome_reuse_quantiles.csv",
+    "tables/exp3_data_dependence_structure.csv",
+    "tables/exp3_resampling_structure_diagnostics.csv",
+    "diagnostics/exp3_data_dependence_structure.json",
+    "diagnostics/exp3_resampling_structure_diagnostics.json"
+  ],
+  "source_file_hashes": {
+    "derived/exp3_outcome_reuse_quantiles.csv": "f4a60862995d95782e701609289114a52b8f999277eee90db10eac8709010e57",
+    "tables/exp3_data_dependence_structure.csv": "d3529e94f79217df09c529ff62e5659bf204530792ef878de8c284bbc91a946f",
+    "tables/exp3_resampling_structure_diagnostics.csv": "532a6eea587675d9ccbaee80c0a9de0ad1996a4bcafe9b1e7162e4fa3247ede2",
+    "diagnostics/exp3_data_dependence_structure.json": "87632c7ff8f87b43653af18e8b68bc77d18b050f1f24cc70908f6acc0d48f342",
+    "diagnostics/exp3_resampling_structure_diagnostics.json": "5a96234658cc744e05c0538970fd9bcb6abba4b6ea5cc9251475c2412db206e9"
+  },
+  "interpretation": "Overlapping six-hour target windows and data-dependent support/reference/argmax changes explain why user-cluster resampling is reported as sensitivity analysis rather than formal confidence inference.",
+  "formal_ci_validated": false
+}

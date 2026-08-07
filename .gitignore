@@ -56,7 +56,6 @@ data/external/
 **/inputs/**
 !**/inputs/
 !**/inputs/README.md
-!**/inputs/README_local_data.md
 **/input/raw/
 **/input/external/
 
@@ -95,12 +94,13 @@ exp3_sequential_recommendation_delayed_feedback/validation/
 !README.md
 !LICENSE
 !LICENSE_PENDING.md
+!LICENSE_SELECTION_REQUIRED.md
 !requirements.txt
 !environment.yml
 !**/README.md
 !**/requirements.txt
 !**/docs/**
-!**/ipy/**
+!**/notebooks/**
 !**/runlogs/*.md
 !**/runlogs/*.txt
 !**/runlogs/*.log

@@ -114,21 +114,23 @@ class TestLineageSeparation(unittest.TestCase):
 
 
 class TestFrozenScientificInvariance(unittest.TestCase):
-    """The presentation rebuild must leave every frozen scientific artifact intact."""
+    """The paper candidate must match the hashes recorded in its artifact manifest."""
 
     def test_presentation_rebuild_does_not_touch_scientific_artifacts(self) -> None:
-        frozen_path = PROJECT_ROOT / "status/EXP1_V2_FROZEN_SCIENTIFIC_ARTIFACTS.json"
-        if not frozen_path.exists():
-            self.skipTest("frozen artifact manifest not present locally")
-        frozen = json.loads(frozen_path.read_text(encoding="utf-8"))
-        self.assertIn("artifact_hashes", frozen)
-        for relpath, expected in frozen["artifact_hashes"].items():
-            artifact = PROJECT_ROOT / relpath
-            self.assertTrue(artifact.exists(), f"frozen artifact missing: {relpath}")
+        manifest_path = (
+            PROJECT_ROOT / "outputs/paper_candidate/metadata/artifact_manifest.json"
+        )
+        if not manifest_path.exists():
+            self.skipTest("paper candidate artifact manifest not present locally")
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+        candidate_root = PROJECT_ROOT / "outputs/paper_candidate"
+        artifacts = {item["path"]: item["sha256"] for item in manifest["artifacts"]}
+        self.assertTrue(len(artifacts) > 0, "artifact manifest must not be empty")
+        for relpath, expected in artifacts.items():
+            artifact = candidate_root / relpath
+            self.assertTrue(artifact.exists(), f"paper artifact missing: {relpath}")
             actual = _sha256(artifact)
-            self.assertEqual(
-                actual, expected, f"frozen scientific artifact changed: {relpath}"
-            )
+            self.assertEqual(actual, expected, f"paper artifact changed: {relpath}")
 
 
 if __name__ == "__main__":

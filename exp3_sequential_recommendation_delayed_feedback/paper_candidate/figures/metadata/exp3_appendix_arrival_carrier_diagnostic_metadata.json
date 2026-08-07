@@ -1,0 +1,30 @@
+{
+  "figure_id": "exp3_appendix_arrival_carrier_diagnostic",
+  "figure_section": "appendix",
+  "figure_pdf": "figures/appendix/exp3_appendix_arrival_carrier_diagnostic.pdf",
+  "figure_png": "figures/appendix/exp3_appendix_arrival_carrier_diagnostic.png",
+  "figure_source_data": "figures/data/exp3_appendix_arrival_carrier_diagnostic_data.csv",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "paper_result": true,
+  "analysis_tier": "appendix",
+  "experiment_id": "exp3",
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "generated_at_utc": "2026-08-07T07:55:36.709284+00:00",
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "source_derived_files": [
+    "diagnostics/exp3_arrival_carrier_audit.csv",
+    "diagnostics/exp3_arrival_carrier_action_audit.csv",
+    "diagnostics/exp3_arrival_carrier_summary.json",
+    "design/exp3_action_vocabulary.csv"
+  ],
+  "source_file_hashes": {
+    "diagnostics/exp3_arrival_carrier_audit.csv": "6d1e3d1fbbb6064986686e4a29755147202ccce0e38660ea20013ab02f4eab50",
+    "diagnostics/exp3_arrival_carrier_action_audit.csv": "47148e5a7c02f5a231e164de877175e9f91ca125bc7f199e80a0feef2e74e93c",
+    "diagnostics/exp3_arrival_carrier_summary.json": "0533a4e2831923210f87f840ed5978fbef57125b7d476a271e01c538cbf7a3b0",
+    "design/exp3_action_vocabulary.csv": "cb150e716856cb2fcfd3de89c01527432805ea23207bf0acb8426749453a3dcb"
+  },
+  "interpretation": "Mechanism diagnostic for pseudo-arrival carrier lag and source-action matching; exact source-event matching is reported as annotation only."
+}

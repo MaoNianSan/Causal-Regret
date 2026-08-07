@@ -1,0 +1,32 @@
+{
+  "figure_id": "exp3_appendix_full_design_support_preflight",
+  "figure_section": "appendix",
+  "figure_pdf": "figures/appendix/exp3_appendix_full_design_support_preflight.pdf",
+  "figure_png": "figures/appendix/exp3_appendix_full_design_support_preflight.png",
+  "figure_source_data": "figures/data/exp3_appendix_full_design_support_preflight_data.csv",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "paper_result": true,
+  "analysis_tier": "appendix",
+  "experiment_id": "exp3",
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "generated_at_utc": "2026-08-07T07:55:36.709284+00:00",
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "source_derived_files": [
+    "diagnostics/exp3_full_design_support_preflight.json",
+    "derived/exp3_full_design_support_by_action.csv",
+    "tables/exp3_full_design_support_preflight.csv",
+    "tables/exp3_action_space_coverage.csv",
+    "design/exp3_full_design_action_vocabulary.csv"
+  ],
+  "source_file_hashes": {
+    "diagnostics/exp3_full_design_support_preflight.json": "8280b2bb76254bb09db78c34537df68eef5f874d0ffaf3a82b27bda3f1710a66",
+    "derived/exp3_full_design_support_by_action.csv": "2c90a75880735d229106d9c9f8ae6d9c23ae67a604765caf13128c60ffe63e00",
+    "tables/exp3_full_design_support_preflight.csv": "d6ff15e43b72d5321a9d49d4c5f1900edd403ccf00b05f7afe36339317882402",
+    "tables/exp3_action_space_coverage.csv": "b5289d641275fbeb4474768598282ebd86e8342ac70c55288eb9253213e05151",
+    "design/exp3_full_design_action_vocabulary.csv": "cb150e716856cb2fcfd3de89c01527432805ea23207bf0acb8426749453a3dcb"
+  },
+  "interpretation": "Full top-20, formal-threshold support readiness and selected-action exposure scope; this does not alter the active fast estimand."
+}

@@ -5,7 +5,6 @@ outputs/
 inputs/**
 !inputs/
 !inputs/README.md
-!inputs/README_local_data.md
 
 # Local audit, validation, and archive workspaces
 audit/

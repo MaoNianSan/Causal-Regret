@@ -1,80 +1,84 @@
-# Criteo Attribution Modeling for Bidding Dataset
+# Experiment 2 Inputs — Criteo Delayed-Conversion Log
 
-This dataset is released along with the paper:
+## Dataset
 
-"Attribution Modeling Increases Efficiency of Bidding in Display Advertising"
-**Eustache Diemert&ast;, Julien Meynet&ast; (Criteo Research), Damien Lefortier (Facebook), Pierre Galland (Criteo) &ast;authors contributed equally**
+The **Criteo Attribution Modeling for Bidding** dataset: a sample of 30 days
+of Criteo live display-advertising traffic, with one row per impression. It
+includes click, conversion, conversion-timestamp, attribution, and cost
+information, plus anonymized contextual features. Key figures: ~16.5M
+impressions, ~45K conversions, 700 campaigns, ~2.4 GB uncompressed
+(623 MB compressed).
 
-This work was published in: 2017 AdKDD & TargetAd Workshop, in conjunction with The 23rd ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD 2017) (https://adkdd17.wixsite.com/adkddtargetad2017)
+## Official source
 
-When using this dataset, please cite the paper with following bibtex(final ACM bibtex coming soon):
+Released by Criteo Research together with the AdKDD 2017 paper
+*Attribution Modeling Increases Efficiency of Bidding in Display Advertising*
+(Diemert, Meynet, Lefortier, Galland). The tarball contains
+`criteo_attribution_dataset.tsv.gz` and `Experiments.ipynb`.
 
-```json
+## Citation
+
+> Diemert, E., Meynet, J., Lefortier, D., Galland, P. "Attribution Modeling
+> Increases Efficiency of Bidding in Display Advertising." AdKDD & TargetAd
+> Workshop, KDD 2017.
+
+```bibtex
 @inproceedings{DiemertMeynet2017,
-author = {{Diemert Eustache, Meynet Julien} and Galland, Pierre and Lefortier, Damien},
-title={Attribution Modeling Increases Efficiency of Bidding in Display Advertising},
-publisher = {ACM},
-pages={To appear},
-booktitle = {Proceedings of the AdKDD and TargetAd Workshop, KDD, Halifax, NS, Canada, August, 14, 2017},
-year = {2017}
+  author = {{Diemert Eustache, Meynet Julien} and Galland, Pierre and Lefortier, Damien},
+  title = {Attribution Modeling Increases Efficiency of Bidding in Display Advertising},
+  booktitle = {Proceedings of the AdKDD and TargetAd Workshop, KDD, Halifax, NS, Canada, August 14, 2017},
+  year = {2017}
 }
 ```
 
-We would love to hear from you if use this data or plan to use it. Refer to the Contact section below.
+## Access / license
 
+Research use as granted by Criteo's release of the dataset. This repository
+does **not** redistribute the raw file; it must be downloaded by the
+researcher from the official source.
 
-## Content of this dataset
-This dataset includes following files:
+## Expected file
 
-  * this **README.md** 
-  * **criteo\_attribution\_dataset.tsv.gz**: the dataset itself (623M compressed)
-  * **Experiments.ipynb**: ipython notebook with code and utilities to reproduce the results in the paper. Can also be used as a starting point for further research on this data. It requires python 3.* and standard scientific libraries such as pandas, numpy and sklearn.
+```
+exp2_real_delayed_conversion_logs/inputs/criteo_attribution_dataset.tsv.gz
+```
 
+The frozen analysis consumes the processed input at:
 
-## Data description
-This dataset represent a sample of  30 days of Criteo live traffic data.  Each line corresponds to one impression (a banner) that was displayed to a user.
-For each banner we have detailed information about the context, if it was clicked, if it led to a conversion and if it led to a conversion that was attributed to Criteo or not. Data has been sub-sampled and anonymized so as not to disclose proprietary elements.
+```
+exp2_real_delayed_conversion_logs/inputs/pcb_dataset_final.tsv
+```
 
-Here is a detailed description of the fields (they are tab-separated in the file):
+## Expected directory
 
-  * **timestamp**: timestamp of the impression (starting from 0 for the first impression). The dataset is sorted according to timestamp.
-  *  **uid** a unique user identifier
-  * **campaign** a unique identifier for the campaign
-  * **conversion** 1 if there was a conversion in the 30 days after the impression (independently of whether this impression was last click or not)
-  * **conversion_timestamp** the timestamp of the conversion or -1 if no conversion was observed
-  *	**conversion_id**	a unique identifier for each conversion (so that timelines can be reconstructed if needed). -1 if there was no conversion
-  * **attribution** 1 if the conversion was attributed to Criteo, 0 otherwise
-  * **click** 1 if the impression was clicked, 0 otherwise
-  *	**click_pos** the position of the click before a conversion (0 for first-click)
-  * **click_nb** number of clicks. More than 1 if there was several clicks before a conversion
-  * **cost** the price paid by Criteo for this display (**disclaimer:** not the real price, only a transformed version of it)
-  *	 **cpo** the cost-per-order  in case of attributed conversion (**disclaimer:** not the real price, only a transformed version of it)
-  * **time\_since\_last\_click** the time since the last click (in s) for the given impression
-  *	 **cat[1-9]** contextual features associated to the display. Can be used to learn the click/conversion models. We do not disclose the meaning of these features but it is not relevant for this study. Each column is a categorical variable. In the experiments, they are mapped to a fixed dimensionality space using the Hashing Trick (see paper for reference).
+```
+exp2_real_delayed_conversion_logs/inputs/
+```
 
-### Key figures
-  * 2,4Gb uncompressed
-  * 16.5M impressions
-  * 45K conversions
-  * 700 campaigns
-  
-  
+Raw data files (`.tsv`, `.tsv.gz`, `.csv`, `.parquet`, `.ipynb`) in this
+directory are excluded from git tracking by
+`exp2_real_delayed_conversion_logs/.gitignore`; the directory is kept on the
+local machine.
 
-## Tasks
-This dataset can be used in a large scope of applications related to Real-Time-Bidding, including but not limited to:
+## Fields used
 
-  * Attribution modeling: rule based, model based, etc...
-  * Conversion modeling in display advertising: the data includes cost and value used for computing Utility metrics.
-  * Offline metrics for real-time bidding
-  
+The frozen analysis uses the tab-separated fields: `timestamp`, `uid`,
+`campaign`, `conversion`, `conversion_timestamp`, `conversion_id`,
+`attribution`, `click`, `cost`, and `cpo`. The contextual `cat[1-9]` columns
+are not required by the frozen route definitions.
 
-## Contact
-For any question, feel free to contact:
- 
- * The authors of the paper directly (emails in the paper)
- * Criteo Research team: http://research.criteo.com/contact-us/
- * Criteo Research twitter account: @CriteoResearch
-  
-## Download instructions
-   * To Download the Dataset [click here](https://s3-eu-west-1.amazonaws.com/attribution-dataset/criteo_attribution_dataset.zip)
+## Primary 7-day window
+
+The primary attribution window is **frozen at 7 days**. Changing the frozen
+primary window requires a complete Experiment 2 scientific rerun.
+
+## 30-day robustness window
+
+The 30-day window is retained as a **robustness** analysis only. It does not
+change the primary estimands or the paper-facing primary results.
+
+## Raw data redistribution policy
+
+Raw Criteo data is **local only**: it is never committed, never included in a
+shareable experiment archive, and never redistributed by this repository.
    

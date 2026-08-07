@@ -18,6 +18,9 @@ The pipeline validates source-bound and full-label zero defect, action-pair inva
 ## 6. Output Artifacts
 Outputs are separated into calibration, module A, module B, and module C results, with figure bundles and tables written from the frozen derived outputs.
 
+The canonical published run is
+`outputs/runs/full_20260807T045219Z_7eeb2a31/` (figures, tables, checks, derived data, and the run report).
+
 ## 7. Validation and Self-check
 The self-check validates scientific invariants and output consistency. Promotion remains a separate manual action that accepts only a completed full v2 run that passes the relevant gates.
 

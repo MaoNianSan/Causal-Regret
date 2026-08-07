@@ -1,0 +1,24 @@
+# Citation metadata for the Causal-Regret repository.
+#
+# Fields that are not yet known (DOI, journal, final publication year) are
+# intentionally omitted rather than guessed. They will be added at
+# submission/publication time.
+cff-version: 1.2.0
+message: "If you use this repository, please cite it as follows."
+title: "Causal Regret Minimization under Delayed Feedback"
+type: software
+url: "https://github.com/MaoNianSan/Causal-Regret"
+repository-code: "https://github.com/MaoNianSan/Causal-Regret"
+version: "0.1.0"
+date-released: "2026-08-07"
+# authors: please list the repository/paper authors here before release.
+# Example entries (uncomment and fill):
+# - family-names: "Author"
+#   given-names: "First"
+#   orcid: "https://orcid.org/0000-0000-0000-0000"
+keywords:
+  - delayed feedback
+  - causal regret
+  - attribution
+  - offline benchmarks
+  - ranking recovery
