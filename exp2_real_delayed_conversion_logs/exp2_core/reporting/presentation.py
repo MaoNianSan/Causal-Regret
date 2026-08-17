@@ -1,4 +1,5 @@
 """Exp2 presentation-only renderer over the promoted frozen result source."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -28,7 +29,6 @@ from presentation.renderers import (
     write_table_frame,
 )
 from presentation_sources import PresentationSource, load_run_manifest
-
 
 MAIN_CONTRACT = {
     "layout": [2, 2],
@@ -128,7 +128,9 @@ def _appendix_figure(
             aggfunc="first",
         )
         image = axis.imshow(matrix.to_numpy(float), aspect="auto", cmap="viridis")
-        axis.set_xticks(np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right")
+        axis.set_xticks(
+            np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right"
+        )
         axis.set_yticks(np.arange(len(matrix.index)), matrix.index)
         axis.set_xlabel("Source-time route pair")
         axis.set_ylabel("Ambiguity stratum")
@@ -146,7 +148,9 @@ def _appendix_figure(
             index="route_left", columns="route_right", values="value", aggfunc="first"
         )
         image = axis.imshow(matrix.to_numpy(float), vmin=0, vmax=1, cmap="viridis")
-        axis.set_xticks(np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right")
+        axis.set_xticks(
+            np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right"
+        )
         axis.set_yticks(np.arange(len(matrix.index)), matrix.index)
         axis.set_xlabel("Right route")
         axis.set_ylabel("Left route")
@@ -157,8 +161,16 @@ def _appendix_figure(
             long_rows.append(
                 {
                     "panel_id": "a",
-                    "metric_id": "top_k_overlap" if figure_id == "exp2_appendix_pairwise_topk" else column,
-                    "estimand_id": "top_k_overlap" if figure_id == "exp2_appendix_pairwise_topk" else column,
+                    "metric_id": (
+                        "top_k_overlap"
+                        if figure_id == "exp2_appendix_pairwise_topk"
+                        else column
+                    ),
+                    "estimand_id": (
+                        "top_k_overlap"
+                        if figure_id == "exp2_appendix_pairwise_topk"
+                        else column
+                    ),
                     "condition_id": path.stem,
                     "series_id": column,
                     "point_estimate": row[column],
@@ -203,17 +215,47 @@ def render_presentation(
 ) -> dict[str, Any]:
     configure_matplotlib()
     layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
-    figure_source = source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv"
+    figure_source = (
+        source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv"
+    )
     frame = pd.read_csv(figure_source)
     frame["comparison_group"] = frame["record_type"].map(
         {"arrival_route": "source_vs_arrival", "source_route_pair": "source_pair"}
     )
     fig, axes = plt.subplots(2, 2, figsize=(7.1, 4.6), constrained_layout=True)
     specs = [
-        (0, 0, "source_vs_arrival", "allocation_tv", "Allocation TV", "(a) Source-time route vs arrival"),
-        (0, 1, "source_vs_arrival", "kendall_tau_b", "Kendall tau-b", "(b) Source-time route vs arrival"),
-        (1, 0, "source_pair", "allocation_tv", "Allocation TV", "(c) Pairwise source-time routes"),
-        (1, 1, "source_pair", "kendall_tau_b", "Kendall tau-b", "(d) Pairwise source-time routes"),
+        (
+            0,
+            0,
+            "source_vs_arrival",
+            "allocation_tv",
+            "Allocation TV",
+            "(a) Source-time route vs arrival",
+        ),
+        (
+            0,
+            1,
+            "source_vs_arrival",
+            "kendall_tau_b",
+            "Kendall tau-b",
+            "(b) Source-time route vs arrival",
+        ),
+        (
+            1,
+            0,
+            "source_pair",
+            "allocation_tv",
+            "Allocation TV",
+            "(c) Pairwise source-time routes",
+        ),
+        (
+            1,
+            1,
+            "source_pair",
+            "kendall_tau_b",
+            "Kendall tau-b",
+            "(d) Pairwise source-time routes",
+        ),
     ]
     for row_index, column_index, group, metric, xlabel, title in specs:
         axis = axes[row_index, column_index]
@@ -245,8 +287,24 @@ def render_presentation(
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
     fig.legend(
         handles=[
-            Line2D([0], [0], marker="o", color="#1f4e79", linestyle="none", label="Full-sample estimate"),
-            Line2D([0], [0], marker="o", markerfacecolor="white", markeredgecolor="#1f4e79", color="#1f4e79", linestyle="none", label="UID-resampling median"),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="#1f4e79",
+                linestyle="none",
+                label="Full-sample estimate",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                markerfacecolor="white",
+                markeredgecolor="#1f4e79",
+                color="#1f4e79",
+                linestyle="none",
+                label="UID-resampling median",
+            ),
         ],
         frameon=False,
         loc="lower center",
@@ -270,7 +328,10 @@ def render_presentation(
                 "c": "Six source-route pairs, Allocation TV.",
                 "d": "Six source-route pairs, Kendall tau-b.",
             },
-            metrics={"allocation_tv": "Allocation TV", "kendall_tau_b": "Kendall tau-b"},
+            metrics={
+                "allocation_tv": "Allocation TV",
+                "kendall_tau_b": "Kendall tau-b",
+            },
             boundary="Fixed-cohort attribution sensitivity; not causal attribution or policy value.",
             contract=MAIN_CONTRACT,
             sample_count=manifest.get("resampling_repetitions", 1000),
@@ -302,14 +363,24 @@ def render_presentation(
         ),
     ]
     for figure_id, title, path in appendix_specs:
-        _appendix_figure(
-            source, layout, figure_id=figure_id, title=title, path=path
-        )
+        _appendix_figure(source, layout, figure_id=figure_id, title=title, path=path)
 
     for filename, stem, semantics in (
-        ("table_exp2_cohort_flow.csv", "tab_exp2_cohort_flow", "Frozen cohort-flow table."),
-        ("table_exp2_pairwise_appendix.csv", "tab_exp2_pairwise_appendix", "Complete pairwise and Top-k appendix table."),
-        ("table_exp2_robustness_summary.csv", "tab_exp2_robustness", "Frozen 30-day, threshold, half-life, and k robustness table."),
+        (
+            "table_exp2_cohort_flow.csv",
+            "tab_exp2_cohort_flow",
+            "Frozen cohort-flow table.",
+        ),
+        (
+            "table_exp2_pairwise_appendix.csv",
+            "tab_exp2_pairwise_appendix",
+            "Complete pairwise and Top-k appendix table.",
+        ),
+        (
+            "table_exp2_robustness_summary.csv",
+            "tab_exp2_robustness",
+            "Frozen 30-day, threshold, half-life, and k robustness table.",
+        ),
     ):
         write_standard_table(
             layout,
@@ -317,7 +388,9 @@ def render_presentation(
             stem,
             semantics=semantics,
         )
-    route_rows = frame[["route_left", "route_right", "display_label", "record_type"]].copy()
+    route_rows = frame[
+        ["route_left", "route_right", "display_label", "record_type"]
+    ].copy()
     write_table_frame(
         layout,
         route_rows,

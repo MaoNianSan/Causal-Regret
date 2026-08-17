@@ -1,4 +1,5 @@
 """Exp3 presentation-only renderer over current paper-candidate tables."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -24,7 +25,6 @@ from presentation.common import (
 from presentation.renderers import figure_metadata, write_manifest, write_standard_table
 from presentation_sources import PresentationSource, load_run_manifest
 
-
 ROUTE_ORDER = ["arrival_carrier", "history_mean_control", "ridge_proxy"]
 ROUTE_COLORS = {
     "arrival_carrier": "#b54708",
@@ -39,10 +39,22 @@ ROUTE_MARKERS = {
 METRICS = [
     ("pooled_supported_cell_spearman", "Spearman", "panel_a_score"),
     ("pooled_supported_cell_mae", "MAE", "panel_a_score"),
-    ("maximum_heldout_reference_pair_gap_error", "Max held-out gap error", "panel_b_gap"),
+    (
+        "maximum_heldout_reference_pair_gap_error",
+        "Max held-out gap error",
+        "panel_b_gap",
+    ),
     ("heldout_reference_pair_sign_agreement", "Sign agreement", "panel_b_gap"),
-    ("top_action_agreement_with_fold_reference", "Top-action agreement", "panel_c_ranking"),
-    ("ridge_over_historical_paired_value_gain", "Ridge-minus-Historical paired value gain", "panel_c_ranking"),
+    (
+        "top_action_agreement_with_fold_reference",
+        "Top-action agreement",
+        "panel_c_ranking",
+    ),
+    (
+        "ridge_over_historical_paired_value_gain",
+        "Ridge-minus-Historical paired value gain",
+        "panel_c_ranking",
+    ),
 ]
 MAIN_CONTRACT = {
     "layout": [2, 3],
@@ -59,7 +71,11 @@ def build_main_long_form(
 ) -> pd.DataFrame:
     rows: list[dict[str, Any]] = []
     for index, row in frame[frame.metric_id.ne("support_scope")].iterrows():
-        route_id = row["route_id"] if pd.notna(row["route_id"]) else row.get("contrast_id", "ridge_over_historical")
+        route_id = (
+            row["route_id"]
+            if pd.notna(row["route_id"])
+            else row.get("contrast_id", "ridge_over_historical")
+        )
         rows.append(
             {
                 "panel_id": row["panel_id"],
@@ -125,12 +141,18 @@ def _appendix_composite(
     title: str,
     paths: list[Path],
 ) -> None:
-    fig, axes = plt.subplots(1, len(paths), figsize=(7.1, 3.1), constrained_layout=True, squeeze=False)
+    fig, axes = plt.subplots(
+        1, len(paths), figsize=(7.1, 3.1), constrained_layout=True, squeeze=False
+    )
     long_rows: list[dict[str, Any]] = []
     for panel_index, path in enumerate(paths):
         frame = pd.read_csv(path)
         axis = axes[0, panel_index]
-        numeric = [column for column in frame.columns if pd.api.types.is_numeric_dtype(frame[column])]
+        numeric = [
+            column
+            for column in frame.columns
+            if pd.api.types.is_numeric_dtype(frame[column])
+        ]
         for column in numeric[:3]:
             values = pd.to_numeric(frame[column], errors="coerce").dropna()
             axis.plot(values.index, values, marker=".", linewidth=0.7, label=column)
@@ -151,7 +173,11 @@ def _appendix_composite(
                 )
         if numeric:
             axis.legend(frameon=False, fontsize=6.5)
-        axis.set_title(path.stem.replace("exp3_", "").replace("_", " ").title(), loc="left", fontweight="bold")
+        axis.set_title(
+            path.stem.replace("exp3_", "").replace("_", " ").title(),
+            loc="left",
+            fontweight="bold",
+        )
         axis.set_xlabel("Frozen source row")
         axis.grid(axis="y", alpha=0.2)
     assert_no_suptitle(fig)
@@ -173,10 +199,15 @@ def _appendix_composite(
         metadata=_metadata(
             source,
             claim=title,
-            panels={chr(ord("a") + index): path.stem for index, path in enumerate(paths)},
+            panels={
+                chr(ord("a") + index): path.stem for index, path in enumerate(paths)
+            },
             metrics={},
             boundary="Appendix composite from frozen paper-candidate tables.",
-            contract={"layout": [1, len(paths)], "sources": [path.name for path in paths]},
+            contract={
+                "layout": [1, len(paths)],
+                "sources": [path.name for path in paths],
+            },
             uncertainty="Frozen diagnostic; sensitivity ranges are not confidence intervals",
         ),
         source_files=paths,
@@ -188,7 +219,9 @@ def render_presentation(
 ) -> dict[str, Any]:
     configure_matplotlib()
     layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
-    figure_source = source.source_run / "figures/data/exp3_main_score_gap_ranking_data.csv"
+    figure_source = (
+        source.source_run / "figures/data/exp3_main_score_gap_ranking_data.csv"
+    )
     table_source = source.source_run / "tables/exp3_primary_route_results.csv"
     frame = pd.read_csv(figure_source)
     fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.8), constrained_layout=True)
@@ -202,9 +235,29 @@ def render_presentation(
         subset = frame[frame.metric_id.eq(metric)]
         if metric == "ridge_over_historical_paired_value_gain":
             row = subset.iloc[0]
-            axis.hlines(0, row.sensitivity_lower, row.sensitivity_upper, color="#2e7d32", linewidth=0.8)
-            axis.plot(row.full_sample_estimate, 0, marker="D", color="#2e7d32", markerfacecolor="#2e7d32", markersize=4)
-            axis.plot(row.resampling_median, 0, marker="D", color="#2e7d32", markerfacecolor="white", markersize=4)
+            axis.hlines(
+                0,
+                row.sensitivity_lower,
+                row.sensitivity_upper,
+                color="#2e7d32",
+                linewidth=0.8,
+            )
+            axis.plot(
+                row.full_sample_estimate,
+                0,
+                marker="D",
+                color="#2e7d32",
+                markerfacecolor="#2e7d32",
+                markersize=4,
+            )
+            axis.plot(
+                row.resampling_median,
+                0,
+                marker="D",
+                color="#2e7d32",
+                markerfacecolor="white",
+                markersize=4,
+            )
             axis.set_yticks([0], ["Ridge - Historical"])
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
         else:
@@ -213,19 +266,71 @@ def render_presentation(
             for yi, row in zip(y, subset.itertuples(index=False), strict=True):
                 color = ROUTE_COLORS[row.route_id]
                 marker = ROUTE_MARKERS[row.route_id]
-                axis.hlines(yi, row.sensitivity_lower, row.sensitivity_upper, color=color, linewidth=0.8)
-                axis.plot(row.full_sample_estimate, yi, marker=marker, color=color, markerfacecolor=color, markersize=4)
-                axis.plot(row.resampling_median, yi, marker=marker, color=color, markerfacecolor="white", markersize=4)
+                axis.hlines(
+                    yi,
+                    row.sensitivity_lower,
+                    row.sensitivity_upper,
+                    color=color,
+                    linewidth=0.8,
+                )
+                axis.plot(
+                    row.full_sample_estimate,
+                    yi,
+                    marker=marker,
+                    color=color,
+                    markerfacecolor=color,
+                    markersize=4,
+                )
+                axis.plot(
+                    row.resampling_median,
+                    yi,
+                    marker=marker,
+                    color=color,
+                    markerfacecolor="white",
+                    markersize=4,
+                )
             axis.set_yticks(y, ["Arrival carrier", "Historical mean", "Ridge proxy"])
         axis.set_xlabel(xlabel)
-        axis.set_title(column_titles[index // 2] if index % 2 == 0 else xlabel, loc="left", fontweight="bold")
+        axis.set_title(
+            column_titles[index // 2] if index % 2 == 0 else xlabel,
+            loc="left",
+            fontweight="bold",
+        )
         axis.grid(axis="x", alpha=0.22, linewidth=0.55)
     fig.legend(
         handles=[
-            Line2D([0], [0], marker="o", color=ROUTE_COLORS["arrival_carrier"], linestyle="none", label="Arrival carrier"),
-            Line2D([0], [0], marker="s", color=ROUTE_COLORS["history_mean_control"], linestyle="none", label="Historical mean"),
-            Line2D([0], [0], marker="D", color=ROUTE_COLORS["ridge_proxy"], linestyle="none", label="Ridge proxy"),
-            Line2D([0], [0], marker="o", color="0.25", linestyle="none", label="Filled: full sample / open: resampling median"),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color=ROUTE_COLORS["arrival_carrier"],
+                linestyle="none",
+                label="Arrival carrier",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="s",
+                color=ROUTE_COLORS["history_mean_control"],
+                linestyle="none",
+                label="Historical mean",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="D",
+                color=ROUTE_COLORS["ridge_proxy"],
+                linestyle="none",
+                label="Ridge proxy",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                color="0.25",
+                linestyle="none",
+                label="Filled: full sample / open: resampling median",
+            ),
         ],
         frameon=False,
         loc="lower center",
@@ -269,7 +374,10 @@ def render_presentation(
         (
             "exp3_appendix_support_and_dependence",
             "Support and dependence",
-            [table_dir / "exp3_full_design_support_preflight.csv", table_dir / "exp3_data_dependence_structure.csv"],
+            [
+                table_dir / "exp3_full_design_support_preflight.csv",
+                table_dir / "exp3_data_dependence_structure.csv",
+            ],
         ),
         (
             "exp3_appendix_carrier_and_gap_diagnostics",

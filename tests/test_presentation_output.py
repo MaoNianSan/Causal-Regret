@@ -28,7 +28,6 @@ from presentation.renderers import (
 from presentation.validation import validate_preview
 from presentation_sources import PresentationSource, get_source
 
-
 EXP1_MODULE = load_renderer_module("Exp1")
 EXP2_MODULE = load_renderer_module("Exp2")
 EXP3_MODULE = load_renderer_module("Exp3")
@@ -76,15 +75,25 @@ REQUIRED_METADATA_KEYS = {
 
 def test_source_registry_resolves_every_frozen_render_input() -> None:
     exp1 = get_source("1")
-    assert exp1.config_hash == "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914"
-    assert exp1.run_id == "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00"
+    assert (
+        exp1.config_hash
+        == "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914"
+    )
+    assert (
+        exp1.run_id == "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00"
+    )
     assert get_source("2").scientific_source_paper_result is True
     assert get_source("3").run_id == "exp3-full-20260807T072340Z"
     exp4 = get_source("4")
     assert exp4.result_schema == "exp4_controlled_route_audit_v3"
-    assert exp4.config_hash == "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7"
+    assert (
+        exp4.config_hash
+        == "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7"
+    )
     assert exp4.scientific_source_paper_result is False
-    assert all(not source.missing_files() for source in map(get_source, ("1", "2", "3", "4")))
+    assert all(
+        not source.missing_files() for source in map(get_source, ("1", "2", "3", "4"))
+    )
 
 
 def _svg_vertical_segment_count(svg_path: Path) -> int:
@@ -103,7 +112,9 @@ def _svg_vertical_segment_count(svg_path: Path) -> int:
     return count
 
 
-def _figure_bundle_paths(layout: PreviewLayout, figure_id: str, section: str) -> dict[str, Path]:
+def _figure_bundle_paths(
+    layout: PreviewLayout, figure_id: str, section: str
+) -> dict[str, Path]:
     prefix = layout.base / "figures" / section
     return {
         "pdf": prefix / "pdf" / f"{figure_id}.pdf",
@@ -114,7 +125,9 @@ def _figure_bundle_paths(layout: PreviewLayout, figure_id: str, section: str) ->
     }
 
 
-def _assert_bundle_exists(figure_id: str, section: str, layout: PreviewLayout) -> dict[str, Path]:
+def _assert_bundle_exists(
+    figure_id: str, section: str, layout: PreviewLayout
+) -> dict[str, Path]:
     files = _figure_bundle_paths(layout, figure_id, section)
     assert all(path.exists() and path.stat().st_size > 0 for path in files.values())
     return files
@@ -177,14 +190,19 @@ def test_main_contract_shapes_and_exclusions() -> None:
         "blocked_correspondence_destroyed",
     ]
     assert EXP4_CONTRACT["main_exclusions"] == ["effective_support"]
-    assert EXP1_CONTRACT["panel_b_intervals"] == ["structural_regret_rate", "transfer_bound_rate"]
+    assert EXP1_CONTRACT["panel_b_intervals"] == [
+        "structural_regret_rate",
+        "transfer_bound_rate",
+    ]
     assert EXP1_CONTRACT["panel_c_intervals"] == ["arrival_clock", "source_round"]
     assert EXP1_CONTRACT["panel_c_no_interval"] == ["paired_contrast"]
 
 
 def test_exp1_long_form_reconstructs_named_source_rows() -> None:
     source = get_source("1")
-    frame = pd.read_csv(source.source_run / "figures/data/fig_exp1_alignment_transfer_data.csv")
+    frame = pd.read_csv(
+        source.source_run / "figures/data/fig_exp1_alignment_transfer_data.csv"
+    )
     long = build_exp1_long(frame, source)
     assert list(long.columns) == LONG_FORM_COLUMNS
     assert set(long.condition_id) == set(EXP1_CONTRACT["mechanisms"])
@@ -206,7 +224,9 @@ def test_exp1_long_form_reconstructs_named_source_rows() -> None:
 
 def test_exp2_long_form_has_four_plus_six_rows_and_no_topk() -> None:
     source = get_source("2")
-    frame = pd.read_csv(source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv")
+    frame = pd.read_csv(
+        source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv"
+    )
     long = build_exp2_long(frame, source)
     assert set(long.metric_id) == {"allocation_tv", "kendall_tau_b"}
     assert long[long.panel_id.eq("source_vs_arrival")].condition_id.nunique() == 4
@@ -229,7 +249,9 @@ def test_exp3_current_source_and_long_form_guard() -> None:
     ]
     assert len(value) == 1
     assert abs(float(value.iloc[0]) - 0.6417907611) < 1e-9
-    frame = pd.read_csv(source.source_run / "figures/data/exp3_main_score_gap_ranking_data.csv")
+    frame = pd.read_csv(
+        source.source_run / "figures/data/exp3_main_score_gap_ranking_data.csv"
+    )
     long = build_exp3_long(frame, source)
     assert "support_scope" not in set(long.metric_id)
     assert long.paper_result.eq(False).all()
@@ -242,13 +264,21 @@ def test_exp3_current_source_and_long_form_guard() -> None:
 
 def test_exp4_long_form_uses_dpair_mcse_and_two_calibration_controls() -> None:
     source = get_source("4")
-    module_a = pd.read_csv(source.source_run / "derived/module_a/exp4_module_a_population_summary.csv")
-    audit = pd.read_csv(source.source_run / "derived/module_b/exp4_module_b_audit_performance.csv")
-    controls = pd.read_csv(source.source_run / "derived/module_c/exp4_module_c_control_summary.csv")
+    module_a = pd.read_csv(
+        source.source_run / "derived/module_a/exp4_module_a_population_summary.csv"
+    )
+    audit = pd.read_csv(
+        source.source_run / "derived/module_b/exp4_module_b_audit_performance.csv"
+    )
+    controls = pd.read_csv(
+        source.source_run / "derived/module_c/exp4_module_c_control_summary.csv"
+    )
     long = build_exp4_long(module_a, audit, controls, source)
     panel_a = long[long.panel_id.eq("a")]
     assert set(panel_a.metric_id) == {"mean_pairwise_gap_discrepancy_mean"}
-    assert not any("population_action_gap_defect" in value for value in panel_a.metric_id)
+    assert not any(
+        "population_action_gap_defect" in value for value in panel_a.metric_id
+    )
     deterministic_a = panel_a[panel_a.condition_id.eq("q_route=1")]
     assert deterministic_a.interval_lower.isna().all()
     assert deterministic_a.interval_upper.isna().all()
@@ -262,11 +292,21 @@ def test_exp4_long_form_uses_dpair_mcse_and_two_calibration_controls() -> None:
         uncertain = panel[panel.series_id.ne("full_population")]
         for row in uncertain.itertuples(index=False):
             original = audit.loc[int(row.source_row_key)]
-            assert row.interval_lower == original[metric] - 1.96 * original[f"{metric}_mcse"]
-            assert row.interval_upper == original[metric] + 1.96 * original[f"{metric}_mcse"]
+            assert (
+                row.interval_lower
+                == original[metric] - 1.96 * original[f"{metric}_mcse"]
+            )
+            assert (
+                row.interval_upper
+                == original[metric] + 1.96 * original[f"{metric}_mcse"]
+            )
     panel_d = long[long.panel_id.eq("d")]
     assert set(panel_d.condition_id) == set(EXP4_CONTRACT["panel_d_controls"])
-    assert {"raw_pairwise_discrepancy", "oof_calibrated_pairwise_discrepancy", "recoverability"} == set(panel_d.metric_id)
+    assert {
+        "raw_pairwise_discrepancy",
+        "oof_calibrated_pairwise_discrepancy",
+        "recoverability",
+    } == set(panel_d.metric_id)
     assert not any("effective_support" in str(value) for value in long.metric_id)
 
 
@@ -285,7 +325,10 @@ def test_metadata_lineages_are_separate_for_all_sources() -> None:
         )
         assert metadata["scientific_source_lineage"]
         assert metadata["presentation_source_lineage"].startswith("presentation:")
-        assert metadata["scientific_source_lineage"] != metadata["presentation_source_lineage"]
+        assert (
+            metadata["scientific_source_lineage"]
+            != metadata["presentation_source_lineage"]
+        )
 
 
 def test_fixture_bundle_writes_complete_hashable_artifacts(tmp_path: Path) -> None:
@@ -367,7 +410,9 @@ def test_fixture_bundle_writes_complete_hashable_artifacts(tmp_path: Path) -> No
     assert (layout.base / "validation/presentation_validation.json").exists()
 
 
-def test_appendix_order_preserves_figure_ids_and_artifact_hashes(tmp_path: Path) -> None:
+def test_appendix_order_preserves_figure_ids_and_artifact_hashes(
+    tmp_path: Path,
+) -> None:
     source = get_source("1")
     layout = PreviewLayout(tmp_path, source.experiment_id, source.run_id)
     layout.ensure()
@@ -420,7 +465,9 @@ def test_real_render_exp1_panel_b_intervals_and_targeted_source(tmp_path: Path) 
     panel_b = long[long.panel_id.eq("b")]
     assert {"structural_regret_rate", "transfer_bound_rate"} <= set(panel_b.metric_id)
     panel_c = long[long.panel_id.eq("c")]
-    assert {"arrival_clock", "source_round", "paired_contrast"} <= set(panel_c.series_id)
+    assert {"arrival_clock", "source_round", "paired_contrast"} <= set(
+        panel_c.series_id
+    )
     frozen_main = pd.read_csv(
         source.source_run / "figures/data/fig_exp1_alignment_transfer_data.csv"
     )
@@ -546,4 +593,7 @@ def test_real_render_exp4_dpair_and_marker_registry(tmp_path: Path) -> None:
     )
     marker_semantics = main_metadata["marker_semantics"]
     assert len(set(marker_semantics["sigma_proxy_marker_registry"].values())) > 1
-    assert marker_semantics["sigma_proxy_q1_endpoint"] == "open version of the sigma marker"
+    assert (
+        marker_semantics["sigma_proxy_q1_endpoint"]
+        == "open version of the sigma marker"
+    )

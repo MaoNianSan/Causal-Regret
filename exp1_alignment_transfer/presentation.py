@@ -1,4 +1,5 @@
 """Exp1 presentation-only renderer over frozen full-run artifacts."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,7 +28,6 @@ from presentation.renderers import (
     write_table_frame,
 )
 from presentation_sources import PresentationSource
-
 
 MECHANISMS = [
     "zero_delay",
@@ -155,7 +155,14 @@ def _appendix_composite(
                 )
         if numeric:
             axis.legend(frameon=False, fontsize=6.5)
-        axis.set_title(path.stem.replace("fig_exp1_", "").replace("_data", "").replace("_", " ").title(), loc="left", fontweight="bold")
+        axis.set_title(
+            path.stem.replace("fig_exp1_", "")
+            .replace("_data", "")
+            .replace("_", " ")
+            .title(),
+            loc="left",
+            fontweight="bold",
+        )
         axis.set_xlabel("Frozen source row")
         axis.grid(axis="y", alpha=0.2)
     assert_no_suptitle(fig)
@@ -180,7 +187,10 @@ def _appendix_composite(
             panels={chr(ord("a") + i): path.stem for i, path in enumerate(paths)},
             metrics={},
             boundary="Appendix diagnostic from frozen full-run sources; no new scientific estimate.",
-            contract={"layout": [1, len(paths)], "sources": [path.name for path in paths]},
+            contract={
+                "layout": [1, len(paths)],
+                "sources": [path.name for path in paths],
+            },
             uncertainty="Frozen source diagnostic",
         ),
         source_files=paths,
@@ -229,7 +239,10 @@ def _targeted_validation_figure(
     for panel_index, component, x_column, metric_id, xlabel, ylabel, title in specs:
         axis = axes[panel_index]
         panel = frame[frame.targeted_component.eq(component)]
-        for binding, color in (("arrival_clock", "#b54708"), ("source_round", "#2e7d32")):
+        for binding, color in (
+            ("arrival_clock", "#b54708"),
+            ("source_round", "#2e7d32"),
+        ):
             group = panel[
                 panel.feedback_binding_id.eq(binding) & panel.metric_id.eq(metric_id)
             ].sort_values(x_column)
@@ -260,7 +273,11 @@ def _targeted_validation_figure(
                         "uncertainty_method": "seed_bootstrap",
                         "repetition_count": row.get("bootstrap_repetitions", pd.NA),
                         "sample_count": row.get("n_seeds", pd.NA),
-                        "unit": "rate" if metric_id == "structural_regret_rate" else "regret",
+                        "unit": (
+                            "rate"
+                            if metric_id == "structural_regret_rate"
+                            else "regret"
+                        ),
                         "better_direction": "lower",
                         "source_table": path.name,
                         "source_row_key": str(source_index),
@@ -371,7 +388,9 @@ def render_presentation(
     )
     axes[0].set_yticks(y, labels)
     axes[0].set_xlabel(r"Alignment budget rate, $A_T^{arr}/T$")
-    axes[0].set_title("(a) Route alignment under matched delay", loc="left", fontweight="bold")
+    axes[0].set_title(
+        "(a) Route alignment under matched delay", loc="left", fontweight="bold"
+    )
 
     panel_b = data[data.panel_id.eq("B")]
     for yi, mechanism in zip(y, MECHANISMS, strict=True):
@@ -427,25 +446,27 @@ def render_presentation(
         )
     axes[1].set_yticks(y, [])
     axes[1].set_xlabel("Rate")
-    axes[1].set_title("(b) Structural regret and transfer bound", loc="left", fontweight="bold")
+    axes[1].set_title(
+        "(b) Structural regret and transfer bound", loc="left", fontweight="bold"
+    )
     axes[1].legend(frameon=False, loc="upper right")
 
     panel_c = data[data.panel_id.eq("C")]
     for yi, mechanism in zip(y, MECHANISMS, strict=True):
         arrival = panel_c[
-            panel_c.mechanism_id.eq(mechanism)
-            & panel_c.series_id.eq("arrival_clock")
+            panel_c.mechanism_id.eq(mechanism) & panel_c.series_id.eq("arrival_clock")
         ].iloc[0]
         source_row = panel_c[
-            panel_c.mechanism_id.eq(mechanism)
-            & panel_c.series_id.eq("source_round")
+            panel_c.mechanism_id.eq(mechanism) & panel_c.series_id.eq("source_round")
         ].iloc[0]
         contrast = panel_c[
-            panel_c.mechanism_id.eq(mechanism)
-            & panel_c.series_id.eq("paired_contrast")
+            panel_c.mechanism_id.eq(mechanism) & panel_c.series_id.eq("paired_contrast")
         ].iloc[0]
         axes[2].plot(
-            [source_row.estimate, arrival.estimate], [yi, yi], color="0.45", linewidth=0.8
+            [source_row.estimate, arrival.estimate],
+            [yi, yi],
+            color="0.45",
+            linewidth=0.8,
         )
         axes[2].errorbar(
             arrival.estimate,
@@ -592,4 +613,9 @@ def render_presentation(
     return {"layout": layout, "main": main, "appendix_ids": appendix_ids}
 
 
-__all__ = ["MAIN_CONTRACT", "build_main_long_form", "render_presentation", "_targeted_validation_figure"]
+__all__ = [
+    "MAIN_CONTRACT",
+    "build_main_long_form",
+    "render_presentation",
+    "_targeted_validation_figure",
+]
