@@ -85,6 +85,28 @@ python exp1_alignment_transfer/promote.py --run full
 Paper artifacts: `exp1_alignment_transfer/outputs/paper_candidate/`
 (figures, tables, source data, checks, and metadata).
 
+### Selective rebuild without scientific rerun
+
+When the verified scientific-generation source, effective configuration,
+frozen calibration identity, and raw/seed artifacts still pass the explicit
+provenance audit, rebuild only the stale downstream stage. These commands do
+not launch the simulator and do not promote a paper candidate:
+
+```bash
+# Inspect or bootstrap explicit provenance for the verified source run.
+python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer/outputs/full --audit
+
+# Reuse raw/seed artifacts for the requested stage set.
+python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer/outputs/full --rebuild validation
+python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer/outputs/full --rebuild aggregation
+python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer/outputs/full --rebuild reporting
+python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer/outputs/full --rebuild downstream
+```
+
+The reconciliation artifact records the reused scientific run, the stage
+hashes, and the rebuilt stages. A generation/configuration/calibration mismatch
+refuses reuse and requires a separately approved scientific full rerun.
+
 ## 5. Experiment 2
 
 Attribution sensitivity in delayed-conversion logs. Requires the local input
@@ -153,11 +175,23 @@ python exp4_controlled_route_audit/main.py plot --run-dir outputs/runs/<run_id>
 python exp4_controlled_route_audit/main.py tables --run-dir outputs/runs/<run_id>
 python exp4_controlled_route_audit/main.py report --run-dir outputs/runs/<run_id>
 python exp4_controlled_route_audit/main.py provenance --run-dir outputs/runs/<run_id>
+
+# Stage-aware selective rebuild; raw simulation artifacts are reused only
+# after the simulation/configuration/calibration provenance audit passes.
+python exp4_controlled_route_audit/main.py reconcile --run-dir outputs/runs/<run_id> --rebuild validation
+python exp4_controlled_route_audit/main.py reconcile --run-dir outputs/runs/<run_id> --rebuild aggregation
+python exp4_controlled_route_audit/main.py reconcile --run-dir outputs/runs/<run_id> --rebuild reporting
+python exp4_controlled_route_audit/main.py reconcile --run-dir outputs/runs/<run_id> --rebuild downstream
 ```
 
 `main.py full` refuses to start from a dirty Exp4 worktree or an unresolvable
 git commit. The canonical published run is
 `exp4_controlled_route_audit/outputs/runs/full_20260807T045219Z_7eeb2a31/`.
+
+Selective rebuilds write an explicit reconciliation artifact. A changed
+complete source tree or Git commit alone does not force a new simulation;
+only the simulation-stage source, frozen configuration, calibration identity,
+or required raw artifacts can do that.
 
 ## 8. Paper figures and tables
 

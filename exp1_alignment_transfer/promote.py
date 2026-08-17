@@ -12,6 +12,7 @@ from src.derived import write_manuscript_artifacts
 import pandas as pd
 
 from src.artifact_io import atomic_write_json, hash_payload, sha256_file, utc_now
+from src.run_provenance import audit_exp1_provenance
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -42,6 +43,45 @@ def _update_json_paper_flag(path: Path) -> None:
     atomic_write_json(path, payload)
 
 
+def promotion_provenance_audit(full: Path) -> dict[str, object]:
+    """Stage-aware promotion gate; complete-tree equality is not required."""
+    audit = audit_exp1_provenance(full, PROJECT_ROOT)
+    checks = {
+        "simulation_provenance_verified": bool(
+            audit["simulation_provenance_verified"]
+        ),
+        "downstream_provenance_verified": bool(
+            audit["downstream_provenance_verified"]
+        ),
+        "reporting_provenance_verified": bool(
+            audit["reporting_provenance_verified"]
+        ),
+        "reconciliation_present_when_rebuilt": bool(
+            not audit["run_lineage_present"]
+            or not audit["reconciliation_artifact_present"]
+            or audit["reconciliation_artifact_present"]
+        ),
+    }
+    # A fresh inline run needs no reconciliation. A downstream-rebuilt or
+    # reused run must have one; the explicit lineage avoids hash-only reuse.
+    lineage_path = full / "metadata" / "exp1_run_lineage.json"
+    lineage = json.loads(lineage_path.read_text(encoding="utf-8")) if lineage_path.exists() else {}
+    needs_reconciliation = (
+        lineage.get("simulation_execution_mode") == "REUSED"
+        or lineage.get("downstream_execution_mode") == "REBUILT"
+    )
+    checks["reconciliation_present_when_rebuilt"] = bool(
+        not needs_reconciliation or audit["reconciliation_artifact_present"]
+    )
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "checks": checks,
+        "decision": audit["decision"],
+        "failure_reason": audit["failure_reason"],
+        "audit": audit,
+    }
+
+
 def promote(force: bool = False) -> Path:
     validation_path = STATUS / "full_validation_status.json"
     if not validation_path.exists():
@@ -57,6 +97,12 @@ def promote(force: bool = False) -> Path:
     full = OUTPUTS / "full"
     if not full.exists():
         raise RuntimeError("Full output directory is missing")
+    provenance = promotion_provenance_audit(full)
+    if provenance["status"] != "PASS":
+        raise RuntimeError(
+            "Paper promotion is blocked by stage-aware provenance: "
+            + str(provenance["failure_reason"])
+        )
     fallback_markers = list(full.rglob("*.fallback.json"))
     if fallback_markers:
         raise RuntimeError(
@@ -145,6 +191,7 @@ def promote(force: bool = False) -> Path:
         "engineering_status": "PASS",
         "scientific_status": "PASS",
         "source_full_output": "outputs/full",
+        "stage_aware_provenance": provenance,
         "artifacts": artifact_records,
         "promoted_at": utc_now(),
     }

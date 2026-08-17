@@ -16,6 +16,7 @@ simulation), which is recorded only in the run-lineage artifact.
 from __future__ import annotations
 
 import json
+from enum import Enum
 from pathlib import Path
 
 from exp4.outputs.run_lineage import (
@@ -30,6 +31,7 @@ from exp4.outputs.writers import (
     compute_stage_source_hashes as writers_compute_stage_source_hashes,
     exp4_worktree_clean,
     git_commit,
+    sha256_file,
     utc_now_iso,
     write_json,
 )
@@ -45,6 +47,14 @@ STAGE_KEYS = {
     "validation": "validation_source_hash",
 }
 DOWNSTREAM_STAGE_NAMES = ("aggregation", "reporting", "validation")
+
+
+class Exp4ReuseDecision(str, Enum):
+    SCIENTIFIC_FULL_RERUN = "SCIENTIFIC_FULL_RERUN"
+    DOWNSTREAM_REBUILD = "DOWNSTREAM_REBUILD"
+    REPORTING_REBUILD = "REPORTING_REBUILD"
+    METADATA_ONLY = "METADATA_ONLY"
+    NOT_REUSABLE = "NOT_REUSABLE"
 
 
 def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
@@ -154,10 +164,13 @@ def _compare_stages(
             source_run_id = (
                 str(entry["source_run_id"]) if entry.get("source_run_id") is not None else None
             )
+        legacy_key = key.replace("_source_hash", "_stage_hash")
         if stored is None and run_config.get(key):
             # Informational only: legacy runs freeze stage hashes in the run
             # config, but without a v2 stage record they are not a record.
             stored = str(run_config[key])
+        elif stored is None and run_config.get(legacy_key):
+            stored = str(run_config[legacy_key])
         current = current_hashes.get(key, "")
         stages[name] = {
             "stored_hash": stored,
@@ -251,6 +264,10 @@ def audit_run_provenance(
         and all(entry["hash_match"] for entry in downstream_stages)
         and lineage_present
         and lineage_ok
+        and (simulation_mode == "FRESH" or _reconciliation_present(run_dir))
+    )
+    reporting_provenance_verified = bool(
+        downstream_provenance_verified and stages["reporting"]["hash_match"]
     )
     source_unchanged = _source_unchanged_during_run(
         stage_record, current_source_hash, _current_git_commit(base_dir)
@@ -273,6 +290,34 @@ def audit_run_provenance(
         "NOT_ELIGIBLE": "DO_NOT_REUSE",
         "UNKNOWN": "UNKNOWN",
     }[reuse_eligibility]
+
+    if not lineage_present or not all_records_present:
+        paper_audit_decision = Exp4ReuseDecision.NOT_REUSABLE
+        paper_audit_reason = "PAPER_AUDIT_FAIL_RAW_OR_LINEAGE_INCOMPLETE"
+    elif not simulation_stage["hash_match"]:
+        paper_audit_decision = Exp4ReuseDecision.SCIENTIFIC_FULL_RERUN
+        paper_audit_reason = "PAPER_AUDIT_FAIL_SIMULATION_HASH_CHANGED"
+    elif not config_hash_match:
+        paper_audit_decision = Exp4ReuseDecision.SCIENTIFIC_FULL_RERUN
+        paper_audit_reason = "PAPER_AUDIT_FAIL_CONFIG_CHANGED"
+    elif not calibration_hash_consistent:
+        paper_audit_decision = Exp4ReuseDecision.SCIENTIFIC_FULL_RERUN
+        paper_audit_reason = "PAPER_AUDIT_FAIL_CALIBRATION_CHANGED"
+    elif not raw_simulation_artifacts_complete(run_dir):
+        paper_audit_decision = Exp4ReuseDecision.NOT_REUSABLE
+        paper_audit_reason = "PAPER_AUDIT_FAIL_RAW_OR_LINEAGE_INCOMPLETE"
+    elif not stages["aggregation"]["hash_match"]:
+        paper_audit_decision = Exp4ReuseDecision.DOWNSTREAM_REBUILD
+        paper_audit_reason = "PAPER_AUDIT_FAIL_DERIVED_STALE"
+    elif not stages["validation"]["hash_match"]:
+        paper_audit_decision = Exp4ReuseDecision.DOWNSTREAM_REBUILD
+        paper_audit_reason = "PAPER_AUDIT_FAIL_VALIDATION_STALE"
+    elif not stages["reporting"]["hash_match"]:
+        paper_audit_decision = Exp4ReuseDecision.REPORTING_REBUILD
+        paper_audit_reason = "PAPER_AUDIT_FAIL_REPORTING_STALE"
+    else:
+        paper_audit_decision = Exp4ReuseDecision.METADATA_ONLY
+        paper_audit_reason = "PAPER_AUDIT_PASS_CURRENT"
 
     return {
         "audit_type": "exp4_run_provenance",
@@ -314,12 +359,16 @@ def audit_run_provenance(
         "simulation_reuse_eligible": simulation_reuse_eligible,
         "simulation_provenance_verified": simulation_provenance_verified,
         "downstream_provenance_verified": downstream_provenance_verified,
+        "reporting_provenance_verified": reporting_provenance_verified,
         "source_unchanged_during_run": source_unchanged,
         "raw_simulation_artifacts_complete": raw_simulation_artifacts_complete(run_dir),
         "reconciliation_artifact_present": _reconciliation_present(run_dir),
         "full_simulation_reuse_eligibility": reuse_eligibility,
         # Legacy compatibility field (renamed semantics):
         "full_simulation_reuse_decision": legacy_reuse_decision,
+        "paper_audit_decision": paper_audit_decision.value,
+        "paper_audit_failure_reason": paper_audit_reason,
+        "required_action": paper_audit_decision.value,
     }
 
 
@@ -332,28 +381,44 @@ def recompute_calibration_hash(source_code_hash_value: str, config_hash_value: s
 
 
 def write_provenance_reconciliation(
-    run_dir: Path, base_dir: Path, downstream_stages_rebuilt: bool = True
+    run_dir: Path,
+    base_dir: Path,
+    rebuilt_stages: tuple[str, ...] = DOWNSTREAM_STAGE_NAMES,
+    pre_rebuild_audit: dict[str, object] | None = None,
 ) -> Path:
     """Write a reconciliation artifact without overwriting original metadata."""
     run_config = _load_json(run_dir / "logs" / "run_config.json") or {}
-    audit = audit_run_provenance(run_dir, base_dir)
-    stage_hashes = dict(audit["stage_source_hashes"])
+    current_audit = audit_run_provenance(run_dir, base_dir)
+    audit = pre_rebuild_audit or current_audit
+    stage_hashes = dict(current_audit["stage_source_hashes"])
     reconciliation = {
         "original_run_id": str(run_config.get("run_id", run_dir.name)),
         "original_recorded_commit": run_config.get("code_commit"),
+        "original_simulation_commit": run_config.get("code_commit"),
         "stored_simulation_source_hash": run_config.get("source_code_hash"),
-        "verified_pre_fix_source_hash": audit["current_pre_fix_source_code_hash"],
-        "current_post_fix_commit": audit["current_git_head_commit"],
-        "post_fix_reporting_source_hash": stage_hashes.get("reporting_source_hash"),
-        "post_fix_aggregation_source_hash": stage_hashes.get("aggregation_source_hash"),
-        "post_fix_validation_source_hash": stage_hashes.get("validation_source_hash"),
+        "current_rebuild_commit": current_audit["current_git_head_commit"],
         "simulation_outputs_reused": True,
-        "downstream_stages_rebuilt": downstream_stages_rebuilt,
-        "verification_timestamp": _utc_now_iso(),
-        "file_level_hash_comparison": {
-            "simulation_source_hash": stage_hashes.get("simulation_source_hash"),
-            "config_hash_match": audit["config_hash_match"],
+        "raw_simulation_artifacts_complete": raw_simulation_artifacts_complete(
+            run_dir
+        ),
+        "raw_path_manifest_hashes": {
+            path.name: sha256_file(path)
+            for path in (
+                run_dir / "logs" / "exp4_module_a_path_manifest.csv",
+                run_dir / "logs" / "exp4_module_bc_path_manifest.csv",
+            )
+            if path.exists()
         },
+        "scientific_generation_hash_match": audit["stages"]["simulation"]["hash_match"],
+        "config_hash_match": audit["config_hash_match"],
+        "calibration_identity_match": audit["calibration_hash_consistent"],
+        "rebuilt_stages": list(rebuilt_stages),
+        "stored_stage_hashes": {
+            key: audit["stages"][name]["stored_hash"]
+            for name, key in STAGE_KEYS.items()
+        },
+        "current_stage_hashes": stage_hashes,
+        "reconciliation_timestamp": _utc_now_iso(),
     }
     path = run_dir / "logs" / "exp4_provenance_reconciliation.json"
     write_json(reconciliation, path)
@@ -367,6 +432,7 @@ def write_stage_provenance_record(
     calibration_hash: str | None = None,
     source_unchanged_during_run: bool = True,
     rebuild: bool = False,
+    rebuilt_stages: tuple[str, ...] = DOWNSTREAM_STAGE_NAMES,
 ) -> Path:
     """Write the v2 stage provenance record.
 
@@ -375,6 +441,11 @@ def write_stage_provenance_record(
     """
     stage_hashes = compute_stage_source_hashes(base_dir)
     existing = load_stage_provenance_record(run_dir)
+    if calibration_hash is None and existing is not None:
+        recorded_calibration = existing.get("calibration_hash")
+        calibration_hash = (
+            str(recorded_calibration) if recorded_calibration is not None else None
+        )
     run_config = _load_json(run_dir / "logs" / "run_config.json") or {}
     lineage = lineage or load_run_lineage(run_dir)
     if lineage is None:
@@ -404,6 +475,12 @@ def write_stage_provenance_record(
                     "execution_mode": simulation_mode,
                     "source_run_id": simulation_source_run_id,
                 }
+        elif rebuild and existing is not None and name not in rebuilt_stages:
+            previous = existing.get("stages", {}).get(name, {})
+            stages[name] = {
+                "source_hash": str(previous.get("source_hash") or ""),
+                "execution_mode": str(previous.get("execution_mode") or downstream_mode),
+            }
         else:
             stages[name] = {
                 "source_hash": stage_hashes[key],
@@ -420,6 +497,7 @@ def write_stage_provenance_record(
         "exp4_worktree_clean_at_start": worktree_clean,
         "source_unchanged_during_run": source_unchanged_during_run,
         "downstream_rebuilt_at": _utc_now_iso() if rebuild else None,
+        "downstream_rebuilt_stages": list(rebuilt_stages) if rebuild else [],
         "stages": stages,
     }
     path = run_dir / "logs" / "exp4_stage_provenance.json"
@@ -427,7 +505,11 @@ def write_stage_provenance_record(
     return path
 
 
-def record_downstream_rebuild(run_dir: Path, base_dir: Path) -> Path:
+def record_downstream_rebuild(
+    run_dir: Path,
+    base_dir: Path,
+    rebuilt_stages: tuple[str, ...] = DOWNSTREAM_STAGE_NAMES,
+) -> Path:
     """Refresh lineage + stage records after rebuilding downstream stages.
 
     The original simulation stage record is preserved; only the downstream
@@ -436,12 +518,18 @@ def record_downstream_rebuild(run_dir: Path, base_dir: Path) -> Path:
     """
     lineage = mark_downstream_rebuilt(run_dir, base_dir)
     return write_stage_provenance_record(
-        run_dir, base_dir, lineage=lineage, rebuild=True
+        run_dir,
+        base_dir,
+        lineage=lineage,
+        source_unchanged_during_run=False,
+        rebuild=True,
+        rebuilt_stages=rebuilt_stages,
     )
 
 
 __all__ = [
     "DOWNSTREAM_STAGE_NAMES",
+    "Exp4ReuseDecision",
     "STAGE_KEYS",
     "STAGE_PROVENANCE_SCHEMA",
     "audit_run_provenance",

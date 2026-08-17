@@ -124,16 +124,18 @@ def validate_paper_promotion(
         "downstream_provenance_verified": bool(
             provenance["downstream_provenance_verified"]
         ),
-        "source_unchanged_during_run": bool(provenance["source_unchanged_during_run"]),
+        "reporting_provenance_verified": bool(
+            provenance["reporting_provenance_verified"]
+        ),
         "source_hash_algorithm_version_present": bool(
             provenance["source_hash_algorithm_version_present"]
         )
         and provenance["expected_source_hash_algorithm_version"]
         == SOURCE_HASH_ALGORITHM_VERSION,
     }
-    # Mode-specific requirements: a FRESH full must have executed its own
-    # simulation from a clean, committed worktree; a REUSED run must point at a
-    # verified source run with a reconciliation artifact. Unknown modes fail.
+    # Mode-specific requirements: full-tree and commit equality are historical
+    # metadata, not reuse gates. A FRESH run proves its own simulation stage;
+    # a REUSED run additionally proves the source run and reconciliation.
     if provenance["simulation_execution_mode"] == "FRESH":
         checks.update(
             {
@@ -145,8 +147,8 @@ def validate_paper_promotion(
                     "stored_git_head_commit"
                 ]
                 == str(run_config.get("code_commit", "")),
-                "fresh_complete_source_hash_match": bool(
-                    provenance["source_hash_match"]
+                "fresh_simulation_stage_verified": bool(
+                    provenance["simulation_provenance_verified"]
                 ),
                 "fresh_config_hash_match": bool(provenance["config_hash_match"]),
                 "fresh_calibration_hash_consistent": bool(
@@ -162,6 +164,10 @@ def validate_paper_promotion(
                 ),
                 "reused_reconciliation_artifact_present": bool(
                     provenance["reconciliation_artifact_present"]
+                ),
+                "reused_current_downstream_hashes_match": all(
+                    bool(stages[name]["hash_match"])
+                    for name in ("aggregation", "reporting", "validation")
                 ),
             }
         )

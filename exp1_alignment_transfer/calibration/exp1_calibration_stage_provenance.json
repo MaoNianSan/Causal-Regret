@@ -1,0 +1,11 @@
+{
+  "bootstrap_mode": "HISTORICAL_COMMIT_RECONCILIATION",
+  "calibration_manifest_hash": "3ebb8ce93cecd9d76ef6358493113e3d186b46dc569038f73332c9cc58c495a3",
+  "calibration_source_hash": "a44bee81496d02ffe832a3712e2a1e23d5c8a6fb929c5f4d3ddfa6dd95d5b7c2",
+  "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
+  "kind": "calibration",
+  "legacy_code_lineage": "tree:094ece351cf80a8614e247dd21c08f58fb439bb31fb72dec427a80eb4fde90b1",
+  "recorded_at": "2026-08-17T09:00:37.029023+00:00",
+  "recorded_git_commit": "b3021ac6909577ec409d8b4094eecfd100c4c535",
+  "schema": "exp1_stage_provenance_v1"
+}

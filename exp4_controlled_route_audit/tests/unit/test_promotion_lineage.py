@@ -19,7 +19,11 @@ from exp4.outputs.writers import (
     write_json,
 )
 from exp4.reporting.tables import _write_table, select_main_calibration_rows
-from exp4.validation.run_provenance import write_stage_provenance_record
+from exp4.validation.run_provenance import (
+    record_downstream_rebuild,
+    write_provenance_reconciliation,
+    write_stage_provenance_record,
+)
 from promote_results import validate_paper_promotion
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -193,7 +197,7 @@ def test_promotion_accepts_valid_fresh_full_fixture(tmp_path: Path) -> None:
     assert result["provenance"]["simulation_execution_mode"] == "FRESH"
     assert result["provenance"]["full_simulation_reuse_eligibility"] == "ELIGIBLE"
     assert result["checks"]["formal_full_started_clean"] is True
-    assert result["checks"]["source_unchanged_during_run"] is True
+    assert result["provenance"]["source_unchanged_during_run"] is True
 
 
 def test_promotion_rejects_fresh_full_with_wrong_stage_hash(tmp_path: Path) -> None:
@@ -282,15 +286,82 @@ def test_promotion_rejects_missing_stage_record(tmp_path: Path) -> None:
     )
     assert result["checks"]["simulation_stage_record_present"] is False
     assert result["checks"]["reporting_stage_record_present"] is False
-    assert result["checks"]["source_unchanged_during_run"] is False
+    assert result["provenance"]["source_unchanged_during_run"] is False
     assert result["status"] == "FAIL"
 
 
-def test_promotion_rejects_source_changed_during_run(tmp_path: Path) -> None:
+def test_promotion_does_not_require_complete_source_hash_for_valid_stage_provenance(
+    tmp_path: Path,
+) -> None:
     run_dir = tmp_path / "run"
     _build_fresh_full_run(run_dir, ROOT, source_unchanged=False)
     result = validate_paper_promotion(
         run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
     )
-    assert result["checks"]["source_unchanged_during_run"] is False
+    assert result["provenance"]["source_unchanged_during_run"] is False
+    assert result["checks"]["simulation_stage_hash_match"] is True
+    assert result["status"] == "PASS"
+
+
+def test_reused_promotion_accepts_changed_complete_source_hash_after_reconciliation(
+    tmp_path: Path,
+) -> None:
+    run_dir = tmp_path / "run"
+    reused = RunLineage(
+        run_id="full_fixture",
+        run_tier="full",
+        simulation_execution_mode="REUSED",
+        simulation_source_run_id="full_source_1",
+        downstream_execution_mode="REBUILT_FROM_REUSED_SIMULATION",
+        downstream_source_run_id="full_source_1",
+        created_from_commit=git_commit(ROOT),
+        exp4_worktree_clean_at_start=True,
+    )
+    _build_fresh_full_run(run_dir, ROOT, lineage=reused)
+    write_provenance_reconciliation(run_dir, ROOT)
+    config_path = run_dir / "logs" / "run_config.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["source_code_hash"] = "f" * 64
+    write_json(config, config_path)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
+    assert result["provenance"]["source_hash_match"] is False
+    assert result["checks"]["reused_reconciliation_artifact_present"] is True
+    assert result["status"] == "PASS"
+
+
+def test_reused_promotion_rejects_stale_downstream_hash(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run"
+    reused = RunLineage(
+        run_id="full_fixture",
+        run_tier="full",
+        simulation_execution_mode="REUSED",
+        simulation_source_run_id="full_source_1",
+        downstream_execution_mode="REBUILT_FROM_REUSED_SIMULATION",
+        downstream_source_run_id="full_source_1",
+        created_from_commit=git_commit(ROOT),
+        exp4_worktree_clean_at_start=True,
+    )
+    _build_fresh_full_run(run_dir, ROOT, lineage=reused)
+    write_provenance_reconciliation(run_dir, ROOT)
+    stage_path = run_dir / "logs" / "exp4_stage_provenance.json"
+    stage = json.loads(stage_path.read_text(encoding="utf-8"))
+    stage["stages"]["reporting"]["source_hash"] = "0" * 64
+    write_json(stage, stage_path)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
+    assert result["checks"]["reused_current_downstream_hashes_match"] is False
     assert result["status"] == "FAIL"
+
+
+def test_downstream_record_does_not_modify_raw_files(tmp_path: Path) -> None:
+    run_dir = tmp_path / "run"
+    _build_fresh_full_run(run_dir, ROOT)
+    raw = run_dir / "raw" / "immutable.bin"
+    raw.parent.mkdir(parents=True)
+    raw.write_bytes(b"scientific-raw")
+    before = raw.read_bytes()
+    record_downstream_rebuild(run_dir, ROOT, ("validation",))
+    assert raw.read_bytes() == before

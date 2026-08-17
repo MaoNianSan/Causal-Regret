@@ -28,6 +28,7 @@ from src.artifact_io import (
     atomic_write_json,
     atomic_write_parquet,
     code_lineage,
+    exp1_stage_source_hashes,
     git_commit,
     hash_payload,
     utc_now,
@@ -42,6 +43,7 @@ from src.contracts import (
 )
 from src.derived import generate_all_derived
 from src.path_generator import build_shared_path_bundle
+from src.run_provenance import ensure_calibration_stage_provenance
 from src.runner import RunMetadata, run_paired_learner_consequence, run_route_map_diagnostic
 
 
@@ -74,15 +76,20 @@ def load_frozen_calibration() -> dict[str, Any]:
         raise CalibrationError(
             f"Calibration artifact hash mismatch: expected={expected_hashes}, actual={actual_hashes}"
         )
-    current_lineage = code_lineage(PROJECT_ROOT)
-    if manifest.get("code_lineage") != current_lineage:
+    calibration_stage = ensure_calibration_stage_provenance(
+        PROJECT_ROOT, manifest, allow_current_manifest=True
+    )
+    current_calibration_hash = exp1_stage_source_hashes(PROJECT_ROOT)[
+        "calibration_source_hash"
+    ]
+    if calibration_stage.get("calibration_source_hash") != current_calibration_hash:
         raise CalibrationError(
-            "Calibration was generated from a different code lineage. "
-            f"manifest={manifest.get('code_lineage')}, current={current_lineage}. "
+            "Calibration was generated from different calibration-stage source. "
             "Run calibrate.py --force only after an approved change memo."
         )
     return {
         "manifest": manifest,
+        "stage_provenance": calibration_stage,
         "structural": structural,
         "delay": delay,
         "misbinding": misbinding,
@@ -189,8 +196,17 @@ def execute(run_tier: str, force: bool = False) -> Path:
         fast_payload = json.loads(fast_validation.read_text(encoding="utf-8"))
         if fast_payload.get("engineering_status") != "PASS" or fast_payload.get("scientific_status") != "PASS":
             raise RuntimeError("Full run is blocked because fast engineering/scientific status is not PASS")
-        if fast_payload.get("code_lineage") != code_lineage(PROJECT_ROOT):
-            raise RuntimeError("Full run is blocked because fast validation used a different package-local code lineage")
+        current_stage_hashes = exp1_stage_source_hashes(PROJECT_ROOT)
+        fast_scientific_hash = fast_payload.get("scientific_generation_source_hash")
+        if fast_scientific_hash:
+            if fast_scientific_hash != current_stage_hashes["scientific_generation_source_hash"]:
+                raise RuntimeError(
+                    "Full run is blocked because fast validation used different scientific-generation source"
+                )
+        elif fast_payload.get("code_lineage") != code_lineage(PROJECT_ROOT):
+            raise RuntimeError(
+                "Full run is blocked because fast validation used a different legacy code lineage"
+            )
         if fast_payload.get("calibration_manifest_hash") != hash_payload(calibration["manifest"]):
             raise RuntimeError("Full run is blocked because fast validation used a different calibration manifest")
     selected = calibration["structural"]["selected_value"]
@@ -214,6 +230,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
 
     code_commit = git_commit(PROJECT_ROOT)
     lineage = code_lineage(PROJECT_ROOT)
+    stage_hashes = exp1_stage_source_hashes(PROJECT_ROOT)
     calibration_hash = hash_payload(calibration["manifest"])
     run_id = f"{EXPERIMENT_ID}:{run_tier}:{utc_now()}"
     metadata = RunMetadata(
@@ -248,6 +265,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "started_at": utc_now(),
             "code_commit": code_commit,
             "code_lineage": lineage,
+            **stage_hashes,
             "effective_structural_config": asdict(structural_config),
             "effective_learner_config": asdict(learner_config),
             "seeds": list(seeds),
@@ -255,6 +273,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "bootstrap_repetitions": bootstrap_repetitions,
             "config_hash": effective_hash,
             "calibration_manifest_hash": calibration_hash,
+            "calibration_source_hash": stage_hashes["calibration_source_hash"],
         },
     )
 
@@ -383,6 +402,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "calibration_manifest_hash": calibration_hash,
             "code_commit": code_commit,
             "code_lineage": lineage,
+            **stage_hashes,
         },
     )
     atomic_write_json(
@@ -394,6 +414,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "output": f"outputs/{run_tier}",
             "code_commit": code_commit,
             "code_lineage": lineage,
+            **stage_hashes,
             "completed_at": utc_now(),
         },
     )

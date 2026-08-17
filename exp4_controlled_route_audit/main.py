@@ -26,8 +26,10 @@ from exp4.reporting.run_summary import write_run_summary
 from exp4.simulation.calibration import load_proxy_route_calibration
 from exp4.validation.runner import validate_run
 from exp4.validation.run_provenance import (
+    Exp4ReuseDecision,
     audit_run_provenance,
     record_downstream_rebuild,
+    write_provenance_reconciliation,
 )
 
 
@@ -67,6 +69,56 @@ def _assert_full_worktree_ready(base_dir: Path) -> None:
         )
 
 
+def _selective_rebuild(context, rebuild: str) -> dict[str, object]:
+    """Rebuild only downstream Exp4 stages after an explicit reuse audit."""
+    audit = audit_run_provenance(context.run_dir, BASE_DIR)
+    if not audit["simulation_reuse_eligible"]:
+        raise SystemExit(
+            "EXP4_SELECTIVE_REBUILD_REFUSED\n"
+            f"reason={audit['paper_audit_failure_reason']}\n"
+            "A scientific full rerun is required only when the simulation/config/"
+            "calibration contract changed."
+        )
+    required = str(audit["required_action"])
+    if rebuild == "reporting" and required == Exp4ReuseDecision.DOWNSTREAM_REBUILD.value:
+        raise SystemExit("EXP4_SELECTIVE_REBUILD_REFUSED: aggregation or validation is stale; use downstream")
+    if rebuild == "validation" and not audit["stages"]["aggregation"]["hash_match"]:
+        raise SystemExit("EXP4_SELECTIVE_REBUILD_REFUSED: aggregation is stale; use aggregation or downstream")
+
+    rebuilt: list[str] = []
+    calibration_path = (
+        context.run_dir
+        / "derived"
+        / "calibration"
+        / "exp4_proxy_route_calibration.json"
+    )
+    if rebuild in {"aggregation", "downstream"}:
+        aggregate_existing_run(context, load_proxy_route_calibration(calibration_path))
+        rebuilt.append("aggregation")
+    if rebuild in {"reporting", "downstream"}:
+        render_existing_run(context)
+        write_run_summary(context.run_dir)
+        rebuilt.append("reporting")
+    if rebuild in {"validation", "aggregation", "reporting", "downstream"}:
+        engineering, scientific = validate_run(context.run_dir)
+        if engineering["status"] != "PASS" or scientific["status"] != "PASS":
+            raise SystemExit("EXP4_SELECTIVE_REBUILD_VALIDATION_FAILED")
+        rebuilt.append("validation")
+
+    rebuilt_stages = tuple(rebuilt)
+    record_downstream_rebuild(context.run_dir, BASE_DIR, rebuilt_stages)
+    reconciliation = write_provenance_reconciliation(
+        context.run_dir, BASE_DIR, rebuilt_stages, pre_rebuild_audit=audit
+    )
+    write_output_manifest(context.run_dir)
+    after = audit_run_provenance(context.run_dir, BASE_DIR)
+    return {
+        "run_id": context.run_id,
+        "rebuilt_stages": rebuilt,
+        "reconciliation": str(reconciliation),
+        "before": audit,
+        "after": after,
+    }
 def main() -> None:
     parser = argparse.ArgumentParser(description=EXPERIMENT_DISPLAY_NAME)
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -74,10 +126,24 @@ def main() -> None:
         command = subparsers.add_parser(tier)
         command.add_argument("--n-jobs", type=int, default=_default_jobs())
         command.add_argument("--resume-run-dir", type=Path, default=None)
-    for command_name in ("validate", "aggregate", "plot", "tables", "report", "provenance"):
+    for command_name in (
+        "validate",
+        "aggregate",
+        "plot",
+        "tables",
+        "report",
+        "provenance",
+        "reconcile",
+    ):
         command = subparsers.add_parser(command_name)
         command.add_argument("--run-dir", type=Path, required=True)
         command.add_argument("--n-jobs", type=int, default=None)
+        if command_name == "reconcile":
+            command.add_argument(
+                "--rebuild",
+                choices=("validation", "aggregation", "reporting", "downstream"),
+                required=True,
+            )
     subparsers.add_parser("status")
     arguments = parser.parse_args()
 
@@ -123,28 +189,25 @@ def main() -> None:
         return
 
     context = _existing_context(arguments.run_dir, arguments.n_jobs)
+    if arguments.command == "reconcile":
+        print(json.dumps(_selective_rebuild(context, arguments.rebuild), indent=2))
+        return
     calibration_path = (
         context.run_dir
         / "derived"
         / "calibration"
         / "exp4_proxy_route_calibration.json"
     )
-    if arguments.command == "validate":
-        engineering, scientific = validate_run(context.run_dir)
-        print(json.dumps({"engineering": engineering["status"], "scientific": scientific["status"]}, indent=2))
-        if engineering["status"] != "PASS" or scientific["status"] != "PASS":
-            raise SystemExit(1)
-    elif arguments.command == "aggregate":
-        aggregate_existing_run(context, load_proxy_route_calibration(calibration_path))
-    elif arguments.command in {"plot", "tables"}:
-        render_existing_run(context)
-    elif arguments.command == "report":
-        write_run_summary(context.run_dir)
-    # Downstream stages were (re)built for this run; refresh the stage records
-    # and lineage so downstream provenance reflects the rebuild without
-    # touching the original simulation stage record.
-    record_downstream_rebuild(context.run_dir, BASE_DIR)
-    write_output_manifest(context.run_dir)
+    del calibration_path
+    compatibility_modes = {
+        "validate": "validation",
+        "aggregate": "aggregation",
+        "plot": "reporting",
+        "tables": "reporting",
+        "report": "reporting",
+    }
+    result = _selective_rebuild(context, compatibility_modes[arguments.command])
+    print(json.dumps(result, indent=2))
 
 
 if __name__ == "__main__":

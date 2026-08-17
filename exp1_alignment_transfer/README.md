@@ -45,3 +45,25 @@ python promote.py --run full
 
 ## 9. Known Limitations
 Presentation-only rebuilds do not rerun the scientific experiment. Formal full runs remain separate from presentation-only regeneration and require the existing frozen artifacts.
+
+## 10. Selective Rebuild Without Scientific Rerun
+`reconcile.py` is the only supported reuse interface for an existing run. It
+requires explicit run lineage, stage provenance, compatible scientific and
+calibration hashes, complete raw/seed artifacts, and a prior scientific PASS.
+It never reruns the simulator or changes `raw/`, path manifests, or seed-level
+scientific artifacts.
+
+```bash
+python reconcile.py --source-run outputs/full --audit
+python reconcile.py --source-run outputs/full --rebuild validation
+python reconcile.py --source-run outputs/full --rebuild aggregation
+python reconcile.py --source-run outputs/full --rebuild reporting
+python reconcile.py --source-run outputs/full --rebuild downstream
+```
+
+`validation` rechecks existing derived outputs; `aggregation` rebuilds derived
+outputs and validation; `reporting` rebuilds figures and tables; `downstream`
+rebuilds aggregation, validation, and reporting. Each rebuild records
+`metadata/exp1_provenance_reconciliation.json`. A scientific-generation,
+configuration, or calibration mismatch refuses reuse and requires a separately
+approved full scientific run.

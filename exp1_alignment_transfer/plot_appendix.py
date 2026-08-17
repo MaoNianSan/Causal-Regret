@@ -293,14 +293,8 @@ def generate_targeted_validation(output: Path) -> tuple[Path, Path] | tuple[()]:
     return png, pdf
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("run_tier", nargs="?", choices=("fast", "full"))
-    parser.add_argument("--run", dest="run_option", choices=("fast", "full"))
-    args = parser.parse_args()
-    run_tier = args.run_option or args.run_tier
-    if run_tier is None:
-        parser.error("provide run tier positionally or with --run")
+def generate_all(run_tier: str) -> list[Path]:
+    """Render every appendix figure and its shared provenance metadata."""
     output = PROJECT_ROOT / "outputs" / run_tier
     artifacts = []
     for function in (
@@ -340,8 +334,20 @@ def main() -> None:
         output / "figures" / "metadata" / "exp1_appendix_figures_metadata.json",
         metadata,
     )
-    print("APPENDIX_FIGURES_COMPLETE")
     refresh_output_manifest(output)
+    return artifacts
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("run_tier", nargs="?", choices=("fast", "full"))
+    parser.add_argument("--run", dest="run_option", choices=("fast", "full"))
+    args = parser.parse_args()
+    run_tier = args.run_option or args.run_tier
+    if run_tier is None:
+        parser.error("provide run tier positionally or with --run")
+    artifacts = generate_all(run_tier)
+    print("APPENDIX_FIGURES_COMPLETE")
     for path in artifacts:
         print(path)
 

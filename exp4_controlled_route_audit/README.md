@@ -42,5 +42,24 @@ python main.py tables --run-dir outputs/runs/<run_id>
 python main.py report --run-dir outputs/runs/<run_id>
 ```
 
+### Selective rebuild without scientific rerun
+
+Use the explicit reconcile command for a verified source run. It audits the
+simulation-stage hash, frozen configuration, calibration identity, raw path
+manifests, run lineage, and prior scientific validity before reusing raw
+simulation outputs.
+
+```powershell
+python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild validation
+python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild aggregation
+python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild reporting
+python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild downstream
+```
+
+The command writes `logs/exp4_provenance_reconciliation.json` and preserves
+raw simulation data. A different complete source-tree hash or Git commit alone
+does not require a new simulation; only a simulation/configuration/calibration
+mismatch or incomplete raw evidence does.
+
 ## 9. Known Limitations
 The experiment is limited to controlled recoverability diagnostics and does not support claims about real-world causal identification or policy validity.

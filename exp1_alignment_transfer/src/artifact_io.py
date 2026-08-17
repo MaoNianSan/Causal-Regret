@@ -136,11 +136,77 @@ def read_frame(path: Path) -> pd.DataFrame:
     raise ArtifactError(f"Artifact not found: {path}")
 
 
-def source_tree_fingerprint(project_root: Path) -> str:
-    """Path-independent fingerprint of the scientific Python source tree.
+EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION = "exp1-stage-source-v1"
 
-    This is the authoritative code lineage for calibration/run compatibility.
-    It remains stable whether the package is standalone or nested inside a larger Git repository.
+# The stage definitions deliberately exclude orchestration and generic I/O.
+# Those files can change provenance or artifact layout without changing a raw
+# trajectory, seed-level metric, or frozen calibration value.
+EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
+    "scientific_generation_source_hash": (
+        "config.py",
+        "src/contracts.py",
+        "src/delay_mechanisms.py",
+        "src/delayed_exp3.py",
+        "src/metrics.py",
+        "src/path_generator.py",
+        "src/route_maps.py",
+        "src/runner.py",
+        "src/structural_process.py",
+    ),
+    "calibration_source_hash": (
+        "config.py",
+        "calibrate.py",
+        "src/contracts.py",
+        "src/delay_mechanisms.py",
+        "src/metrics.py",
+        "src/route_maps.py",
+        "src/structural_process.py",
+    ),
+    "aggregation_source_hash": ("src/derived.py",),
+    "validation_source_hash": ("self_check.py",),
+    "reporting_source_hash": ("plot_main.py", "plot_appendix.py", "promote.py"),
+}
+
+
+def _hash_relative_source_bytes(
+    project_root: Path, stage_name: str, relative_paths: Iterable[str]
+) -> str:
+    """Hash a declared source stage with paths independent of the checkout."""
+    digest = hashlib.sha256()
+    digest.update(EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION.encode("utf-8"))
+    digest.update(b"\0")
+    digest.update(stage_name.encode("utf-8"))
+    digest.update(b"\0")
+    for relative in sorted(relative_paths):
+        path = project_root / relative
+        if not path.exists():
+            continue
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(path.read_bytes())
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
+def exp1_stage_source_hashes(project_root: Path) -> dict[str, str]:
+    """Return authoritative stage hashes for Exp1 reuse decisions.
+
+    A hash change in aggregation, validation, or reporting is intentionally
+    not evidence that a scientific simulation has changed.
+    """
+    root = project_root.resolve()
+    return {
+        stage: _hash_relative_source_bytes(root, stage, files)
+        for stage, files in EXP1_STAGE_SOURCE_FILES.items()
+    }
+
+
+def source_tree_fingerprint(project_root: Path) -> str:
+    """Legacy package-wide fingerprint retained for historical artifacts.
+
+    New reuse and calibration decisions use :func:`exp1_stage_source_hashes`.
+    This value remains available only so older run metadata can be inspected
+    without being silently reinterpreted as a scientific-stage hash.
     """
     h = hashlib.sha256()
     candidates = [
@@ -174,7 +240,7 @@ def git_commit(project_root: Path) -> str:
 
 
 def code_lineage(project_root: Path) -> str:
-    """Return the authoritative package-local scientific-code lineage."""
+    """Return the legacy package-local lineage used by pre-stage artifacts."""
     return source_tree_fingerprint(project_root)
 
 

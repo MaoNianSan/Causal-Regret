@@ -17,6 +17,7 @@ from main import load_frozen_calibration
 from src.artifact_io import (
     atomic_write_json,
     code_lineage,
+    exp1_stage_source_hashes,
     hash_payload,
     read_frame,
     refresh_output_manifest,
@@ -885,6 +886,9 @@ def run_checks(run_tier: str) -> dict[str, Any]:
         "paper_result": False,
         "checks": checks,
         "generated_at": utc_now(),
+        "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[
+            "validation_source_hash"
+        ],
     }
     report_path = output / "checks" / "exp1_validation_report.json"
     atomic_write_json(report_path, report)
@@ -914,6 +918,7 @@ def run_checks(run_tier: str) -> dict[str, Any]:
             "report": f"outputs/{run_tier}/checks/exp1_validation_report.json",
             "code_commit": calibration["manifest"].get("code_commit"),
             "code_lineage": code_lineage(PROJECT_ROOT),
+            **exp1_stage_source_hashes(PROJECT_ROOT),
             "calibration_manifest_hash": hash_payload(calibration["manifest"]),
             "generated_at": utc_now(),
         },
