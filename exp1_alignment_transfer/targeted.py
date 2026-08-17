@@ -32,6 +32,7 @@ from src.artifact_io import (
     atomic_write_csv,
     atomic_write_json,
     code_lineage,
+    exp1_stage_source_hashes,
     git_commit,
     hash_payload,
     refresh_output_manifest,
@@ -345,6 +346,9 @@ def execute(run_tier: str, force: bool = False) -> Path:
                 "PASS" if exact_checks["passed"] and margin_checks["passed"] else "FAIL"
             ),
             "code_lineage": code_lineage(PROJECT_ROOT),
+            "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[
+                "validation_source_hash"
+            ],
             "generated_at": utc_now(),
         },
     )
@@ -357,6 +361,9 @@ def execute(run_tier: str, force: bool = False) -> Path:
             ),
             "paper_result": False,
             "code_lineage": code_lineage(PROJECT_ROOT),
+            "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[
+                "validation_source_hash"
+            ],
             "output": f"outputs/{run_tier}/targeted",
             "generated_at": utc_now(),
         },

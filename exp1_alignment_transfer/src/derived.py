@@ -9,11 +9,12 @@ from typing import Any, Iterable
 import numpy as np
 import pandas as pd
 
-from config import DISPLAY_NAMES, MECHANISM_ORDER
+from config import DISPLAY_NAMES, MECHANISM_ORDER, RUN
 from src.artifact_io import (
     atomic_write_csv,
     atomic_write_json,
     atomic_write_text,
+    read_frame,
     sha256_file,
 )
 from src.contracts import ScientificInvariantError
@@ -738,3 +739,61 @@ def build_representative_trajectory_data(route_round: pd.DataFrame) -> pd.DataFr
     subset = subset[keep]
     subset.insert(0, "figure_id", "fig_exp1_route_trajectory")
     return subset
+
+
+def rebuild_derived_from_scientific_artifacts(
+    output_root: Path, run_tier: str
+) -> dict[str, Any]:
+    """Canonical raw-to-derived reconstruction for both fresh and reused runs."""
+    if run_tier not in {"fast", "full"}:
+        raise ValueError("run_tier must be 'fast' or 'full'")
+    route_seed = read_frame(
+        output_root / "seed_metrics" / "exp1_route_seed_metrics.parquet"
+    )
+    learner_seed = read_frame(
+        output_root / "seed_metrics" / "exp1_learner_seed_metrics.parquet"
+    )
+    delay_round = read_frame(
+        output_root / "raw" / "exp1_delay_source_rounds.parquet"
+    )
+    route_path = output_root / "raw" / "exp1_route_diagnostic_rounds.parquet"
+    if route_path.exists():
+        route_round = pd.read_parquet(
+            route_path,
+            filters=[
+                ("route_id", "==", "arrival_assigned"),
+                (
+                    "mechanism_id",
+                    "in",
+                    ["exact_valid_shift", "systematic_misbinding"],
+                ),
+            ],
+        )
+    else:
+        route_round = read_frame(route_path)
+        route_round = route_round[
+            (route_round.route_id == "arrival_assigned")
+            & route_round.mechanism_id.isin(
+                ["exact_valid_shift", "systematic_misbinding"]
+            )
+        ].copy()
+    repetitions = (
+        RUN.bootstrap_repetitions_fast
+        if run_tier == "fast"
+        else RUN.bootstrap_repetitions_full
+    )
+    paths = generate_all_derived(
+        output_root,
+        route_seed=route_seed,
+        learner_seed=learner_seed,
+        delay_round=delay_round,
+        route_round=route_round,
+        repetitions=repetitions,
+        ci_level=RUN.ci_level,
+    )
+    return {
+        "route_diagnostic_rows": int(len(route_round)),
+        "bootstrap_repetitions": repetitions,
+        "ci_level": RUN.ci_level,
+        "artifacts": paths,
+    }

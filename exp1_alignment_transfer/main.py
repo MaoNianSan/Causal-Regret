@@ -2,27 +2,16 @@ from __future__ import annotations
 
 """Primary execution entry point for Experiment 1."""
 
-from dataclasses import asdict, replace
+from dataclasses import asdict
 import argparse
 import json
 from pathlib import Path
 import shutil
 from typing import Any
 
-import numpy as np
 import pandas as pd
 
-from config import (
-    DELAY,
-    EXPERIMENT_ID,
-    FAST_LEARNER,
-    FAST_STRUCTURAL,
-    LEARNER,
-    MECHANISM_ORDER,
-    RUN,
-    STRUCTURAL,
-    config_hash,
-)
+from config import EXPERIMENT_ID
 from src.artifact_io import (
     atomic_write_csv,
     atomic_write_json,
@@ -33,18 +22,17 @@ from src.artifact_io import (
     hash_payload,
     utc_now,
     ParquetStreamWriter,
-    read_frame,
     refresh_output_manifest,
 )
-from src.contracts import (
-    CalibrationError,
-    LEARNER_ROUND_COLUMNS,
-    ROUTE_ROUND_COLUMNS,
-)
-from src.derived import generate_all_derived
-from src.path_generator import build_shared_path_bundle
+from src.contracts import CalibrationError
+from src.derived import rebuild_derived_from_scientific_artifacts
 from src.run_provenance import ensure_calibration_stage_provenance
-from src.runner import RunMetadata, run_paired_learner_consequence, run_route_map_diagnostic
+from src.runner import RunMetadata
+from src.scientific_execution import (
+    iter_primary_bundles,
+    resolve_run_spec,
+    run_primary_bundle,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -120,68 +108,6 @@ def _prepare_output(output_root: Path, force: bool) -> None:
         (output_root / relative).mkdir(parents=True, exist_ok=True)
 
 
-def _path_manifest_row(bundle, metadata: RunMetadata, structural_config) -> dict[str, Any]:
-    delay = bundle.delay_path.delays
-    arrivals = bundle.delay_path.arrival_clocks
-    eval_mask = bundle.delay_path.source_rounds >= 0
-    eval_delays = delay[eval_mask]
-    eval_arrivals = arrivals[eval_mask]
-    observed = eval_arrivals < structural_config.horizon
-    terminal_unobserved = int(np.sum(~observed))
-    clocks = np.arange(structural_config.horizon)
-    all_arrivals = arrivals[(arrivals >= 0) & (arrivals < structural_config.horizon)]
-    batch_counts = np.bincount(all_arrivals.astype(int), minlength=structural_config.horizon)
-    losses = bundle.structural_path.structural_loss_matrix
-    return {
-        "run_id": metadata.run_id,
-        "run_tier": metadata.run_tier,
-        "paper_result": metadata.paper_result,
-        "analysis_tier": metadata.analysis_tier,
-        "experiment_id": EXPERIMENT_ID,
-        "configuration_id": metadata.configuration_id,
-        "seed": bundle.seed,
-        "mechanism_id": bundle.mechanism_id,
-        "structural_family_id": bundle.structural_path.structural_family_id,
-        "horizon": structural_config.horizon,
-        "prehistory_length": structural_config.prehistory_length,
-        "state_burn_in": structural_config.state_burn_in,
-        "k_actions": structural_config.k_actions,
-        "d_max": DELAY.d_max,
-        "structural_path_id": bundle.structural_path.path_id,
-        "structural_path_hash": bundle.structural_path.path_hash,
-        "delay_path_id": bundle.delay_path.delay_path_id,
-        "delay_path_hash": bundle.delay_path.delay_path_hash,
-        "learner_uniform_tape_id": bundle.learner_uniform_tape_id,
-        "learner_uniform_tape_hash": bundle.learner_uniform_tape_hash,
-        "bundle_id": bundle.bundle_id,
-        "bundle_hash": bundle.bundle_hash,
-        "generated_mean_delay": float(np.mean(eval_delays)),
-        "observed_mean_delay": float(np.mean(eval_delays[observed])) if np.any(observed) else float("nan"),
-        "right_censoring_rate": float(np.mean(~observed)),
-        "empty_arrival_clock_rate": float(np.mean(batch_counts == 0)),
-        "multiarrival_clock_rate": float(np.mean(batch_counts > 1)),
-        "max_arrival_batch_size": int(np.max(batch_counts)),
-        "structural_loss_min": float(np.min(losses)),
-        "structural_loss_max": float(np.max(losses)),
-        "loss_clipping_count": 0,
-        "learner_prehistory_policy": "cold_start_empty_queue",
-        "delay_sd": float(np.std(delay)),
-        "delay_q50": float(np.quantile(delay, 0.50)),
-        "delay_q90": float(np.quantile(delay, 0.90)),
-        "delay_q99": float(np.quantile(delay, 0.99)),
-        "terminal_unobserved_source_events": terminal_unobserved,
-        "arrival_batch_aggregation": DELAY.batch_aggregation,
-        "empty_arrival_rule": DELAY.empty_clock_rule,
-        "delay_parameter_payload": bundle.delay_path.delay_parameter_payload,
-        "structural_parameter_payload": bundle.structural_path.parameter_payload,
-        "code_commit": metadata.code_commit,
-        "config_hash": metadata.config_hash,
-        "input_manifest_hash": metadata.input_manifest_hash,
-        "calibration_manifest_hash": metadata.calibration_manifest_hash,
-        "generated_at": metadata.generated_at,
-    }
-
-
 def execute(run_tier: str, force: bool = False) -> Path:
     if run_tier not in ("fast", "full"):
         raise ValueError("run_tier must be 'fast' or 'full'")
@@ -209,22 +135,10 @@ def execute(run_tier: str, force: bool = False) -> Path:
             )
         if fast_payload.get("calibration_manifest_hash") != hash_payload(calibration["manifest"]):
             raise RuntimeError("Full run is blocked because fast validation used a different calibration manifest")
-    selected = calibration["structural"]["selected_value"]
-    base_structural = FAST_STRUCTURAL if run_tier == "fast" else STRUCTURAL
-    structural_config = replace(
-        base_structural,
-        ar_coefficient=float(selected["ar_coefficient"]),
-        innovation_sd=float(selected["innovation_sd"]),
-    )
-    learner_config = FAST_LEARNER if run_tier == "fast" else LEARNER
-    # Recompute because selected structural parameters are part of the effective config.
-    effective_hash = config_hash(structural=structural_config, learner=learner_config)
-    seeds = RUN.fast_seeds if run_tier == "fast" else RUN.evaluation_seeds
-    bootstrap_repetitions = (
-        RUN.bootstrap_repetitions_fast
-        if run_tier == "fast"
-        else RUN.bootstrap_repetitions_full
-    )
+    spec = resolve_run_spec(run_tier, calibration)
+    structural_config = spec.structural_config
+    learner_config = spec.learner_config
+    effective_hash = spec.effective_config_hash
     output_root = OUTPUTS_DIR / run_tier
     _prepare_output(output_root, force=force)
 
@@ -268,9 +182,9 @@ def execute(run_tier: str, force: bool = False) -> Path:
             **stage_hashes,
             "effective_structural_config": asdict(structural_config),
             "effective_learner_config": asdict(learner_config),
-            "seeds": list(seeds),
-            "mechanisms": list(MECHANISM_ORDER),
-            "bootstrap_repetitions": bootstrap_repetitions,
+            "seeds": list(spec.seeds),
+            "mechanisms": list(spec.mechanisms),
+            "bootstrap_repetitions": spec.bootstrap_repetitions,
             "config_hash": effective_hash,
             "calibration_manifest_hash": calibration_hash,
             "calibration_source_hash": stage_hashes["calibration_source_hash"],
@@ -285,58 +199,14 @@ def execute(run_tier: str, force: bool = False) -> Path:
     delay_writer = ParquetStreamWriter(output_root / "raw" / "exp1_delay_source_rounds.parquet")
 
     try:
-        for seed in seeds:
-            for mechanism_id in MECHANISM_ORDER:
-                bundle = build_shared_path_bundle(
-                    seed=int(seed),
-                    mechanism_id=mechanism_id,
-                    frozen_calibration=calibration,
-                    structural_config=structural_config,
-                    delay_config=DELAY,
-                )
-                path_rows.append(_path_manifest_row(bundle, metadata, structural_config))
-                delay_frame = pd.DataFrame(
-                        {
-                            "run_id": metadata.run_id,
-                            "run_tier": metadata.run_tier,
-                            "paper_result": metadata.paper_result,
-                            "analysis_tier": metadata.analysis_tier,
-                            "experiment_id": EXPERIMENT_ID,
-                            "configuration_id": metadata.configuration_id,
-                            "seed": bundle.seed,
-                            "mechanism_id": bundle.mechanism_id,
-                            "source_round": bundle.delay_path.source_rounds,
-                            "delay": bundle.delay_path.delays,
-                            "arrival_clock": bundle.delay_path.arrival_clocks,
-                            "structural_state": bundle.structural_path.structural_state,
-                            "is_evaluation_source": bundle.delay_path.source_rounds >= 0,
-                            "structural_path_hash": bundle.structural_path.path_hash,
-                            "delay_path_hash": bundle.delay_path.delay_path_hash,
-                            "code_commit": metadata.code_commit,
-                            "config_hash": metadata.config_hash,
-                            "input_manifest_hash": metadata.input_manifest_hash,
-                            "calibration_manifest_hash": metadata.calibration_manifest_hash,
-                            "generated_at": metadata.generated_at,
-                        }
-                    )
-                route_round, route_seed = run_route_map_diagnostic(bundle, metadata)
-                learner_round, learner_seed = run_paired_learner_consequence(
-                    bundle,
-                    metadata,
-                    learner_config=learner_config,
-                    context_partition=calibration["context"],
-                )
-                missing_route = [column for column in ROUTE_ROUND_COLUMNS if column not in route_round.columns]
-                missing_learner = [column for column in LEARNER_ROUND_COLUMNS if column not in learner_round.columns]
-                if missing_route or missing_learner:
-                    raise RuntimeError(
-                        f"Schema construction failed: route missing={missing_route}, learner missing={missing_learner}"
-                    )
-                route_writer.write(route_round)
-                learner_writer.write(learner_round)
-                delay_writer.write(delay_frame)
-                route_seed_frames.append(route_seed)
-                learner_seed_frames.append(learner_seed)
+        for bundle in iter_primary_bundles(spec, calibration):
+            result = run_primary_bundle(bundle, metadata, spec, calibration)
+            path_rows.append(result.path_manifest_row)
+            route_writer.write(result.route_round)
+            learner_writer.write(result.learner_round)
+            delay_writer.write(result.delay_round)
+            route_seed_frames.append(result.route_seed)
+            learner_seed_frames.append(result.learner_seed)
         route_writer.close()
         learner_writer.close()
         delay_writer.close()
@@ -361,30 +231,8 @@ def execute(run_tier: str, force: bool = False) -> Path:
     atomic_write_csv(output_root / "seed_metrics" / "exp1_route_seed_metrics.csv", route_seed)
     atomic_write_csv(output_root / "seed_metrics" / "exp1_learner_seed_metrics.csv", learner_seed)
 
-    delay_round = read_frame(output_root / "raw" / "exp1_delay_source_rounds.parquet")
-    route_path = output_root / "raw" / "exp1_route_diagnostic_rounds.parquet"
-    if route_path.exists():
-        route_round = pd.read_parquet(
-            route_path,
-            filters=[
-                ("route_id", "==", "arrival_assigned"),
-                ("mechanism_id", "in", ["exact_valid_shift", "systematic_misbinding"]),
-            ],
-        )
-    else:
-        route_round = read_frame(route_path)
-        route_round = route_round[
-            (route_round.route_id == "arrival_assigned")
-            & (route_round.mechanism_id.isin(["exact_valid_shift", "systematic_misbinding"]))
-        ].copy()
-    generate_all_derived(
-        output_root,
-        route_seed=route_seed,
-        learner_seed=learner_seed,
-        delay_round=delay_round,
-        route_round=route_round,
-        repetitions=bootstrap_repetitions,
-        ci_level=RUN.ci_level,
+    aggregation_inputs = rebuild_derived_from_scientific_artifacts(
+        output_root, run_tier
     )
 
     atomic_write_json(
@@ -396,8 +244,13 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "paper_result": False,
             "completed_at": utc_now(),
             "n_path_bundles": len(path_manifest),
-            "n_route_round_rows": int(len(route_round)),
-            "n_learner_round_rows": int(len(seeds) * len(MECHANISM_ORDER) * 2 * structural_config.horizon),
+            "n_route_round_rows": aggregation_inputs["route_diagnostic_rows"],
+            "n_learner_round_rows": int(
+                len(spec.seeds)
+                * len(spec.mechanisms)
+                * 2
+                * structural_config.horizon
+            ),
             "config_hash": effective_hash,
             "calibration_manifest_hash": calibration_hash,
             "code_commit": code_commit,

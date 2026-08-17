@@ -29,6 +29,9 @@ from src.artifact_io import (
 EXP1_STAGE_PROVENANCE_SCHEMA = "exp1_stage_provenance_v1"
 EXP1_RUN_LINEAGE_SCHEMA = "exp1_run_lineage_v1"
 EXP1_RECONCILIATION_SCHEMA = "exp1_provenance_reconciliation_v1"
+EXP1_EXECUTION_CONTRACT_MIGRATION_SCHEMA = (
+    "exp1_scientific_execution_contract_migration_v1"
+)
 STAGE_HASH_NAMES = tuple(EXP1_STAGE_SOURCE_FILES)
 RAW_ARTIFACTS = (
     "raw/exp1_path_manifest.parquet",
@@ -68,6 +71,14 @@ def stage_provenance_path(run_dir: Path) -> Path:
 
 def reconciliation_path(run_dir: Path) -> Path:
     return run_dir / "metadata" / "exp1_provenance_reconciliation.json"
+
+
+def execution_contract_migration_path(run_dir: Path) -> Path:
+    return (
+        run_dir
+        / "metadata"
+        / "exp1_scientific_execution_contract_migration.json"
+    )
 
 
 def calibration_stage_provenance_path(project_root: Path) -> Path:
@@ -441,8 +452,121 @@ def exp1_scientific_reuse_eligible(run_dir: Path, project_root: Path) -> bool:
     return bool(audit_exp1_provenance(run_dir, project_root)["scientific_reuse_eligible"])
 
 
+def migrate_scientific_execution_contract(
+    run_dir: Path,
+    project_root: Path,
+    frozen_calibration: dict[str, Any],
+) -> tuple[Path, dict[str, Any]]:
+    """Migrate a semantics-preserving execution-contract extraction after replay."""
+    state = _load_json(run_dir / "metadata" / "run_state.json") or {}
+    stage_record = _load_json(stage_provenance_path(run_dir)) or {}
+    lineage = _load_json(run_lineage_path(run_dir)) or {}
+    audit = audit_exp1_provenance(run_dir, project_root)
+    prerequisites = {
+        "full_run": state.get("run_tier") == "full",
+        "scientific_run_previously_verified": audit[
+            "scientific_run_previously_verified"
+        ],
+        "config_hash_match": audit["config_hash_match"],
+        "calibration_identity_match": audit["calibration_identity_match"],
+        "raw_scientific_artifacts_complete": audit[
+            "raw_scientific_artifacts_complete"
+        ],
+        "raw_scientific_artifacts_unchanged": audit[
+            "raw_scientific_artifacts_unchanged"
+        ],
+        "run_lineage_valid": audit["run_lineage_valid"],
+    }
+    if not all(prerequisites.values()):
+        raise RuntimeError(
+            "Execution-contract migration prerequisites failed: "
+            + json.dumps(prerequisites, sort_keys=True)
+        )
+    old_hash = str(
+        stage_record.get("stage_source_hashes", {}).get(
+            "scientific_generation_source_hash", ""
+        )
+    )
+    new_hash = str(
+        audit["stage_source_hashes"]["scientific_generation_source_hash"]
+    )
+    existing = _load_json(execution_contract_migration_path(run_dir))
+    if old_hash == new_hash:
+        if existing and existing.get("scientific_equivalence") == "PASS":
+            return execution_contract_migration_path(run_dir), existing
+        raise RuntimeError(
+            "Scientific execution hash already matches but no PASS migration artifact exists"
+        )
+
+    from src.scientific_execution_replay import (
+        DEFAULT_REPLAY_MECHANISMS,
+        DEFAULT_REPLAY_SEEDS,
+        replay_scientific_execution_contract,
+    )
+
+    raw_before = {
+        relative: sha256_file(run_dir / relative) for relative in RAW_ARTIFACTS
+    }
+    replay = replay_scientific_execution_contract(run_dir, frozen_calibration)
+    raw_after = {
+        relative: sha256_file(run_dir / relative) for relative in RAW_ARTIFACTS
+    }
+    raw_unchanged = raw_before == raw_after
+    migrated_at = utc_now()
+    migration = {
+        "schema": EXP1_EXECUTION_CONTRACT_MIGRATION_SCHEMA,
+        "run_id": state.get("run_id", run_dir.name),
+        "run_tier": state.get("run_tier"),
+        "old_scientific_generation_source_hash": old_hash,
+        "new_scientific_generation_source_hash": new_hash,
+        "reason": "SEMANTICS_PRESERVING_EXECUTION_CONTRACT_EXTRACTION",
+        "replay_seeds": list(DEFAULT_REPLAY_SEEDS),
+        "replay_mechanisms": list(DEFAULT_REPLAY_MECHANISMS),
+        "replay_comparison_results": replay["comparisons"],
+        "scientific_equivalence": replay["scientific_equivalence"],
+        "scientific_full_rerun_executed": False,
+        "raw_scientific_artifacts_unchanged": raw_unchanged,
+        "raw_artifact_hashes_before": raw_before,
+        "raw_artifact_hashes_after": raw_after,
+        "migration_prerequisites": prerequisites,
+        "migrated_at": migrated_at,
+    }
+    atomic_write_json(execution_contract_migration_path(run_dir), migration)
+    if replay["scientific_equivalence"] != "PASS" or not raw_unchanged:
+        raise RuntimeError(
+            "Scientific execution replay differed; SCIENTIFIC_FULL_RERUN_REQUIRED=TRUE"
+        )
+
+    stored_hashes = dict(stage_record.get("stage_source_hashes", {}))
+    stored_hashes["scientific_generation_source_hash"] = new_hash
+    stage_record.update(
+        {
+            "stage_source_hashes": stored_hashes,
+            "scientific_execution_contract_migration": str(
+                execution_contract_migration_path(run_dir).relative_to(run_dir)
+            ).replace("\\", "/"),
+            "scientific_execution_contract_migrated_at": migrated_at,
+        }
+    )
+    lineage.update(
+        {
+            "scientific_generation_source_hash": new_hash,
+            "scientific_execution_contract_migration": str(
+                execution_contract_migration_path(run_dir).relative_to(run_dir)
+            ).replace("\\", "/"),
+            "scientific_execution_contract_migrated_at": migrated_at,
+        }
+    )
+    atomic_write_json(stage_provenance_path(run_dir), stage_record)
+    atomic_write_json(run_lineage_path(run_dir), lineage)
+    return execution_contract_migration_path(run_dir), migration
+
+
 def record_exp1_reconciliation(
-    run_dir: Path, project_root: Path, rebuilt_stages: Iterable[str]
+    run_dir: Path,
+    project_root: Path,
+    rebuilt_stages: Iterable[str],
+    rebuilt_artifacts: dict[str, list[str]] | None = None,
 ) -> Path:
     """Write explicit downstream-rebuild lineage without altering raw artifacts."""
     rebuilt = tuple(dict.fromkeys(rebuilt_stages))
@@ -475,6 +599,7 @@ def record_exp1_reconciliation(
         "config_hash_match": audit["config_hash_match"],
         "calibration_identity_match": audit["calibration_identity_match"],
         "rebuilt_stages": list(rebuilt),
+        "rebuilt_artifacts": rebuilt_artifacts or {},
         "stored_stage_hashes": dict(audit["stored_stage_hashes"]),
         "current_stage_hashes": current,
         "reconciliation_timestamp": utc_now(),
@@ -506,6 +631,7 @@ def record_exp1_reconciliation(
 
 __all__ = [
     "EXP1_RECONCILIATION_SCHEMA",
+    "EXP1_EXECUTION_CONTRACT_MIGRATION_SCHEMA",
     "EXP1_RUN_LINEAGE_SCHEMA",
     "EXP1_STAGE_PROVENANCE_SCHEMA",
     "Exp1ReuseDecision",
@@ -513,8 +639,10 @@ __all__ = [
     "audit_exp1_provenance",
     "bootstrap_existing_full_provenance",
     "ensure_calibration_stage_provenance",
+    "execution_contract_migration_path",
     "exp1_scientific_reuse_eligible",
     "historical_stage_source_hashes",
+    "migrate_scientific_execution_contract",
     "raw_scientific_artifacts_complete",
     "record_exp1_reconciliation",
 ]

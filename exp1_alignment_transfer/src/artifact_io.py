@@ -151,6 +151,7 @@ EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
         "src/path_generator.py",
         "src/route_maps.py",
         "src/runner.py",
+        "src/scientific_execution.py",
         "src/structural_process.py",
     ),
     "calibration_source_hash": (
@@ -163,7 +164,12 @@ EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
         "src/structural_process.py",
     ),
     "aggregation_source_hash": ("src/derived.py",),
-    "validation_source_hash": ("self_check.py",),
+    "validation_source_hash": (
+        "self_check.py",
+        "targeted.py",
+        "src/theory_sweeps.py",
+        "src/scientific_execution_replay.py",
+    ),
     "reporting_source_hash": ("plot_main.py", "plot_appendix.py", "promote.py"),
 }
 
