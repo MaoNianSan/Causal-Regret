@@ -43,7 +43,10 @@ MAIN_CONTRACT = {
     "mechanisms": MECHANISMS,
     "panel_a": ["alignment_budget_rate", "generated_mean_delay"],
     "panel_b": ["structural_regret_rate", "transfer_bound_rate"],
+    "panel_b_intervals": ["structural_regret_rate", "transfer_bound_rate"],
     "panel_c": ["arrival_clock", "source_round", "paired_contrast"],
+    "panel_c_intervals": ["arrival_clock", "source_round"],
+    "panel_c_no_interval": ["paired_contrast"],
     "main_exclusions": ["ranking_reversal_rate"],
 }
 
@@ -184,6 +187,125 @@ def _appendix_composite(
     )
 
 
+TARGETED_BINDING_LABELS = {
+    "arrival_clock": "Arrival-clock binding",
+    "source_round": "Source-round binding",
+}
+
+
+def _targeted_validation_figure(
+    source: PresentationSource,
+    layout: PreviewLayout,
+    *,
+    figure_id: str,
+    path: Path,
+) -> None:
+    """Render the frozen targeted-validation source as (a) mean-delay
+    robustness and (b) systematic-misbinding horizon scaling with the frozen
+    95% seed-bootstrap intervals.  No targeted validation is recomputed."""
+    frame = pd.read_csv(path)
+    fig, axes = plt.subplots(1, 2, figsize=(7.1, 3.0), constrained_layout=True)
+    long_rows: list[dict[str, Any]] = []
+    specs = [
+        (
+            0,
+            "mean_delay_robustness",
+            "target_mean_delay",
+            "structural_regret_rate",
+            "Target mean delay",
+            r"Structural regret rate, $R_T^c/T$",
+            "(a) Mean-delay robustness",
+        ),
+        (
+            1,
+            "horizon_scaling",
+            "target_horizon",
+            "structural_regret",
+            r"Horizon $T$",
+            r"Cumulative structural regret, $R_T^c$",
+            "(b) Systematic-misbinding horizon scaling",
+        ),
+    ]
+    for panel_index, component, x_column, metric_id, xlabel, ylabel, title in specs:
+        axis = axes[panel_index]
+        panel = frame[frame.targeted_component.eq(component)]
+        for binding, color in (("arrival_clock", "#b54708"), ("source_round", "#2e7d32")):
+            group = panel[
+                panel.feedback_binding_id.eq(binding) & panel.metric_id.eq(metric_id)
+            ].sort_values(x_column)
+            axis.errorbar(
+                group[x_column],
+                group.estimate,
+                yerr=[group.estimate - group.ci_lower, group.ci_upper - group.estimate],
+                fmt="o-",
+                capsize=2.5,
+                color=color,
+                ecolor=color,
+                linewidth=0.9,
+                markersize=3.4,
+                label=TARGETED_BINDING_LABELS[binding],
+            )
+            for source_index, row in group.iterrows():
+                long_rows.append(
+                    {
+                        "panel_id": chr(ord("a") + panel_index),
+                        "metric_id": metric_id,
+                        "estimand_id": metric_id,
+                        "condition_id": f"{component}:{binding}",
+                        "series_id": f"{binding}_{x_column}",
+                        "point_estimate": row.estimate,
+                        "interval_lower": row.ci_lower,
+                        "interval_upper": row.ci_upper,
+                        "uncertainty_role": "95% seed-bootstrap interval",
+                        "uncertainty_method": "seed_bootstrap",
+                        "repetition_count": row.get("bootstrap_repetitions", pd.NA),
+                        "sample_count": row.get("n_seeds", pd.NA),
+                        "unit": "rate" if metric_id == "structural_regret_rate" else "regret",
+                        "better_direction": "lower",
+                        "source_table": path.name,
+                        "source_row_key": str(source_index),
+                    }
+                )
+        axis.set_xlabel(xlabel)
+        axis.set_ylabel(ylabel)
+        axis.set_title(title, loc="left", fontweight="bold")
+        axis.grid(alpha=0.2)
+        axis.legend(frameon=False, fontsize=6.5)
+    assert_no_suptitle(fig)
+    long_frame = standardize_long_form(
+        pd.DataFrame(long_rows),
+        figure_id=figure_id,
+        experiment_id=source.experiment_id,
+        run_id=source.run_id,
+        run_tier=source.run_tier,
+        paper_result=False,
+        analysis_tier="appendix",
+    )
+    write_figure_bundle(
+        fig,
+        long_frame,
+        layout,
+        figure_id=figure_id,
+        section="appendix",
+        metadata=_metadata(
+            source,
+            claim="Mean-delay robustness and systematic-misbinding horizon scaling from the frozen targeted validation.",
+            panels={
+                "a": "Structural regret rate across target mean delays.",
+                "b": "Cumulative structural regret across horizons.",
+            },
+            metrics={
+                "structural_regret_rate": "R_T^c/T",
+                "structural_regret": "R_T^c",
+            },
+            boundary="Appendix diagnostic from the frozen targeted-validation source; no targeted recomputation.",
+            contract={"layout": [1, 2], "sources": [path.name]},
+            uncertainty="95% seed-bootstrap interval",
+        ),
+        source_files=[path],
+    )
+
+
 def render_presentation(
     source: PresentationSource, preview_root: Path
 ) -> dict[str, Any]:
@@ -264,6 +386,18 @@ def render_presentation(
         axes[1].plot(
             [structural.estimate, bound.estimate], [yi, yi], color="0.4", linewidth=0.8
         )
+        axes[1].errorbar(
+            structural.estimate,
+            yi,
+            xerr=[
+                [structural.estimate - structural.ci_lower],
+                [structural.ci_upper - structural.estimate],
+            ],
+            fmt="none",
+            ecolor="#182b49",
+            elinewidth=0.8,
+            capsize=2.0,
+        )
         axes[1].plot(
             structural.estimate,
             yi,
@@ -271,6 +405,15 @@ def render_presentation(
             color="#182b49",
             markersize=4.2,
             label=r"$R_T^c/T$" if yi == y[0] else None,
+        )
+        axes[1].errorbar(
+            bound.estimate,
+            yi,
+            xerr=[[bound.estimate - bound.ci_lower], [bound.ci_upper - bound.estimate]],
+            fmt="none",
+            ecolor="#b8860b",
+            elinewidth=0.8,
+            capsize=2.0,
         )
         axes[1].plot(
             bound.estimate,
@@ -304,6 +447,18 @@ def render_presentation(
         axes[2].plot(
             [source_row.estimate, arrival.estimate], [yi, yi], color="0.45", linewidth=0.8
         )
+        axes[2].errorbar(
+            arrival.estimate,
+            yi,
+            xerr=[
+                [arrival.estimate - arrival.ci_lower],
+                [arrival.ci_upper - arrival.estimate],
+            ],
+            fmt="none",
+            ecolor="#b54708",
+            elinewidth=0.7,
+            capsize=1.5,
+        )
         axes[2].plot(
             arrival.estimate,
             yi,
@@ -311,6 +466,18 @@ def render_presentation(
             color="#b54708",
             markersize=4.2,
             label="Arrival-clock" if yi == y[0] else None,
+        )
+        axes[2].errorbar(
+            source_row.estimate,
+            yi,
+            xerr=[
+                [source_row.estimate - source_row.ci_lower],
+                [source_row.ci_upper - source_row.estimate],
+            ],
+            fmt="none",
+            ecolor="#2e7d32",
+            elinewidth=0.7,
+            capsize=1.5,
         )
         axes[2].plot(
             source_row.estimate,
@@ -364,6 +531,7 @@ def render_presentation(
                 "filled_circle": "structural or arrival-clock estimate",
                 "open_square": "transfer bound or source-round estimate",
                 "horizontal_line": "within-mechanism contrast",
+                "horizontal_interval": "95% seed-bootstrap interval from frozen ci_lower/ci_upper fields",
             },
         ),
         source_files=[data_path],
@@ -386,16 +554,20 @@ def render_presentation(
                 source.source_run / "figures/data/fig_exp1_route_trajectory_data.csv",
             ],
         ),
-        (
-            "exp1_appendix_targeted_validation",
-            "Targeted mean-delay and horizon validation",
-            [data_path, table_path],
-        ),
     ]
     for figure_id, title, paths in appendix_groups:
         _appendix_composite(
             source, layout, figure_id=figure_id, title=title, paths=paths
         )
+    targeted_path = (
+        source.source_run / "targeted" / "fig_exp1_targeted_validation_data.csv"
+    )
+    _targeted_validation_figure(
+        source,
+        layout,
+        figure_id="exp1_appendix_targeted_validation",
+        path=targeted_path,
+    )
 
     table = pd.read_csv(table_path)
     protocol_columns = ["mechanism_id", "mechanism", "mean_delay"]
@@ -412,10 +584,12 @@ def render_presentation(
         "tab_exp1_mechanism_summary",
         semantics="Complete mechanism table including conflict-rate values removed from main Panel (a).",
     )
-    appendix_ids = [item[0] for item in appendix_groups]
+    appendix_ids = [item[0] for item in appendix_groups] + [
+        "exp1_appendix_targeted_validation"
+    ]
     write_manifest(layout, source, figure_ids=[source.main_figure_id])
     write_manifest(layout, source, appendix=True, figure_ids=appendix_ids)
     return {"layout": layout, "main": main, "appendix_ids": appendix_ids}
 
 
-__all__ = ["MAIN_CONTRACT", "build_main_long_form", "render_presentation"]
+__all__ = ["MAIN_CONTRACT", "build_main_long_form", "render_presentation", "_targeted_validation_figure"]

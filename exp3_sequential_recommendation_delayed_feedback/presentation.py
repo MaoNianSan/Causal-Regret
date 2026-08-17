@@ -264,6 +264,7 @@ def render_presentation(
     )
 
     table_dir = source.source_run / "tables"
+    figure_dir = source.source_run / "figures" / "data"
     appendix_groups = [
         (
             "exp3_appendix_support_and_dependence",
@@ -273,12 +274,18 @@ def render_presentation(
         (
             "exp3_appendix_carrier_and_gap_diagnostics",
             "Carrier and gap diagnostics",
-            [table_dir / "exp3_primary_route_results.csv", table_dir / "exp3_resampling_structure_diagnostics.csv"],
+            [
+                figure_dir / "exp3_appendix_arrival_carrier_diagnostic_data.csv",
+                figure_dir / "exp3_appendix_gap_error_distribution_data.csv",
+            ],
         ),
         (
             "exp3_appendix_calibration_and_selection",
             "Calibration and selection",
-            [table_dir / "exp3_decile_calibration.csv", table_dir / "exp3_paired_ranking_contrast.csv"],
+            [
+                table_dir / "exp3_decile_calibration.csv",
+                figure_dir / "exp3_appendix_route_selection_concentration_data.csv",
+            ],
         ),
     ]
     for figure_id, title, paths in appendix_groups:

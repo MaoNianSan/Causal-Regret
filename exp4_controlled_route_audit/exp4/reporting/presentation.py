@@ -29,6 +29,12 @@ AUDIT_DESIGNS = [
     ("ambiguity_selective_unweighted", "#b54708", "s"),
     ("ambiguity_selective_ipw", "#2e7d32", "^"),
 ]
+SIGMA_PROXY_MARKERS = {
+    0.0: "o",
+    0.1: "s",
+    0.25: "^",
+    1.0: "D",
+}
 CALIBRATION_CONTROLS = ["affine_linked", "blocked_correspondence_destroyed"]
 MAIN_CONTRACT = {
     "layout": [2, 2],
@@ -38,6 +44,7 @@ MAIN_CONTRACT = {
         "mean_pairwise_gap_discrepancy_ci_lower",
         "mean_pairwise_gap_discrepancy_ci_upper",
     ],
+    "panel_a_marker_registry": {str(sigma): marker for sigma, marker in SIGMA_PROXY_MARKERS.items()},
     "panel_a_exclusions": [
         "population_action_gap_defect_mean",
         "mean_round_max_gap_defect_mean",
@@ -318,6 +325,7 @@ def render_presentation(
         group = group.sort_values("route_label_rate")
         uncertain = group[group.route_label_rate.lt(1)]
         color = plt.cm.viridis(float(sigma) / max(float(boundary.attribution_proxy_noise_sd.max()), 1.0))
+        marker = SIGMA_PROXY_MARKERS.get(float(sigma), "o")
         axes[0, 0].errorbar(
             uncertain.route_label_rate,
             uncertain.mean_pairwise_gap_discrepancy_mean,
@@ -326,7 +334,9 @@ def render_presentation(
                 uncertain.mean_pairwise_gap_discrepancy_ci_upper - uncertain.mean_pairwise_gap_discrepancy_mean,
             ],
             color=color,
-            marker="o",
+            marker=marker,
+            markerfacecolor=color,
+            markeredgecolor=color,
             linewidth=0.9,
             capsize=2,
             label=rf"$\sigma={sigma:g}$",
@@ -336,10 +346,11 @@ def render_presentation(
             axes[0, 0].plot(
                 1,
                 endpoint.mean_pairwise_gap_discrepancy_mean.iloc[0],
-                marker="D",
+                marker=marker,
                 markerfacecolor="white",
                 markeredgecolor=color,
                 color=color,
+                linestyle="none",
             )
     axes[0, 0].set_xlabel(r"Route-label retention, $q_{route}$")
     axes[0, 0].set_ylabel(r"Mean pairwise gap discrepancy, $D_{pair}$")
@@ -436,6 +447,8 @@ def render_presentation(
                 "filled_markers": "full-sample audit estimates or raw discrepancy",
                 "open_square": "out-of-fold calibrated discrepancy",
                 "shape": "audit design and calibration role",
+                "sigma_proxy_marker_registry": {str(sigma): marker for sigma, marker in SIGMA_PROXY_MARKERS.items()},
+                "sigma_proxy_q1_endpoint": "open version of the sigma marker",
             },
         ),
         source_files=[module_a, performance, controls_path],
@@ -493,4 +506,4 @@ def render_presentation(
     return {"layout": layout, "main": main, "appendix_ids": appendix_ids}
 
 
-__all__ = ["MAIN_CONTRACT", "build_main_long_form", "render_presentation"]
+__all__ = ["MAIN_CONTRACT", "SIGMA_PROXY_MARKERS", "build_main_long_form", "render_presentation"]

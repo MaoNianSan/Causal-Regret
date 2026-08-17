@@ -223,8 +223,10 @@ def render_presentation(
         median = subset[f"{metric}_resampling_q500"].to_numpy(float)
         low = subset[f"{metric}_resampling_q025"].to_numpy(float)
         high = subset[f"{metric}_resampling_q975"].to_numpy(float)
+        cap = 0.10
         axis.hlines(y, low, high, color="#1f4e79", linewidth=0.8)
-        axis.vlines([low, high], y - 0.10, y + 0.10, color="#1f4e79", linewidth=0.7)
+        axis.vlines(low, y - cap, y + cap, color="#1f4e79", linewidth=0.7)
+        axis.vlines(high, y - cap, y + cap, color="#1f4e79", linewidth=0.7)
         axis.plot(point, y, "o", color="#1f4e79", markersize=4)
         axis.plot(
             median,

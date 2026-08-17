@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
+import math
+import re
 import subprocess
 import sys
 
@@ -19,6 +21,7 @@ from presentation.common import (
 from presentation.renderers import (
     figure_metadata,
     load_renderer_module,
+    render_source,
     write_appendix_order,
     write_manifest,
 )
@@ -79,8 +82,42 @@ def test_source_registry_resolves_every_frozen_render_input() -> None:
     assert get_source("3").run_id == "exp3-full-20260807T072340Z"
     exp4 = get_source("4")
     assert exp4.result_schema == "exp4_controlled_route_audit_v3"
+    assert exp4.config_hash == "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7"
     assert exp4.scientific_source_paper_result is False
     assert all(not source.missing_files() for source in map(get_source, ("1", "2", "3", "4")))
+
+
+def _svg_vertical_segment_count(svg_path: Path) -> int:
+    svg = svg_path.read_text(encoding="utf-8")
+    count = 0
+    for path_data in re.findall(r'<path d="([^"]+)"', svg):
+        points = [
+            (float(x), float(y))
+            for x, y in re.findall(
+                r"[ML]\s*([0-9.eE+-]+)\s*,?\s*([0-9.eE+-]+)", path_data
+            )
+        ]
+        for (x1, y1), (x2, y2) in zip(points, points[1:]):
+            if abs(x1 - x2) < 1e-9 and abs(y1 - y2) > 1e-9:
+                count += 1
+    return count
+
+
+def _figure_bundle_paths(layout: PreviewLayout, figure_id: str, section: str) -> dict[str, Path]:
+    prefix = layout.base / "figures" / section
+    return {
+        "pdf": prefix / "pdf" / f"{figure_id}.pdf",
+        "svg": prefix / "svg" / f"{figure_id}.svg",
+        "png": prefix / "png" / f"{figure_id}.png",
+        "data": prefix / "data" / f"{figure_id}.csv",
+        "metadata": prefix / "metadata" / f"{figure_id}.json",
+    }
+
+
+def _assert_bundle_exists(figure_id: str, section: str, layout: PreviewLayout) -> dict[str, Path]:
+    files = _figure_bundle_paths(layout, figure_id, section)
+    assert all(path.exists() and path.stat().st_size > 0 for path in files.values())
+    return files
 
 
 def test_windows_run_id_is_sanitized() -> None:
@@ -129,11 +166,20 @@ def test_main_contract_shapes_and_exclusions() -> None:
         "mean_pairwise_gap_discrepancy_ci_lower",
         "mean_pairwise_gap_discrepancy_ci_upper",
     ]
+    assert EXP4_CONTRACT["panel_a_marker_registry"] == {
+        "0.0": "o",
+        "0.1": "s",
+        "0.25": "^",
+        "1.0": "D",
+    }
     assert EXP4_CONTRACT["panel_d_controls"] == [
         "affine_linked",
         "blocked_correspondence_destroyed",
     ]
     assert EXP4_CONTRACT["main_exclusions"] == ["effective_support"]
+    assert EXP1_CONTRACT["panel_b_intervals"] == ["structural_regret_rate", "transfer_bound_rate"]
+    assert EXP1_CONTRACT["panel_c_intervals"] == ["arrival_clock", "source_round"]
+    assert EXP1_CONTRACT["panel_c_no_interval"] == ["paired_contrast"]
 
 
 def test_exp1_long_form_reconstructs_named_source_rows() -> None:
@@ -342,3 +388,162 @@ def test_appendix_order_preserves_figure_ids_and_artifact_hashes(tmp_path: Path)
         "C.5",
         "C.6",
     ]
+
+
+def test_real_render_exp1_panel_b_intervals_and_targeted_source(tmp_path: Path) -> None:
+    source = get_source("1")
+    result = render_source(source, tmp_path)
+    layout = result["layout"]
+    expected_appendix = [
+        "exp1_appendix_delay_coupling_diagnostics",
+        "exp1_appendix_reversal_trajectory_diagnostics",
+        "exp1_appendix_targeted_validation",
+    ]
+    assert result["appendix_ids"] == expected_appendix
+    main_files = _assert_bundle_exists(source.main_figure_id, "main", layout)
+    for figure_id in expected_appendix:
+        _assert_bundle_exists(figure_id, "appendix", layout)
+    report = validate_preview(source, tmp_path)
+    assert report["passed"] is True
+
+    main_metadata = json.loads(main_files["metadata"].read_text(encoding="utf-8"))
+    assert main_metadata["presentation_contract"]["panel_b_intervals"] == [
+        "structural_regret_rate",
+        "transfer_bound_rate",
+    ]
+    assert main_metadata["presentation_contract"]["panel_c_intervals"] == [
+        "arrival_clock",
+        "source_round",
+    ]
+    assert "horizontal_interval" in main_metadata["marker_semantics"]
+    long = pd.read_csv(main_files["data"])
+    panel_b = long[long.panel_id.eq("b")]
+    assert {"structural_regret_rate", "transfer_bound_rate"} <= set(panel_b.metric_id)
+    panel_c = long[long.panel_id.eq("c")]
+    assert {"arrival_clock", "source_round", "paired_contrast"} <= set(panel_c.series_id)
+    frozen_main = pd.read_csv(
+        source.source_run / "figures/data/fig_exp1_alignment_transfer_data.csv"
+    )
+    for row in panel_b.itertuples(index=False):
+        original = frozen_main.loc[int(row.source_row_key)]
+        assert math.isclose(row.point_estimate, original.estimate, rel_tol=1e-12)
+        assert math.isclose(row.interval_lower, original.ci_lower, rel_tol=1e-12)
+        assert math.isclose(row.interval_upper, original.ci_upper, rel_tol=1e-12)
+    assert _svg_vertical_segment_count(main_files["svg"]) >= 20
+
+    targeted_files = _figure_bundle_paths(
+        layout, "exp1_appendix_targeted_validation", "appendix"
+    )
+    targeted_metadata = json.loads(
+        targeted_files["metadata"].read_text(encoding="utf-8")
+    )
+    source_names = [Path(name).name for name in targeted_metadata["source_file_hashes"]]
+    assert source_names == ["fig_exp1_targeted_validation_data.csv"]
+    targeted = pd.read_csv(targeted_files["data"])
+    assert targeted.source_table.eq("fig_exp1_targeted_validation_data.csv").all()
+    assert {"structural_regret_rate", "structural_regret"} <= set(targeted.metric_id)
+    assert targeted.interval_lower.notna().all()
+    assert targeted.interval_upper.notna().all()
+    assert set(targeted.panel_id) == {"a", "b"}
+
+
+def test_real_render_exp2_caps_and_2x2(tmp_path: Path) -> None:
+    source = get_source("2")
+    result = render_source(source, tmp_path)
+    layout = result["layout"]
+    assert result["appendix_ids"] == [
+        "exp2_appendix_ambiguity_heatmap",
+        "exp2_appendix_delay_distribution",
+        "exp2_appendix_pairwise_topk",
+    ]
+    main_files = _assert_bundle_exists(source.main_figure_id, "main", layout)
+    for figure_id in result["appendix_ids"]:
+        _assert_bundle_exists(figure_id, "appendix", layout)
+    report = validate_preview(source, tmp_path)
+    assert report["passed"] is True
+    svg = main_files["svg"].read_text(encoding="utf-8")
+    assert len(re.findall(r'<g id="axes_', svg)) == 4
+    assert _svg_vertical_segment_count(main_files["svg"]) >= 10
+    long = pd.read_csv(main_files["data"])
+    frozen = pd.read_csv(
+        source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv"
+    )
+    for row in long.itertuples(index=False):
+        original = frozen.loc[int(row.source_row_key)]
+        assert math.isclose(row.point_estimate, original[row.metric_id], rel_tol=1e-12)
+        assert math.isclose(
+            row.resampling_median,
+            original[f"{row.metric_id}_resampling_q500"],
+            rel_tol=1e-12,
+        )
+        assert math.isclose(
+            row.interval_lower,
+            original[f"{row.metric_id}_resampling_q025"],
+            rel_tol=1e-12,
+        )
+        assert math.isclose(
+            row.interval_upper,
+            original[f"{row.metric_id}_resampling_q975"],
+            rel_tol=1e-12,
+        )
+
+
+def test_real_render_exp3_appendix_source_names(tmp_path: Path) -> None:
+    source = get_source("3")
+    result = render_source(source, tmp_path)
+    layout = result["layout"]
+    expected_sources = {
+        "exp3_appendix_support_and_dependence": [
+            "exp3_full_design_support_preflight.csv",
+            "exp3_data_dependence_structure.csv",
+        ],
+        "exp3_appendix_carrier_and_gap_diagnostics": [
+            "exp3_appendix_arrival_carrier_diagnostic_data.csv",
+            "exp3_appendix_gap_error_distribution_data.csv",
+        ],
+        "exp3_appendix_calibration_and_selection": [
+            "exp3_decile_calibration.csv",
+            "exp3_appendix_route_selection_concentration_data.csv",
+        ],
+    }
+    assert result["appendix_ids"] == list(expected_sources)
+    _assert_bundle_exists(source.main_figure_id, "main", layout)
+    for figure_id, expected in expected_sources.items():
+        files = _assert_bundle_exists(figure_id, "appendix", layout)
+        metadata = json.loads(files["metadata"].read_text(encoding="utf-8"))
+        assert metadata["presentation_contract"]["sources"] == expected
+    report = validate_preview(source, tmp_path)
+    assert report["passed"] is True
+
+
+def test_real_render_exp4_dpair_and_marker_registry(tmp_path: Path) -> None:
+    source = get_source("4")
+    result = render_source(source, tmp_path)
+    layout = result["layout"]
+    assert result["appendix_ids"] == [
+        "exp4_appendix_route_alignment_detail",
+        "exp4_appendix_audit_support",
+        "exp4_appendix_calibration_diagnostics",
+    ]
+    main_files = _assert_bundle_exists(source.main_figure_id, "main", layout)
+    for figure_id in result["appendix_ids"]:
+        _assert_bundle_exists(figure_id, "appendix", layout)
+    report = validate_preview(source, tmp_path)
+    assert report["passed"] is True
+    main_metadata = json.loads(main_files["metadata"].read_text(encoding="utf-8"))
+    contract = main_metadata["presentation_contract"]
+    assert contract["panel_a_source_fields"][0] == "mean_pairwise_gap_discrepancy_mean"
+    registry = contract["panel_a_marker_registry"]
+    assert set(registry) == {"0.0", "0.1", "0.25", "1.0"}
+    assert len(set(registry.values())) > 1
+    assert contract["main_exclusions"] == ["effective_support"]
+    long = pd.read_csv(main_files["data"])
+    panel_a = long[long.panel_id.eq("a")]
+    assert set(panel_a.metric_id) == {"mean_pairwise_gap_discrepancy_mean"}
+    assert not any("effective_support" in str(value) for value in long.metric_id)
+    assert not any(
+        "population_action_gap_defect" in str(value) for value in panel_a.metric_id
+    )
+    marker_semantics = main_metadata["marker_semantics"]
+    assert len(set(marker_semantics["sigma_proxy_marker_registry"].values())) > 1
+    assert marker_semantics["sigma_proxy_q1_endpoint"] == "open version of the sigma marker"
