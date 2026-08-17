@@ -17,7 +17,10 @@ def aggregate_control_summary(replication_level: pd.DataFrame) -> pd.DataFrame:
         )
         .agg(
             raw_pairwise_discrepancy=("raw_pairwise_discrepancy", "mean"),
-            oof_calibrated_pairwise_discrepancy=("oof_calibrated_pairwise_discrepancy", "mean"),
+            oof_calibrated_pairwise_discrepancy=(
+                "oof_calibrated_pairwise_discrepancy",
+                "mean",
+            ),
             recoverability=("recoverability", "mean"),
             negative_recoverability_rate=("negative_recoverability_indicator", "mean"),
             estimability_rate=("estimable", "mean"),
@@ -49,11 +52,21 @@ def aggregate_parameter_recovery(parameter_level: pd.DataFrame) -> pd.DataFrame:
                 "control_id": control_id,
                 "parameter": parameter,
                 "true_value": true_value,
-                "mean_estimate": float(np.mean(estimates)) if len(estimates) else np.nan,
-                "bias": float(np.mean(estimates) - true_value) if len(estimates) and np.isfinite(true_value) else np.nan,
+                "mean_estimate": (
+                    float(np.mean(estimates)) if len(estimates) else np.nan
+                ),
+                "bias": (
+                    float(np.mean(estimates) - true_value)
+                    if len(estimates) and np.isfinite(true_value)
+                    else np.nan
+                ),
                 "sd": float(np.std(estimates, ddof=1)) if len(estimates) > 1 else 0.0,
                 "mcse": mean_mcse(estimates),
-                "pair_sd": float(finite.groupby(["action_pair_low", "action_pair_high"])["estimate"].mean().std()),
+                "pair_sd": float(
+                    finite.groupby(["action_pair_low", "action_pair_high"])["estimate"]
+                    .mean()
+                    .std()
+                ),
                 "fold_sd": float(finite.groupby("fold_id")["estimate"].mean().std()),
                 "estimability_rate": float(np.mean(group["estimable"].astype(bool))),
             }
@@ -62,9 +75,13 @@ def aggregate_parameter_recovery(parameter_level: pd.DataFrame) -> pd.DataFrame:
 
 
 def _parameter_long(parameter_level: pd.DataFrame) -> pd.DataFrame:
-    intercept = parameter_level.rename(columns={"intercept": "estimate", "true_intercept": "true_value"}).copy()
+    intercept = parameter_level.rename(
+        columns={"intercept": "estimate", "true_intercept": "true_value"}
+    ).copy()
     intercept["parameter"] = "intercept"
-    slope = parameter_level.rename(columns={"slope": "estimate", "true_slope": "true_value"}).copy()
+    slope = parameter_level.rename(
+        columns={"slope": "estimate", "true_slope": "true_value"}
+    ).copy()
     slope["parameter"] = "slope"
     return pd.concat([intercept, slope], ignore_index=True, sort=False)
 
@@ -77,9 +94,18 @@ def aggregate_correspondence_checks(correspondence_level: pd.DataFrame) -> pd.Da
             post_mean_abs_pearson=("post_mean_abs_pearson", "mean"),
             pre_mean_abs_spearman=("pre_mean_abs_spearman", "mean"),
             post_mean_abs_spearman=("post_mean_abs_spearman", "mean"),
-            mean_difference_in_pair_marginal_mean=("mean_difference_in_pair_marginal_mean", "mean"),
-            mean_difference_in_pair_marginal_sd=("mean_difference_in_pair_marginal_sd", "mean"),
-            permutation_hash_count=("permutation_hash", lambda values: values.dropna().nunique()),
+            mean_difference_in_pair_marginal_mean=(
+                "mean_difference_in_pair_marginal_mean",
+                "mean",
+            ),
+            mean_difference_in_pair_marginal_sd=(
+                "mean_difference_in_pair_marginal_sd",
+                "mean",
+            ),
+            permutation_hash_count=(
+                "permutation_hash",
+                lambda values: values.dropna().nunique(),
+            ),
         )
         .reset_index()
     )

@@ -40,9 +40,13 @@ def _toy_maps() -> tuple[np.ndarray, np.ndarray]:
 def test_ternary_sign_semantics() -> None:
     values = np.array([0.5, 1e-14, 0.0, -1e-14, -0.5])
     assert np.array_equal(ternary_sign(values), np.array([1, 0, 0, 0, -1]))
-    assert np.array_equal(ternary_sign(values, tolerance=1e-3), np.array([1, 0, 0, 0, -1]))
+    assert np.array_equal(
+        ternary_sign(values, tolerance=1e-3), np.array([1, 0, 0, 0, -1])
+    )
     # Above tolerance flips sign even for tiny positive noise.
-    assert np.array_equal(ternary_sign(values, tolerance=1e-15), np.array([1, 1, 0, -1, -1]))
+    assert np.array_equal(
+        ternary_sign(values, tolerance=1e-15), np.array([1, 1, 0, -1, -1])
+    )
 
 
 def test_hand_calculated_k3_pair_average() -> None:
@@ -66,8 +70,12 @@ def test_pair_average_and_max_defect_differ() -> None:
     """Mandatory guard against future estimand collapse."""
     structural, route = _toy_maps()
     result = compute_gap_discrepancies(structural, route)
-    assert result.population_mean_pairwise_discrepancy != result.mean_round_max_gap_defect
-    assert result.population_mean_pairwise_discrepancy < result.mean_round_max_gap_defect
+    assert (
+        result.population_mean_pairwise_discrepancy != result.mean_round_max_gap_defect
+    )
+    assert (
+        result.population_mean_pairwise_discrepancy < result.mean_round_max_gap_defect
+    )
 
 
 def test_action_invariant_shift_gives_zero_discrepancy_and_defect() -> None:
@@ -86,8 +94,13 @@ def test_round_mean_bounded_by_round_max() -> None:
     route = rng.uniform(0.0, 1.0, size=(40, 6))
     result = compute_gap_discrepancies(structural, route)
     assert np.all(result.round_mean_pairwise_discrepancy >= -1e-15)
-    assert np.all(result.round_mean_pairwise_discrepancy <= result.round_max_gap_defect + 1e-15)
-    assert result.population_mean_pairwise_discrepancy <= result.mean_round_max_gap_defect + 1e-15
+    assert np.all(
+        result.round_mean_pairwise_discrepancy <= result.round_max_gap_defect + 1e-15
+    )
+    assert (
+        result.population_mean_pairwise_discrepancy
+        <= result.mean_round_max_gap_defect + 1e-15
+    )
 
 
 def test_source_bound_identity_gives_all_zero_alignment_diagnostics() -> None:
@@ -115,7 +128,9 @@ def test_margin_certificate_consumes_max_defect_not_pair_average() -> None:
     margins = structural_margin(structural)
     assert np.all(np.isfinite(margins))
     # delta_t = 2, mu = 1 -> certificate 0.
-    assert compute_margin_certificate_rate(structural, result.round_max_gap_defect) == 0.0
+    assert (
+        compute_margin_certificate_rate(structural, result.round_max_gap_defect) == 0.0
+    )
     # Pair average (4/3) would also fail here, but a stricter case separates them:
     structural2 = np.array([[0.0, 0.9, 2.0]])
     route2 = np.array([[0.0, 1.7, 1.6]])
@@ -125,7 +140,10 @@ def test_margin_certificate_consumes_max_defect_not_pair_average() -> None:
     # errors: 0.8, 0.4, 1.2 -> pair mean 2.4/3 = 0.8 < mu = 0.9; max = 1.2 > mu.
     assert np.isclose(result2.round_mean_pairwise_discrepancy[0], 24.0 / 30.0)
     assert result2.round_max_gap_defect[0] > structural_margin(structural2)[0]
-    assert compute_margin_certificate_rate(structural2, result2.round_max_gap_defect) == 0.0
+    assert (
+        compute_margin_certificate_rate(structural2, result2.round_max_gap_defect)
+        == 0.0
+    )
 
 
 def test_legacy_action_gap_defect_api_preserves_v2_semantics() -> None:
@@ -137,9 +155,14 @@ def test_legacy_action_gap_defect_api_preserves_v2_semantics() -> None:
     # v2 semantic: the max defect averaged over rounds.
     assert result.population_action_gap_defect == 2.0
     discrepancies = compute_gap_discrepancies(structural, route)
-    assert np.isclose(result.population_action_gap_defect, discrepancies.mean_round_max_gap_defect)
+    assert np.isclose(
+        result.population_action_gap_defect, discrepancies.mean_round_max_gap_defect
+    )
     # Legacy scalar is NOT the pair average.
-    assert not np.isclose(result.population_action_gap_defect, discrepancies.population_mean_pairwise_discrepancy)
+    assert not np.isclose(
+        result.population_action_gap_defect,
+        discrepancies.population_mean_pairwise_discrepancy,
+    )
 
 
 def test_action_gaps_pair_layout() -> None:

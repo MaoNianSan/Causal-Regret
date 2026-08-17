@@ -14,10 +14,18 @@ from exp4.modules.module_b import MODULE_B_ESTIMAND_ID, _evaluate_design
 def test_selective_unweighted_and_ipw_share_masks() -> None:
     ambiguity = np.linspace(0.0, 1.0, 1000)
     uniforms = np.random.default_rng(1).random(1000)
-    designs = construct_audit_designs(ambiguity, np.random.default_rng(2).random(1000), uniforms)
-    selective = [design for design in designs if design.design_id.startswith("ambiguity_selective")]
+    designs = construct_audit_designs(
+        ambiguity, np.random.default_rng(2).random(1000), uniforms
+    )
+    selective = [
+        design
+        for design in designs
+        if design.design_id.startswith("ambiguity_selective")
+    ]
     for rate in (0.1, 0.3, 0.5):
-        rows = [design for design in selective if np.isclose(design.evidence_rate, rate)]
+        rows = [
+            design for design in selective if np.isclose(design.evidence_rate, rate)
+        ]
         assert len(rows) == 2
         assert rows[0].mask_hash == rows[1].mask_hash
         assert rows[0].probability_hash == rows[1].probability_hash
@@ -58,7 +66,9 @@ def _diagnostics_fixture(n: int) -> SimpleNamespace:
     )
 
 
-def _design(design_id: str, included: np.ndarray, weights: np.ndarray, rate: float) -> AuditInclusionDesign:
+def _design(
+    design_id: str, included: np.ndarray, weights: np.ndarray, rate: float
+) -> AuditInclusionDesign:
     return AuditInclusionDesign(
         design_id=design_id,
         evidence_rate=float(rate),
@@ -90,7 +100,9 @@ def test_full_population_audit_matches_population_pairwise_discrepancy() -> None
     n = len(discrepancies.round_mean_pairwise_discrepancy)
     design = _design("full_population", np.ones(n, dtype=bool), np.ones(n), 1.0)
     record, frame = _evaluate(design, discrepancies)
-    assert record["estimand_id"] == MODULE_B_ESTIMAND_ID == "mean_pairwise_gap_discrepancy"
+    assert (
+        record["estimand_id"] == MODULE_B_ESTIMAND_ID == "mean_pairwise_gap_discrepancy"
+    )
     assert np.isclose(
         record["audited_mean_pairwise_gap_discrepancy"],
         discrepancies.population_mean_pairwise_discrepancy,
@@ -114,7 +126,10 @@ def test_mcar_estimator_consumes_pair_average_unit_contribution() -> None:
     # The estimator target differs from the max-defect-based value on this map.
     max_target = float(np.mean(discrepancies.round_max_gap_defect[included]))
     assert not np.isclose(expected, max_target)
-    assert np.isclose(record["population_mean_pairwise_gap_discrepancy"], discrepancies.population_mean_pairwise_discrepancy)
+    assert np.isclose(
+        record["population_mean_pairwise_gap_discrepancy"],
+        discrepancies.population_mean_pairwise_discrepancy,
+    )
 
 
 def test_ipw_and_unweighted_designs_share_the_same_unit_target() -> None:
@@ -132,6 +147,14 @@ def test_ipw_and_unweighted_designs_share_the_same_unit_target() -> None:
         frame_u["true_unit_mean_pairwise_gap_discrepancy"].to_numpy(),
         frame_i["true_unit_mean_pairwise_gap_discrepancy"].to_numpy(),
     )
-    assert np.isclose(record_u["audited_mean_pairwise_gap_discrepancy"], float(np.mean(unit)))
-    assert np.isclose(record_i["audited_mean_pairwise_gap_discrepancy"], float(np.mean(unit)))
-    assert record_u["estimand_id"] == record_i["estimand_id"] == "mean_pairwise_gap_discrepancy"
+    assert np.isclose(
+        record_u["audited_mean_pairwise_gap_discrepancy"], float(np.mean(unit))
+    )
+    assert np.isclose(
+        record_i["audited_mean_pairwise_gap_discrepancy"], float(np.mean(unit))
+    )
+    assert (
+        record_u["estimand_id"]
+        == record_i["estimand_id"]
+        == "mean_pairwise_gap_discrepancy"
+    )

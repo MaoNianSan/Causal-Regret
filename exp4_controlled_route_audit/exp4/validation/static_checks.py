@@ -59,11 +59,50 @@ def run_static_checks(base_dir: Path) -> dict[str, Any]:
         ("single_defect_implementation", defect_definitions == 1),
         ("single_discrepancy_implementation", discrepancy_definitions == 1),
         ("v3_pairwise_primary_present", "mean_pairwise_gap_discrepancy" in source),
-        ("dormant_oracle_registry_removed", "noisy_state_oracle" not in ROUTE_REGISTRY and "latent_state_oracle" not in ROUTE_REGISTRY),
-        ("module_packages_present", all((package / name).is_dir() for name in ("configuration", "simulation", "routes", "metrics", "audit", "calibration", "modules", "outputs", "reporting", "validation"))),
-        ("plotting_does_not_import_scientific_engines", all(term not in plotting_source for term in ("exp4.simulation", "exp4.routes", "exp4.audit", "exp4.calibration"))),
-        ("learner_logic_excluded_from_v2_package", "UCB" not in source and "learner_consequence" not in source),
-        ("source_signature_semantics_present", "arrival_signature_base_noise" in source and "candidate_source_proxy" in source),
+        (
+            "dormant_oracle_registry_removed",
+            "noisy_state_oracle" not in ROUTE_REGISTRY
+            and "latent_state_oracle" not in ROUTE_REGISTRY,
+        ),
+        (
+            "module_packages_present",
+            all(
+                (package / name).is_dir()
+                for name in (
+                    "configuration",
+                    "simulation",
+                    "routes",
+                    "metrics",
+                    "audit",
+                    "calibration",
+                    "modules",
+                    "outputs",
+                    "reporting",
+                    "validation",
+                )
+            ),
+        ),
+        (
+            "plotting_does_not_import_scientific_engines",
+            all(
+                term not in plotting_source
+                for term in (
+                    "exp4.simulation",
+                    "exp4.routes",
+                    "exp4.audit",
+                    "exp4.calibration",
+                )
+            ),
+        ),
+        (
+            "learner_logic_excluded_from_v2_package",
+            "UCB" not in source and "learner_consequence" not in source,
+        ),
+        (
+            "source_signature_semantics_present",
+            "arrival_signature_base_noise" in source
+            and "candidate_source_proxy" in source,
+        ),
         ("middle_mode_present", '"middle"' in source),
     ]
     return {

@@ -99,7 +99,9 @@ def compute_gap_discrepancies(
         absolute_pairwise_error=absolute_pairwise_error,
         round_mean_pairwise_discrepancy=round_mean_pairwise_discrepancy,
         round_max_gap_defect=round_max_gap_defect,
-        population_mean_pairwise_discrepancy=float(np.mean(round_mean_pairwise_discrepancy)),
+        population_mean_pairwise_discrepancy=float(
+            np.mean(round_mean_pairwise_discrepancy)
+        ),
         mean_round_max_gap_defect=float(np.mean(round_max_gap_defect)),
     )
 

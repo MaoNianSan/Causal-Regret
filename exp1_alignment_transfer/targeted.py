@@ -17,16 +17,39 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from config import DELAY, EXPERIMENT_ID, FAST_LEARNER, LEARNER, RUN, STRUCTURAL, THEORY_SWEEP, config_hash
+from config import (
+    DELAY,
+    EXPERIMENT_ID,
+    FAST_LEARNER,
+    LEARNER,
+    RUN,
+    STRUCTURAL,
+    THEORY_SWEEP,
+    config_hash,
+)
 from main import load_frozen_calibration
-from src.artifact_io import atomic_write_csv, atomic_write_json, code_lineage, git_commit, hash_payload, refresh_output_manifest, utc_now
-from src.delay_mechanisms import generate_fixed_delay, generate_geometric_delay, solve_geometric_probability
+from src.artifact_io import (
+    atomic_write_csv,
+    atomic_write_json,
+    code_lineage,
+    git_commit,
+    hash_payload,
+    refresh_output_manifest,
+    utc_now,
+)
+from src.delay_mechanisms import (
+    generate_fixed_delay,
+    generate_geometric_delay,
+    solve_geometric_probability,
+)
 from src.derived import bootstrap_mean
 from src.path_generator import SharedPathBundle
 from src.runner import RunMetadata, run_paired_learner_consequence
-from src.structural_process import generate_smooth_bounded_ar1_path, generate_systematic_misbinding_path
+from src.structural_process import (
+    generate_smooth_bounded_ar1_path,
+    generate_systematic_misbinding_path,
+)
 from src.theory_sweeps import exact_shift_sweep_rows, margin_threshold_sweep_rows
-
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 STATUS_DIR = PROJECT_ROOT / "status"
@@ -61,7 +84,9 @@ def _bundle(seed: int, mechanism_id: str, structural, delay) -> SharedPathBundle
     )
 
 
-def _metadata(run_tier: str, configuration_id: str, effective_hash: str, calibration_hash: str) -> RunMetadata:
+def _metadata(
+    run_tier: str, configuration_id: str, effective_hash: str, calibration_hash: str
+) -> RunMetadata:
     return RunMetadata(
         run_id=f"{EXPERIMENT_ID}:targeted:{run_tier}:{configuration_id}:{utc_now()}",
         run_tier=run_tier,
@@ -145,13 +170,20 @@ def execute(run_tier: str, force: bool = False) -> Path:
     if not prerequisite.exists():
         raise RuntimeError(f"Targeted run requires validated {run_tier} primary output")
     prerequisite_payload = json.loads(prerequisite.read_text(encoding="utf-8"))
-    if prerequisite_payload.get("engineering_status") != "PASS" or prerequisite_payload.get("scientific_status") != "PASS":
+    if (
+        prerequisite_payload.get("engineering_status") != "PASS"
+        or prerequisite_payload.get("scientific_status") != "PASS"
+    ):
         raise RuntimeError("Targeted run prerequisite is not PASS")
 
     calibration = load_frozen_calibration()
     selected = calibration["structural"]["selected_value"]
     seeds = RUN.fast_seeds if run_tier == "fast" else RUN.evaluation_seeds
-    repetitions = RUN.bootstrap_repetitions_fast if run_tier == "fast" else RUN.bootstrap_repetitions_full
+    repetitions = (
+        RUN.bootstrap_repetitions_fast
+        if run_tier == "fast"
+        else RUN.bootstrap_repetitions_full
+    )
     learner_mean = FAST_LEARNER if run_tier == "fast" else LEARNER
     mean_horizon = 500 if run_tier == "fast" else 5000
     base_structural = replace(
@@ -217,21 +249,29 @@ def execute(run_tier: str, force: bool = False) -> Path:
             delay = generate_fixed_delay(structural, DELAY.fixed_delay)
             bundle = _bundle(int(seed), "systematic_misbinding", structural, delay)
             if reference_state is None:
-                reference_state = structural.structural_state[structural.source_rounds >= 0].copy()
+                reference_state = structural.structural_state[
+                    structural.source_rounds >= 0
+                ].copy()
                 reference_tape = bundle.learner_uniform_tape.copy()
             else:
                 n = min(reference_state.size, horizon)
                 prefix_checks.append(
                     bool(
                         np.array_equal(
-                            structural.structural_state[structural.source_rounds >= 0][:n],
+                            structural.structural_state[structural.source_rounds >= 0][
+                                :n
+                            ],
                             reference_state[:n],
                         )
-                        and np.array_equal(bundle.learner_uniform_tape[:n], reference_tape[:n])
+                        and np.array_equal(
+                            bundle.learner_uniform_tape[:n], reference_tape[:n]
+                        )
                     )
                 )
                 if horizon > reference_state.size:
-                    reference_state = structural.structural_state[structural.source_rounds >= 0].copy()
+                    reference_state = structural.structural_state[
+                        structural.source_rounds >= 0
+                    ].copy()
                     reference_tape = bundle.learner_uniform_tape.copy()
             metadata = _metadata(
                 run_tier,
@@ -280,7 +320,9 @@ def execute(run_tier: str, force: bool = False) -> Path:
     atomic_write_csv(output / "exp1_targeted_mean_delay_summary.csv", mean_summary)
     atomic_write_csv(output / "exp1_targeted_horizon_summary.csv", horizon_summary)
     atomic_write_csv(output / "exp1_targeted_theory_exact_shift_sweep.csv", exact_frame)
-    atomic_write_csv(output / "exp1_targeted_theory_margin_threshold_sweep.csv", margin_frame)
+    atomic_write_csv(
+        output / "exp1_targeted_theory_margin_threshold_sweep.csv", margin_frame
+    )
     atomic_write_csv(
         output / "fig_exp1_targeted_validation_data.csv",
         pd.concat([mean_summary, horizon_summary], ignore_index=True, sort=False),
@@ -294,13 +336,13 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "paper_result": False,
             "mean_delay_levels": [5, 15, 30],
             "horizon_levels": [1000, 5000, 10000],
-            "horizon_shared_prefix_pass": bool(all(prefix_checks)) if prefix_checks else True,
+            "horizon_shared_prefix_pass": (
+                bool(all(prefix_checks)) if prefix_checks else True
+            ),
             "theory_exact_cardinal_shift_sweep": exact_checks,
             "theory_margin_threshold_sweep": margin_checks,
             "status": (
-                "PASS"
-                if exact_checks["passed"] and margin_checks["passed"]
-                else "FAIL"
+                "PASS" if exact_checks["passed"] and margin_checks["passed"] else "FAIL"
             ),
             "code_lineage": code_lineage(PROJECT_ROOT),
             "generated_at": utc_now(),
@@ -311,9 +353,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
         {
             "stage": f"{run_tier}_targeted",
             "status": (
-                "PASS"
-                if exact_checks["passed"] and margin_checks["passed"]
-                else "FAIL"
+                "PASS" if exact_checks["passed"] and margin_checks["passed"] else "FAIL"
             ),
             "paper_result": False,
             "code_lineage": code_lineage(PROJECT_ROOT),

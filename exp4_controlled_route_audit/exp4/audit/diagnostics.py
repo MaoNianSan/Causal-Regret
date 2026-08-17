@@ -24,8 +24,12 @@ def selection_diagnostics(
     (d_i_pair), NOT the old max defect.
     """
     included = np.asarray(included, dtype=bool)
-    included_mean = float(np.mean(true_pairwise[included])) if np.any(included) else np.nan
-    excluded_mean = float(np.mean(true_pairwise[~included])) if np.any(~included) else np.nan
+    included_mean = (
+        float(np.mean(true_pairwise[included])) if np.any(included) else np.nan
+    )
+    excluded_mean = (
+        float(np.mean(true_pairwise[~included])) if np.any(~included) else np.nan
+    )
     return {
         "ambiguity_discrepancy_correlation": safe_correlation(ambiguity, true_pairwise),
         "included_mean_pairwise_discrepancy": included_mean,
@@ -52,7 +56,9 @@ def ambiguity_decile_records(
                 "ambiguity_decile": decile + 1,
                 "unit_count": int(np.sum(mask)),
                 "mean_ambiguity": float(np.mean(ambiguity[mask])),
-                "mean_true_unit_pairwise_discrepancy": float(np.mean(true_pairwise[mask])),
+                "mean_true_unit_pairwise_discrepancy": float(
+                    np.mean(true_pairwise[mask])
+                ),
             }
         )
     return records

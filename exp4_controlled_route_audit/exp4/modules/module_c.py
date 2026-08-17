@@ -126,6 +126,4 @@ def run_module_c(
                 "permutation_hash": signals.permutation_hash,
             }
         )
-    return ModuleCResult(
-        replication_records, parameter_records, correspondence_records
-    )
+    return ModuleCResult(replication_records, parameter_records, correspondence_records)

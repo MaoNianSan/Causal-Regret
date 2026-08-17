@@ -21,7 +21,11 @@ from exp4.validation.table_checks import (
 def _control_summary() -> pd.DataFrame:
     return pd.DataFrame(
         {
-            "control_id": ["affine_linked", "blocked_correspondence_destroyed", "nonlinear_monotone"],
+            "control_id": [
+                "affine_linked",
+                "blocked_correspondence_destroyed",
+                "nonlinear_monotone",
+            ],
             "control_display_name": [
                 "Affine-linked control",
                 "Temporally blocked correspondence-destroyed control",
@@ -50,7 +54,10 @@ def _write_fixture(run_dir: Path, summary: pd.DataFrame) -> tuple[Path, Path]:
         "Calibration-family controls and correspondence status.",
         "tab:exp4_calibration_controls",
     )
-    return run_dir / "tables" / f"{MAIN_TABLE_ID}.csv", run_dir / "tables" / f"{MAIN_TABLE_ID}.tex"
+    return (
+        run_dir / "tables" / f"{MAIN_TABLE_ID}.csv",
+        run_dir / "tables" / f"{MAIN_TABLE_ID}.tex",
+    )
 
 
 def test_main_calibration_table_has_exact_primary_controls(tmp_path: Path) -> None:
@@ -68,7 +75,9 @@ def test_main_calibration_table_has_two_rows(tmp_path: Path) -> None:
     assert len(pd.read_csv(csv_path)) == 2
 
 
-def test_main_calibration_table_rejects_mixed_or_empty_selection(tmp_path: Path) -> None:
+def test_main_calibration_table_rejects_mixed_or_empty_selection(
+    tmp_path: Path,
+) -> None:
     # Old logic filtered analysis_tier == "primary" and produced an empty table
     # when every summary row carried analysis_tier == "mixed". The new selection
     # is by exact control ID, so a mixed-tier summary must still yield the two
@@ -136,7 +145,9 @@ def test_validate_and_write_table_checks_writes_json(tmp_path: Path) -> None:
     _write_fixture(tmp_path, _control_summary())
     result = validate_and_write_table_checks(tmp_path, _control_summary())
     assert result.passed is True
-    payload = json.loads((tmp_path / "checks" / "exp4_table_checks.json").read_text(encoding="utf-8"))
+    payload = json.loads(
+        (tmp_path / "checks" / "exp4_table_checks.json").read_text(encoding="utf-8")
+    )
     assert payload["status"] == "PASS"
     assert "hashes" in payload["details"]
 
@@ -146,7 +157,12 @@ def test_aggregate_control_summary_assigns_registry_tiers() -> None:
     # frozen CONTROL_REGISTRY tiers at aggregation time.
     replication = pd.DataFrame(
         {
-            "control_id": ["affine_linked", "affine_linked", "blocked_correspondence_destroyed", "nonlinear_monotone"],
+            "control_id": [
+                "affine_linked",
+                "affine_linked",
+                "blocked_correspondence_destroyed",
+                "nonlinear_monotone",
+            ],
             "control_display_name": [
                 "Affine-linked control",
                 "Affine-linked control",
@@ -154,7 +170,12 @@ def test_aggregate_control_summary_assigns_registry_tiers() -> None:
                 "Nonlinear monotone control",
             ],
             "analysis_tier": ["mixed", "mixed", "mixed", "mixed"],
-            "correspondence_status": ["preserved by construction", "preserved by construction", "destroyed within temporal blocks", "monotone but outside affine family"],
+            "correspondence_status": [
+                "preserved by construction",
+                "preserved by construction",
+                "destroyed within temporal blocks",
+                "monotone but outside affine family",
+            ],
             "raw_pairwise_discrepancy": [0.5, 0.7, 1.4, 0.2],
             "oof_calibrated_pairwise_discrepancy": [0.1, 0.2, 0.9, 0.1],
             "recoverability": [0.8, 0.7, 0.4, 0.4],

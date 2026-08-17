@@ -6,7 +6,6 @@ from dataclasses import dataclass
 
 from config import DISPLAY_NAMES, EXPERIMENT_ID, MECHANISM_ORDER
 
-
 STRUCTURAL_FAMILIES = (
     "smooth_bounded_ar1",
     "action_invariant_shift",
@@ -163,11 +162,15 @@ REGISTRY = Registry()
 
 def validate_id(value: str, allowed: tuple[str, ...], field_name: str) -> None:
     if value not in allowed:
-        raise ContractError(f"{field_name}={value!r} is not allowed; expected one of {allowed}")
+        raise ContractError(
+            f"{field_name}={value!r} is not allowed; expected one of {allowed}"
+        )
 
 
 def display_name(identifier: str) -> str:
     try:
         return DISPLAY_NAMES[identifier]
     except KeyError as exc:
-        raise ContractError(f"Missing display name for identifier {identifier!r}") from exc
+        raise ContractError(
+            f"Missing display name for identifier {identifier!r}"
+        ) from exc

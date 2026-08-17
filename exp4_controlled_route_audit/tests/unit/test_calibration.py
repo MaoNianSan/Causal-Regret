@@ -30,7 +30,9 @@ def test_affine_fit_recovers_parameters_and_has_no_fallback() -> None:
     assert np.isnan(small.intercept)
 
 
-def _pairwise_calibration_toy() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+def _pairwise_calibration_toy() -> (
+    tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]
+):
     rng = np.random.default_rng(11)
     rounds = 2000
     pair_count = 45
@@ -45,7 +47,9 @@ def _pairwise_calibration_toy() -> tuple[np.ndarray, np.ndarray, np.ndarray, np.
 
 
 def test_calibration_aggregation_is_pair_average_not_max() -> None:
-    route_gaps, structural_gaps, fold_ids, inclusion, weights = _pairwise_calibration_toy()
+    route_gaps, structural_gaps, fold_ids, inclusion, weights = (
+        _pairwise_calibration_toy()
+    )
     evaluation = evaluate_cross_fitted_calibration(
         "affine_linked",
         route_gaps,
@@ -68,5 +72,8 @@ def test_calibration_aggregation_is_pair_average_not_max() -> None:
     # OOF-calibrated discrepancy is also a pair average (near-perfect affine
     # recovery, so it is far below the raw discrepancy).
     assert np.isfinite(evaluation.oof_calibrated_pairwise_discrepancy)
-    assert evaluation.oof_calibrated_pairwise_discrepancy < evaluation.raw_pairwise_discrepancy
+    assert (
+        evaluation.oof_calibrated_pairwise_discrepancy
+        < evaluation.raw_pairwise_discrepancy
+    )
     assert np.isfinite(evaluation.recoverability)

@@ -32,7 +32,10 @@ from src.metrics import (
     transfer_slack,
 )
 from src.path_generator import SharedPathBundle
-from src.route_maps import build_arrival_assigned_route_map, build_source_bound_route_map
+from src.route_maps import (
+    build_arrival_assigned_route_map,
+    build_source_bound_route_map,
+)
 
 
 @dataclass(frozen=True)
@@ -67,7 +70,9 @@ def _global_metadata(metadata: RunMetadata, bundle: SharedPathBundle) -> dict[st
     }
 
 
-def _eval_structural(bundle: SharedPathBundle) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+def _eval_structural(
+    bundle: SharedPathBundle,
+) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     path = bundle.structural_path
     idx = np.flatnonzero(path.source_rounds >= 0)
     return (
@@ -128,7 +133,10 @@ def run_route_map_diagnostic(
 
         frame = pd.DataFrame(
             {
-                **{key: [value] * structural_loss.shape[0] for key, value in global_meta.items()},
+                **{
+                    key: [value] * structural_loss.shape[0]
+                    for key, value in global_meta.items()
+                },
                 "analysis_component": "route_map_diagnostic",
                 "route_id": result.route_id,
                 "diagnostic_policy_id": "route_greedy",
@@ -195,13 +203,16 @@ def run_route_map_diagnostic(
                 "structural_regret_rate": structural_regret / structural_loss.shape[0],
                 "route_regret_rate": route_regret / structural_loss.shape[0],
                 "alignment_budget_rate": alignment_budget / structural_loss.shape[0],
-                "transfer_bound_rate": (route_regret + alignment_budget) / structural_loss.shape[0],
+                "transfer_bound_rate": (route_regret + alignment_budget)
+                / structural_loss.shape[0],
                 "transfer_slack_rate": slack_rate,
                 "numerical_tolerance": numerical_tolerance,
                 "transfer_invariant_pass": bool(slack_rate >= -numerical_tolerance),
                 "regret_stability_slack_rate": stability_rate,
                 "regret_stability_tolerance": stability_tolerance,
-                "regret_stability_invariant_pass": bool(stability_rate >= -stability_tolerance),
+                "regret_stability_invariant_pass": bool(
+                    stability_rate >= -stability_tolerance
+                ),
                 "pairwise_sign_disagreement_rate": float(np.mean(rho)),
                 "directed_choice_disagreement_rate": float(np.mean(chi)),
                 "ranking_reversal_rate": float(np.mean(reversals)),
@@ -220,11 +231,21 @@ def run_route_map_diagnostic(
                     float(np.min(eta_values)) if eta_values.size else np.nan
                 ),
                 "margin_preservation_rate": float(np.mean(preserved)),
-                "mean_reversal_margin": float(np.mean(reversal_values)) if reversal_values.size else 0.0,
-                "q10_reversal_margin": float(np.quantile(reversal_values, 0.10)) if reversal_values.size else 0.0,
+                "mean_reversal_margin": (
+                    float(np.mean(reversal_values)) if reversal_values.size else 0.0
+                ),
+                "q10_reversal_margin": (
+                    float(np.quantile(reversal_values, 0.10))
+                    if reversal_values.size
+                    else 0.0
+                ),
                 "generated_mean_delay": float(bundle.delay_path.generated_mean_delay),
-                "empty_arrival_clock_rate": float(np.mean(result.arrival_batch_size == 0)),
-                "multiarrival_clock_rate": float(np.mean(result.arrival_batch_size > 1)),
+                "empty_arrival_clock_rate": float(
+                    np.mean(result.arrival_batch_size == 0)
+                ),
+                "multiarrival_clock_rate": float(
+                    np.mean(result.arrival_batch_size > 1)
+                ),
                 "mean_route_map_age": float(np.mean(result.route_map_age)),
                 "max_route_map_age": int(np.max(result.route_map_age)),
                 "structural_path_hash": bundle.structural_path.path_hash,
@@ -246,9 +267,13 @@ def run_paired_learner_consequence(
     context_partition: dict[str, Any],
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     boundaries = np.asarray(context_partition["boundaries"], dtype=float)
-    cell_oracle_actions = np.asarray(context_partition["cell_oracle_actions"], dtype=int)
+    cell_oracle_actions = np.asarray(
+        context_partition["cell_oracle_actions"], dtype=int
+    )
     if boundaries.size + 1 != learner_config.n_context_cells:
-        raise ScientificInvariantError("context partition and learner cell count differ")
+        raise ScientificInvariantError(
+            "context partition and learner cell count differ"
+        )
     if cell_oracle_actions.size != learner_config.n_context_cells:
         raise ScientificInvariantError("context oracle action vector has invalid size")
 
@@ -305,7 +330,9 @@ def run_paired_learner_consequence(
             queues[binding].setdefault(arrival_clock, []).append(event)
 
         for binding, learner in learners.items():
-            arrivals = sorted(queues[binding].pop(t, []), key=lambda event: event.source_round)
+            arrivals = sorted(
+                queues[binding].pop(t, []), key=lambda event: event.source_round
+            )
             updated_actions: list[int] = []
             updated_cells: list[int] = []
             update_probabilities: list[float] = []
@@ -356,9 +383,15 @@ def run_paired_learner_consequence(
                     "factual_loss": float(structural_loss[t, action]),
                     "arrivals_processed": len(arrivals),
                     "updates_applied": len(arrivals),
-                    "arrived_source_rounds": [int(event.source_round) for event in arrivals],
-                    "arrived_source_actions": [int(event.source_action) for event in arrivals],
-                    "arrived_source_probabilities": [float(event.source_action_probability) for event in arrivals],
+                    "arrived_source_rounds": [
+                        int(event.source_round) for event in arrivals
+                    ],
+                    "arrived_source_actions": [
+                        int(event.source_action) for event in arrivals
+                    ],
+                    "arrived_source_probabilities": [
+                        float(event.source_action_probability) for event in arrivals
+                    ],
                     "updated_action_indices": updated_actions,
                     "updated_context_cells": updated_cells,
                     "update_probabilities": update_probabilities,
@@ -371,7 +404,10 @@ def run_paired_learner_consequence(
             )
 
     round_frame = pd.concat(
-        [pd.DataFrame(records[binding]) for binding in ("arrival_clock", "source_round")],
+        [
+            pd.DataFrame(records[binding])
+            for binding in ("arrival_clock", "source_round")
+        ],
         ignore_index=True,
     )
     seed_rows: list[dict[str, Any]] = []
@@ -385,12 +421,22 @@ def run_paired_learner_consequence(
                 "feedback_binding_id": binding,
                 "n_rounds": horizon,
                 "structural_regret": float(frame["structural_regret_increment"].sum()),
-                "structural_regret_rate": float(frame["structural_regret_increment"].mean()),
-                "context_constrained_regret": float(frame["context_regret_increment"].sum()),
-                "context_constrained_regret_rate": float(frame["context_regret_increment"].mean()),
+                "structural_regret_rate": float(
+                    frame["structural_regret_increment"].mean()
+                ),
+                "context_constrained_regret": float(
+                    frame["context_regret_increment"].sum()
+                ),
+                "context_constrained_regret_rate": float(
+                    frame["context_regret_increment"].mean()
+                ),
                 "feedback_units_processed": int(frame["updates_applied"].sum()),
                 "terminal_unobserved_feedback": int(
-                    sum(len(events) for clock, events in queues[binding].items() if clock >= horizon)
+                    sum(
+                        len(events)
+                        for clock, events in queues[binding].items()
+                        if clock >= horizon
+                    )
                 ),
                 "final_log_weight_hash": learners[binding].state_hash(),
                 "structural_path_hash": bundle.structural_path.path_hash,
@@ -401,10 +447,14 @@ def run_paired_learner_consequence(
         )
     seed_frame = pd.DataFrame(seed_rows)
     arrival_rate = float(
-        seed_frame.loc[seed_frame.feedback_binding_id == "arrival_clock", "structural_regret_rate"].iloc[0]
+        seed_frame.loc[
+            seed_frame.feedback_binding_id == "arrival_clock", "structural_regret_rate"
+        ].iloc[0]
     )
     source_rate = float(
-        seed_frame.loc[seed_frame.feedback_binding_id == "source_round", "structural_regret_rate"].iloc[0]
+        seed_frame.loc[
+            seed_frame.feedback_binding_id == "source_round", "structural_regret_rate"
+        ].iloc[0]
     )
     seed_frame["paired_arrival_minus_source_regret_rate"] = arrival_rate - source_rate
     return round_frame, seed_frame

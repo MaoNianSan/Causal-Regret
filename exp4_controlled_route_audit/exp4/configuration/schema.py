@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 EXPERIMENT_ID = "exp4_controlled_route_audit"
 EXPERIMENT_DISPLAY_NAME = "Experiment 4: Route Alignment and Evidence-Qualified Audit"
 RESULT_SCHEMA = "exp4_controlled_route_audit_v3"
@@ -80,6 +79,7 @@ def v3_pairwise_recompute_required(fields: set[str]) -> bool:
     reinterpreted as the pair-average quantity.
     """
     return "mean_pairwise_gap_discrepancy" not in set(fields)
+
 
 REQUIRED_DERIVED_FILES = (
     "derived/module_a/exp4_module_a_seed_level.parquet",

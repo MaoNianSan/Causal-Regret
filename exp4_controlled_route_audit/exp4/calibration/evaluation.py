@@ -7,7 +7,10 @@ from typing import Any
 
 import numpy as np
 
-from exp4.calibration.affine import fit_weighted_affine_calibration, predict_affine_calibration
+from exp4.calibration.affine import (
+    fit_weighted_affine_calibration,
+    predict_affine_calibration,
+)
 from exp4.configuration.parameters import CALIBRATION, REPORTING
 from exp4.metrics.action_gaps import action_pair_indices
 
@@ -43,7 +46,9 @@ def evaluate_cross_fitted_calibration(
         held_out = fold_ids == fold_id
         training = inclusion_mask & ~held_out
         training_positions = np.flatnonzero(training)
-        for pair_index, (action_low, action_high) in enumerate(zip(pair_low, pair_high, strict=True)):
+        for pair_index, (action_low, action_high) in enumerate(
+            zip(pair_low, pair_high, strict=True)
+        ):
             fit = fit_weighted_affine_calibration(
                 route_gaps[training_positions, pair_index],
                 structural_gaps[training_positions, pair_index],
@@ -84,7 +89,13 @@ def evaluate_cross_fitted_calibration(
     )
     if not all_estimable:
         return CalibrationEvaluation(
-            raw_pairwise, np.nan, np.nan, False, "NOT_ESTIMABLE", minimum_support, parameter_records
+            raw_pairwise,
+            np.nan,
+            np.nan,
+            False,
+            "NOT_ESTIMABLE",
+            minimum_support,
+            parameter_records,
         )
     calibrated_unit = np.mean(np.abs(predictions - structural_gaps), axis=1)
     calibrated_pairwise = float(

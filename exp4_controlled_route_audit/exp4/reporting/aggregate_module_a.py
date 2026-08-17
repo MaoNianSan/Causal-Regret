@@ -10,7 +10,6 @@ import pandas as pd
 from exp4.configuration.parameters import MODULE_A, REPORTING
 from exp4.metrics.monte_carlo import mean_mcse, percentile_interval
 
-
 METRICS = (
     # v3 primary: pair-average gap discrepancy (D_pair).
     "mean_pairwise_gap_discrepancy",
@@ -62,7 +61,9 @@ def summarize_population(
                 REPORTING.bootstrap_seed + group_index * 100 + metric_index,
             )
             record[f"{metric}_mean"] = float(np.mean(values))
-            record[f"{metric}_sd"] = float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
+            record[f"{metric}_sd"] = (
+                float(np.std(values, ddof=1)) if len(values) > 1 else 0.0
+            )
             record[f"{metric}_mcse"] = mean_mcse(values)
             record[f"{metric}_ci_lower"] = lower
             record[f"{metric}_ci_upper"] = upper
@@ -82,7 +83,9 @@ def _contrast_record(
     seed: int,
 ) -> dict[str, Any]:
     lower, upper = _bootstrap_mean_interval(differences, bootstrap_replications, seed)
-    agreement = differences < 0.0 if expected_direction == "decrease" else differences > 0.0
+    agreement = (
+        differences < 0.0 if expected_direction == "decrease" else differences > 0.0
+    )
     return {
         "contrast_family": family,
         "contrast_id": contrast_id,
@@ -90,7 +93,9 @@ def _contrast_record(
         "level_from": level_from,
         "level_to": level_to,
         "paired_mean_difference": float(np.mean(differences)),
-        "paired_sd": float(np.std(differences, ddof=1)) if len(differences) > 1 else 0.0,
+        "paired_sd": (
+            float(np.std(differences, ddof=1)) if len(differences) > 1 else 0.0
+        ),
         "paired_mcse": mean_mcse(differences),
         "ci_lower": lower,
         "ci_upper": upper,
@@ -112,8 +117,14 @@ def summarize_paired_contrasts(
     counter = 0
     for sigma in MODULE_A.proxy_noise_sds:
         fixed = primary[np.isclose(primary["attribution_proxy_noise_sd"], sigma)]
-        pivot = fixed.pivot(index="seed", columns="route_label_rate", values="population_action_gap_defect")
-        for level_from, level_to in zip(MODULE_A.route_label_rates[:-1], MODULE_A.route_label_rates[1:], strict=True):
+        pivot = fixed.pivot(
+            index="seed",
+            columns="route_label_rate",
+            values="population_action_gap_defect",
+        )
+        for level_from, level_to in zip(
+            MODULE_A.route_label_rates[:-1], MODULE_A.route_label_rates[1:], strict=True
+        ):
             differences = (pivot[level_to] - pivot[level_from]).to_numpy(dtype=float)
             records.append(
                 _contrast_record(
@@ -131,8 +142,14 @@ def summarize_paired_contrasts(
             counter += 1
     for route_label_rate in MODULE_A.route_label_rates:
         fixed = primary[np.isclose(primary["route_label_rate"], route_label_rate)]
-        pivot = fixed.pivot(index="seed", columns="attribution_proxy_noise_sd", values="population_action_gap_defect")
-        for level_from, level_to in zip(MODULE_A.proxy_noise_sds[:-1], MODULE_A.proxy_noise_sds[1:], strict=True):
+        pivot = fixed.pivot(
+            index="seed",
+            columns="attribution_proxy_noise_sd",
+            values="population_action_gap_defect",
+        )
+        for level_from, level_to in zip(
+            MODULE_A.proxy_noise_sds[:-1], MODULE_A.proxy_noise_sds[1:], strict=True
+        ):
             differences = (pivot[level_to] - pivot[level_from]).to_numpy(dtype=float)
             records.append(
                 _contrast_record(
@@ -181,7 +198,9 @@ def summarize_paired_contrasts(
         else:
             # Fast/Middle do not gate precision; the status is explicitly
             # qualified as non-full rather than being reported as gated.
-            contrasts.loc[index, "monte_carlo_precision_gate"] = "NOT_APPLICABLE_NON_FULL"
+            contrasts.loc[index, "monte_carlo_precision_gate"] = (
+                "NOT_APPLICABLE_NON_FULL"
+            )
     else:
         raise RuntimeError("Paired-contrast aggregation produced no primary contrast")
     direction = (

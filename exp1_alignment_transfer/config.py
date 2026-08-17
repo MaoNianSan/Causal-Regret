@@ -11,7 +11,6 @@ import hashlib
 import json
 from typing import Any
 
-
 EXPERIMENT_ID = "exp1_alignment_transfer"
 CONFIG_VERSION = "1.2"
 
@@ -46,7 +45,9 @@ class LearnerConfig:
     learning_rate_eta: float = 0.0
 
     @staticmethod
-    def from_dimensions(k_actions: int, n_context_cells: int, horizon: int) -> "LearnerConfig":
+    def from_dimensions(
+        k_actions: int, n_context_cells: int, horizon: int
+    ) -> "LearnerConfig":
         import math
 
         nominal_cell_horizon = max(1, math.ceil(horizon / n_context_cells))

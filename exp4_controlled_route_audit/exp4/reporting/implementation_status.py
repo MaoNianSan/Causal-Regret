@@ -38,7 +38,9 @@ def _run_metadata(run_dir: Path) -> dict[str, object] | None:
     engineering_path = run_dir / "checks" / "exp4_engineering_checks.json"
     scientific_path = run_dir / "checks" / "exp4_scientific_checks.json"
     engineering_status = (
-        json.loads(engineering_path.read_text(encoding="utf-8")).get("status", "MISSING")
+        json.loads(engineering_path.read_text(encoding="utf-8")).get(
+            "status", "MISSING"
+        )
         if engineering_path.exists()
         else "MISSING"
     )
@@ -53,7 +55,9 @@ def _run_metadata(run_dir: Path) -> dict[str, object] | None:
         "generated_at": generated_at,
         "timestamp": timestamp,
         "paper_result": bool(payload.get("paper_result", False)),
-        "result_status_paper_promotion": str(result_status.get("paper_promotion", "NOT_RUN")),
+        "result_status_paper_promotion": str(
+            result_status.get("paper_promotion", "NOT_RUN")
+        ),
         "engineering_status": engineering_status,
         "scientific_status": scientific_status,
     }
@@ -86,9 +90,14 @@ def _load_check(run_dir: Path, name: str) -> dict[str, object] | None:
 
 def build_implementation_status(base_dir: Path) -> dict[str, object]:
     runs = scan_runs(base_dir)
-    latest = {tier: runs.get(tier, {}).get("run_id", "NONE") for tier in ("fast", "middle", "full")}
+    latest = {
+        tier: runs.get(tier, {}).get("run_id", "NONE")
+        for tier in ("fast", "middle", "full")
+    }
     full_run_id = latest.get("full")
-    full_dir = base_dir / "outputs" / "runs" / full_run_id if full_run_id != "NONE" else None
+    full_dir = (
+        base_dir / "outputs" / "runs" / full_run_id if full_run_id != "NONE" else None
+    )
 
     full_engineering = "NONE"
     full_scientific = "NONE"
@@ -98,7 +107,9 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
     if full_dir is not None and full_dir.exists():
         full_engineering = str(runs["full"].get("engineering_status", "MISSING"))
         full_scientific = str(runs["full"].get("scientific_status", "MISSING"))
-        paper_promotion_status = str(runs["full"].get("result_status_paper_promotion", "NOT_RUN"))
+        paper_promotion_status = str(
+            runs["full"].get("result_status_paper_promotion", "NOT_RUN")
+        )
         paper_result = bool(runs["full"].get("paper_result", False))
         provenance = audit_run_provenance(full_dir, base_dir)
 
@@ -128,19 +139,25 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
         and provenance.get("source_unchanged_during_run")
     )
     simulation_execution_mode = str(
-        provenance.get("simulation_execution_mode", "UNKNOWN") if provenance else "UNKNOWN"
+        provenance.get("simulation_execution_mode", "UNKNOWN")
+        if provenance
+        else "UNKNOWN"
     )
     simulation_source_run_id = (
         provenance.get("simulation_source_run_id") if provenance else None
     )
     downstream_execution_mode = str(
-        provenance.get("downstream_execution_mode", "UNKNOWN") if provenance else "UNKNOWN"
+        provenance.get("downstream_execution_mode", "UNKNOWN")
+        if provenance
+        else "UNKNOWN"
     )
     downstream_source_run_id = (
         provenance.get("downstream_source_run_id") if provenance else None
     )
     reuse_eligibility = str(
-        provenance.get("full_simulation_reuse_eligibility", "UNKNOWN") if provenance else "UNKNOWN"
+        provenance.get("full_simulation_reuse_eligibility", "UNKNOWN")
+        if provenance
+        else "UNKNOWN"
     )
     simulation_rerun_required = not full_provenance_verified
     return {
@@ -179,7 +196,12 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
         "DOWNSTREAM_SOURCE_RUN_ID": (
             downstream_source_run_id
             if downstream_source_run_id
-            else ("NONE" if downstream_execution_mode in {"INLINE_FRESH", "REBUILT_FROM_OWN_SIMULATION"} else "UNKNOWN")
+            else (
+                "NONE"
+                if downstream_execution_mode
+                in {"INLINE_FRESH", "REBUILT_FROM_OWN_SIMULATION"}
+                else "UNKNOWN"
+            )
         ),
         "PAPER_PROMOTION_EXECUTED": "YES" if paper_promotion_status == "PASS" else "NO",
     }

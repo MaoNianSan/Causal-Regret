@@ -63,9 +63,7 @@ def _evaluate_design(
             if design.design_id == "ambiguity_selective_ipw"
             else lambda values, weights: estimate_unweighted_mean(values)
         )
-        audited_pairwise = estimator(
-            unit_pairwise[included], included_weights
-        ).estimate
+        audited_pairwise = estimator(unit_pairwise[included], included_weights).estimate
     except NotEstimableError as exc:
         audited_pairwise = np.nan
         status = f"NOT_ESTIMABLE:{exc}"
@@ -84,7 +82,9 @@ def _evaluate_design(
         "absolute_audit_error": abs(audited_pairwise - population),
         "labelled_sample_size": included_count,
         "effective_sample_size": effective_sample_size,
-        "effective_to_labelled_ratio": effective_sample_size / included_count if included_count else np.nan,
+        "effective_to_labelled_ratio": (
+            effective_sample_size / included_count if included_count else np.nan
+        ),
         "effective_to_population_ratio": effective_sample_size / population_size,
         **weight_diagnostics(included_weights, design.inclusion_probabilities),
         **selection_diagnostics(ambiguity, unit_pairwise, included),
@@ -135,7 +135,9 @@ def run_module_b(
         raise RuntimeError("Module B requires proxy attribution diagnostics")
     ambiguity = diagnostics.normalized_entropy[evaluation]
     standardized = standardize_ambiguity(ambiguity)
-    route_label_indicator = trajectory.route_label_mask(MODULE_B.route_label_rate)[evaluation]
+    route_label_indicator = trajectory.route_label_mask(MODULE_B.route_label_rate)[
+        evaluation
+    ]
     designs = construct_audit_designs(
         ambiguity,
         trajectory.audit_uniform_mcar[evaluation],

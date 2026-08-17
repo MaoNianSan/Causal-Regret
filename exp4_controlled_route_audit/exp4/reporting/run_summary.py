@@ -10,13 +10,30 @@ import pandas as pd
 
 
 def write_run_summary(run_dir: Path) -> None:
-    run_config = json.loads((run_dir / "logs" / "run_config.json").read_text(encoding="utf-8"))
-    engineering = json.loads((run_dir / "checks" / "exp4_engineering_checks.json").read_text(encoding="utf-8"))
-    scientific = json.loads((run_dir / "checks" / "exp4_scientific_checks.json").read_text(encoding="utf-8"))
-    boundary = pd.read_csv(run_dir / "derived" / "module_a" / "exp4_module_a_population_summary.csv")
-    performance = pd.read_csv(run_dir / "derived" / "module_b" / "exp4_module_b_audit_performance.csv")
-    controls = pd.read_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv")
-    q1 = boundary[(boundary["route_id"] == "proxy_label") & np.isclose(boundary["route_label_rate"], 1.0)]
+    run_config = json.loads(
+        (run_dir / "logs" / "run_config.json").read_text(encoding="utf-8")
+    )
+    engineering = json.loads(
+        (run_dir / "checks" / "exp4_engineering_checks.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    scientific = json.loads(
+        (run_dir / "checks" / "exp4_scientific_checks.json").read_text(encoding="utf-8")
+    )
+    boundary = pd.read_csv(
+        run_dir / "derived" / "module_a" / "exp4_module_a_population_summary.csv"
+    )
+    performance = pd.read_csv(
+        run_dir / "derived" / "module_b" / "exp4_module_b_audit_performance.csv"
+    )
+    controls = pd.read_csv(
+        run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv"
+    )
+    q1 = boundary[
+        (boundary["route_id"] == "proxy_label")
+        & np.isclose(boundary["route_label_rate"], 1.0)
+    ]
     lineage = _load_lineage(run_dir)
     stage_record = _load_stage_record(run_dir)
     lines = [
@@ -57,7 +74,11 @@ def write_run_summary(run_dir: Path) -> None:
         "- Module C evaluates discrepancy reduction inside a prespecified affine family; it does not create a corrected policy or certify route validity.",
         "- Known simulated IPW probabilities do not establish validity under an unknown real-world inclusion mechanism.",
         "",
-        "FULL_RUN_EXECUTED=NO" if run_config["run_tier"] != "full" else "FULL_RUN_EXECUTED=YES",
+        (
+            "FULL_RUN_EXECUTED=NO"
+            if run_config["run_tier"] != "full"
+            else "FULL_RUN_EXECUTED=YES"
+        ),
         "PAPER_PROMOTION_EXECUTED=NO",
         "GIT_COMMIT_EXECUTED=NO",
         "GIT_PUSH_EXECUTED=NO",

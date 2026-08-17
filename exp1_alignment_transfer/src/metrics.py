@@ -20,16 +20,22 @@ def ternary_sign(values: np.ndarray, tolerance: float = 1e-12) -> np.ndarray:
     return sign
 
 
-def action_gap_defect(route_loss: np.ndarray, structural_loss: np.ndarray) -> np.ndarray:
+def action_gap_defect(
+    route_loss: np.ndarray, structural_loss: np.ndarray
+) -> np.ndarray:
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     if route.shape != structural.shape:
-        raise ScientificInvariantError("route and structural loss matrices must have equal shape")
+        raise ScientificInvariantError(
+            "route and structural loss matrices must have equal shape"
+        )
     error = route - structural
     return np.max(error, axis=1) - np.min(error, axis=1)
 
 
-def action_gap_defect_bruteforce(route_loss: np.ndarray, structural_loss: np.ndarray) -> np.ndarray:
+def action_gap_defect_bruteforce(
+    route_loss: np.ndarray, structural_loss: np.ndarray
+) -> np.ndarray:
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     out = np.empty(route.shape[0], dtype=float)
@@ -49,7 +55,9 @@ def deterministic_best_action(loss: np.ndarray) -> np.ndarray:
     return np.argmin(np.asarray(loss, dtype=float), axis=1).astype(int)
 
 
-def structural_regret_increment(actions: np.ndarray, structural_loss: np.ndarray) -> np.ndarray:
+def structural_regret_increment(
+    actions: np.ndarray, structural_loss: np.ndarray
+) -> np.ndarray:
     actions = np.asarray(actions, dtype=int)
     loss = np.asarray(structural_loss, dtype=float)
     rows = np.arange(loss.shape[0])
@@ -63,7 +71,9 @@ def route_regret_increment(actions: np.ndarray, route_loss: np.ndarray) -> np.nd
     return loss[rows, actions] - np.min(loss, axis=1)
 
 
-def structural_margin(structural_loss: np.ndarray, tolerance: float = 1e-12) -> np.ndarray:
+def structural_margin(
+    structural_loss: np.ndarray, tolerance: float = 1e-12
+) -> np.ndarray:
     values = np.asarray(structural_loss, dtype=float)
     mask = optimal_mask(values, tolerance)
     minima = np.min(values, axis=1)
@@ -80,9 +90,10 @@ def ranking_reversal(
     # Legacy binary event, defined as chi_t > 0: the route-optimal set is not
     # a subset of the structural optimal set. Kept for legacy continuity and
     # validated as (directed_choice_disagreement > 0) up to tolerance.
-    return directed_choice_disagreement(
-        route_loss, structural_loss, tolerance=tolerance
-    ) > 0.0
+    return (
+        directed_choice_disagreement(route_loss, structural_loss, tolerance=tolerance)
+        > 0.0
+    )
 
 
 def reversal_margin(
@@ -115,7 +126,9 @@ def pairwise_sign_disagreement(
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     if route.shape != structural.shape:
-        raise ScientificInvariantError("route and structural loss matrices must have equal shape")
+        raise ScientificInvariantError(
+            "route and structural loss matrices must have equal shape"
+        )
     if route.shape[1] < 2:
         return np.zeros(route.shape[0], dtype=float)
     low, high = np.triu_indices(int(route.shape[1]), k=1)
@@ -139,7 +152,9 @@ def directed_choice_disagreement(
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     if route.shape != structural.shape:
-        raise ScientificInvariantError("route and structural loss matrices must have equal shape")
+        raise ScientificInvariantError(
+            "route and structural loss matrices must have equal shape"
+        )
     route_best = optimal_mask(route, tolerance)
     structural_best = optimal_mask(structural, tolerance)
     nonstructural = route_best & ~structural_best
@@ -174,7 +189,9 @@ def structural_conflict_margin(
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     if route.shape != structural.shape:
-        raise ScientificInvariantError("route and structural loss matrices must have equal shape")
+        raise ScientificInvariantError(
+            "route and structural loss matrices must have equal shape"
+        )
     conflict = complete_conflict_indicator(route, structural, tolerance)
     route_best = optimal_mask(route, tolerance)
     minima = np.min(structural, axis=1)
@@ -201,7 +218,9 @@ def route_conflict_margin(
     route = np.asarray(route_loss, dtype=float)
     structural = np.asarray(structural_loss, dtype=float)
     if route.shape != structural.shape:
-        raise ScientificInvariantError("route and structural loss matrices must have equal shape")
+        raise ScientificInvariantError(
+            "route and structural loss matrices must have equal shape"
+        )
     conflict = complete_conflict_indicator(route, structural, tolerance)
     route_best = optimal_mask(route, tolerance)
     minima = np.min(route, axis=1)
@@ -232,7 +251,9 @@ def regret_stability_slack(
 
     The required invariant is ``rate >= -tolerance``.
     """
-    slack = float(alignment_budget) - abs(float(structural_regret) - float(route_regret))
+    slack = float(alignment_budget) - abs(
+        float(structural_regret) - float(route_regret)
+    )
     rate = slack / int(horizon)
     tolerance = 1e-8 * max(
         1.0,
@@ -248,7 +269,9 @@ def transfer_slack(
     alignment_budget: float,
     horizon: int,
 ) -> tuple[float, float]:
-    rate = (float(route_regret) + float(alignment_budget) - float(structural_regret)) / int(horizon)
+    rate = (
+        float(route_regret) + float(alignment_budget) - float(structural_regret)
+    ) / int(horizon)
     tolerance = 1e-8 * max(
         1.0,
         float(structural_regret) / int(horizon),

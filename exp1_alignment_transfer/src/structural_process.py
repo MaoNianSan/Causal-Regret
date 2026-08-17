@@ -47,7 +47,9 @@ def action_locations(k_actions: int) -> np.ndarray:
     return np.linspace(-1.0, 1.0, int(k_actions), dtype=float)
 
 
-def _best_mask_and_margin(loss: np.ndarray, tolerance: float) -> tuple[np.ndarray, np.ndarray]:
+def _best_mask_and_margin(
+    loss: np.ndarray, tolerance: float
+) -> tuple[np.ndarray, np.ndarray]:
     minima = np.min(loss, axis=1, keepdims=True)
     best = loss <= minima + float(tolerance)
     margins = np.empty(loss.shape[0], dtype=float)
@@ -61,7 +63,9 @@ def _source_rounds(config: StructuralConfig) -> np.ndarray:
     return np.arange(-config.prehistory_length, config.horizon, dtype=int)
 
 
-def generate_smooth_bounded_ar1_path(config: StructuralConfig, seed: int) -> StructuralPath:
+def generate_smooth_bounded_ar1_path(
+    config: StructuralConfig, seed: int
+) -> StructuralPath:
     n_source = config.prehistory_length + config.horizon
     total = config.state_burn_in + n_source
     state_rng = np.random.default_rng(int(seed) + 100_000)
@@ -74,7 +78,9 @@ def generate_smooth_bounded_ar1_path(config: StructuralConfig, seed: int) -> Str
         raw_all[idx] = z
     raw = raw_all[config.state_burn_in :]
     state = np.tanh(raw)
-    context = np.tanh(raw + context_rng.normal(0.0, config.context_noise_sd, size=n_source))
+    context = np.tanh(
+        raw + context_rng.normal(0.0, config.context_noise_sd, size=n_source)
+    )
     mu = action_locations(config.k_actions)
     loss = ((state[:, None] - mu[None, :]) / 2.0) ** 2
     best, margin = _best_mask_and_margin(loss, config.tie_tolerance)
@@ -90,7 +96,9 @@ def generate_smooth_bounded_ar1_path(config: StructuralConfig, seed: int) -> Str
         "horizon": config.horizon,
         "k_actions": config.k_actions,
     }
-    path_hash = _array_hash(rounds, raw, state, context, mu, loss, best, margin, payload=payload)
+    path_hash = _array_hash(
+        rounds, raw, state, context, mu, loss, best, margin, payload=payload
+    )
     return StructuralPath(
         seed=int(seed),
         structural_family_id="smooth_bounded_ar1",
@@ -123,9 +131,15 @@ def generate_exact_valid_shift_path(
     no new argument must be byte-identical to the previous v1.1 output.
     """
     if base_random_path.structural_family_id != "smooth_bounded_ar1":
-        raise ContractError("exact-valid shift requires a smooth bounded base random path")
+        raise ContractError(
+            "exact-valid shift requires a smooth bounded base random path"
+        )
     k = base_random_path.action_locations.size
-    ref = int(np.ceil(k / 2.0) - 1) if reference_action_index is None else int(reference_action_index)
+    ref = (
+        int(np.ceil(k / 2.0) - 1)
+        if reference_action_index is None
+        else int(reference_action_index)
+    )
     if not 0 <= ref < k:
         raise ContractError(f"reference_action_index={ref} outside [0,{k})")
     one_based = np.arange(1, k + 1, dtype=float)
@@ -181,7 +195,10 @@ def generate_systematic_misbinding_path(
     if block_length <= 0:
         raise ContractError("block_length must be positive")
     mu = action_locations(config.k_actions)
-    if not (0 <= left_action_index < config.k_actions and 0 <= right_action_index < config.k_actions):
+    if not (
+        0 <= left_action_index < config.k_actions
+        and 0 <= right_action_index < config.k_actions
+    ):
         raise ContractError("systematic preferred-action index outside action set")
     if left_action_index == right_action_index:
         raise ContractError("systematic preferred actions must differ")
@@ -193,10 +210,14 @@ def generate_systematic_misbinding_path(
     phase_offset = int(phase_rng.integers(0, block_length))
     block_index = np.floor_divide(rounds + phase_offset, block_length)
     side = (block_index + initial_side) % 2
-    state = np.where(side == 0, mu[left_action_index], mu[right_action_index]).astype(float)
+    state = np.where(side == 0, mu[left_action_index], mu[right_action_index]).astype(
+        float
+    )
     raw = np.arctanh(np.clip(state, -0.999999, 0.999999))
     context_rng = np.random.default_rng(int(seed) + 110_000)
-    context = np.tanh(raw + context_rng.normal(0.0, config.context_noise_sd, size=n_source))
+    context = np.tanh(
+        raw + context_rng.normal(0.0, config.context_noise_sd, size=n_source)
+    )
     loss = ((state[:, None] - mu[None, :]) / 2.0) ** 2
     best, margin = _best_mask_and_margin(loss, config.tie_tolerance)
     payload = {
@@ -209,7 +230,9 @@ def generate_systematic_misbinding_path(
         "phase_offset": phase_offset,
         "context_noise_sd": config.context_noise_sd,
     }
-    path_hash = _array_hash(rounds, raw, state, context, mu, loss, best, margin, payload=payload)
+    path_hash = _array_hash(
+        rounds, raw, state, context, mu, loss, best, margin, payload=payload
+    )
     return StructuralPath(
         seed=int(seed),
         structural_family_id="alternating_block_state",
@@ -241,7 +264,9 @@ def validate_structural_path(path: StructuralPath) -> dict[str, Any]:
     loss_min = float(np.min(path.structural_loss_matrix))
     loss_max = float(np.max(path.structural_loss_matrix))
     nonempty_optimal = bool(np.all(np.any(path.structural_best_mask, axis=1)))
-    recomputed_best, recomputed_margin = _best_mask_and_margin(path.structural_loss_matrix, 1e-12)
+    recomputed_best, recomputed_margin = _best_mask_and_margin(
+        path.structural_loss_matrix, 1e-12
+    )
     margin_reproducible = bool(
         np.array_equal(recomputed_best, path.structural_best_mask)
         and np.allclose(recomputed_margin, path.structural_margin, atol=1e-12, rtol=0.0)
@@ -265,19 +290,29 @@ def validate_structural_path(path: StructuralPath) -> dict[str, Any]:
     return report
 
 
-def structural_calibration_metrics(path: StructuralPath, prehistory_length: int) -> dict[str, float]:
+def structural_calibration_metrics(
+    path: StructuralPath, prehistory_length: int
+) -> dict[str, float]:
     evaluation_slice = slice(prehistory_length, None)
     best_indices = np.argmin(path.structural_loss_matrix[evaluation_slice], axis=1)
-    counts = np.bincount(best_indices, minlength=path.action_locations.size).astype(float)
+    counts = np.bincount(best_indices, minlength=path.action_locations.size).astype(
+        float
+    )
     probabilities = counts / max(1.0, counts.sum())
     positive = probabilities[probabilities > 0]
     entropy = float(-np.sum(positive * np.log(positive)))
     normalized_entropy = float(entropy / np.log(path.action_locations.size))
     max_share = float(np.max(probabilities))
-    switch_rate = float(np.mean(best_indices[1:] != best_indices[:-1])) if best_indices.size > 1 else 0.0
+    switch_rate = (
+        float(np.mean(best_indices[1:] != best_indices[:-1]))
+        if best_indices.size > 1
+        else 0.0
+    )
     spacing = 2.0 / (path.action_locations.size - 1)
     near_threshold = 0.1 * (spacing / 2.0) ** 2
-    near_tie_share = float(np.mean(path.structural_margin[evaluation_slice] < near_threshold))
+    near_tie_share = float(
+        np.mean(path.structural_margin[evaluation_slice] < near_threshold)
+    )
     return {
         "normalized_optimal_action_entropy": normalized_entropy,
         "max_optimal_action_share": max_share,

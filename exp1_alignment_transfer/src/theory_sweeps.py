@@ -53,7 +53,9 @@ def _sweep_bundle(path: StructuralPath, delay) -> SharedPathBundle:
     the route-map construction, so a zero tape of the correct length suffices.
     """
     tape = np.zeros(int(np.sum(path.source_rounds >= 0)), dtype=float)
-    payload_hash = hash_payload({"path": path.path_hash, "delay": delay.delay_path_hash})
+    payload_hash = hash_payload(
+        {"path": path.path_hash, "delay": delay.delay_path_hash}
+    )
     return SharedPathBundle(
         seed=path.seed,
         mechanism_id="theory_sweep",
@@ -109,9 +111,7 @@ def exact_shift_sweep_rows(
             delta = action_gap_defect(route_loss, structural_loss)
             rho = pairwise_sign_disagreement(route_loss, structural_loss)
             chi = directed_choice_disagreement(route_loss, structural_loss)
-            level_error = float(
-                np.mean(np.abs(route_loss - structural_loss))
-            )
+            level_error = float(np.mean(np.abs(route_loss - structural_loss)))
             rows.append(
                 {
                     "seed": int(seed),
@@ -146,7 +146,9 @@ def exact_shift_sweep_rows(
     return rows, checks
 
 
-def _eligible_rounds(structural_loss: np.ndarray, tolerance: float = 1e-12) -> np.ndarray:
+def _eligible_rounds(
+    structural_loss: np.ndarray, tolerance: float = 1e-12
+) -> np.ndarray:
     minima = np.min(structural_loss, axis=1)
     optimal = structural_loss <= minima[:, None] + tolerance
     unique = np.sum(optimal, axis=1) == 1
@@ -159,7 +161,9 @@ def _nearest_competitor(row: np.ndarray, best: int) -> int:
     regret = row - row[best]
     nonzero = np.flatnonzero(np.abs(regret) > 1e-12)
     minimum_regret = float(np.min(regret[nonzero]))
-    candidates = np.flatnonzero(np.isclose(regret, minimum_regret, atol=1e-12, rtol=0.0))
+    candidates = np.flatnonzero(
+        np.isclose(regret, minimum_regret, atol=1e-12, rtol=0.0)
+    )
     # Deterministic action-index tie break: smallest index.
     return int(np.min(candidates))
 
@@ -226,17 +230,25 @@ def margin_threshold_sweep_rows(
                     "ratio": float(ratio),
                     "eligible_rounds": int(np.sum(eligible)),
                     "mean_delta_over_mu": (
-                        float(np.mean(delta_ratio_values)) if delta_ratio_values else np.nan
+                        float(np.mean(delta_ratio_values))
+                        if delta_ratio_values
+                        else np.nan
                     ),
                     "max_delta_over_mu_deviation": (
-                        float(np.max(np.abs(np.asarray(delta_ratio_values) - float(ratio))))
+                        float(
+                            np.max(
+                                np.abs(np.asarray(delta_ratio_values) - float(ratio))
+                            )
+                        )
                         if delta_ratio_values
                         else np.nan
                     ),
                     "mean_chi": float(np.mean(chi_values)) if chi_values else np.nan,
                     "mean_rho": float(np.mean(rho_values)) if rho_values else np.nan,
                     "expected_chi": (
-                        0.0 if float(ratio) < 1.0 else (0.5 if float(ratio) == 1.0 else 1.0)
+                        0.0
+                        if float(ratio) < 1.0
+                        else (0.5 if float(ratio) == 1.0 else 1.0)
                     ),
                 }
             )
@@ -246,10 +258,15 @@ def margin_threshold_sweep_rows(
         if np.isfinite(row["mean_chi"])
     )
     ratio_ok = all(
-        (np.isnan(row["max_delta_over_mu_deviation"]) or row["max_delta_over_mu_deviation"] <= 1e-9)
+        (
+            np.isnan(row["max_delta_over_mu_deviation"])
+            or row["max_delta_over_mu_deviation"] <= 1e-9
+        )
         for row in rows
     )
-    support = sum(int(row["eligible_rounds"]) for row in rows if row["ratio"] == ratios[0])
+    support = sum(
+        int(row["eligible_rounds"]) for row in rows if row["ratio"] == ratios[0]
+    )
     checks = {
         "sweep_id": "margin_distortion_threshold",
         "ratios": list(ratios),
@@ -284,5 +301,7 @@ def run_invariant_checks(
     return {
         "theory_exact_cardinal_shift_sweep": exact_checks,
         "theory_margin_threshold_sweep": margin_checks,
-        "all_theory_sweeps_pass": bool(exact_checks["passed"] and margin_checks["passed"]),
+        "all_theory_sweeps_pass": bool(
+            exact_checks["passed"] and margin_checks["passed"]
+        ),
     }

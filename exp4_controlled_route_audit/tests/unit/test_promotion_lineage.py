@@ -133,9 +133,9 @@ def _build_fresh_full_run(
         else:
             path.write_text("", encoding="utf-8")
 
-    (run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv").parent.mkdir(
-        parents=True, exist_ok=True
-    )
+    (
+        run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv"
+    ).parent.mkdir(parents=True, exist_ok=True)
     main = select_main_calibration_rows(_control_summary())
     (run_dir / "tables").mkdir(parents=True, exist_ok=True)
     _write_table(main, run_dir / "tables" / MAIN_TABLE_ID, "caption", "label")
@@ -144,7 +144,9 @@ def _build_fresh_full_run(
     (run_dir / "figures" / "png").mkdir(parents=True)
     (run_dir / "figures" / "png" / f"{MAIN_FIGURE_ID}.png").write_bytes(b"x")
     (run_dir / "figures" / "data").mkdir(parents=True)
-    (run_dir / "figures" / "data" / f"{MAIN_FIGURE_ID}_data.csv").write_text("x\n", encoding="utf-8")
+    (run_dir / "figures" / "data" / f"{MAIN_FIGURE_ID}_data.csv").write_text(
+        "x\n", encoding="utf-8"
+    )
     (run_dir / "figures" / "metadata").mkdir(parents=True)
     (run_dir / "figures" / "metadata" / f"{MAIN_FIGURE_ID}_metadata.json").write_text(
         json.dumps({"source_file_hashes": {}}), encoding="utf-8"
@@ -171,7 +173,9 @@ def test_promotion_rejects_legacy_full_without_lineage(tmp_path: Path) -> None:
     _build_fresh_full_run(run_dir, ROOT)
     # Remove the lineage artifact to emulate a legacy full run.
     (run_dir / "logs" / "exp4_run_lineage.json").unlink()
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["run_lineage_present"] is False
     assert result["checks"]["run_lineage_valid"] is False
     assert result["checks"]["simulation_provenance_verified"] is False
@@ -181,7 +185,9 @@ def test_promotion_rejects_legacy_full_without_lineage(tmp_path: Path) -> None:
 def test_promotion_accepts_valid_fresh_full_fixture(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     _build_fresh_full_run(run_dir, ROOT)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     failed = {name: value for name, value in result["checks"].items() if not value}
     assert result["status"] == "PASS", f"failed gates: {failed}"
     assert result["provenance"]["simulation_execution_mode"] == "FRESH"
@@ -197,7 +203,9 @@ def test_promotion_rejects_fresh_full_with_wrong_stage_hash(tmp_path: Path) -> N
     payload = json.loads(stage_path.read_text(encoding="utf-8"))
     payload["stages"]["reporting"]["source_hash"] = "0" * 64
     write_json(payload, stage_path)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["reporting_stage_hash_match"] is False
     assert result["checks"]["downstream_provenance_verified"] is False
     assert result["status"] == "FAIL"
@@ -210,13 +218,17 @@ def test_promotion_rejects_changed_simulation_stage(tmp_path: Path) -> None:
     payload = json.loads(stage_path.read_text(encoding="utf-8"))
     payload["stages"]["simulation"]["source_hash"] = "0" * 64
     write_json(payload, stage_path)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["simulation_stage_hash_match"] is False
     assert result["checks"]["simulation_provenance_verified"] is False
     assert result["status"] == "FAIL"
 
 
-def test_promotion_rejects_fake_reused_lineage_without_source_run(tmp_path: Path) -> None:
+def test_promotion_rejects_fake_reused_lineage_without_source_run(
+    tmp_path: Path,
+) -> None:
     run_dir = tmp_path / "run"
     fake_reused = RunLineage(
         run_id="full_fixture",
@@ -229,7 +241,9 @@ def test_promotion_rejects_fake_reused_lineage_without_source_run(tmp_path: Path
         exp4_worktree_clean_at_start=True,
     )
     _build_fresh_full_run(run_dir, ROOT, lineage=fake_reused)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["run_lineage_valid"] is False
     assert result["status"] == "FAIL"
 
@@ -249,7 +263,9 @@ def test_promotion_rejects_unverified_reused_lineage_without_reconciliation(
         exp4_worktree_clean_at_start=True,
     )
     _build_fresh_full_run(run_dir, ROOT, lineage=reused)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     # Structurally valid REUSED lineage, but no reconciliation artifact linking
     # the raw simulation to the source run: simulation provenance unverified.
     assert result["checks"]["run_lineage_valid"] is True
@@ -261,7 +277,9 @@ def test_promotion_rejects_missing_stage_record(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     _build_fresh_full_run(run_dir, ROOT)
     (run_dir / "logs" / "exp4_stage_provenance.json").unlink()
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["simulation_stage_record_present"] is False
     assert result["checks"]["reporting_stage_record_present"] is False
     assert result["checks"]["source_unchanged_during_run"] is False
@@ -271,6 +289,8 @@ def test_promotion_rejects_missing_stage_record(tmp_path: Path) -> None:
 def test_promotion_rejects_source_changed_during_run(tmp_path: Path) -> None:
     run_dir = tmp_path / "run"
     _build_fresh_full_run(run_dir, ROOT, source_unchanged=False)
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["source_unchanged_during_run"] is False
     assert result["status"] == "FAIL"

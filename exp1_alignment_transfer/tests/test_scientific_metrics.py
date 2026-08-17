@@ -228,7 +228,9 @@ def test_regret_stability_deterministic_and_random() -> None:
             actions = np.argmin(structural, axis=1)
         else:
             actions = rng.integers(0, structural.shape[1], size=structural.shape[0])
-        structural_regret = float(np.sum(structural_regret_increment(actions, structural)))
+        structural_regret = float(
+            np.sum(structural_regret_increment(actions, structural))
+        )
         route_regret = float(np.sum(route_regret_increment(actions, route)))
         assert abs(structural_regret - route_regret) <= alignment_budget + 1e-9
         rate, tolerance = regret_stability_slack(
@@ -250,7 +252,9 @@ def test_default_exact_shift_matches_explicit_scales() -> None:
     base = generate_smooth_bounded_ar1_path(config, 20000)
     default = generate_exact_valid_shift_path(base)
     explicit = generate_exact_valid_shift_path(base, g_scale=0.6, c_scale=0.1)
-    assert np.array_equal(default.structural_loss_matrix, explicit.structural_loss_matrix)
+    assert np.array_equal(
+        default.structural_loss_matrix, explicit.structural_loss_matrix
+    )
     assert default.path_hash == explicit.path_hash
     assert default.parameter_payload["g_scale"] == 0.6
     assert default.parameter_payload["c_scale"] == 0.1
@@ -270,11 +274,15 @@ def test_exact_cardinal_shift_sweep_all_zero() -> None:
     )
     assert rows
     assert checks["passed"]
-    assert checks["delta_all_zero"] and checks["rho_all_zero"] and checks["chi_all_zero"]
+    assert (
+        checks["delta_all_zero"] and checks["rho_all_zero"] and checks["chi_all_zero"]
+    )
     # Raw actionwise level error may grow with c_scale while validity holds.
     by_scale = {}
     for row in rows:
-        by_scale.setdefault(row["c_scale"], []).append(row["mean_absolute_actionwise_level_error"])
+        by_scale.setdefault(row["c_scale"], []).append(
+            row["mean_absolute_actionwise_level_error"]
+        )
     means = {scale: float(np.mean(values)) for scale, values in by_scale.items()}
     assert means[0.0] < means[0.05] < means[0.10] < means[0.20]
 

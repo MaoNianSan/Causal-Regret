@@ -49,9 +49,15 @@ def select_main_calibration_rows(controls: pd.DataFrame) -> pd.DataFrame:
     tuple (e.g. nonlinear_monotone) is excluded from the main table.
     """
     frame = controls.set_index("control_id")
-    missing = [control_id for control_id in MAIN_CALIBRATION_CONTROL_IDS if control_id not in frame.index]
+    missing = [
+        control_id
+        for control_id in MAIN_CALIBRATION_CONTROL_IDS
+        if control_id not in frame.index
+    ]
     if missing:
-        raise ValueError(f"Missing main-table control IDs in Module C summary: {missing}")
+        raise ValueError(
+            f"Missing main-table control IDs in Module C summary: {missing}"
+        )
     selected = frame.loc[list(MAIN_CALIBRATION_CONTROL_IDS)].reset_index()
     return selected[list(MAIN_TABLE_COLUMNS)].rename(
         columns={
@@ -97,14 +103,36 @@ def make_tables(run_dir: Path) -> None:
         "Calibration-family controls and correspondence status.",
         "tab:exp4_calibration_controls",
     )
-    _write_main_table_hashes(run_dir, tables / f"{MAIN_TABLE_ID}.csv", tables / f"{MAIN_TABLE_ID}.tex")
+    _write_main_table_hashes(
+        run_dir, tables / f"{MAIN_TABLE_ID}.csv", tables / f"{MAIN_TABLE_ID}.tex"
+    )
     appendix_sources = (
         ("tbl_app_exp4_parameters", _parameter_frame(), "Frozen Exp4 v3 parameters."),
-        ("tbl_app_exp4_paired_contrasts", pd.read_csv(module_a / "exp4_module_a_paired_contrasts.csv"), "Shared-seed paired contrasts."),
-        ("tbl_app_exp4_audit_performance", pd.read_csv(module_b / "exp4_module_b_audit_performance.csv"), "Audit bias, RMSE, and Monte Carlo error."),
-        ("tbl_app_exp4_weight_diagnostics", pd.read_csv(module_b / "exp4_module_b_weight_diagnostics.csv"), "IPW support and weight diagnostics."),
-        ("tbl_app_exp4_parameter_recovery", pd.read_csv(module_c / "exp4_module_c_parameter_recovery.csv"), "Calibration parameter recovery."),
-        ("tbl_app_exp4_correspondence_checks", pd.read_csv(module_c / "exp4_module_c_correspondence_checks.csv"), "Blocked-permutation correspondence checks."),
+        (
+            "tbl_app_exp4_paired_contrasts",
+            pd.read_csv(module_a / "exp4_module_a_paired_contrasts.csv"),
+            "Shared-seed paired contrasts.",
+        ),
+        (
+            "tbl_app_exp4_audit_performance",
+            pd.read_csv(module_b / "exp4_module_b_audit_performance.csv"),
+            "Audit bias, RMSE, and Monte Carlo error.",
+        ),
+        (
+            "tbl_app_exp4_weight_diagnostics",
+            pd.read_csv(module_b / "exp4_module_b_weight_diagnostics.csv"),
+            "IPW support and weight diagnostics.",
+        ),
+        (
+            "tbl_app_exp4_parameter_recovery",
+            pd.read_csv(module_c / "exp4_module_c_parameter_recovery.csv"),
+            "Calibration parameter recovery.",
+        ),
+        (
+            "tbl_app_exp4_correspondence_checks",
+            pd.read_csv(module_c / "exp4_module_c_correspondence_checks.csv"),
+            "Blocked-permutation correspondence checks.",
+        ),
     )
     for stem, frame, caption in appendix_sources:
         _write_table(frame, tables / stem, caption, f"tab:{stem}")

@@ -25,7 +25,11 @@ ROOT = Path(__file__).resolve().parents[1]
 def _mixed_tier_summary() -> pd.DataFrame:
     return pd.DataFrame(
         {
-            "control_id": ["affine_linked", "blocked_correspondence_destroyed", "nonlinear_monotone"],
+            "control_id": [
+                "affine_linked",
+                "blocked_correspondence_destroyed",
+                "nonlinear_monotone",
+            ],
             "control_display_name": [
                 "Affine-linked control",
                 "Temporally blocked correspondence-destroyed control",
@@ -71,7 +75,10 @@ def test_regression_full_run_with_nonfull_precision_status_fails() -> None:
         {
             "contrast_id": ["primary", "other"],
             "is_primary_contrast": [True, False],
-            "monte_carlo_precision_gate": ["NOT_APPLICABLE_NON_FULL", "REPORTED_NOT_GATED"],
+            "monte_carlo_precision_gate": [
+                "NOT_APPLICABLE_NON_FULL",
+                "REPORTED_NOT_GATED",
+            ],
         }
     )
     result = validate_monte_carlo_precision(contrasts, "full")
@@ -99,13 +106,18 @@ def test_regression_empty_latex_table_cannot_pass_promotion(tmp_path: Path) -> N
         "config_hash": "0" * 64,
         "code_commit": "x",
     }
-    (run_dir / "logs" / "run_config.json").write_text(json.dumps(run_config), encoding="utf-8")
+    (run_dir / "logs" / "run_config.json").write_text(
+        json.dumps(run_config), encoding="utf-8"
+    )
     for name in ("exp4_engineering_checks.json", "exp4_scientific_checks.json"):
         (run_dir / "checks" / name).write_text(
             json.dumps({"status": "PASS", "checks": []}), encoding="utf-8"
         )
     summary = _mixed_tier_summary()
-    summary.to_csv(run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv", index=False)
+    summary.to_csv(
+        run_dir / "derived" / "module_c" / "exp4_module_c_control_summary.csv",
+        index=False,
+    )
     contrasts = pd.DataFrame(
         {
             "contrast_id": ["primary"],
@@ -113,7 +125,10 @@ def test_regression_empty_latex_table_cannot_pass_promotion(tmp_path: Path) -> N
             "monte_carlo_precision_gate": ["PASS"],
         }
     )
-    contrasts.to_csv(run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv", index=False)
+    contrasts.to_csv(
+        run_dir / "derived" / "module_a" / "exp4_module_a_paired_contrasts.csv",
+        index=False,
+    )
     # Valid CSV but empty LaTeX body.
     main = select_main_calibration_rows(summary)
     _write_table(main, run_dir / "tables" / MAIN_TABLE_ID, "caption", "label")
@@ -122,8 +137,15 @@ def test_regression_empty_latex_table_cannot_pass_promotion(tmp_path: Path) -> N
         "\\begin{table}[t]\n\\toprule\n\\midrule\n\\bottomrule\n\\end{table}\n",
         encoding="utf-8",
     )
-    (run_dir / "figures" / "pdf" / "fig_exp4_route_alignment_and_audit_reliability.pdf").write_bytes(b"x")
-    result = validate_paper_promotion(run_dir, approve_claims=True, base_dir=ROOT, dry_run=True)
+    (
+        run_dir
+        / "figures"
+        / "pdf"
+        / "fig_exp4_route_alignment_and_audit_reliability.pdf"
+    ).write_bytes(b"x")
+    result = validate_paper_promotion(
+        run_dir, approve_claims=True, base_dir=ROOT, dry_run=True
+    )
     assert result["checks"]["main_table_latex_nonempty"] is False
     assert result["checks"]["main_table_complete"] is False
     assert result["status"] == "FAIL"

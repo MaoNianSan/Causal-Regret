@@ -83,7 +83,9 @@ def validate_main_calibration_table(
 
     # 1. Required control IDs each appear exactly once in the Module C summary.
     counts = control_summary["control_id"].value_counts().to_dict()
-    summary_counts = {cid: int(counts.get(cid, 0)) for cid in MAIN_CALIBRATION_CONTROL_IDS}
+    summary_counts = {
+        cid: int(counts.get(cid, 0)) for cid in MAIN_CALIBRATION_CONTROL_IDS
+    }
     checks["required_controls_each_exactly_once_in_summary"] = all(
         value == 1 for value in summary_counts.values()
     )
@@ -125,7 +127,14 @@ def validate_main_calibration_table(
     details["missing_columns"] = missing_columns
 
     # 5. Numeric values are finite.
-    numeric = table[["Raw pairwise discrepancy", "OOF calibrated pairwise discrepancy", "Recoverability", "Estimability rate"]]
+    numeric = table[
+        [
+            "Raw pairwise discrepancy",
+            "OOF calibrated pairwise discrepancy",
+            "Recoverability",
+            "Estimability rate",
+        ]
+    ]
     finite_values = numeric.map(np.isfinite).all().all() if len(table) else False
     checks["main_table_values_finite"] = bool(finite_values)
     details["main_table_has_nan"] = bool(numeric.isna().any().any())
@@ -147,12 +156,18 @@ def validate_main_calibration_table(
     )
 
     # 9. CSV values match the Module C summary for the required controls.
-    source = control_summary.set_index("control_id").loc[expected_ids].set_index("control_display_name")
+    source = (
+        control_summary.set_index("control_id")
+        .loc[expected_ids]
+        .set_index("control_display_name")
+    )
     mismatches: list[str] = []
     for source_column, table_column in SOURCE_TO_TABLE_COLUMNS:
         for display_name in table["Control"]:
             expected = float(source.loc[display_name, source_column])
-            actual = float(table.loc[table["Control"] == display_name, table_column].iloc[0])
+            actual = float(
+                table.loc[table["Control"] == display_name, table_column].iloc[0]
+            )
             if not np.isclose(expected, actual, rtol=1e-9, atol=1e-12):
                 mismatches.append(f"{display_name}:{source_column}")
     checks["main_table_matches_source"] = not mismatches
@@ -178,7 +193,11 @@ def _expected_display_names(control_summary: pd.DataFrame) -> list[str]:
 def write_table_checks(run_dir: Path, result: ValidationResult) -> None:
     payload = result.as_dict()
     payload["main_table_manifest"] = (
-        json.loads((run_dir / "logs" / "exp4_main_table_manifest.json").read_text(encoding="utf-8"))
+        json.loads(
+            (run_dir / "logs" / "exp4_main_table_manifest.json").read_text(
+                encoding="utf-8"
+            )
+        )
         if (run_dir / "logs" / "exp4_main_table_manifest.json").exists()
         else None
     )

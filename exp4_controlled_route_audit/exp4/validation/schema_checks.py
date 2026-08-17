@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import pandas as pd
 
-
 MODULE_A_COLUMNS = {
     "seed",
     "route_id",

@@ -14,16 +14,24 @@ from exp4.configuration.schema import (
     V2_TO_V3_SEMANTIC_MIGRATION,
     v3_pairwise_recompute_required,
 )
-from exp4.metrics.action_gaps import compute_action_gap_defect, compute_gap_discrepancies
+from exp4.metrics.action_gaps import (
+    compute_action_gap_defect,
+    compute_gap_discrepancies,
+)
 
 
 def test_v1_defect_snapshot_and_schema_migration() -> None:
     structural = np.array([[0.0, 0.5, 1.0]])
     route = np.array([[0.1, 0.4, 0.9]])
-    assert np.isclose(compute_action_gap_defect(structural, route).population_action_gap_defect, 0.2)
+    assert np.isclose(
+        compute_action_gap_defect(structural, route).population_action_gap_defect, 0.2
+    )
     assert RESULT_SCHEMA != V1_RESULT_SCHEMA
     assert RESULT_SCHEMA != V2_RESULT_SCHEMA
-    assert FIELD_MIGRATION["population_raw_action_gap_defect"] == "population_action_gap_defect"
+    assert (
+        FIELD_MIGRATION["population_raw_action_gap_defect"]
+        == "population_action_gap_defect"
+    )
     assert FIELD_MIGRATION["labelled_support_coefficient"] is None
 
 
@@ -54,11 +62,20 @@ def test_v2_scalar_equals_max_defect_not_pair_average() -> None:
     legacy = compute_action_gap_defect(structural, route)
     v3 = compute_gap_discrepancies(structural, route)
     assert np.isclose(legacy.population_action_gap_defect, v3.mean_round_max_gap_defect)
-    assert not np.isclose(legacy.population_action_gap_defect, v3.population_mean_pairwise_discrepancy)
+    assert not np.isclose(
+        legacy.population_action_gap_defect, v3.population_mean_pairwise_discrepancy
+    )
 
 
 def test_v1_full_output_remains_v1() -> None:
-    baseline = Path(__file__).resolve().parents[2] / "outputs" / "runs" / "full_20260726T140240Z_1be8996e" / "logs" / "run_config.json"
+    baseline = (
+        Path(__file__).resolve().parents[2]
+        / "outputs"
+        / "runs"
+        / "full_20260726T140240Z_1be8996e"
+        / "logs"
+        / "run_config.json"
+    )
     if not baseline.exists():
         pytest.skip("v1 full run baseline not present (removed during normalization)")
     assert V1_RESULT_SCHEMA in baseline.read_text(encoding="utf-8")
