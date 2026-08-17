@@ -1,11 +1,12 @@
-"""Result schema, artifact IDs, and v1-to-v2 field migration."""
+"""Result schema, artifact IDs, v1-to-v2 and v2-to-v3 field migration."""
 
 from __future__ import annotations
 
 
 EXPERIMENT_ID = "exp4_controlled_route_audit"
 EXPERIMENT_DISPLAY_NAME = "Experiment 4: Route Alignment and Evidence-Qualified Audit"
-RESULT_SCHEMA = "exp4_controlled_route_audit_v2"
+RESULT_SCHEMA = "exp4_controlled_route_audit_v3"
+V2_RESULT_SCHEMA = "exp4_controlled_route_audit_v2"
 V1_RESULT_SCHEMA = "exp4_controlled_route_audit_v1"
 LEGACY_RESULT_SCHEMA = "legacy_exp4_v1"
 
@@ -48,6 +49,38 @@ FIELD_MIGRATION = {
     "labelled_support_coefficient": None,
 }
 
+# --- v2 -> v3 semantic migration -------------------------------------------------
+# The v2 primary scalar ``population_action_gap_defect`` means
+# ``mean_round_max_gap_defect`` (the round-max defect averaged over rounds,
+# A_T / T). It does NOT migrate by rename to ``mean_pairwise_gap_discrepancy``
+# (D_pair). A legacy v2 artifact carrying only the max-based scalar cannot be
+# converted to the pair-average primary: the pair-average quantity must be
+# recomputed from pair-level / route-map information.
+V2_TO_V3_SEMANTIC_MIGRATION = {
+    "population_action_gap_defect": {
+        "v2_semantic": "mean_round_max_gap_defect",
+        "v3_primary_mapping": None,
+        "recompute_required_for_v3_primary": True,
+        "reason": (
+            "v2 population_action_gap_defect is A_T / T (round-max defect); "
+            "the v3 primary D_pair (pair-average discrepancy) must be "
+            "recomputed from pair-level gap information and cannot be "
+            "derived from the max-based scalar."
+        ),
+    },
+}
+RECOMPUTE_REQUIRED_FOR_V3_PRIMARY = True
+
+
+def v3_pairwise_recompute_required(fields: set[str]) -> bool:
+    """True when the v3 pair-average primary is absent and cannot be inferred.
+
+    A frame carrying only legacy v2 fields (e.g. ``population_action_gap_defect``)
+    must be marked RECOMPUTE_REQUIRED_FOR_V3_PRIMARY rather than silently
+    reinterpreted as the pair-average quantity.
+    """
+    return "mean_pairwise_gap_discrepancy" not in set(fields)
+
 REQUIRED_DERIVED_FILES = (
     "derived/module_a/exp4_module_a_seed_level.parquet",
     "derived/module_a/exp4_module_a_population_summary.csv",
@@ -68,7 +101,12 @@ REQUIRED_DERIVED_FILES = (
 )
 
 PRIMARY_MODULE_A_METRICS = (
-    "population_action_gap_defect",
+    "mean_pairwise_gap_discrepancy",
+    "pairwise_gap_sign_disagreement_rate",
     "route_optimal_set_conflict_rate",
+)
+
+SECONDARY_MODULE_A_METRICS = (
+    "mean_round_max_gap_defect",
     "margin_certificate_rate",
 )

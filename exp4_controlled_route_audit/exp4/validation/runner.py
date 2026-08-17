@@ -85,7 +85,7 @@ def validate_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     write_precision_checks(run_dir, precision_result)
     engineering_rows = [
         _row("required_derived_files_complete", all(path.exists() for path in required), f"missing={[path.relative_to(run_dir).as_posix() for path in required if not path.exists()]}"),
-        _row("result_schema_is_v2", run_config["result_schema"] == RESULT_SCHEMA and set(seed_level["result_schema"]) == {RESULT_SCHEMA}, f"run_schema={run_config['result_schema']}"),
+        _row("result_schema_is_v3", run_config["result_schema"] == RESULT_SCHEMA and set(seed_level["result_schema"]) == {RESULT_SCHEMA}, f"run_schema={run_config['result_schema']}"),
         _row("run_remains_nonpaper", run_config["paper_result"] is False and bool(seed_level["paper_result"].eq(False).all()), f"paper_result={run_config['paper_result']}"),
         _row("figure_bundles_complete", figure_complete, f"figure_count={len(figure_ids)}"),
         _row("figure_sources_reconstructable", sources_ok, sources_details),

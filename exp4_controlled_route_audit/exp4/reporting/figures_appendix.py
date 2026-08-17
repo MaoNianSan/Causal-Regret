@@ -80,7 +80,7 @@ def _optimal_set_conflict(run_dir: Path, population: pd.DataFrame, source: Path)
 def _ambiguity_relation(run_dir: Path, selection: pd.DataFrame, source: Path) -> None:
     data = selection[selection["audit_design_id"] == "ambiguity_decile_population"]
     figure, axis = plt.subplots(figsize=(4.8, 3.0))
-    axis.plot(data["mean_ambiguity"], data["mean_true_unit_defect"], marker="o", color="#C75B39")
+    axis.plot(data["mean_ambiguity"], data["mean_true_unit_pairwise_discrepancy"], marker="o", color="#C75B39")
     axis.set_xlabel("Mean ambiguity")
     axis.set_ylabel("Mean true unit defect")
     axis.grid()

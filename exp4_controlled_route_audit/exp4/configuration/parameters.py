@@ -1,4 +1,9 @@
-"""Immutable scientific parameters for Exp4 v2."""
+"""Immutable scientific parameters for Exp4 v3.
+
+The scientific grid (actions, state dimension, horizons, seeds, rates,
+noise levels, folds, calibration family) is frozen and identical to v2.
+Only the discrepancy-aggregation target and result naming moved to v3.
+"""
 
 from __future__ import annotations
 
@@ -61,7 +66,7 @@ class ReportingConfig:
     confidence_level: float = 0.95
     bootstrap_seed: int = 2026080605
     zero_defect_tolerance: float = 1e-12
-    raw_defect_epsilon: float = 1e-12
+    raw_pairwise_discrepancy_epsilon: float = 1e-12
     route_audit_correlation_tolerance: float = 0.05
     paper_figure_width_in: float = 7.15
     paper_figure_height_in: float = 5.75

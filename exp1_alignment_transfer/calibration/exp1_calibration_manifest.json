@@ -1,9 +1,9 @@
 {
   "artifact_hashes": {
-    "context": "37083f44f5610868af8afb9be102fc6b497e9f30c4f566ba04b019899df443f8",
-    "delay": "b4446316bc448871134b0b3cf1b11ac55a9754a930e89668cad99d68bd670efb",
-    "misbinding": "ceb71f724ae0fff0e80c482154ee4c1a2b612536e71763026d0215f4f1057275",
-    "structural": "346e65ece0c5392f65a9af37402f2de8543b67b2670d038b6b58f698439e6ef0"
+    "context": "eb7eb093448f2b9b9860dd0bae5b2719a1adb77d6279ac018b6da679768ec035",
+    "delay": "3a0e94d09298e12c4ef5686f91b67a6e950f9a3cd7b6ddbafeb8e7a13a697de7",
+    "misbinding": "1d2ea45c6308121fabe000ab3fd52c13ea9533f39c626a1d153d08dc6945bd54",
+    "structural": "854c1c512f9972de705c59eb95758ac87319fc9065e1789193b9295697688181"
   },
   "calibration_seed_ids": [
     10000,
@@ -28,9 +28,9 @@
     10019
   ],
   "calibration_status": "PASS",
-  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
-  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
-  "effective_config_hash": "21563d9a7d6a3134d56776beef7f02b88fbe31e8f18ac118a957eac374c3df02",
+  "code_commit": "0515e6ba138ccf463fb0283b01663bbe5fc984f6",
+  "code_lineage": "tree:6a280b8d30bb288f585a1f6d9d5c521a1f2c2101e4b411b012f50784f752ad70",
+  "effective_config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
   "effective_structural_config": {
     "ar_coefficient": 0.98,
     "context_noise_sd": 0.35,
@@ -75,6 +75,6 @@
   ],
   "evaluation_seed_overlap": false,
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-07-26T11:52:46.785969+00:00",
+  "generated_at": "2026-08-17T05:54:17.151696+00:00",
   "paper_result": false
 }

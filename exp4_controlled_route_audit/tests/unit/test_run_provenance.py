@@ -114,8 +114,8 @@ def test_promotion_rejects_unverified_simulation_provenance(tmp_path: Path) -> N
                 "preserved by construction",
                 "destroyed within temporal blocks",
             ],
-            "raw_defect": [0.5, 1.4],
-            "oof_calibrated_defect": [0.1, 0.9],
+            "raw_pairwise_discrepancy": [0.5, 1.4],
+            "oof_calibrated_pairwise_discrepancy": [0.1, 0.9],
             "recoverability": [0.7, 0.4],
             "estimability_rate": [1.0, 1.0],
         }
@@ -128,8 +128,8 @@ def test_promotion_rejects_unverified_simulation_provenance(tmp_path: Path) -> N
         [
             "control_display_name",
             "correspondence_status",
-            "raw_defect",
-            "oof_calibrated_defect",
+            "raw_pairwise_discrepancy",
+            "oof_calibrated_pairwise_discrepancy",
             "recoverability",
             "estimability_rate",
         ]
@@ -137,8 +137,8 @@ def test_promotion_rejects_unverified_simulation_provenance(tmp_path: Path) -> N
         columns={
             "control_display_name": "Control",
             "correspondence_status": "Unit-level correspondence",
-            "raw_defect": "Raw defect",
-            "oof_calibrated_defect": "OOF calibrated defect",
+            "raw_pairwise_discrepancy": "Raw pairwise discrepancy",
+            "oof_calibrated_pairwise_discrepancy": "OOF calibrated pairwise discrepancy",
             "recoverability": "Recoverability",
             "estimability_rate": "Estimability rate",
         }

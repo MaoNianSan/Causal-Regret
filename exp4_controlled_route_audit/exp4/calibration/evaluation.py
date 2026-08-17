@@ -14,8 +14,8 @@ from exp4.metrics.action_gaps import action_pair_indices
 
 @dataclass(frozen=True)
 class CalibrationEvaluation:
-    raw_defect: float
-    calibrated_defect: float
+    raw_pairwise_discrepancy: float
+    oof_calibrated_pairwise_discrepancy: float
     recoverability: float
     estimable: bool
     status: str
@@ -76,26 +76,28 @@ def evaluate_cross_fitted_calibration(
             )
     labelled = np.asarray(inclusion_mask, dtype=bool)
     labelled_weights = np.asarray(weights, dtype=np.float64)[labelled]
-    raw_unit = np.max(np.abs(route_gaps - structural_gaps), axis=1)
-    raw_defect = float(
+    # v3 aggregation: unit discrepancy is the PAIR AVERAGE of absolute
+    # route-vs-structural gap errors, not the round-max defect.
+    raw_unit = np.mean(np.abs(route_gaps - structural_gaps), axis=1)
+    raw_pairwise = float(
         np.sum(labelled_weights * raw_unit[labelled]) / np.sum(labelled_weights)
     )
     if not all_estimable:
         return CalibrationEvaluation(
-            raw_defect, np.nan, np.nan, False, "NOT_ESTIMABLE", minimum_support, parameter_records
+            raw_pairwise, np.nan, np.nan, False, "NOT_ESTIMABLE", minimum_support, parameter_records
         )
-    calibrated_unit = np.max(np.abs(predictions - structural_gaps), axis=1)
-    calibrated_defect = float(
+    calibrated_unit = np.mean(np.abs(predictions - structural_gaps), axis=1)
+    calibrated_pairwise = float(
         np.sum(labelled_weights * calibrated_unit[labelled]) / np.sum(labelled_weights)
     )
     recoverability = (
-        1.0 - calibrated_defect / raw_defect
-        if raw_defect > REPORTING.raw_defect_epsilon
+        1.0 - calibrated_pairwise / raw_pairwise
+        if raw_pairwise > REPORTING.raw_pairwise_discrepancy_epsilon
         else np.nan
     )
     return CalibrationEvaluation(
-        raw_defect,
-        calibrated_defect,
+        raw_pairwise,
+        calibrated_pairwise,
         float(recoverability),
         True,
         "ESTIMABLE",

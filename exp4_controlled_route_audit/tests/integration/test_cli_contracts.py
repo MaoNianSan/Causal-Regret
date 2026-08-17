@@ -17,4 +17,4 @@ def test_run_modes_and_static_contract() -> None:
     assert not mode_settings("middle").promotion_allowed
     checks = run_static_checks(root)
     assert checks["status"] == "PASS", json.dumps(checks, indent=2)
-    assert RESULT_SCHEMA == "exp4_controlled_route_audit_v2"
+    assert RESULT_SCHEMA == "exp4_controlled_route_audit_v3"

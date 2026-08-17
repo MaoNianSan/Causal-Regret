@@ -12,10 +12,16 @@ from exp4.metrics.monte_carlo import mean_mcse, percentile_interval
 
 
 METRICS = (
-    "population_action_gap_defect",
+    # v3 primary: pair-average gap discrepancy (D_pair).
+    "mean_pairwise_gap_discrepancy",
     "route_optimal_set_conflict_rate",
     "pairwise_gap_sign_disagreement_rate",
+    # v3 secondary full-map/theorem diagnostics.
+    "mean_round_max_gap_defect",
     "margin_certificate_rate",
+    # LEGACY v2 field (explicit): max-defect population scalar. Kept so v2
+    # figures/contrasts keep consuming the identical max-based quantity.
+    "population_action_gap_defect",
 )
 
 

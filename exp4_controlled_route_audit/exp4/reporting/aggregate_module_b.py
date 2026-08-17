@@ -15,7 +15,7 @@ def aggregate_audit_performance(condition_level: pd.DataFrame) -> pd.DataFrame:
     group_columns = ["audit_design_id", "audit_evidence_rate"]
     for keys, group in condition_level.groupby(group_columns, sort=True):
         errors = group["audit_estimation_error"].to_numpy(dtype=float)
-        estimates = group["audited_action_gap_defect"].to_numpy(dtype=float)
+        estimates = group["audited_mean_pairwise_gap_discrepancy"].to_numpy(dtype=float)
         finite = np.isfinite(errors)
         errors = errors[finite]
         rmse = float(np.sqrt(np.mean(errors**2))) if len(errors) else np.nan
@@ -68,10 +68,10 @@ def aggregate_selection_diagnostics(
     summary = (
         condition_level.groupby(["audit_design_id", "audit_evidence_rate"], sort=True)
         .agg(
-            mean_ambiguity_defect_correlation=("ambiguity_defect_correlation", "mean"),
-            mean_included_defect=("included_mean_defect", "mean"),
-            mean_excluded_defect=("excluded_mean_defect", "mean"),
-            mean_selection_defect_difference=("selection_defect_difference", "mean"),
+            mean_ambiguity_discrepancy_correlation=("ambiguity_discrepancy_correlation", "mean"),
+            mean_included_pairwise_discrepancy=("included_mean_pairwise_discrepancy", "mean"),
+            mean_excluded_pairwise_discrepancy=("excluded_mean_pairwise_discrepancy", "mean"),
+            mean_selection_pairwise_discrepancy_difference=("selection_pairwise_discrepancy_difference", "mean"),
             mean_route_label_audit_mask_correlation=("route_label_audit_mask_correlation", "mean"),
         )
         .reset_index()
@@ -80,7 +80,7 @@ def aggregate_selection_diagnostics(
         ambiguity_deciles.groupby("ambiguity_decile", sort=True)
         .agg(
             mean_ambiguity=("mean_ambiguity", "mean"),
-            mean_true_unit_defect=("mean_true_unit_defect", "mean"),
+            mean_true_unit_pairwise_discrepancy=("mean_true_unit_pairwise_discrepancy", "mean"),
             monte_carlo_replications=("replication_id", "nunique"),
         )
         .reset_index()

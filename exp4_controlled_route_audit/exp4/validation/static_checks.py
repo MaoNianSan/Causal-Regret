@@ -20,12 +20,18 @@ def run_static_checks(base_dir: Path) -> dict[str, Any]:
     ]
     source = "\n".join(path.read_text(encoding="utf-8") for path in scientific_paths)
     defect_definitions = 0
+    discrepancy_definitions = 0
     import_graph: dict[str, set[str]] = {}
     for path in python_files:
         tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
         defect_definitions += sum(
             isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
             and node.name == "compute_action_gap_defect"
+            for node in ast.walk(tree)
+        )
+        discrepancy_definitions += sum(
+            isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+            and node.name == "compute_gap_discrepancies"
             for node in ast.walk(tree)
         )
         module = ".".join(path.relative_to(base_dir).with_suffix("").parts)
@@ -49,8 +55,10 @@ def run_static_checks(base_dir: Path) -> dict[str, Any]:
         for path in (package / "reporting").glob("figures_*.py")
     )
     checks = [
-        ("result_schema_v2", RESULT_SCHEMA == "exp4_controlled_route_audit_v2"),
+        ("result_schema_v3", RESULT_SCHEMA == "exp4_controlled_route_audit_v3"),
         ("single_defect_implementation", defect_definitions == 1),
+        ("single_discrepancy_implementation", discrepancy_definitions == 1),
+        ("v3_pairwise_primary_present", "mean_pairwise_gap_discrepancy" in source),
         ("dormant_oracle_registry_removed", "noisy_state_oracle" not in ROUTE_REGISTRY and "latent_state_oracle" not in ROUTE_REGISTRY),
         ("module_packages_present", all((package / name).is_dir() for name in ("configuration", "simulation", "routes", "metrics", "audit", "calibration", "modules", "outputs", "reporting", "validation"))),
         ("plotting_does_not_import_scientific_engines", all(term not in plotting_source for term in ("exp4.simulation", "exp4.routes", "exp4.audit", "exp4.calibration"))),

@@ -18,12 +18,14 @@ from src.artifact_io import atomic_write_json, code_lineage, hash_payload, read_
 from src.metrics import (
     action_gap_defect,
     action_gap_defect_bruteforce,
+    regret_stability_slack,
     route_regret_increment,
     structural_regret_increment,
     transfer_slack,
 )
 from src.path_generator import build_shared_path_bundle
 from src.route_maps import build_arrival_assigned_route_map
+from src.theory_sweeps import run_invariant_checks
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -286,12 +288,170 @@ def run_checks(run_tier: str) -> dict[str, Any]:
         rr = float(np.sum(route_regret_increment(actions, route.route_loss_matrix)))
         budget = float(np.sum(action_gap_defect(route.route_loss_matrix, structural_loss)))
         slack, tolerance = transfer_slack(sr, rr, budget, structural_loss.shape[0])
-        formula_details.append(
-            {"mechanism_id": mechanism, "delta_formula_error": delta_error, "random_action_slack": slack}
+        # G. INDEPENDENT ACTION-SEQUENCE CHECK: the theorem applies to
+        # arbitrary realized action sequences, not only route-greedy actions.
+        stability_rate, stability_tolerance = regret_stability_slack(
+            sr, rr, budget, structural_loss.shape[0]
         )
-        if delta_error > 1e-12 or slack < -tolerance:
+        formula_details.append(
+            {
+                "mechanism_id": mechanism,
+                "delta_formula_error": delta_error,
+                "random_action_slack": slack,
+                "random_action_stability_slack": stability_rate,
+            }
+        )
+        if (
+            delta_error > 1e-12
+            or slack < -tolerance
+            or stability_rate < -stability_tolerance
+        ):
             raise AssertionError(f"independent formula check failed: {formula_details[-1]}")
     checks.append(_assert(True, "independent_delta_and_transfer_formula_checks", formula_details))
+
+    # --- Final-theory scientific gates (config v1.2). ----------------------
+    # A. VALIDITY HIERARCHY: delta ~ 0 => rho ~ 0 => chi ~ 0 (no converses).
+    hierarchy_tolerance = 1e-10
+    delta_small = route_round.delta_gap <= hierarchy_tolerance
+    rho_small = route_round.pairwise_sign_disagreement <= hierarchy_tolerance
+    chi_small = route_round.directed_choice_disagreement <= hierarchy_tolerance
+    checks.append(
+        _assert(
+            bool((delta_small <= rho_small).all() and (rho_small <= chi_small).all()),
+            "validity_hierarchy",
+            {
+                "delta_implies_rho_violations": int((delta_small & ~rho_small).sum()),
+                "rho_implies_chi_violations": int((rho_small & ~chi_small).sum()),
+            },
+        )
+    )
+
+    # B. BINARY LEGACY CONSISTENCY: ranking_reversal == chi > 0.
+    checks.append(
+        _assert(
+            bool(
+                (
+                    route_round.ranking_reversal.astype(bool)
+                    == (route_round.directed_choice_disagreement > 0.0)
+                ).all()
+            ),
+            "binary_legacy_ranking_reversal_consistency",
+            int(
+                (
+                    route_round.ranking_reversal.astype(bool)
+                    != (route_round.directed_choice_disagreement > 0.0)
+                ).sum()
+            ),
+        )
+    )
+
+    # C. COMPLETE CONFLICT: complete_conflict == chi ~ 1.
+    checks.append(
+        _assert(
+            bool(
+                (
+                    route_round.complete_conflict.astype(bool)
+                    == np.isclose(
+                        route_round.directed_choice_disagreement, 1.0, atol=1e-12, rtol=0.0
+                    )
+                ).all()
+            ),
+            "complete_conflict_equals_unit_chi",
+            int(
+                (
+                    route_round.complete_conflict.astype(bool)
+                    != np.isclose(
+                        route_round.directed_choice_disagreement, 1.0, atol=1e-12, rtol=0.0
+                    )
+                ).sum()
+            ),
+        )
+    )
+
+    # D. MARGIN BRIDGE: delta < mu => chi = 0 (strict inequality).
+    bridge_rows = route_round[route_round.delta_gap < route_round.structural_margin]
+    checks.append(
+        _assert(
+            bool((bridge_rows.directed_choice_disagreement == 0.0).all()),
+            "margin_bridge_strict",
+            int((bridge_rows.directed_choice_disagreement != 0.0).sum()),
+        )
+    )
+
+    # E. COMPLETE-CONFLICT MARGIN: delta >= gamma + eta - tolerance.
+    conflict_rows = route_round[route_round.complete_conflict.astype(bool)]
+    conflict_bound_violations = int(
+        (
+            conflict_rows.delta_gap
+            < (
+                conflict_rows.structural_conflict_margin
+                + conflict_rows.route_conflict_margin
+                - 1e-10
+            )
+        ).sum()
+    )
+    checks.append(
+        _assert(
+            conflict_bound_violations == 0,
+            "complete_conflict_margin_bound",
+            conflict_bound_violations,
+        )
+    )
+
+    # F. SHARP PATHWISE STABILITY: |R_c - R_r| <= A + tolerance.
+    stability_violations = int(
+        (
+            np.abs(route_seed.structural_regret - route_seed.route_regret)
+            > route_seed.alignment_budget + 1e-8
+        ).sum()
+    )
+    checks.append(
+        _assert(
+            stability_violations == 0 and bool(route_seed.regret_stability_invariant_pass.all()),
+            "sharp_pathwise_regret_stability",
+            stability_violations,
+        )
+    )
+
+    # H. EXACT CARDINAL VALIDITY: zero_delay, source_bound, exact_valid_shift
+    #    must have delta/rho/chi all zero.
+    exact_validity_rows = route_round[
+        route_round.mechanism_id.isin(["zero_delay", "exact_valid_shift"])
+        | (route_round.route_id == "source_bound")
+    ]
+    exact_validity_violations = int(
+        (
+            (exact_validity_rows.delta_gap.abs() > 1e-10)
+            | (exact_validity_rows.pairwise_sign_disagreement > 1e-10)
+            | (exact_validity_rows.directed_choice_disagreement > 1e-10)
+        ).sum()
+    )
+    checks.append(
+        _assert(
+            exact_validity_violations == 0,
+            "exact_cardinal_validity_delta_rho_chi_zero",
+            exact_validity_violations,
+        )
+    )
+
+    # I. THEORY SWEEP CHECKS: independent rebuild of the sweep invariants.
+    sweep_seeds = RUN.fast_seeds if run_tier == "fast" else RUN.evaluation_seeds
+    sweep_checks = run_invariant_checks(
+        structural_config,
+        sweep_seeds,
+        float(calibration["delay"]["geometric_probability"]),
+        DELAY,
+    )
+    checks.append(
+        _assert(
+            bool(sweep_checks["all_theory_sweeps_pass"]),
+            "theory_sweep_invariants",
+            {
+                "exact_cardinal_shift": sweep_checks["theory_exact_cardinal_shift_sweep"]["passed"],
+                "margin_threshold": sweep_checks["theory_margin_threshold_sweep"]["passed"],
+            },
+        )
+    )
 
     checks.append(
         _assert(

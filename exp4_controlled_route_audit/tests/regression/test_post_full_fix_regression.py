@@ -37,8 +37,8 @@ def _mixed_tier_summary() -> pd.DataFrame:
                 "destroyed within temporal blocks",
                 "monotone but outside affine family",
             ],
-            "raw_defect": [0.59, 1.44, 0.19],
-            "oof_calibrated_defect": [0.16, 0.88, 0.11],
+            "raw_pairwise_discrepancy": [0.59, 1.44, 0.19],
+            "oof_calibrated_pairwise_discrepancy": [0.16, 0.88, 0.11],
             "recoverability": [0.74, 0.39, 0.41],
             "estimability_rate": [1.0, 1.0, 1.0],
         }

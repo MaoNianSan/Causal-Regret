@@ -1,4 +1,4 @@
-"""Auto-generated Exp4 v2 implementation status from the run registry.
+"""Auto-generated Exp4 v3 implementation status from the run registry.
 
 The status report is derived from committed run configs, check payloads, and a
 read-only provenance audit, so it cannot silently claim FULL_RUN_EXECUTED=NO
@@ -188,10 +188,10 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
 def write_implementation_status(base_dir: Path, path: Path) -> dict[str, object]:
     status = build_implementation_status(base_dir)
     lines = [
-        "# Exp4 v2 Implementation Status",
+        "# Exp4 v3 Implementation Status",
         "",
         f"Status date: {status['generated_at']}",
-        f"Schema: `exp4_controlled_route_audit_v2`",
+        f"Schema: `exp4_controlled_route_audit_v3`",
         f"Source hash algorithm: `{status['source_hash_algorithm_version']}`",
         f"Scope: `exp4_controlled_route_audit` only",
         "",

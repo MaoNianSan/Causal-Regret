@@ -15,12 +15,18 @@ from src.contracts import EXPERIMENT_ID, ScientificInvariantError
 from src.delayed_exp3 import ContextualDelayedEXP3, SourceFeedbackEvent
 from src.metrics import (
     action_gap_defect,
+    complete_conflict_indicator,
     deterministic_best_action,
+    directed_choice_disagreement,
     margin_preservation,
     optimal_mask,
+    pairwise_sign_disagreement,
     ranking_reversal,
+    regret_stability_slack,
     reversal_margin,
+    route_conflict_margin,
     route_regret_increment,
+    structural_conflict_margin,
     structural_margin,
     structural_regret_increment,
     transfer_slack,
@@ -102,6 +108,17 @@ def run_route_map_diagnostic(
         route_best_sets = _set_as_list(route_best_mask)
         actions = route_best_action.copy()  # route-greedy diagnostic
         delta = action_gap_defect(route_loss, structural_loss)
+        rho = pairwise_sign_disagreement(route_loss, structural_loss)
+        chi = directed_choice_disagreement(route_loss, structural_loss)
+        complete_conflict = complete_conflict_indicator(route_loss, structural_loss)
+        gamma = structural_conflict_margin(route_loss, structural_loss)
+        eta = route_conflict_margin(route_loss, structural_loss)
+        with np.errstate(invalid="ignore", divide="ignore"):
+            gap_margin_ratio = np.where(
+                np.isfinite(recomputed_margin) & (recomputed_margin > 0.0),
+                delta / recomputed_margin,
+                np.nan,
+            )
         reversals = ranking_reversal(route_loss, structural_loss)
         preserved = margin_preservation(delta, recomputed_margin)
         reversal_margins = reversal_margin(route_loss, structural_loss)
@@ -129,6 +146,12 @@ def run_route_map_diagnostic(
                 "route_regret_increment": route_inc,
                 "delta_gap": delta,
                 "structural_margin": recomputed_margin,
+                "pairwise_sign_disagreement": rho,
+                "directed_choice_disagreement": chi,
+                "complete_conflict": complete_conflict,
+                "structural_conflict_margin": gamma,
+                "route_conflict_margin": eta,
+                "gap_margin_ratio": gap_margin_ratio,
                 "ranking_reversal": reversals,
                 "margin_preserved": preserved,
                 "reversal_margin": reversal_margins,
@@ -152,7 +175,13 @@ def run_route_map_diagnostic(
         slack_rate, numerical_tolerance = transfer_slack(
             structural_regret, route_regret, alignment_budget, structural_loss.shape[0]
         )
+        stability_rate, stability_tolerance = regret_stability_slack(
+            structural_regret, route_regret, alignment_budget, structural_loss.shape[0]
+        )
         reversal_values = reversal_margins[reversals]
+        conflict_mask = complete_conflict.astype(bool)
+        gamma_values = gamma[conflict_mask]
+        eta_values = eta[conflict_mask]
         seed_rows.append(
             {
                 **global_meta,
@@ -170,7 +199,26 @@ def run_route_map_diagnostic(
                 "transfer_slack_rate": slack_rate,
                 "numerical_tolerance": numerical_tolerance,
                 "transfer_invariant_pass": bool(slack_rate >= -numerical_tolerance),
+                "regret_stability_slack_rate": stability_rate,
+                "regret_stability_tolerance": stability_tolerance,
+                "regret_stability_invariant_pass": bool(stability_rate >= -stability_tolerance),
+                "pairwise_sign_disagreement_rate": float(np.mean(rho)),
+                "directed_choice_disagreement_rate": float(np.mean(chi)),
                 "ranking_reversal_rate": float(np.mean(reversals)),
+                "complete_conflict_rate": float(np.mean(complete_conflict)),
+                "complete_conflict_count": int(np.sum(conflict_mask)),
+                "mean_structural_conflict_margin": (
+                    float(np.mean(gamma_values)) if gamma_values.size else np.nan
+                ),
+                "min_structural_conflict_margin": (
+                    float(np.min(gamma_values)) if gamma_values.size else np.nan
+                ),
+                "mean_route_conflict_margin": (
+                    float(np.mean(eta_values)) if eta_values.size else np.nan
+                ),
+                "min_route_conflict_margin": (
+                    float(np.min(eta_values)) if eta_values.size else np.nan
+                ),
                 "margin_preservation_rate": float(np.mean(preserved)),
                 "mean_reversal_margin": float(np.mean(reversal_values)) if reversal_values.size else 0.0,
                 "q10_reversal_margin": float(np.quantile(reversal_values, 0.10)) if reversal_values.size else 0.0,

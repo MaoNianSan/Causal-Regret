@@ -112,7 +112,16 @@ def generate_exact_valid_shift_path(
     base_random_path: StructuralPath,
     reference_action_index: int | None = None,
     tie_tolerance: float = 1e-12,
+    g_scale: float = 0.6,
+    c_scale: float = 0.1,
 ) -> StructuralPath:
+    """Exact-cardinal-valid shift path: L(a) = g(a) + c_t.
+
+    The round-level offset ``c_t`` is action-invariant, so every decision
+    relevant gap is preserved exactly. Defaults reproduce the frozen primary
+    scientific construction exactly (g_scale=0.6, c_scale=0.1); calling with
+    no new argument must be byte-identical to the previous v1.1 output.
+    """
     if base_random_path.structural_family_id != "smooth_bounded_ar1":
         raise ContractError("exact-valid shift requires a smooth bounded base random path")
     k = base_random_path.action_locations.size
@@ -122,8 +131,8 @@ def generate_exact_valid_shift_path(
     one_based = np.arange(1, k + 1, dtype=float)
     ref_one = float(ref + 1)
     denominator = float(np.max((one_based - ref_one) ** 2))
-    g = 0.6 * (one_based - ref_one) ** 2 / denominator
-    c = 0.1 * (1.0 + base_random_path.structural_state)
+    g = float(g_scale) * (one_based - ref_one) ** 2 / denominator
+    c = float(c_scale) * (1.0 + base_random_path.structural_state)
     loss = g[None, :] + c[:, None]
     best, margin = _best_mask_and_margin(loss, tie_tolerance)
     payload = {
@@ -131,8 +140,8 @@ def generate_exact_valid_shift_path(
         "structural_family_id": "action_invariant_shift",
         "base_path_hash": base_random_path.path_hash,
         "reference_action_index": ref,
-        "g_scale": 0.6,
-        "c_scale": 0.1,
+        "g_scale": float(g_scale),
+        "c_scale": float(c_scale),
     }
     path_hash = _array_hash(
         base_random_path.source_rounds,

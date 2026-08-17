@@ -13,7 +13,7 @@ from typing import Any
 
 
 EXPERIMENT_ID = "exp1_alignment_transfer"
-CONFIG_VERSION = "1.1"
+CONFIG_VERSION = "1.2"
 
 
 @dataclass(frozen=True)
@@ -74,9 +74,46 @@ class RunConfig:
     ci_level: float = 0.95
 
 
+@dataclass(frozen=True)
+class TheorySweepConfig:
+    """Frozen theorem-targeted sweep configuration (v1.2).
+
+    These are theorem-targeted diagnostics, NOT new delay mechanisms. They
+    must never be added to MECHANISM_ORDER. Values are fixed ex ante and
+    MUST NOT be changed after viewing results:
+
+    - exact_shift_scales test action-invariant offset magnitude;
+    - margin_distortion_ratios directly bracket the theorem threshold
+      delta/mu = 1 (strict inequality at 1 is required).
+    """
+
+    exact_shift_scales = (
+        0.00,
+        0.05,
+        0.10,
+        0.20,
+    )
+
+    margin_distortion_ratios = (
+        0.00,
+        0.25,
+        0.50,
+        0.75,
+        0.90,
+        0.99,
+        1.00,
+        1.01,
+        1.10,
+        1.25,
+        1.50,
+        2.00,
+    )
+
+
 STRUCTURAL = StructuralConfig()
 DELAY = DelayConfig()
 RUN = RunConfig()
+THEORY_SWEEP = TheorySweepConfig()
 LEARNER = LearnerConfig.from_dimensions(
     k_actions=STRUCTURAL.k_actions,
     n_context_cells=STRUCTURAL.k_actions,
@@ -101,7 +138,7 @@ MECHANISM_ORDER = (
 
 DISPLAY_NAMES = {
     "zero_delay": "Zero delay",
-    "exact_valid_shift": "Exact-valid shift",
+    "exact_valid_shift": "Exact-cardinal-valid shift",
     "geometric_delay": "Geometric delay",
     "mixture_delay": "Mixture delay",
     "state_coupled_delay": "State-coupled delay",
@@ -118,6 +155,7 @@ def canonical_payload(
     delay: DelayConfig = DELAY,
     learner: LearnerConfig = LEARNER,
     run: RunConfig = RUN,
+    theory_sweep: TheorySweepConfig = THEORY_SWEEP,
 ) -> dict[str, Any]:
     return {
         "experiment_id": EXPERIMENT_ID,
@@ -126,6 +164,7 @@ def canonical_payload(
         "delay": asdict(delay),
         "learner": asdict(learner),
         "run": asdict(run),
+        "theory_sweep": asdict(theory_sweep),
         "mechanism_order": list(MECHANISM_ORDER),
     }
 
@@ -135,9 +174,10 @@ def config_hash(
     delay: DelayConfig = DELAY,
     learner: LearnerConfig = LEARNER,
     run: RunConfig = RUN,
+    theory_sweep: TheorySweepConfig = THEORY_SWEEP,
 ) -> str:
     raw = json.dumps(
-        canonical_payload(structural, delay, learner, run),
+        canonical_payload(structural, delay, learner, run, theory_sweep),
         sort_keys=True,
         separators=(",", ":"),
     ).encode("utf-8")

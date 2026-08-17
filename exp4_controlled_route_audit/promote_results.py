@@ -45,7 +45,7 @@ def validate_paper_promotion(
     stages = provenance["stages"]
     checks = {
         "run_tier_is_full": run_config["run_tier"] == "full",
-        "result_schema_is_v2": run_config["result_schema"] == RESULT_SCHEMA,
+        "result_schema_is_v3": run_config["result_schema"] == RESULT_SCHEMA,
         "engineering_status_pass": engineering["status"] == "PASS",
         "scientific_status_pass": scientific["status"] == "PASS",
         "all_required_derived_files_complete": all((run_dir / path).exists() for path in REQUIRED_DERIVED_FILES),

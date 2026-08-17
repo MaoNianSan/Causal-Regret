@@ -16,8 +16,8 @@ def aggregate_control_summary(replication_level: pd.DataFrame) -> pd.DataFrame:
             sort=True,
         )
         .agg(
-            raw_defect=("raw_defect", "mean"),
-            oof_calibrated_defect=("oof_calibrated_defect", "mean"),
+            raw_pairwise_discrepancy=("raw_pairwise_discrepancy", "mean"),
+            oof_calibrated_pairwise_discrepancy=("oof_calibrated_pairwise_discrepancy", "mean"),
             recoverability=("recoverability", "mean"),
             negative_recoverability_rate=("negative_recoverability_indicator", "mean"),
             estimability_rate=("estimable", "mean"),

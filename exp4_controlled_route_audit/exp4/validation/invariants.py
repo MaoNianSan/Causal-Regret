@@ -1,4 +1,4 @@
-"""Scientific invariants for completed Exp4 v2 runs."""
+"""Scientific invariants for completed Exp4 v3 runs."""
 
 from __future__ import annotations
 
@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 
 from exp4.configuration.parameters import CALIBRATION, MODULE_A, MODULE_B, REPORTING, SHARED_DGP
-from exp4.metrics.action_gaps import compute_action_gap_defect
+from exp4.metrics.action_gaps import compute_gap_discrepancies
 from exp4.routes.partial_label_proxy import _label_blind_assignments
 from exp4.validation.precision_checks import validate_monte_carlo_precision
 
@@ -18,16 +18,20 @@ from exp4.validation.precision_checks import validate_monte_carlo_precision
 def _manual_defect_check() -> tuple[bool, str]:
     structural = np.array(((0.0, 1.0, 3.0), (1.0, 1.5, 2.0)))
     route = np.array(((0.0, 2.0, 2.0), (2.0, 1.5, 1.0)))
-    result = compute_action_gap_defect(structural, route)
-    manual = []
+    result = compute_gap_discrepancies(structural, route)
+    manual_max = []
+    manual_mean = []
     for structural_row, route_row in zip(structural, route, strict=True):
         values = []
         for low in range(3):
             for high in range(low + 1, 3):
                 values.append(abs((route_row[low] - route_row[high]) - (structural_row[low] - structural_row[high])))
-        manual.append(max(values))
-    difference = float(np.max(np.abs(result.round_max_gap_defect - np.asarray(manual))))
-    return difference < 1e-12, f"max_difference={difference:.3e}"
+        manual_max.append(max(values))
+        manual_mean.append(sum(values) / len(values))
+    max_difference = float(np.max(np.abs(result.round_max_gap_defect - np.asarray(manual_max))))
+    mean_difference = float(np.max(np.abs(result.round_mean_pairwise_discrepancy - np.asarray(manual_mean))))
+    ok = max_difference < 1e-12 and mean_difference < 1e-12
+    return ok, f"max_difference={max_difference:.3e},mean_difference={mean_difference:.3e}"
 
 
 def scientific_checks(run_dir: Path) -> list[tuple[str, bool, str]]:
@@ -56,9 +60,45 @@ def scientific_checks(run_dir: Path) -> list[tuple[str, bool, str]]:
     first_trajectory = np.load(run_dir / manifest["trajectory_file"].iloc[0])
     uniforms = first_trajectory["route_label_uniforms"]
     nested = np.all((uniforms < 0.3) <= (uniforms < 0.7)) and np.all((uniforms < 0.7) <= (uniforms < 1.0))
+    # v3 primary/secondary alignment diagnostics.
+    pairwise = seed_level["mean_pairwise_gap_discrepancy"]
+    max_defect = seed_level["mean_round_max_gap_defect"]
+    nonnegativity = bool(float(pairwise.min()) >= -1e-12 and float(max_defect.min()) >= -1e-12)
+    mean_leq_max = bool((pairwise <= max_defect + REPORTING.zero_defect_tolerance).all())
+    source_pairwise_zero = float(source["mean_pairwise_gap_discrepancy"].abs().max()) < REPORTING.zero_defect_tolerance
+    source_sign_conflict_zero = bool(
+        float(source["pairwise_gap_sign_disagreement_rate"].abs().max()) < REPORTING.zero_defect_tolerance
+        and float(source["route_optimal_set_conflict_rate"].abs().max()) < REPORTING.zero_defect_tolerance
+    )
+    q1_pairwise_zero = float(q1["mean_pairwise_gap_discrepancy"].abs().max()) < REPORTING.zero_defect_tolerance
+    q1_sign_conflict_zero = bool(
+        float(q1["pairwise_gap_sign_disagreement_rate"].abs().max()) < REPORTING.zero_defect_tolerance
+        and float(q1["route_optimal_set_conflict_rate"].abs().max()) < REPORTING.zero_defect_tolerance
+    )
+    # Audit full-population exactness at evidence rate 1.
+    full_population = conditions[np.isclose(conditions["audit_evidence_rate"], 1.0)]
+    full_population_exact = bool(
+        float(full_population["absolute_audit_error"].abs().max()) < 1e-12
+    ) if len(full_population) else False
+    # Estimand consistency: every design consumes the same unit-level d_i_pair.
+    consistency_frame = unit_level.pivot_table(
+        index=["replication_id", "unit_id"],
+        columns="audit_design_id",
+        values="true_unit_mean_pairwise_gap_discrepancy",
+        aggfunc="first",
+    )
+    estimand_consistent = bool((consistency_frame.nunique(axis=1) == 1).all())
     checks = [
         ("SOURCE_BOUND_DEFECT_ZERO", float(source["population_action_gap_defect"].abs().max()) < REPORTING.zero_defect_tolerance, f"max={source['population_action_gap_defect'].abs().max():.3e}"),
         ("FULL_LABEL_PROXY_DEFECT_ZERO", float(q1["population_action_gap_defect"].abs().max()) < REPORTING.zero_defect_tolerance, f"max={q1['population_action_gap_defect'].abs().max():.3e}"),
+        ("SOURCE_BOUND_PAIRWISE_DISCREPANCY_ZERO", source_pairwise_zero, f"max={source['mean_pairwise_gap_discrepancy'].abs().max():.3e}"),
+        ("SOURCE_BOUND_SIGN_CONFLICT_ZERO", source_sign_conflict_zero, "pairwise sign and route-optimal conflict are zero for source-bound"),
+        ("Q_ROUTE_1_PAIRWISE_DISCREPANCY_ZERO", q1_pairwise_zero, f"max={q1['mean_pairwise_gap_discrepancy'].abs().max():.3e}"),
+        ("Q_ROUTE_1_SIGN_CONFLICT_ZERO", q1_sign_conflict_zero, "pairwise sign and route-optimal conflict are zero for q_route=1"),
+        ("NONNEGATIVE_ALIGNMENT_DIAGNOSTICS", nonnegativity, f"min_pairwise={pairwise.min():.3e},min_max={max_defect.min():.3e}"),
+        ("MEAN_PAIRWISE_LEQ_MEAN_MAX", mean_leq_max, f"max_excess={(pairwise - max_defect).max():.3e}"),
+        ("AUDIT_FULL_POPULATION_EXACT", full_population_exact, f"max_abs_error={full_population['absolute_audit_error'].abs().max() if len(full_population) else np.nan:.3e}"),
+        ("AUDIT_ESTIMAND_CONSISTENT_ACROSS_DESIGNS", estimand_consistent, "unit-level pair-average discrepancy identical across designs"),
         ("COMPLETE_45_PAIR_SUPPORT", pair_count == 45, f"pair_count={pair_count}"),
         ("POSITIVE_ATTRIBUTION_MASS", bool(seed_level[seed_level["route_id"].str.startswith("proxy_label")]["minimum_attribution_mass"].gt(0.0).all()), "all proxy route rows have positive mass"),
         ("NO_FUTURE_INFORMATION", bool(seed_level[seed_level["route_id"].str.startswith("proxy_label")]["candidate_set_contains_true_source_rate"].eq(1.0).all()), "true source is always in the historical candidate set"),

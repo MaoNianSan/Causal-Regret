@@ -22,22 +22,22 @@ MAIN_TABLE_COLUMNS = (
     "control_id",
     "control_display_name",
     "correspondence_status",
-    "raw_defect",
-    "oof_calibrated_defect",
+    "raw_pairwise_discrepancy",
+    "oof_calibrated_pairwise_discrepancy",
     "recoverability",
     "estimability_rate",
 )
 
 FINITE_VALUE_COLUMNS = (
-    "raw_defect",
-    "oof_calibrated_defect",
+    "raw_pairwise_discrepancy",
+    "oof_calibrated_pairwise_discrepancy",
     "recoverability",
     "estimability_rate",
 )
 
 SOURCE_TO_TABLE_COLUMNS = (
-    ("raw_defect", "Raw defect"),
-    ("oof_calibrated_defect", "OOF calibrated defect"),
+    ("raw_pairwise_discrepancy", "Raw pairwise discrepancy"),
+    ("oof_calibrated_pairwise_discrepancy", "OOF calibrated pairwise discrepancy"),
     ("recoverability", "Recoverability"),
     ("estimability_rate", "Estimability rate"),
 )
@@ -115,8 +115,8 @@ def validate_main_calibration_table(
     expected_columns = [
         "Control",
         "Unit-level correspondence",
-        "Raw defect",
-        "OOF calibrated defect",
+        "Raw pairwise discrepancy",
+        "OOF calibrated pairwise discrepancy",
         "Recoverability",
         "Estimability rate",
     ]
@@ -125,7 +125,7 @@ def validate_main_calibration_table(
     details["missing_columns"] = missing_columns
 
     # 5. Numeric values are finite.
-    numeric = table[["Raw defect", "OOF calibrated defect", "Recoverability", "Estimability rate"]]
+    numeric = table[["Raw pairwise discrepancy", "OOF calibrated pairwise discrepancy", "Recoverability", "Estimability rate"]]
     finite_values = numeric.map(np.isfinite).all().all() if len(table) else False
     checks["main_table_values_finite"] = bool(finite_values)
     details["main_table_has_nan"] = bool(numeric.isna().any().any())

@@ -57,8 +57,8 @@ def _control_summary() -> pd.DataFrame:
                 "preserved by construction",
                 "destroyed within temporal blocks",
             ],
-            "raw_defect": [0.5, 1.4],
-            "oof_calibrated_defect": [0.1, 0.9],
+            "raw_pairwise_discrepancy": [0.5, 1.4],
+            "oof_calibrated_pairwise_discrepancy": [0.1, 0.9],
             "recoverability": [0.7, 0.4],
             "estimability_rate": [1.0, 1.0],
         }

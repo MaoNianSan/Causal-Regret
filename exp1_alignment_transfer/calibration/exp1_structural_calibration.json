@@ -98,12 +98,12 @@
       "innovation_sd": 0.25
     }
   ],
-  "code_commit": "6e09fa90a1fcdeccc861cf2960bd31c4b60e2df4",
-  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
-  "config_hash": "21563d9a7d6a3134d56776beef7f02b88fbe31e8f18ac118a957eac374c3df02",
+  "code_commit": "0515e6ba138ccf463fb0283b01663bbe5fc984f6",
+  "code_lineage": "tree:6a280b8d30bb288f585a1f6d9d5c521a1f2c2101e4b411b012f50784f752ad70",
+  "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
   "evaluation_seed_overlap": false,
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-07-26T11:52:35.448976+00:00",
+  "generated_at": "2026-08-17T05:54:05.805049+00:00",
   "selected_value": {
     "ar_coefficient": 0.98,
     "innovation_sd": 0.15

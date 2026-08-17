@@ -20,7 +20,7 @@ def write_run_summary(run_dir: Path) -> None:
     lineage = _load_lineage(run_dir)
     stage_record = _load_stage_record(run_dir)
     lines = [
-        "# Experiment 4 v2 Run Summary",
+        "# Experiment 4 v3 Run Summary",
         "",
         f"- Run ID: `{run_config['run_id']}`",
         f"- Run tier: `{run_config['run_tier']}`",
@@ -44,15 +44,16 @@ def write_run_summary(run_dir: Path) -> None:
         "",
         "## Core diagnostics",
         "",
-        f"- Maximum q_route=1 population defect: {q1['population_action_gap_defect_mean'].abs().max():.3e}",
+        f"- Maximum q_route=1 mean pairwise gap discrepancy: {q1['mean_pairwise_gap_discrepancy_mean'].abs().max():.3e}",
+        f"- Maximum q_route=1 mean round-max gap defect (legacy v2): {q1['population_action_gap_defect_mean'].abs().max():.3e}",
         f"- Audit bias range: [{performance['bias'].min():.4f}, {performance['bias'].max():.4f}]",
         f"- Audit RMSE range: [{performance['rmse'].min():.4f}, {performance['rmse'].max():.4f}]",
         f"- Module C estimability range: [{controls['estimability_rate'].min():.3f}, {controls['estimability_rate'].max():.3f}]",
         "",
         "## Interpretation boundary",
         "",
-        "- Module A estimates a controlled population route-alignment boundary.",
-        "- Module B separates population defect from finite/selective audit reliability.",
+        "- Module A estimates a controlled population route-alignment boundary; the v3 primary estimand is the pair-average gap discrepancy D_pair.",
+        "- Module B separates the pair-average population discrepancy from finite/selective audit reliability; all audit designs target the same d_i_pair.",
         "- Module C evaluates discrepancy reduction inside a prespecified affine family; it does not create a corrected policy or certify route validity.",
         "- Known simulated IPW probabilities do not establish validity under an unknown real-world inclusion mechanism.",
         "",

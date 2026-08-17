@@ -9,7 +9,7 @@ import numpy as np
 
 from exp4.configuration.parameters import MODULE_A
 from exp4.configuration.schema import RESULT_SCHEMA
-from exp4.metrics.action_gaps import compute_action_gap_defect
+from exp4.metrics.action_gaps import compute_gap_discrepancies
 from exp4.metrics.ranking_diagnostics import (
     compute_margin_certificate_rate,
     compute_pairwise_gap_sign_disagreement_rate,
@@ -44,7 +44,7 @@ def _evaluate_route(
     evaluation = trajectory.evaluation_slice
     structural = trajectory.structural_loss_map[evaluation]
     route = route_result.route_loss_map[evaluation]
-    defect = compute_action_gap_defect(structural, route)
+    discrepancies = compute_gap_discrepancies(structural, route)
     diagnostics = route_result.diagnostics
     return {
         "seed": int(seed),
@@ -52,16 +52,24 @@ def _evaluate_route(
         "route_id": route_result.route_id,
         "route_label_rate": float(route_label_rate),
         "attribution_proxy_noise_sd": float(proxy_noise_sd),
-        "population_action_gap_defect": defect.population_action_gap_defect,
+        # v3 primary estimand: pair-average gap discrepancy (D_pair).
+        "mean_pairwise_gap_discrepancy": discrepancies.population_mean_pairwise_discrepancy,
         "route_optimal_set_conflict_rate": compute_route_optimal_set_conflict_rate(
             structural, route
         ),
         "pairwise_gap_sign_disagreement_rate": compute_pairwise_gap_sign_disagreement_rate(
             structural, route
         ),
+        # v3 secondary full-map/theorem diagnostics.
+        "mean_round_max_gap_defect": discrepancies.mean_round_max_gap_defect,
         "margin_certificate_rate": compute_margin_certificate_rate(
-            structural, defect.round_max_gap_defect
+            structural, discrepancies.round_max_gap_defect
         ),
+        # LEGACY v2 field (explicit): the round-max defect averaged over
+        # rounds. Numerically identical to mean_round_max_gap_defect; kept for
+        # v2 figure/contrast/regression compatibility only. It is NOT the v3
+        # pair-average primary and must never be reinterpreted as such.
+        "population_action_gap_defect": discrepancies.mean_round_max_gap_defect,
         "mean_attribution_entropy": (
             float(np.mean(diagnostics.normalized_entropy[evaluation]))
             if diagnostics is not None

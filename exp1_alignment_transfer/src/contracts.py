@@ -29,6 +29,14 @@ METRICS = (
     "margin_preservation_rate",
     "reversal_margin",
     "arrival_minus_source_regret_rate",
+    "pairwise_sign_disagreement_rate",
+    "directed_choice_disagreement_rate",
+    "complete_conflict_rate",
+    "mean_structural_conflict_margin",
+    "min_structural_conflict_margin",
+    "mean_route_conflict_margin",
+    "min_route_conflict_margin",
+    "regret_stability_slack_rate",
 )
 
 GLOBAL_METADATA_COLUMNS = (
@@ -66,6 +74,12 @@ ROUTE_ROUND_COLUMNS = (
     "route_regret_increment",
     "delta_gap",
     "structural_margin",
+    "pairwise_sign_disagreement",
+    "directed_choice_disagreement",
+    "complete_conflict",
+    "structural_conflict_margin",
+    "route_conflict_margin",
+    "gap_margin_ratio",
     "ranking_reversal",
     "margin_preserved",
     "reversal_margin",

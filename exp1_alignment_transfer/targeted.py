@@ -17,7 +17,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from config import DELAY, EXPERIMENT_ID, FAST_LEARNER, LEARNER, RUN, STRUCTURAL, config_hash
+from config import DELAY, EXPERIMENT_ID, FAST_LEARNER, LEARNER, RUN, STRUCTURAL, THEORY_SWEEP, config_hash
 from main import load_frozen_calibration
 from src.artifact_io import atomic_write_csv, atomic_write_json, code_lineage, git_commit, hash_payload, refresh_output_manifest, utc_now
 from src.delay_mechanisms import generate_fixed_delay, generate_geometric_delay, solve_geometric_probability
@@ -25,6 +25,7 @@ from src.derived import bootstrap_mean
 from src.path_generator import SharedPathBundle
 from src.runner import RunMetadata, run_paired_learner_consequence
 from src.structural_process import generate_smooth_bounded_ar1_path, generate_systematic_misbinding_path
+from src.theory_sweeps import exact_shift_sweep_rows, margin_threshold_sweep_rows
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -251,12 +252,35 @@ def execute(run_tier: str, force: bool = False) -> Path:
         raise RuntimeError("Horizon-scaling shared-prefix invariant failed")
     horizon_seed = pd.concat(horizon_rows, ignore_index=True)
 
+    # --- Theory-targeted controlled sweeps (config v1.2). -----------------
+    # These are theorem diagnostics, not new delay mechanisms. They reuse the
+    # calibrated structural configuration and the frozen geometric delay path
+    # construction, and are integrated through this non-Cartesian validation
+    # layer only.
+    geometric_probability = float(calibration["delay"]["geometric_probability"])
+    exact_rows, exact_checks = exact_shift_sweep_rows(
+        base_structural,
+        seeds,
+        geometric_probability,
+        DELAY,
+        scales=THEORY_SWEEP.exact_shift_scales,
+    )
+    margin_rows, margin_checks = margin_threshold_sweep_rows(
+        base_structural,
+        seeds,
+        ratios=THEORY_SWEEP.margin_distortion_ratios,
+    )
+    exact_frame = pd.DataFrame(exact_rows)
+    margin_frame = pd.DataFrame(margin_rows)
+
     mean_summary = _summarize_mean_delay(mean_seed, repetitions)
     horizon_summary = _summarize_horizon(horizon_seed, repetitions)
     atomic_write_csv(output / "exp1_targeted_mean_delay_seed_metrics.csv", mean_seed)
     atomic_write_csv(output / "exp1_targeted_horizon_seed_metrics.csv", horizon_seed)
     atomic_write_csv(output / "exp1_targeted_mean_delay_summary.csv", mean_summary)
     atomic_write_csv(output / "exp1_targeted_horizon_summary.csv", horizon_summary)
+    atomic_write_csv(output / "exp1_targeted_theory_exact_shift_sweep.csv", exact_frame)
+    atomic_write_csv(output / "exp1_targeted_theory_margin_threshold_sweep.csv", margin_frame)
     atomic_write_csv(
         output / "fig_exp1_targeted_validation_data.csv",
         pd.concat([mean_summary, horizon_summary], ignore_index=True, sort=False),
@@ -271,7 +295,13 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "mean_delay_levels": [5, 15, 30],
             "horizon_levels": [1000, 5000, 10000],
             "horizon_shared_prefix_pass": bool(all(prefix_checks)) if prefix_checks else True,
-            "status": "PASS",
+            "theory_exact_cardinal_shift_sweep": exact_checks,
+            "theory_margin_threshold_sweep": margin_checks,
+            "status": (
+                "PASS"
+                if exact_checks["passed"] and margin_checks["passed"]
+                else "FAIL"
+            ),
             "code_lineage": code_lineage(PROJECT_ROOT),
             "generated_at": utc_now(),
         },
@@ -280,7 +310,11 @@ def execute(run_tier: str, force: bool = False) -> Path:
         STATUS_DIR / f"{run_tier}_targeted_status.json",
         {
             "stage": f"{run_tier}_targeted",
-            "status": "PASS",
+            "status": (
+                "PASS"
+                if exact_checks["passed"] and margin_checks["passed"]
+                else "FAIL"
+            ),
             "paper_result": False,
             "code_lineage": code_lineage(PROJECT_ROOT),
             "output": f"outputs/{run_tier}/targeted",

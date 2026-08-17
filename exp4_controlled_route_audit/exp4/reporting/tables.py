@@ -1,4 +1,4 @@
-"""Main and appendix tables generated from v2 derived summaries."""
+"""Main and appendix tables generated from v3 derived summaries."""
 
 from __future__ import annotations
 
@@ -13,8 +13,8 @@ from exp4.outputs.writers import sha256_file, write_json
 MAIN_TABLE_COLUMNS = (
     "control_display_name",
     "correspondence_status",
-    "raw_defect",
-    "oof_calibrated_defect",
+    "raw_pairwise_discrepancy",
+    "oof_calibrated_pairwise_discrepancy",
     "recoverability",
     "estimability_rate",
 )
@@ -57,8 +57,8 @@ def select_main_calibration_rows(controls: pd.DataFrame) -> pd.DataFrame:
         columns={
             "control_display_name": "Control",
             "correspondence_status": "Unit-level correspondence",
-            "raw_defect": "Raw defect",
-            "oof_calibrated_defect": "OOF calibrated defect",
+            "raw_pairwise_discrepancy": "Raw pairwise discrepancy",
+            "oof_calibrated_pairwise_discrepancy": "OOF calibrated pairwise discrepancy",
             "recoverability": "Recoverability",
             "estimability_rate": "Estimability rate",
         }
@@ -99,7 +99,7 @@ def make_tables(run_dir: Path) -> None:
     )
     _write_main_table_hashes(run_dir, tables / f"{MAIN_TABLE_ID}.csv", tables / f"{MAIN_TABLE_ID}.tex")
     appendix_sources = (
-        ("tbl_app_exp4_parameters", _parameter_frame(), "Frozen Exp4 v2 parameters."),
+        ("tbl_app_exp4_parameters", _parameter_frame(), "Frozen Exp4 v3 parameters."),
         ("tbl_app_exp4_paired_contrasts", pd.read_csv(module_a / "exp4_module_a_paired_contrasts.csv"), "Shared-seed paired contrasts."),
         ("tbl_app_exp4_audit_performance", pd.read_csv(module_b / "exp4_module_b_audit_performance.csv"), "Audit bias, RMSE, and Monte Carlo error."),
         ("tbl_app_exp4_weight_diagnostics", pd.read_csv(module_b / "exp4_module_b_weight_diagnostics.csv"), "IPW support and weight diagnostics."),

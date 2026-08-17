@@ -94,8 +94,8 @@ def run_module_c(
                 "control_display_name": CONTROL_REGISTRY[control_id]["display_name"],
                 "analysis_tier": CONTROL_REGISTRY[control_id]["analysis_tier"],
                 "correspondence_status": CONTROL_REGISTRY[control_id]["correspondence"],
-                "raw_defect": evaluation_result.raw_defect,
-                "oof_calibrated_defect": evaluation_result.calibrated_defect,
+                "raw_pairwise_discrepancy": evaluation_result.raw_pairwise_discrepancy,
+                "oof_calibrated_pairwise_discrepancy": evaluation_result.oof_calibrated_pairwise_discrepancy,
                 "recoverability": evaluation_result.recoverability,
                 "negative_recoverability_indicator": (
                     bool(evaluation_result.recoverability < 0.0)
