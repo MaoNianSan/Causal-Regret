@@ -14,6 +14,14 @@ import uuid
 import pandas as pd
 
 from exp4.configuration.parameters import parameter_payload
+from exp4.configuration.provenance import (
+    aggregation_config_payload,
+    artifact_metadata_config_payload,
+    reporting_config_payload,
+    scientific_config_payload,
+    stage_config_hashes,
+    validation_config_payload,
+)
 from exp4.configuration.registries import (
     AUDIT_DESIGN_REGISTRY,
     CONTROL_REGISTRY,
@@ -39,6 +47,7 @@ class RunContext:
     paper_result: bool = False
     exp4_worktree_clean_at_start: bool = True
     stage_source_hashes: dict[str, str] | None = None
+    stage_config_hashes: dict[str, str] | None = None
 
 
 def utc_now_iso() -> str:
@@ -80,10 +89,28 @@ def hash_files(paths: Iterable[Path], *, root: Path, algorithm_version: str) -> 
     return digest.hexdigest()
 
 
+def hash_stage_files(paths: Iterable[Path], *, root: Path) -> str:
+    """Hash stage sources with checkout-independent LF normalization."""
+    digest = hashlib.sha256()
+    root = root.resolve()
+    normalized = sorted(
+        (path.resolve().relative_to(root).as_posix(), path.resolve()) for path in paths
+    )
+    digest.update(STAGE_SOURCE_HASH_ALGORITHM_VERSION.encode("utf-8"))
+    digest.update(b"\0")
+    for relative, resolved in normalized:
+        digest.update(relative.encode("utf-8"))
+        digest.update(b"\0")
+        digest.update(resolved.read_bytes().replace(b"\r\n", b"\n"))
+        digest.update(b"\0")
+    return digest.hexdigest()
+
+
 # Version tag for the source-code hash algorithm. It is recorded in run
 # configs, provenance audits, and promotion checks so that a future algorithm
 # change cannot silently invalidate or re-interpret stored hashes.
 SOURCE_HASH_ALGORITHM_VERSION = "exp4-source-code-v2"
+STAGE_SOURCE_HASH_ALGORITHM_VERSION = "exp4-stage-source-v3"
 
 
 def compute_exp4_source_code_hash(base_dir: Path) -> str:
@@ -105,61 +132,84 @@ def source_code_hash(base_dir: Path) -> str:
     )
 
 
-# Stage-level source-hash definitions. Configuration is a shared dependency of
-# every stage and is included in every stage hash so that a frozen-config
-# change is detected by all stages.
-_STAGE_SHARED_PREFIXES = ("exp4/configuration/",)
-
+# Stage hashes cover executable logic only. Frozen values are tracked by the
+# separate stage config hashes, preventing labels or bootstrap settings from
+# masquerading as simulation-source changes.
 _STAGE_SPECS: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
     (
         "simulation_source_hash",
-        _STAGE_SHARED_PREFIXES
-        + (
-            "exp4/simulation/",
-            "exp4/routes/",
-            "exp4/audit/",
-            "exp4/calibration/",
-            "exp4/modules/",
+        (),
+        (
+            "exp4/audit/diagnostics.py",
+            "exp4/audit/estimators.py",
+            "exp4/audit/inclusion.py",
+            "exp4/audit/support.py",
+            "exp4/calibration/affine.py",
+            "exp4/calibration/controls.py",
+            "exp4/calibration/evaluation.py",
+            "exp4/calibration/temporal_folds.py",
             "exp4/execution/calibration_stage.py",
+            "exp4/execution/common.py",
             "exp4/execution/module_a_stage.py",
             "exp4/execution/module_bc_stage.py",
-            "exp4/execution/common.py",
+            "exp4/metrics/action_gaps.py",
+            "exp4/metrics/ranking_diagnostics.py",
+            "exp4/modules/module_a.py",
+            "exp4/modules/module_b.py",
+            "exp4/modules/module_c.py",
+            "exp4/routes/common.py",
+            "exp4/routes/partial_label_proxy.py",
+            "exp4/routes/source_bound.py",
+            "exp4/simulation/action_space.py",
+            "exp4/simulation/calibration.py",
+            "exp4/simulation/delay_process.py",
+            "exp4/simulation/observation_proxy.py",
+            "exp4/simulation/state_process.py",
+            "exp4/simulation/structural_loss.py",
+            "exp4/simulation/trajectory.py",
         ),
-        ("exp4/metrics/action_gaps.py",),
     ),
     (
         "aggregation_source_hash",
-        _STAGE_SHARED_PREFIXES
-        + (
+        (),
+        (
+            "exp4/execution/aggregation_stage.py",
+            "exp4/metrics/monte_carlo.py",
             "exp4/reporting/aggregate_module_a.py",
             "exp4/reporting/aggregate_module_b.py",
             "exp4/reporting/aggregate_module_c.py",
-            "exp4/execution/aggregation_stage.py",
         ),
-        ("exp4/metrics/monte_carlo.py", "exp4/outputs/writers.py"),
     ),
     (
         "reporting_source_hash",
-        _STAGE_SHARED_PREFIXES
-        + (
-            "exp4/reporting/",
-            "exp4/outputs/writers.py",
-            "exp4/outputs/manifests.py",
-            "exp4/pipeline.py",
-        ),
         (),
+        (
+            "exp4/reporting/figure_bundle.py",
+            "exp4/reporting/figures_appendix.py",
+            "exp4/reporting/figures_main.py",
+            "exp4/reporting/plot_style.py",
+            "exp4/reporting/run_summary.py",
+            "exp4/reporting/tables.py",
+        ),
     ),
     (
         "validation_source_hash",
-        _STAGE_SHARED_PREFIXES
-        + (
-            "exp4/validation/",
-            "exp4/outputs/writers.py",
-            "exp4/pipeline.py",
-        ),
         (),
+        (
+            "exp4/validation/boundary_checks.py",
+            "exp4/validation/invariants.py",
+            "exp4/validation/precision_checks.py",
+            "exp4/validation/runner.py",
+            "exp4/validation/schema_checks.py",
+            "exp4/validation/static_checks.py",
+            "exp4/validation/table_checks.py",
+        ),
     ),
 )
+
+STAGE_SOURCE_FILES = {
+    name: tuple(files) for name, prefixes, files in _STAGE_SPECS if not prefixes
+}
 
 
 def _stage_file_matches(
@@ -186,11 +236,7 @@ def compute_stage_source_hashes(base_dir: Path) -> dict[str, str]:
             for path in all_files
             if _stage_file_matches(base, path, prefixes, files)
         ]
-        hashes[name] = hash_files(
-            stage_files,
-            root=base,
-            algorithm_version=SOURCE_HASH_ALGORITHM_VERSION,
-        )
+        hashes[name] = hash_stage_files(stage_files, root=base)
     return hashes
 
 
@@ -363,6 +409,7 @@ def create_run_context(base_dir: Path, run_tier: str, n_jobs: int) -> RunContext
         n_jobs=max(1, int(n_jobs)),
         exp4_worktree_clean_at_start=exp4_worktree_clean(base_dir),
         stage_source_hashes=compute_stage_source_hashes(base_dir),
+        stage_config_hashes=stage_config_hashes(run_tier),
     )
     write_run_config(context)
     return context
@@ -397,12 +444,27 @@ def load_run_context(
             if payload.get(key)
         }
         or None,
+        stage_config_hashes={
+            key: str(payload[key])
+            for key in (
+                "scientific_config_hash",
+                "aggregation_config_hash",
+                "validation_config_hash",
+                "reporting_config_hash",
+                "artifact_metadata_config_hash",
+            )
+            if payload.get(key)
+        }
+        or None,
     )
 
 
 def write_run_config(context: RunContext) -> None:
     settings = mode_settings(context.run_tier)
     stage_hashes = context.stage_source_hashes or {}
+    config_hashes = context.stage_config_hashes or stage_config_hashes(
+        context.run_tier
+    )
     write_json(
         {
             "run_id": context.run_id,
@@ -414,18 +476,28 @@ def write_run_config(context: RunContext) -> None:
             "result_schema": RESULT_SCHEMA,
             "code_commit": context.code_commit,
             "config_hash": context.config_hash,
+            "legacy_complete_config_hash": context.config_hash,
             "source_code_hash": context.source_code_hash,
-            "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
+            "source_hash_algorithm_version": STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+            "complete_source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
             "formal_full_clean_worktree_required": context.run_tier == "full",
             "exp4_worktree_clean_at_start": context.exp4_worktree_clean_at_start,
             "simulation_stage_hash": stage_hashes.get("simulation_source_hash", ""),
             "aggregation_stage_hash": stage_hashes.get("aggregation_source_hash", ""),
             "reporting_stage_hash": stage_hashes.get("reporting_source_hash", ""),
             "validation_stage_hash": stage_hashes.get("validation_source_hash", ""),
+            **config_hashes,
             "generated_at": utc_now_iso(),
             "n_jobs": context.n_jobs,
             "mode_settings": settings.as_dict(),
             "frozen_configuration": frozen_config_payload(),
+            "frozen_stage_configuration": {
+                "scientific": scientific_config_payload(context.run_tier),
+                "aggregation": aggregation_config_payload(context.run_tier),
+                "validation": validation_config_payload(),
+                "reporting": reporting_config_payload(),
+                "artifact_metadata": artifact_metadata_config_payload(),
+            },
         },
         context.run_dir / "logs" / "run_config.json",
     )

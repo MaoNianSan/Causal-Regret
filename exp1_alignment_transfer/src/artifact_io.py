@@ -136,14 +136,13 @@ def read_frame(path: Path) -> pd.DataFrame:
     raise ArtifactError(f"Artifact not found: {path}")
 
 
-EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION = "exp1-stage-source-v1"
+EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION = "exp1-stage-source-v2"
 
 # The stage definitions deliberately exclude orchestration and generic I/O.
 # Those files can change provenance or artifact layout without changing a raw
 # trajectory, seed-level metric, or frozen calibration value.
 EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
     "scientific_generation_source_hash": (
-        "config.py",
         "src/contracts.py",
         "src/delay_mechanisms.py",
         "src/delayed_exp3.py",
@@ -155,7 +154,6 @@ EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
         "src/structural_process.py",
     ),
     "calibration_source_hash": (
-        "config.py",
         "calibrate.py",
         "src/contracts.py",
         "src/delay_mechanisms.py",
@@ -189,7 +187,7 @@ def _hash_relative_source_bytes(
             continue
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
-        digest.update(path.read_bytes())
+        digest.update(path.read_bytes().replace(b"\r\n", b"\n"))
         digest.update(b"\0")
     return digest.hexdigest()
 

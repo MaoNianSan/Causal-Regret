@@ -24,7 +24,7 @@ from exp4.configuration.schema import (
 )
 from exp4.outputs.manifests import write_output_manifest
 from exp4.outputs.writers import (
-    SOURCE_HASH_ALGORITHM_VERSION,
+    STAGE_SOURCE_HASH_ALGORITHM_VERSION,
     write_json,
 )
 from exp4.validation.precision_checks import promotion_precision_checks
@@ -60,6 +60,7 @@ def validate_paper_promotion(
     precision = promotion_precision_checks(run_config, contrasts)
     provenance = audit_run_provenance(run_dir, base_dir)
     stages = provenance["stages"]
+    stage_configs = provenance["stage_configs"]
     checks = {
         "run_tier_is_full": run_config["run_tier"] == "full",
         "result_schema_is_v3": run_config["result_schema"] == RESULT_SCHEMA,
@@ -118,6 +119,21 @@ def validate_paper_promotion(
         "aggregation_stage_hash_match": bool(stages["aggregation"]["hash_match"]),
         "reporting_stage_hash_match": bool(stages["reporting"]["hash_match"]),
         "validation_stage_hash_match": bool(stages["validation"]["hash_match"]),
+        "simulation_config_record_present": bool(
+            stage_configs["simulation"]["record_present"]
+        ),
+        "simulation_config_hash_match": bool(
+            stage_configs["simulation"]["hash_match"]
+        ),
+        "aggregation_config_hash_match": bool(
+            stage_configs["aggregation"]["hash_match"]
+        ),
+        "validation_config_hash_match": bool(
+            stage_configs["validation"]["hash_match"]
+        ),
+        "reporting_config_hash_match": bool(
+            stage_configs["reporting"]["hash_match"]
+        ),
         "simulation_provenance_verified": bool(
             provenance["simulation_provenance_verified"]
         ),
@@ -131,7 +147,7 @@ def validate_paper_promotion(
             provenance["source_hash_algorithm_version_present"]
         )
         and provenance["expected_source_hash_algorithm_version"]
-        == SOURCE_HASH_ALGORITHM_VERSION,
+        == STAGE_SOURCE_HASH_ALGORITHM_VERSION,
     }
     # Mode-specific requirements: full-tree and commit equality are historical
     # metadata, not reuse gates. A FRESH run proves its own simulation stage;

@@ -45,7 +45,7 @@ python main.py report --run-dir outputs/runs/<run_id>
 ### Selective rebuild without scientific rerun
 
 Use the explicit reconcile command for a verified source run. It audits the
-simulation-stage hash, frozen configuration, calibration identity, raw path
+simulation-stage source and scientific-config hashes, calibration identity, raw path
 manifests, run lineage, and prior scientific validity before reusing raw
 simulation outputs.
 
@@ -60,6 +60,25 @@ The command writes `logs/exp4_provenance_reconciliation.json` and preserves
 raw simulation data. A different complete source-tree hash or Git commit alone
 does not require a new simulation; only a simulation/configuration/calibration
 mismatch or incomplete raw evidence does.
+
+Stage identity is `source_hash(stage) + config_hash(stage)`. The simulation
+source closure contains the recursively consumed Module A/B/C scientific code,
+including `metrics/action_gaps.py` and `metrics/ranking_diagnostics.py`.
+`metrics/monte_carlo.py` is aggregation-only; provenance/manifest writers are
+infrastructure. `EXPERIMENT_DISPLAY_NAME` and figure/table IDs are reporting
+metadata. Full Module A seed count and Module B replication count are scientific
+design, while aggregation bootstrap replication count is downstream-only. The
+legacy monolithic `config_hash` and complete source-tree hash remain
+informational compatibility metadata.
+
+For an accepted historical run whose hash definition predates this closure:
+
+```powershell
+python main.py migrate-provenance --run-dir outputs/runs/<run_id>
+```
+
+The migration reconstructs the corrected simulation hash from the recorded Git
+commit and stops for human review if it differs from the corrected current hash.
 
 ## 9. Known Limitations
 The experiment is limited to controlled recoverability diagnostics and does not support claims about real-world causal identification or policy validity.

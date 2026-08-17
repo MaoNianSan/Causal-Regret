@@ -12,7 +12,7 @@ from datetime import datetime
 from pathlib import Path
 
 from exp4.configuration.schema import RESULT_SCHEMA
-from exp4.outputs.writers import SOURCE_HASH_ALGORITHM_VERSION
+from exp4.outputs.writers import STAGE_SOURCE_HASH_ALGORITHM_VERSION
 from exp4.validation.run_provenance import audit_run_provenance
 
 
@@ -166,7 +166,7 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
     simulation_rerun_required = not full_provenance_verified
     return {
         "generated_at": datetime.now().isoformat(timespec="seconds"),
-        "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
+        "source_hash_algorithm_version": STAGE_SOURCE_HASH_ALGORITHM_VERSION,
         "latest_fast_run": latest["fast"],
         "latest_middle_run": latest["middle"],
         "latest_full_run": latest["full"],

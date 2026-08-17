@@ -5,6 +5,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 import sys
+from dataclasses import replace
+from types import SimpleNamespace
 
 import pytest
 
@@ -15,6 +17,28 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.artifact_io import EXP1_STAGE_SOURCE_FILES, exp1_stage_source_hashes, sha256_file
 from src import run_provenance
 from src.run_provenance import Exp1ReuseDecision, audit_exp1_provenance
+from config import (
+    DELAY,
+    DISPLAY_NAMES,
+    LEARNER,
+    MECHANISM_ORDER,
+    RUN,
+    STRUCTURAL,
+    aggregation_config_hash,
+    calibration_config_hash,
+    reporting_config_hash,
+    scientific_generation_config_hash,
+    validation_config_hash,
+)
+
+
+CONFIG_HASHES = {
+    "scientific_generation_config_hash": "scientific-config-current",
+    "calibration_config_hash": "calibration-config-current",
+    "aggregation_config_hash": "aggregation-config-current",
+    "validation_config_hash": "validation-config-current",
+    "reporting_config_hash": "reporting-config-current",
+}
 
 
 def _write_stage_fixture(root: Path) -> None:
@@ -125,6 +149,9 @@ def _write_reusable_run(root: Path) -> Path:
                 "schema": run_provenance.EXP1_STAGE_PROVENANCE_SCHEMA,
                 "calibration_manifest_hash": run_provenance.hash_payload(manifest),
                 "config_hash": "config-current",
+                "calibration_config_hash": CONFIG_HASHES[
+                    "calibration_config_hash"
+                ],
                 "calibration_source_hash": hashes["calibration_source_hash"],
             }
         ),
@@ -159,6 +186,7 @@ def _write_reusable_run(root: Path) -> Path:
             {
                 "schema": run_provenance.EXP1_STAGE_PROVENANCE_SCHEMA,
                 "stage_source_hashes": hashes,
+                "stage_config_hashes": CONFIG_HASHES,
                 "raw_artifacts": {
                     relative: sha256_file(run_dir / relative)
                     for relative in run_provenance.RAW_ARTIFACTS
@@ -174,8 +202,8 @@ def _write_reusable_run(root: Path) -> Path:
     ("relative", "expected"),
     (
         ("plot_main.py", Exp1ReuseDecision.REPORTING_REBUILD),
-        ("self_check.py", Exp1ReuseDecision.DOWNSTREAM_REBUILD),
-        ("targeted.py", Exp1ReuseDecision.DOWNSTREAM_REBUILD),
+        ("self_check.py", Exp1ReuseDecision.VALIDATION_REBUILD),
+        ("targeted.py", Exp1ReuseDecision.VALIDATION_REBUILD),
         ("src/derived.py", Exp1ReuseDecision.DOWNSTREAM_REBUILD),
         ("src/scientific_execution.py", Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN),
         ("src/structural_process.py", Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN),
@@ -187,6 +215,9 @@ def test_reuse_decision_is_stage_aware(
     root = tmp_path / "exp1"
     run_dir = _write_reusable_run(root)
     monkeypatch.setattr(run_provenance, "_current_config_hash", lambda *_: "config-current")
+    monkeypatch.setattr(
+        run_provenance, "_current_stage_config_hashes", lambda *_: CONFIG_HASHES
+    )
     monkeypatch.setattr(run_provenance, "_calibration_artifacts_consistent", lambda *_: True)
     target = root / relative
     target.write_text(target.read_text(encoding="utf-8") + "changed = True\n", encoding="utf-8")
@@ -200,11 +231,74 @@ def test_config_change_requires_scientific_full_rerun(
 ) -> None:
     root = tmp_path / "exp1"
     run_dir = _write_reusable_run(root)
+    changed = {**CONFIG_HASHES, "scientific_generation_config_hash": "different-config"}
     monkeypatch.setattr(run_provenance, "_current_config_hash", lambda *_: "different-config")
+    monkeypatch.setattr(
+        run_provenance, "_current_stage_config_hashes", lambda *_: changed
+    )
     monkeypatch.setattr(run_provenance, "_calibration_artifacts_consistent", lambda *_: True)
     audit = audit_exp1_provenance(run_dir, root)
     assert audit["decision"] == Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN.value
-    assert audit["failure_reason"] == "PAPER_AUDIT_FAIL_CONFIG_CHANGED"
+    assert audit["failure_reason"] == "PAPER_AUDIT_FAIL_SCIENTIFIC_CONFIG_CHANGED"
+
+
+@pytest.mark.parametrize(
+    "changed_hashes",
+    (
+        lambda: {
+            "scientific_generation_config_hash": scientific_generation_config_hash(
+                "full", run=replace(RUN, evaluation_seeds=(999,))
+            )
+        },
+        lambda: {
+            "scientific_generation_config_hash": scientific_generation_config_hash(
+                "full", structural=replace(STRUCTURAL, horizon=STRUCTURAL.horizon + 1)
+            )
+        },
+        lambda: {
+            "scientific_generation_config_hash": scientific_generation_config_hash(
+                "full", delay=replace(DELAY, fixed_delay=DELAY.fixed_delay + 1)
+            )
+        },
+        lambda: {
+            "scientific_generation_config_hash": scientific_generation_config_hash(
+                "full", mechanism_order=tuple(reversed(MECHANISM_ORDER))
+            )
+        },
+    ),
+)
+def test_scientific_config_changes_require_full_rerun(changed_hashes) -> None:
+    baseline = scientific_generation_config_hash("full")
+    assert changed_hashes()["scientific_generation_config_hash"] != baseline
+
+
+@pytest.mark.parametrize(
+    ("changed", "expected_key"),
+    (
+        (replace(RUN, bootstrap_repetitions_full=RUN.bootstrap_repetitions_full + 1), "aggregation"),
+        (replace(RUN, ci_level=0.90), "aggregation"),
+    ),
+)
+def test_aggregation_only_config_changes_do_not_change_scientific_config(
+    changed, expected_key: str
+) -> None:
+    assert scientific_generation_config_hash("full", run=changed) == scientific_generation_config_hash("full")
+    assert aggregation_config_hash("full", run=changed) != aggregation_config_hash("full")
+
+
+def test_theory_sweep_change_is_validation_only_and_calibration_isolated() -> None:
+    changed = SimpleNamespace(
+        exact_shift_scales=(0.0, 0.25),
+        margin_distortion_ratios=(0.0, 1.0, 2.0),
+    )
+    assert validation_config_hash(theory_sweep=changed) != validation_config_hash()
+    assert calibration_config_hash() == calibration_config_hash()
+
+
+def test_display_names_change_is_reporting_only_and_calibration_isolated() -> None:
+    changed = {**DISPLAY_NAMES, "zero_delay": "No delay"}
+    assert reporting_config_hash(display_names=changed) != reporting_config_hash()
+    assert calibration_config_hash() == calibration_config_hash()
 
 
 def test_reconcile_uses_canonical_aggregation_and_rebuilds_full_validation(

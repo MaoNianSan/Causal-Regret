@@ -17,6 +17,7 @@ from src.run_provenance import (
     audit_exp1_provenance,
     bootstrap_existing_full_provenance,
     migrate_scientific_execution_contract,
+    migrate_stage_config_provenance,
     record_exp1_reconciliation,
 )
 from targeted import execute as execute_targeted_validation
@@ -95,8 +96,11 @@ def reconcile(source_run: Path, rebuild: str) -> dict[str, object]:
         )
 
     required = before["decision"]
-    if rebuild == "reporting" and required == Exp1ReuseDecision.DOWNSTREAM_REBUILD.value:
-        raise RuntimeError("Validation or aggregation is stale; use --rebuild downstream")
+    if rebuild == "reporting" and required in {
+        Exp1ReuseDecision.DOWNSTREAM_REBUILD.value,
+        Exp1ReuseDecision.VALIDATION_REBUILD.value,
+    }:
+        raise RuntimeError("Validation or aggregation is stale; use the required rebuild")
     if rebuild == "validation" and required == Exp1ReuseDecision.DOWNSTREAM_REBUILD.value:
         if not before["stage_hash_matches"]["aggregation_source_hash"]:
             raise RuntimeError("Aggregation is stale; use --rebuild aggregation or downstream")
@@ -149,6 +153,11 @@ def main() -> None:
         action="store_true",
         help="replay a fixed stored-full subset and migrate only the execution-contract hash",
     )
+    parser.add_argument(
+        "--migrate-stage-config-provenance",
+        action="store_true",
+        help="migrate a verified full from monolithic to stage-aware config identity",
+    )
     args = parser.parse_args()
     source_run = args.source_run.resolve()
     _run_tier_for(source_run)
@@ -164,6 +173,13 @@ def main() -> None:
             "EXP1_SCIENTIFIC_EXECUTION_CONTRACT_MIGRATED "
             f"equivalence={payload['scientific_equivalence']} artifact={migration}"
         )
+    if args.migrate_stage_config_provenance:
+        migration, payload = migrate_stage_config_provenance(source_run, PROJECT_ROOT)
+        print(
+            "EXP1_STAGE_CONFIG_PROVENANCE_MIGRATED "
+            f"equivalence={payload['scientific_generation_equivalence']} "
+            f"artifact={migration}"
+        )
     if args.audit:
         print(json.dumps(audit_exp1_provenance(source_run, PROJECT_ROOT), indent=2))
     if args.rebuild:
@@ -172,6 +188,7 @@ def main() -> None:
         (
             args.initialize_existing,
             args.migrate_scientific_execution_contract,
+            args.migrate_stage_config_provenance,
             args.audit,
             args.rebuild,
         )

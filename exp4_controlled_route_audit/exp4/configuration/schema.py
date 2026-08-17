@@ -5,6 +5,10 @@ from __future__ import annotations
 EXPERIMENT_ID = "exp4_controlled_route_audit"
 EXPERIMENT_DISPLAY_NAME = "Experiment 4: Route Alignment and Evidence-Qualified Audit"
 RESULT_SCHEMA = "exp4_controlled_route_audit_v3"
+# RESULT_SCHEMA is currently written into Module A scientific records, so its
+# present value remains part of the scientific contract. A future metadata-only
+# artifact schema must use a separate value rather than changing this contract.
+SCIENTIFIC_CONTRACT_VERSION = "exp4_controlled_route_audit_v3"
 V2_RESULT_SCHEMA = "exp4_controlled_route_audit_v2"
 V1_RESULT_SCHEMA = "exp4_controlled_route_audit_v1"
 LEGACY_RESULT_SCHEMA = "legacy_exp4_v1"

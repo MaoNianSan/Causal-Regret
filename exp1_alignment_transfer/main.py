@@ -11,7 +11,7 @@ from typing import Any
 
 import pandas as pd
 
-from config import EXPERIMENT_ID
+from config import EXPERIMENT_ID, calibration_config_hash
 from src.artifact_io import (
     atomic_write_csv,
     atomic_write_json,
@@ -26,7 +26,10 @@ from src.artifact_io import (
 )
 from src.contracts import CalibrationError
 from src.derived import rebuild_derived_from_scientific_artifacts
-from src.run_provenance import ensure_calibration_stage_provenance
+from src.run_provenance import (
+    ensure_calibration_stage_provenance,
+    write_fresh_exp1_provenance,
+)
 from src.runner import RunMetadata
 from src.scientific_execution import (
     iter_primary_bundles,
@@ -73,6 +76,11 @@ def load_frozen_calibration() -> dict[str, Any]:
     if calibration_stage.get("calibration_source_hash") != current_calibration_hash:
         raise CalibrationError(
             "Calibration was generated from different calibration-stage source. "
+            "Run calibrate.py --force only after an approved change memo."
+        )
+    if calibration_stage.get("calibration_config_hash") != calibration_config_hash():
+        raise CalibrationError(
+            "Calibration was generated under a different calibration-stage config. "
             "Run calibrate.py --force only after an approved change memo."
         )
     return {
@@ -271,6 +279,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "completed_at": utc_now(),
         },
     )
+    write_fresh_exp1_provenance(output_root, PROJECT_ROOT)
     refresh_output_manifest(output_root)
     return output_root
 

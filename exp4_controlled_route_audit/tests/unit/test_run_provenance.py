@@ -207,7 +207,8 @@ def test_stage_provenance_record_written(tmp_path: Path) -> None:
     (run_dir / "logs").mkdir(parents=True)
     path = write_stage_provenance_record(run_dir, ROOT)
     payload = json.loads(path.read_text(encoding="utf-8"))
-    assert payload["schema"] == "exp4_stage_provenance_v2"
+    assert payload["schema"] == "exp4_stage_provenance_v3"
+    assert payload["stage_config_hashes"]["scientific_config_hash"]
     assert payload["source_hash_algorithm_version"]
     assert payload["stages"]["simulation"]["source_hash"]
     assert payload["stages"]["reporting"]["source_hash"]

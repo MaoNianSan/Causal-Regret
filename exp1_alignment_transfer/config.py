@@ -13,6 +13,7 @@ from typing import Any
 
 EXPERIMENT_ID = "exp1_alignment_transfer"
 CONFIG_VERSION = "1.2"
+STAGE_CONFIG_HASH_ALGORITHM_VERSION = "exp1-stage-config-v1"
 
 
 @dataclass(frozen=True)
@@ -149,6 +150,147 @@ DISPLAY_NAMES = {
     "arrival_clock": "Arrival-clock binding",
     "source_round": "Source-round binding",
 }
+
+
+def _payload_hash(payload: dict[str, Any]) -> str:
+    raw = json.dumps(
+        payload,
+        sort_keys=True,
+        separators=(",", ":"),
+    ).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def scientific_generation_config_payload(
+    run_tier: str = "full",
+    *,
+    structural: StructuralConfig | None = None,
+    delay: DelayConfig = DELAY,
+    learner: LearnerConfig | None = None,
+    run: RunConfig = RUN,
+    mechanism_order: tuple[str, ...] = MECHANISM_ORDER,
+) -> dict[str, Any]:
+    """Configuration capable of changing primary raw or seed-level outputs."""
+    if run_tier not in {"fast", "full"}:
+        raise ValueError("run_tier must be 'fast' or 'full'")
+    selected_structural = structural or (
+        FAST_STRUCTURAL if run_tier == "fast" else STRUCTURAL
+    )
+    selected_learner = learner or (FAST_LEARNER if run_tier == "fast" else LEARNER)
+    selected_seeds = run.fast_seeds if run_tier == "fast" else run.evaluation_seeds
+    return {
+        "algorithm_version": STAGE_CONFIG_HASH_ALGORITHM_VERSION,
+        "experiment_id": EXPERIMENT_ID,
+        "stage": "scientific_generation",
+        "run_tier": run_tier,
+        "structural": asdict(selected_structural),
+        "delay": asdict(delay),
+        "learner": asdict(selected_learner),
+        "execution": {
+            "seeds": list(selected_seeds),
+            "mechanism_order": list(mechanism_order),
+        },
+    }
+
+
+def scientific_generation_config_hash(
+    run_tier: str = "full", **kwargs: Any
+) -> str:
+    return _payload_hash(scientific_generation_config_payload(run_tier, **kwargs))
+
+
+def calibration_config_payload(
+    *,
+    structural: StructuralConfig = STRUCTURAL,
+    delay: DelayConfig = DELAY,
+    run: RunConfig = RUN,
+) -> dict[str, Any]:
+    """Only configuration consumed by the frozen calibration procedure."""
+    return {
+        "algorithm_version": STAGE_CONFIG_HASH_ALGORITHM_VERSION,
+        "experiment_id": EXPERIMENT_ID,
+        "stage": "calibration",
+        "structural": asdict(structural),
+        "delay": asdict(delay),
+        "calibration_seeds": list(run.calibration_seeds),
+        "evaluation_seeds_for_overlap_gate": list(run.evaluation_seeds),
+    }
+
+
+def calibration_config_hash(**kwargs: Any) -> str:
+    return _payload_hash(calibration_config_payload(**kwargs))
+
+
+def aggregation_config_payload(
+    run_tier: str = "full", *, run: RunConfig = RUN
+) -> dict[str, Any]:
+    if run_tier not in {"fast", "full"}:
+        raise ValueError("run_tier must be 'fast' or 'full'")
+    repetitions = (
+        run.bootstrap_repetitions_fast
+        if run_tier == "fast"
+        else run.bootstrap_repetitions_full
+    )
+    return {
+        "algorithm_version": STAGE_CONFIG_HASH_ALGORITHM_VERSION,
+        "experiment_id": EXPERIMENT_ID,
+        "stage": "aggregation",
+        "run_tier": run_tier,
+        "bootstrap_repetitions": repetitions,
+        "ci_level": run.ci_level,
+    }
+
+
+def aggregation_config_hash(run_tier: str = "full", **kwargs: Any) -> str:
+    return _payload_hash(aggregation_config_payload(run_tier, **kwargs))
+
+
+def validation_config_payload(
+    *, theory_sweep: TheorySweepConfig = THEORY_SWEEP
+) -> dict[str, Any]:
+    return {
+        "algorithm_version": STAGE_CONFIG_HASH_ALGORITHM_VERSION,
+        "experiment_id": EXPERIMENT_ID,
+        "stage": "validation",
+        "exact_shift_scales": list(theory_sweep.exact_shift_scales),
+        "margin_distortion_ratios": list(theory_sweep.margin_distortion_ratios),
+    }
+
+
+def validation_config_hash(**kwargs: Any) -> str:
+    return _payload_hash(validation_config_payload(**kwargs))
+
+
+def reporting_config_payload(
+    *, display_names: dict[str, str] = DISPLAY_NAMES
+) -> dict[str, Any]:
+    return {
+        "algorithm_version": STAGE_CONFIG_HASH_ALGORITHM_VERSION,
+        "experiment_id": EXPERIMENT_ID,
+        "stage": "reporting",
+        "display_names": dict(display_names),
+    }
+
+
+def reporting_config_hash(**kwargs: Any) -> str:
+    return _payload_hash(reporting_config_payload(**kwargs))
+
+
+def stage_config_hashes(
+    run_tier: str = "full",
+    *,
+    structural: StructuralConfig | None = None,
+    learner: LearnerConfig | None = None,
+) -> dict[str, str]:
+    return {
+        "scientific_generation_config_hash": scientific_generation_config_hash(
+            run_tier, structural=structural, learner=learner
+        ),
+        "calibration_config_hash": calibration_config_hash(),
+        "aggregation_config_hash": aggregation_config_hash(run_tier),
+        "validation_config_hash": validation_config_hash(),
+        "reporting_config_hash": reporting_config_hash(),
+    }
 
 
 def canonical_payload(

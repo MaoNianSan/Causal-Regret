@@ -81,6 +81,7 @@ def _find_base_dir(run_dir: Path) -> Path:
 def _provenance_summary(run_dir: Path) -> dict[str, object]:
     from exp4.outputs.writers import (
         SOURCE_HASH_ALGORITHM_VERSION,
+        STAGE_SOURCE_HASH_ALGORITHM_VERSION,
         compute_stage_source_hashes,
     )
     from exp4.validation.run_provenance import load_stage_provenance_record
@@ -101,9 +102,15 @@ def _provenance_summary(run_dir: Path) -> dict[str, object]:
         "aggregation_stage_hash": current.get("aggregation_source_hash"),
         "reporting_stage_hash": current.get("reporting_source_hash"),
         "validation_stage_hash": current.get("validation_source_hash"),
-        "source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
+        "source_hash_algorithm_version": STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+        "complete_source_hash_algorithm_version": SOURCE_HASH_ALGORITHM_VERSION,
         "stage_provenance_schema": (
             str(stage_record.get("schema")) if stage_record is not None else "MISSING"
+        ),
+        "stage_config_hashes": (
+            dict(stage_record.get("stage_config_hashes", {}))
+            if stage_record is not None
+            else {}
         ),
     }
 

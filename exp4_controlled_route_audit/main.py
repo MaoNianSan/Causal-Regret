@@ -28,6 +28,7 @@ from exp4.validation.runner import validate_run
 from exp4.validation.run_provenance import (
     Exp4ReuseDecision,
     audit_run_provenance,
+    migrate_stage_hash_and_config_provenance,
     record_downstream_rebuild,
     write_provenance_reconciliation,
 )
@@ -134,6 +135,7 @@ def main() -> None:
         "report",
         "provenance",
         "reconcile",
+        "migrate-provenance",
     ):
         command = subparsers.add_parser(command_name)
         command.add_argument("--run-dir", type=Path, required=True)
@@ -159,6 +161,20 @@ def main() -> None:
         audit = audit_run_provenance(context.run_dir, BASE_DIR, recompute_calibration=True)
         write_json(audit, context.run_dir / "logs" / "exp4_provenance_audit.json")
         print(json.dumps(audit, indent=2, default=str))
+        return
+
+    if arguments.command == "migrate-provenance":
+        context = _existing_context(arguments.run_dir, arguments.n_jobs)
+        artifact, migration = migrate_stage_hash_and_config_provenance(
+            context.run_dir, BASE_DIR
+        )
+        print(
+            json.dumps(
+                {"artifact": str(artifact), "migration": migration},
+                indent=2,
+                default=str,
+            )
+        )
         return
 
     if arguments.command in {"fast", "middle", "full"}:

@@ -32,7 +32,15 @@ EXP1_RECONCILIATION_SCHEMA = "exp1_provenance_reconciliation_v1"
 EXP1_EXECUTION_CONTRACT_MIGRATION_SCHEMA = (
     "exp1_scientific_execution_contract_migration_v1"
 )
+EXP1_STAGE_CONFIG_MIGRATION_SCHEMA = "exp1_stage_config_provenance_migration_v1"
 STAGE_HASH_NAMES = tuple(EXP1_STAGE_SOURCE_FILES)
+STAGE_CONFIG_HASH_NAMES = (
+    "scientific_generation_config_hash",
+    "calibration_config_hash",
+    "aggregation_config_hash",
+    "validation_config_hash",
+    "reporting_config_hash",
+)
 RAW_ARTIFACTS = (
     "raw/exp1_path_manifest.parquet",
     "raw/exp1_route_diagnostic_rounds.parquet",
@@ -46,6 +54,7 @@ RAW_ARTIFACTS = (
 class Exp1ReuseDecision(str, Enum):
     SCIENTIFIC_FULL_RERUN = "SCIENTIFIC_FULL_RERUN"
     DOWNSTREAM_REBUILD = "DOWNSTREAM_REBUILD"
+    VALIDATION_REBUILD = "VALIDATION_REBUILD"
     REPORTING_REBUILD = "REPORTING_REBUILD"
     METADATA_ONLY = "METADATA_ONLY"
     NOT_REUSABLE = "NOT_REUSABLE"
@@ -79,6 +88,10 @@ def execution_contract_migration_path(run_dir: Path) -> Path:
         / "metadata"
         / "exp1_scientific_execution_contract_migration.json"
     )
+
+
+def stage_config_migration_path(run_dir: Path) -> Path:
+    return run_dir / "metadata" / "exp1_stage_config_provenance_migration.json"
 
 
 def calibration_stage_provenance_path(project_root: Path) -> Path:
@@ -123,7 +136,7 @@ def _hash_historical_stage(
             ) from exc
         digest.update(relative.encode("utf-8"))
         digest.update(b"\0")
-        digest.update(content)
+        digest.update(content.replace(b"\r\n", b"\n"))
         digest.update(b"\0")
     return digest.hexdigest()
 
@@ -179,18 +192,79 @@ def ensure_calibration_stage_provenance(
             "before reusing this scientific run."
         )
     stage_hashes = exp1_stage_source_hashes(project_root)
+    from config import calibration_config_hash
+
     payload = {
         "schema": EXP1_STAGE_PROVENANCE_SCHEMA,
         "kind": "calibration",
         "recorded_at": utc_now(),
         "recorded_git_commit": current_commit,
         "calibration_manifest_hash": hash_payload(manifest),
+        "legacy_complete_config_hash": manifest.get("effective_config_hash"),
         "config_hash": manifest.get("effective_config_hash"),
+        "calibration_config_hash": calibration_config_hash(),
         "calibration_source_hash": stage_hashes["calibration_source_hash"],
         "bootstrap_mode": "FRESH_CURRENT_MANIFEST",
     }
     atomic_write_json(path, payload)
     return payload
+
+
+def write_fresh_exp1_provenance(run_dir: Path, project_root: Path) -> tuple[Path, Path]:
+    """Record stage source/config identities for a newly executed run."""
+    state = _load_json(run_dir / "metadata" / "run_state.json") or {}
+    manifest = _load_json(
+        project_root / "calibration" / "exp1_calibration_manifest.json"
+    ) or {}
+    if not state or not manifest:
+        raise RuntimeError("Fresh Exp1 provenance requires run state and calibration")
+    run_tier = str(state.get("run_tier", ""))
+    source_hashes = exp1_stage_source_hashes(project_root)
+    config_hashes = _current_stage_config_hashes(project_root, manifest, run_tier)
+    calibration_manifest_hash = hash_payload(manifest)
+    recorded_at = utc_now()
+    lineage = {
+        "schema": EXP1_RUN_LINEAGE_SCHEMA,
+        "run_id": state.get("run_id", run_dir.name),
+        "run_tier": run_tier,
+        "simulation_execution_mode": "FRESH",
+        "simulation_source_run_id": None,
+        "downstream_execution_mode": "FRESH",
+        "downstream_source_run_id": None,
+        "original_simulation_commit": state.get("code_commit"),
+        "formal_full_verified": False,
+        "legacy_complete_config_hash": state.get("config_hash"),
+        "calibration_manifest_hash": calibration_manifest_hash,
+        "source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+        **source_hashes,
+        **config_hashes,
+        "recorded_at": recorded_at,
+    }
+    stage_record = {
+        "schema": EXP1_STAGE_PROVENANCE_SCHEMA,
+        "kind": "run",
+        "run_id": state.get("run_id", run_dir.name),
+        "run_tier": run_tier,
+        "recorded_at": recorded_at,
+        "recorded_git_commit": state.get("code_commit"),
+        "original_simulation_commit": state.get("code_commit"),
+        "simulation_execution_mode": "FRESH",
+        "downstream_execution_mode": "FRESH",
+        "legacy_complete_config_hash": state.get("config_hash"),
+        "calibration_manifest_hash": calibration_manifest_hash,
+        "source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+        "stage_source_hashes": source_hashes,
+        "stage_config_hashes": config_hashes,
+        "raw_artifacts": {
+            relative: sha256_file(run_dir / relative)
+            for relative in RAW_ARTIFACTS
+            if (run_dir / relative).exists()
+        },
+        "bootstrap_mode": "FRESH_RUN",
+    }
+    atomic_write_json(run_lineage_path(run_dir), lineage)
+    atomic_write_json(stage_provenance_path(run_dir), stage_record)
+    return run_lineage_path(run_dir), stage_provenance_path(run_dir)
 
 
 def bootstrap_existing_full_provenance(run_dir: Path, project_root: Path) -> tuple[Path, Path]:
@@ -297,27 +371,56 @@ def _raw_artifacts_unchanged(run_dir: Path, stage_record: dict[str, Any]) -> boo
     )
 
 
+def _effective_run_configs(
+    manifest: dict[str, Any], run_tier: str
+) -> tuple[Any, Any]:
+    from config import FAST_LEARNER, FAST_STRUCTURAL, LEARNER, STRUCTURAL
+    from dataclasses import replace
+
+    selected = manifest["effective_structural_config"]
+    base_structural = FAST_STRUCTURAL if run_tier == "fast" else STRUCTURAL
+    learner = FAST_LEARNER if run_tier == "fast" else LEARNER
+    structural = replace(
+        base_structural,
+        ar_coefficient=float(selected["ar_coefficient"]),
+        innovation_sd=float(selected["innovation_sd"]),
+    )
+    return structural, learner
+
+
+def _current_stage_config_hashes(
+    project_root: Path, manifest: dict[str, Any], run_tier: str
+) -> dict[str, str]:
+    try:
+        from config import (
+            aggregation_config_hash,
+            calibration_config_hash,
+            reporting_config_hash,
+            scientific_generation_config_hash,
+            validation_config_hash,
+        )
+        structural, learner = _effective_run_configs(manifest, run_tier)
+        return {
+            "scientific_generation_config_hash": scientific_generation_config_hash(
+                run_tier, structural=structural, learner=learner
+            ),
+            "calibration_config_hash": calibration_config_hash(),
+            "aggregation_config_hash": aggregation_config_hash(run_tier),
+            "validation_config_hash": validation_config_hash(),
+            "reporting_config_hash": reporting_config_hash(),
+        }
+    except Exception:
+        return {}
+
+
 def _current_config_hash(
     project_root: Path, manifest: dict[str, Any], run_tier: str
 ) -> str | None:
+    """Legacy complete-config identity retained for artifact inspection."""
     try:
-        from config import (
-            FAST_LEARNER,
-            FAST_STRUCTURAL,
-            LEARNER,
-            STRUCTURAL,
-            config_hash,
-        )
-        from dataclasses import replace
+        from config import config_hash
 
-        selected = manifest["effective_structural_config"]
-        base_structural = FAST_STRUCTURAL if run_tier == "fast" else STRUCTURAL
-        learner = FAST_LEARNER if run_tier == "fast" else LEARNER
-        structural = replace(
-            base_structural,
-            ar_coefficient=float(selected["ar_coefficient"]),
-            innovation_sd=float(selected["innovation_sd"]),
-        )
+        structural, learner = _effective_run_configs(manifest, run_tier)
         return config_hash(structural=structural, learner=learner)
     except Exception:
         return None
@@ -335,13 +438,23 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
         dict(stage_record.get("stage_source_hashes", {})) if stage_record else {}
     )
     calibration_manifest_hash = hash_payload(manifest) if manifest else None
-    current_config = (
-        _current_config_hash(project_root, manifest, str(state.get("run_tier", "")))
-        if manifest
-        else None
-    )
+    run_tier = str(state.get("run_tier", ""))
+    current_config = _current_config_hash(project_root, manifest, run_tier) if manifest else None
     stored_config = state.get("config_hash")
-    config_hash_match = bool(current_config and stored_config == current_config)
+    legacy_config_hash_match = bool(current_config and stored_config == current_config)
+    current_config_hashes = (
+        _current_stage_config_hashes(project_root, manifest, run_tier)
+        if manifest
+        else {}
+    )
+    stored_config_hashes = (
+        dict(stage_record.get("stage_config_hashes", {})) if stage_record else {}
+    )
+    config_hash_matches = {
+        name: bool(stored_config_hashes.get(name))
+        and stored_config_hashes.get(name) == current_config_hashes.get(name)
+        for name in STAGE_CONFIG_HASH_NAMES
+    }
     calibration_source_hash_match = bool(
         calibration_record
         and calibration_record.get("calibration_source_hash")
@@ -351,7 +464,8 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
         manifest
         and calibration_record
         and calibration_record.get("calibration_manifest_hash") == calibration_manifest_hash
-        and calibration_record.get("config_hash") == manifest.get("effective_config_hash")
+        and calibration_record.get("calibration_config_hash")
+        == current_config_hashes.get("calibration_config_hash")
         and _calibration_artifacts_consistent(project_root, manifest)
         and calibration_source_hash_match
     )
@@ -377,22 +491,28 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
     if not stage_matches["scientific_generation_source_hash"]:
         decision = Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN
         reason = "PAPER_AUDIT_FAIL_SIMULATION_HASH_CHANGED"
-    elif not config_hash_match:
+    elif not config_hash_matches["scientific_generation_config_hash"]:
         decision = Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN
-        reason = "PAPER_AUDIT_FAIL_CONFIG_CHANGED"
+        reason = "PAPER_AUDIT_FAIL_SCIENTIFIC_CONFIG_CHANGED"
     elif not calibration_identity_match:
         decision = Exp1ReuseDecision.SCIENTIFIC_FULL_RERUN
         reason = "PAPER_AUDIT_FAIL_CALIBRATION_CHANGED"
     elif not raw_complete or not raw_unchanged or not scientific_previously_verified or not lineage_valid:
         decision = Exp1ReuseDecision.NOT_REUSABLE
         reason = "PAPER_AUDIT_FAIL_RAW_OR_LINEAGE_INCOMPLETE"
-    elif not stage_matches["aggregation_source_hash"]:
+    elif not stage_matches["aggregation_source_hash"] or not config_hash_matches[
+        "aggregation_config_hash"
+    ]:
         decision = Exp1ReuseDecision.DOWNSTREAM_REBUILD
         reason = "PAPER_AUDIT_FAIL_DERIVED_STALE"
-    elif not stage_matches["validation_source_hash"]:
-        decision = Exp1ReuseDecision.DOWNSTREAM_REBUILD
+    elif not stage_matches["validation_source_hash"] or not config_hash_matches[
+        "validation_config_hash"
+    ]:
+        decision = Exp1ReuseDecision.VALIDATION_REBUILD
         reason = "PAPER_AUDIT_FAIL_VALIDATION_STALE"
-    elif not stage_matches["reporting_source_hash"]:
+    elif not stage_matches["reporting_source_hash"] or not config_hash_matches[
+        "reporting_config_hash"
+    ]:
         decision = Exp1ReuseDecision.REPORTING_REBUILD
         reason = "PAPER_AUDIT_FAIL_REPORTING_STALE"
     else:
@@ -402,7 +522,7 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
     scientific_reuse_eligible = bool(
         lineage_valid
         and stage_matches["scientific_generation_source_hash"]
-        and config_hash_match
+        and config_hash_matches["scientific_generation_config_hash"]
         and calibration_identity_match
         and raw_complete
         and raw_unchanged
@@ -412,11 +532,14 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
     downstream_provenance_verified = bool(
         scientific_reuse_eligible
         and stage_matches["aggregation_source_hash"]
+        and config_hash_matches["aggregation_config_hash"]
         and stage_matches["validation_source_hash"]
+        and config_hash_matches["validation_config_hash"]
     )
     reporting_provenance_verified = bool(
         downstream_provenance_verified
         and stage_matches["reporting_source_hash"]
+        and config_hash_matches["reporting_config_hash"]
     )
     return {
         "audit_type": "exp1_stage_aware_provenance",
@@ -424,7 +547,18 @@ def audit_exp1_provenance(run_dir: Path, project_root: Path) -> dict[str, Any]:
         "stage_source_hashes": current_hashes,
         "stored_stage_hashes": stored_hashes,
         "stage_hash_matches": stage_matches,
-        "config_hash_match": config_hash_match,
+        "stage_config_hashes": current_config_hashes,
+        "stored_stage_config_hashes": stored_config_hashes,
+        "stage_config_hash_matches": config_hash_matches,
+        "scientific_generation_config_hash_match": config_hash_matches[
+            "scientific_generation_config_hash"
+        ],
+        "legacy_complete_config_hash": stored_config,
+        "current_legacy_complete_config_hash": current_config,
+        "legacy_complete_config_hash_match": legacy_config_hash_match,
+        "config_hash_match": config_hash_matches[
+            "scientific_generation_config_hash"
+        ],
         "calibration_identity_match": calibration_identity_match,
         "calibration_hash_internally_consistent": _calibration_artifacts_consistent(
             project_root, manifest
@@ -562,6 +696,182 @@ def migrate_scientific_execution_contract(
     return execution_contract_migration_path(run_dir), migration
 
 
+def migrate_stage_config_provenance(
+    run_dir: Path, project_root: Path
+) -> tuple[Path, dict[str, Any]]:
+    """Migrate a verified full run from monolithic to stage-aware config identity."""
+    state = _load_json(run_dir / "metadata" / "run_state.json") or {}
+    manifest = _load_json(
+        project_root / "calibration" / "exp1_calibration_manifest.json"
+    ) or {}
+    stage_record = _load_json(stage_provenance_path(run_dir)) or {}
+    lineage = _load_json(run_lineage_path(run_dir)) or {}
+    calibration_record = _load_json(calibration_stage_provenance_path(project_root)) or {}
+    execution_migration = _load_json(execution_contract_migration_path(run_dir)) or {}
+    existing = _load_json(stage_config_migration_path(run_dir))
+
+    raw_before = {
+        relative: sha256_file(run_dir / relative)
+        for relative in RAW_ARTIFACTS
+        if (run_dir / relative).exists()
+    }
+    prerequisites = {
+        "full_run": state.get("run_tier") == "full",
+        "scientific_run_previously_verified": _original_scientific_checks_pass(
+            run_dir, state
+        ),
+        "raw_scientific_artifacts_complete": raw_scientific_artifacts_complete(run_dir),
+        "raw_scientific_artifacts_unchanged": _raw_artifacts_unchanged(
+            run_dir, stage_record
+        ),
+        "execution_contract_replay_pass": execution_migration.get(
+            "scientific_equivalence"
+        )
+        == "PASS",
+        "calibration_artifacts_consistent": _calibration_artifacts_consistent(
+            project_root, manifest
+        ),
+    }
+    if not all(prerequisites.values()):
+        raise RuntimeError(
+            "Stage-config migration prerequisites failed: "
+            + json.dumps(prerequisites, sort_keys=True)
+        )
+
+    run_commit = str(
+        stage_record.get("original_simulation_commit")
+        or state.get("code_commit")
+        or ""
+    )
+    calibration_commit = str(
+        calibration_record.get("recorded_git_commit")
+        or manifest.get("code_commit")
+        or ""
+    )
+    current_sources = exp1_stage_source_hashes(project_root)
+    # The scientific execution module was extracted after the source run. Its
+    # exact stored-output replay is the authoritative equivalence proof for
+    # this source-layout migration; the historical commit cannot contain the
+    # newly extracted path.
+    historical_scientific_source = current_sources[
+        "scientific_generation_source_hash"
+    ]
+    historical_calibration_source = _hash_historical_stage(
+        project_root,
+        "calibration_source_hash",
+        EXP1_STAGE_SOURCE_FILES["calibration_source_hash"],
+        calibration_commit,
+    )
+    source_equivalence = {
+        "scientific_generation": execution_migration.get(
+            "scientific_equivalence"
+        )
+        == "PASS",
+        "calibration": historical_calibration_source
+        == current_sources["calibration_source_hash"],
+    }
+    if not all(source_equivalence.values()):
+        raise RuntimeError(
+            "Corrected Exp1 stage source reconstruction differs; "
+            "SCIENTIFIC_FULL_RERUN_REQUIRED=TRUE"
+        )
+
+    current_configs = _current_stage_config_hashes(
+        project_root, manifest, str(state.get("run_tier", ""))
+    )
+    if set(current_configs) != set(STAGE_CONFIG_HASH_NAMES):
+        raise RuntimeError("Current Exp1 stage config identities are incomplete")
+    calibration_identity_pass = bool(
+        calibration_record.get("calibration_manifest_hash") == hash_payload(manifest)
+        and prerequisites["calibration_artifacts_consistent"]
+        and source_equivalence["calibration"]
+    )
+    if not calibration_identity_pass:
+        raise RuntimeError("Exp1 calibration scientific identity migration failed")
+
+    raw_after = {
+        relative: sha256_file(run_dir / relative)
+        for relative in RAW_ARTIFACTS
+        if (run_dir / relative).exists()
+    }
+    raw_unchanged = raw_before == raw_after
+    migrated_at = utc_now()
+    migration = {
+        "schema": EXP1_STAGE_CONFIG_MIGRATION_SCHEMA,
+        "migration_type": "MONOLITHIC_CONFIG_TO_STAGE_AWARE_CONFIG",
+        "run_id": state.get("run_id", run_dir.name),
+        "legacy_config_hash": state.get("config_hash"),
+        "legacy_complete_config_hash": state.get("config_hash"),
+        **current_configs,
+        "old_source_hash_algorithm_version": stage_record.get(
+            "source_hash_algorithm_version", "exp1-stage-source-v1"
+        ),
+        "new_source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+        "historically_reconstructed_scientific_generation_source_hash": historical_scientific_source,
+        "scientific_generation_source_equivalence_method": "EXACT_STORED_OUTPUT_REPLAY",
+        "current_scientific_generation_source_hash": current_sources[
+            "scientific_generation_source_hash"
+        ],
+        "scientific_generation_equivalence": "PASS",
+        "evidence": {
+            "existing_execution_contract_replay": "PASS",
+            "raw_artifact_immutability": "PASS" if raw_unchanged else "FAIL",
+            "calibration_scientific_identity": (
+                "PASS" if calibration_identity_pass else "FAIL"
+            ),
+        },
+        "raw_artifact_hashes_before": raw_before,
+        "raw_artifact_hashes_after": raw_after,
+        "scientific_full_rerun_executed": False,
+        "migrated_at": migrated_at,
+    }
+    atomic_write_json(stage_config_migration_path(run_dir), migration)
+    if not raw_unchanged:
+        raise RuntimeError("Exp1 raw artifacts changed during config migration")
+
+    calibration_record.update(
+        {
+            "legacy_complete_config_hash": calibration_record.get("config_hash")
+            or manifest.get("effective_config_hash"),
+            "calibration_config_hash": current_configs["calibration_config_hash"],
+            "calibration_source_hash": current_sources["calibration_source_hash"],
+            "source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+            "stage_config_migrated_at": migrated_at,
+        }
+    )
+    atomic_write_json(calibration_stage_provenance_path(project_root), calibration_record)
+
+    stage_record.update(
+        {
+            "source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+            "legacy_complete_config_hash": stage_record.get("config_hash")
+            or state.get("config_hash"),
+            "stage_source_hashes": current_sources,
+            "stage_config_hashes": current_configs,
+            "stage_config_provenance_migration": str(
+                stage_config_migration_path(run_dir).relative_to(run_dir)
+            ).replace("\\", "/"),
+            "stage_config_migrated_at": migrated_at,
+        }
+    )
+    lineage.update(
+        {
+            "source_hash_algorithm_version": EXP1_STAGE_SOURCE_HASH_ALGORITHM_VERSION,
+            "legacy_complete_config_hash": lineage.get("config_hash")
+            or state.get("config_hash"),
+            **current_sources,
+            **current_configs,
+            "stage_config_provenance_migration": str(
+                stage_config_migration_path(run_dir).relative_to(run_dir)
+            ).replace("\\", "/"),
+            "stage_config_migrated_at": migrated_at,
+        }
+    )
+    atomic_write_json(stage_provenance_path(run_dir), stage_record)
+    atomic_write_json(run_lineage_path(run_dir), lineage)
+    return stage_config_migration_path(run_dir), migration
+
+
 def record_exp1_reconciliation(
     run_dir: Path,
     project_root: Path,
@@ -581,7 +891,9 @@ def record_exp1_reconciliation(
     existing_lineage = _load_json(run_lineage_path(run_dir)) or {}
     original_stage_record = _load_json(stage_provenance_path(run_dir)) or {}
     stored = dict(original_stage_record.get("stage_source_hashes", {}))
+    stored_config = dict(original_stage_record.get("stage_config_hashes", {}))
     current = dict(audit["stage_source_hashes"])
+    current_config = dict(audit["stage_config_hashes"])
     key_by_stage = {
         "aggregation": "aggregation_source_hash",
         "validation": "validation_source_hash",
@@ -589,6 +901,9 @@ def record_exp1_reconciliation(
     }
     for stage in rebuilt:
         stored[key_by_stage[stage]] = current[key_by_stage[stage]]
+        stored_config[f"{stage}_config_hash"] = current_config[
+            f"{stage}_config_hash"
+        ]
     reconciliation = {
         "schema": EXP1_RECONCILIATION_SCHEMA,
         "source_run_id": state.get("run_id", run_dir.name),
@@ -602,6 +917,8 @@ def record_exp1_reconciliation(
         "rebuilt_artifacts": rebuilt_artifacts or {},
         "stored_stage_hashes": dict(audit["stored_stage_hashes"]),
         "current_stage_hashes": current,
+        "stored_stage_config_hashes": dict(audit["stored_stage_config_hashes"]),
+        "current_stage_config_hashes": current_config,
         "reconciliation_timestamp": utc_now(),
     }
     atomic_write_json(reconciliation_path(run_dir), reconciliation)
@@ -622,6 +939,7 @@ def record_exp1_reconciliation(
         "schema": EXP1_STAGE_PROVENANCE_SCHEMA,
         "downstream_execution_mode": "REBUILT",
         "stage_source_hashes": stored,
+        "stage_config_hashes": stored_config,
         "downstream_rebuilt_at": utc_now(),
         "last_rebuilt_stages": list(rebuilt),
     }
@@ -632,6 +950,7 @@ def record_exp1_reconciliation(
 __all__ = [
     "EXP1_RECONCILIATION_SCHEMA",
     "EXP1_EXECUTION_CONTRACT_MIGRATION_SCHEMA",
+    "EXP1_STAGE_CONFIG_MIGRATION_SCHEMA",
     "EXP1_RUN_LINEAGE_SCHEMA",
     "EXP1_STAGE_PROVENANCE_SCHEMA",
     "Exp1ReuseDecision",
@@ -643,6 +962,9 @@ __all__ = [
     "exp1_scientific_reuse_eligible",
     "historical_stage_source_hashes",
     "migrate_scientific_execution_contract",
+    "migrate_stage_config_provenance",
     "raw_scientific_artifacts_complete",
     "record_exp1_reconciliation",
+    "stage_config_migration_path",
+    "write_fresh_exp1_provenance",
 ]
