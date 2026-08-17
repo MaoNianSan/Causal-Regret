@@ -188,6 +188,7 @@ _STAGE_SPECS: tuple[tuple[str, tuple[str, ...], tuple[str, ...]], ...] = (
             "exp4/reporting/figures_appendix.py",
             "exp4/reporting/figures_main.py",
             "exp4/reporting/plot_style.py",
+            "exp4/reporting/presentation.py",
             "exp4/reporting/run_summary.py",
             "exp4/reporting/tables.py",
         ),

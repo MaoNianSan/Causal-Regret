@@ -168,7 +168,12 @@ EXP1_STAGE_SOURCE_FILES: dict[str, tuple[str, ...]] = {
         "src/theory_sweeps.py",
         "src/scientific_execution_replay.py",
     ),
-    "reporting_source_hash": ("plot_main.py", "plot_appendix.py", "promote.py"),
+    "reporting_source_hash": (
+        "plot_main.py",
+        "plot_appendix.py",
+        "presentation.py",
+        "promote.py",
+    ),
 }
 
 
