@@ -1,4 +1,4 @@
-"""Canonical CLI for Exp4 v2. No command performs paper promotion implicitly."""
+"""Canonical CLI for Exp4 v3. No command performs paper promotion implicitly."""
 
 from __future__ import annotations
 
@@ -83,7 +83,7 @@ def main() -> None:
 
     if arguments.command == "status":
         status = write_implementation_status(
-            BASE_DIR, BASE_DIR / "reports" / "EXP4_V2_IMPLEMENTATION_STATUS.md"
+            BASE_DIR, BASE_DIR / "reports" / "EXP4_V3_IMPLEMENTATION_STATUS.md"
         )
         print(json.dumps(status, indent=2, default=str))
         return
@@ -110,7 +110,7 @@ def main() -> None:
         else:
             context = create_run_context(BASE_DIR, arguments.command, arguments.n_jobs)
             resume = False
-        print("EXP4 V2 ROUTE ALIGNMENT AND EVIDENCE-QUALIFIED AUDIT")
+        print("EXP4 V3 ROUTE ALIGNMENT AND EVIDENCE-QUALIFIED AUDIT")
         print(f"Run ID: {context.run_id}")
         print(f"Run tier: {context.run_tier}")
         print(f"Workers: {context.n_jobs}")

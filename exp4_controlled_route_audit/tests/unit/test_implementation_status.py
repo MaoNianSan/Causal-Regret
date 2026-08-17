@@ -24,7 +24,7 @@ def _make_run(
         "run_tier": tier,
         "generated_at": "2026-08-06T00:00:00+00:00",
         "paper_result": paper_promotion == "PASS",
-        "result_schema": "exp4_controlled_route_audit_v2",
+        "result_schema": "exp4_controlled_route_audit_v3",
         "source_code_hash": "0" * 64,
         "config_hash": "0" * 64,
         "code_commit": "x",
@@ -63,12 +63,30 @@ def test_implementation_status_detects_existing_full_run(tmp_path: Path) -> None
 
 def test_status_report_does_not_claim_full_not_executed(tmp_path: Path) -> None:
     _make_run(tmp_path, "full", "full_2")
-    path = tmp_path / "reports" / "EXP4_V2_IMPLEMENTATION_STATUS.md"
+    path = tmp_path / "reports" / "EXP4_V3_IMPLEMENTATION_STATUS.md"
     status = write_implementation_status(tmp_path, path)
     assert status["FULL_RUN_EXECUTED"] == "YES"
     text = path.read_text(encoding="utf-8")
     assert "FULL_RUN_EXECUTED=YES" in text
     assert "FULL_RUN_EXECUTED=NO" not in text
+
+
+def test_status_marks_v2_full_as_legacy_pending_v3_regeneration(
+    tmp_path: Path,
+) -> None:
+    run_dir = _make_run(tmp_path, "full", "full_v2")
+    config_path = run_dir / "logs" / "run_config.json"
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    config["result_schema"] = "exp4_controlled_route_audit_v2"
+    config_path.write_text(json.dumps(config), encoding="utf-8")
+
+    status = build_implementation_status(tmp_path)
+
+    assert status["latest_full_result_schema"] == "exp4_controlled_route_audit_v2"
+    assert (
+        status["latest_full_interface_status"]
+        == "LEGACY_V2_PENDING_V3_REGENERATION"
+    )
 
 
 def test_scan_runs_selects_latest_per_tier(tmp_path: Path) -> None:

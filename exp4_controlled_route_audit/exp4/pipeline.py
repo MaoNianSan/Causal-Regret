@@ -1,4 +1,4 @@
-"""High-level Exp4 v2 pipeline composition."""
+"""High-level Exp4 v3 pipeline composition."""
 
 from __future__ import annotations
 
@@ -93,7 +93,7 @@ def run_pipeline(
     static = run_static_checks(base_dir)
     write_json(static, context.run_dir / "checks" / "exp4_static_code_checks.json")
     if static["status"] != "PASS":
-        raise RuntimeError("Static Exp4 v2 code contract failed")
+        raise RuntimeError("Static Exp4 v3 code contract failed")
     calibration: ProxyRouteCalibration = run_calibration_stage(context, resume)
     run_module_a_stage(context, calibration, resume)
     run_module_bc_stage(context, calibration, resume)

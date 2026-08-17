@@ -11,6 +11,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 
+from exp4.configuration.schema import RESULT_SCHEMA
 from exp4.outputs.writers import SOURCE_HASH_ALGORITHM_VERSION
 from exp4.validation.run_provenance import audit_run_provenance
 
@@ -55,6 +56,7 @@ def _run_metadata(run_dir: Path) -> dict[str, object] | None:
         "generated_at": generated_at,
         "timestamp": timestamp,
         "paper_result": bool(payload.get("paper_result", False)),
+        "result_schema": str(payload.get("result_schema", "MISSING")),
         "result_status_paper_promotion": str(
             result_status.get("paper_promotion", "NOT_RUN")
         ),
@@ -101,12 +103,14 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
 
     full_engineering = "NONE"
     full_scientific = "NONE"
+    full_result_schema = "NONE"
     paper_promotion_status = "NOT_RUN"
     paper_result = False
     provenance: dict[str, object] = {}
     if full_dir is not None and full_dir.exists():
         full_engineering = str(runs["full"].get("engineering_status", "MISSING"))
         full_scientific = str(runs["full"].get("scientific_status", "MISSING"))
+        full_result_schema = str(runs["full"].get("result_schema", "MISSING"))
         paper_promotion_status = str(
             runs["full"].get("result_status_paper_promotion", "NOT_RUN")
         )
@@ -166,6 +170,12 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
         "latest_fast_run": latest["fast"],
         "latest_middle_run": latest["middle"],
         "latest_full_run": latest["full"],
+        "latest_full_result_schema": full_result_schema,
+        "latest_full_interface_status": (
+            "CURRENT_V3"
+            if full_result_schema == RESULT_SCHEMA
+            else "LEGACY_V2_PENDING_V3_REGENERATION"
+        ),
         "full_run_engineering_status": full_engineering,
         "full_run_scientific_status": full_scientific,
         "full_run_checks_stale": checks_stale,
@@ -213,7 +223,7 @@ def write_implementation_status(base_dir: Path, path: Path) -> dict[str, object]
         "# Exp4 v3 Implementation Status",
         "",
         f"Status date: {status['generated_at']}",
-        f"Schema: `exp4_controlled_route_audit_v3`",
+        f"Current interface schema: `{RESULT_SCHEMA}`",
         f"Source hash algorithm: `{status['source_hash_algorithm_version']}`",
         f"Scope: `exp4_controlled_route_audit` only",
         "",
@@ -222,6 +232,8 @@ def write_implementation_status(base_dir: Path, path: Path) -> dict[str, object]
         f"- Latest fast run: `{status['latest_fast_run']}`",
         f"- Latest middle run: `{status['latest_middle_run']}`",
         f"- Latest full run: `{status['latest_full_run']}`",
+        f"- Latest full result schema: `{status['latest_full_result_schema']}`",
+        f"- Latest full interface status: `{status['latest_full_interface_status']}`",
         "",
         "## Full Run Status",
         "",

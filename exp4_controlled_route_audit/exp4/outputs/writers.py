@@ -87,7 +87,7 @@ SOURCE_HASH_ALGORITHM_VERSION = "exp4-source-code-v2"
 
 
 def compute_exp4_source_code_hash(base_dir: Path) -> str:
-    """Canonical Exp4 v2 source-code hash.
+    """Canonical Exp4 v3 source-code hash.
 
     This single function is the source of truth for the full Exp4 source hash:
     run creation, provenance audit, and promotion validation all use it.

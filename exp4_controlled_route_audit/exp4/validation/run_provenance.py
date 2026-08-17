@@ -1,4 +1,4 @@
-"""Stage-level provenance and source-hash audit for Exp4 v2 runs.
+"""Stage-level provenance and source-hash audit for Exp4 v3 runs.
 
 A full Exp4 run has four downstream stages after the raw simulation:
 aggregation, reporting, validation, and (implicitly) the pipeline wiring.

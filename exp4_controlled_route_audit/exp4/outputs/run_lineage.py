@@ -1,4 +1,4 @@
-"""Immutable run-lineage contract for Exp4 v2 runs.
+"""Immutable run-lineage contract for Exp4 v3 runs.
 
 The lineage separates *eligibility to reuse* (a property of the source tree
 and stored hashes) from *actual execution* (which run really executed the

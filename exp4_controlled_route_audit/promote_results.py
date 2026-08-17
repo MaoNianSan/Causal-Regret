@@ -1,4 +1,4 @@
-"""Independent paper-promotion command for an approved full Exp4 v2 run.
+"""Independent paper-promotion command for an approved full Exp4 v3 run.
 
 Promotion validation does not trust the previously written check files alone:
 it re-derives the main-table semantics, the Monte Carlo precision gates, and
@@ -206,7 +206,7 @@ def promote(run_dir: Path, approve_claims: bool, base_dir: Path, dry_run: bool) 
     write_json(result, run_dir / "checks" / "exp4_promotion_check.json")
     if result["status"] != "PASS":
         raise SystemExit(
-            "Exp4 v2 paper promotion refused; inspect exp4_promotion_check.json"
+            "Exp4 v3 paper promotion refused; inspect exp4_promotion_check.json"
         )
     if dry_run:
         print(f"Paper promotion dry-run PASS (no state written): {run_dir}")

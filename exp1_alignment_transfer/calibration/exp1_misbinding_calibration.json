@@ -56,12 +56,12 @@
     30,
     45
   ],
-  "code_commit": "0515e6ba138ccf463fb0283b01663bbe5fc984f6",
-  "code_lineage": "tree:6a280b8d30bb288f585a1f6d9d5c521a1f2c2101e4b411b012f50784f752ad70",
+  "code_commit": "b3021ac6909577ec409d8b4094eecfd100c4c535",
+  "code_lineage": "tree:094ece351cf80a8614e247dd21c08f58fb439bb31fb72dec427a80eb4fde90b1",
   "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
   "evaluation_seed_overlap": false,
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-08-17T05:54:17.075580+00:00",
+  "generated_at": "2026-08-17T06:20:29.239889+00:00",
   "selected_block_length": 30,
   "selection_criterion": "pass persistent reversal-margin gates; select affected fraction closest to 0.5, then larger block length"
 }
