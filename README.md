@@ -14,6 +14,8 @@ Causal-Regret/
 ├── CITATION.cff                       # citation metadata
 ├── environment.yml                    # frozen environment
 ├── reproduce.py                       # thin smoke/full forwarding wrapper
+├── render_presentation.py             # presentation CLI (render/validate; preview/publication)
+├── presentation_sources.py            # presentation registry (figure/table sources)
 ├── scripts/
 │   └── validate_submission_repository.py   # read-only submission validator
 ├── tests/
@@ -58,9 +60,9 @@ Full per-experiment commands are in `REPRODUCE.md` and `docs/EXPERIMENT_IO_CONTR
 | Experiment | Role in evidence chain | Input | Canonical output | Main artifact |
 |---|---|---|---|---|
 | Exp1 | Controlled alignment and regret transfer | controlled simulator (no external data) | `exp1_alignment_transfer/outputs/paper_candidate/` | `fig_exp1_alignment_transfer` |
-| Exp2 | Attribution sensitivity in delayed-conversion logs | Criteo log (download required) | `exp2_.../outputs/paper/exp2-full-20260807T111616+0800/` | `figure_exp2_attribution_sensitivity` |
-| Exp3 | Delayed-feedback recommendation and decision recovery | KuaiRand-1K logs (download required) | `exp3_.../paper_candidate/` (run `exp3-full-20260807T072340Z`) | `exp3_main_score_gap_ranking` |
-| Exp4 | Route alignment, audit reliability, recoverability | controlled simulator (no external data) | `exp4_.../outputs/runs/full_20260817T071019Z_7d7146b7/` | `fig_exp4_route_alignment_and_audit_reliability` |
+| Exp2 | Attribution sensitivity in delayed-conversion logs | Criteo log (download required) | `exp2_real_delayed_conversion_logs/outputs/paper/exp2-full-20260807T111616+0800/` | `figure_exp2_attribution_sensitivity` |
+| Exp3 | Delayed-feedback recommendation and decision recovery | KuaiRand-1K logs (download required) | `exp3_sequential_recommendation_delayed_feedback/paper_candidate/` (run `exp3-full-20260807T072340Z`) | `exp3_main_score_gap_ranking` |
+| Exp4 | Route alignment, audit reliability, recoverability | controlled simulator (no external data) | `exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/` | `fig_exp4_route_alignment_and_audit_reliability` |
 
 All four canonical outputs carry `paper_result = true`. Exp4 uses result schema `exp4_controlled_route_audit_v3`. The authoritative per-experiment input/output contracts (commands, metrics, uncertainty semantics, interpretation boundaries) are in [`docs/EXPERIMENT_IO_CONTRACT.md`](docs/EXPERIMENT_IO_CONTRACT.md). The paper-facing presentation bundle with all figures, tables, and per-figure metadata is in [`publication/CR-EXP-OUTPUT-V1/`](publication/CR-EXP-OUTPUT-V1/README.md).
 
