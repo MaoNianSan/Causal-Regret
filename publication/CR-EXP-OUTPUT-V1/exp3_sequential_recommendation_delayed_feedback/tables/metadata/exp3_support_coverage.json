@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "1483f4a50caae21d07b63f8526681bc0d8944b8ab07e73126d480994d7e1be5f",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_support_coverage.csv",
+  "source_file_sha256": "ce5c29b90c99cd92f6b07c11c89f1a10b2ee1e5f05d60210028ae2e41bc67331",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_support_coverage",
+  "tex_sha256": "d20dc797e41e2fef7a4fc617539a179f84439e6f3303162d072ef2f150ee4446"
+}

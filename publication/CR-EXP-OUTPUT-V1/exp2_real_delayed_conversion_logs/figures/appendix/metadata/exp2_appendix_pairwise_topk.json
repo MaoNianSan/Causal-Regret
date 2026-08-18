@@ -1,0 +1,56 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    2.8
+  ],
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "figure_file_hashes": {
+    "exp2_appendix_pairwise_topk.pdf": "ab71dc5499b1447f24341421d2a6e57ffe0dddeada64d243c83f9ab5cee18c5e",
+    "exp2_appendix_pairwise_topk.png": "0a5c96965b903655e2c34d260ffc084c6df08ab46ea47606d9ff25c42fde572e",
+    "exp2_appendix_pairwise_topk.svg": "c801c34c339ddc6204a35e472a2eaf3be4174b1a9daa7b4f405b8b26629d768f"
+  },
+  "figure_id": "exp2_appendix_pairwise_topk",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:27.519267+00:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
+  "marker_semantics": {},
+  "metric_definitions": {
+    "value": "value"
+  },
+  "narrative_claim": "Pairwise Top-k diagnostics",
+  "panel_definitions": {
+    "a": "Pairwise Top-k diagnostics"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_contract": {
+    "layout": [
+      1,
+      1
+    ],
+    "source": "figure_exp2_pairwise_appendix_data.csv"
+  },
+  "presentation_source_lineage": "presentation:b654fd969a27c9c87d818491984cba7fcf1811146e9aa7d0eb5b710abd20a614",
+  "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Pairwise Top-k diagnostics",
+  "result_schema": "exp2_attribution_sensitivity_v2",
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "paper",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp2_appendix_pairwise_topk.csv",
+  "source_data_file_hash": "75850d745a7c23431c962f6fd232700943bad8c83a865c734d2ba6d835e6343f",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_pairwise_appendix_data.csv": "7dd1ecce3af8565e678575636ed0bf356365fee5ae1420382bc25ba18fb0257f"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen result-table diagnostic",
+  "uncertainty_semantics": "Frozen result-table diagnostic"
+}

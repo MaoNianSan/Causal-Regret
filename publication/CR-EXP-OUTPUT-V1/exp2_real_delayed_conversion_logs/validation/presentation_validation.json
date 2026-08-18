@@ -1,0 +1,649 @@
+{
+  "checks": [
+    {
+      "check": "source_files_present",
+      "details": "",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_ambiguity_heatmap.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_ambiguity_heatmap.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_delay_distribution.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_delay_distribution.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_pairwise_topk.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_pairwise_topk.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_ambiguity_heatmap.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_ambiguity_heatmap.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_delay_distribution.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_delay_distribution.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_pairwise_topk.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_pairwise_topk.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_ambiguity_heatmap.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_ambiguity_heatmap.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_delay_distribution.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_delay_distribution.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_pairwise_topk.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_pairwise_topk.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_ambiguity_heatmap.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_ambiguity_heatmap.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_delay_distribution.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_delay_distribution.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_pairwise_topk.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_pairwise_topk.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_ambiguity_heatmap.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_ambiguity_heatmap.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_delay_distribution.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_delay_distribution.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_pairwise_topk.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_pairwise_topk.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/figure_exp2_attribution_sensitivity.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\data\\figure_exp2_attribution_sensitivity.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/figure_exp2_attribution_sensitivity.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\metadata\\figure_exp2_attribution_sensitivity.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/figure_exp2_attribution_sensitivity.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\pdf\\figure_exp2_attribution_sensitivity.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/figure_exp2_attribution_sensitivity.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\png\\figure_exp2_attribution_sensitivity.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/figure_exp2_attribution_sensitivity.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\svg\\figure_exp2_attribution_sensitivity.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_attribution_route_definitions.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_attribution_route_definitions.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_cohort_flow.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_cohort_flow.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_pairwise_appendix.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_pairwise_appendix.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_robustness.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_robustness.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_attribution_route_definitions.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_attribution_route_definitions.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_cohort_flow.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_cohort_flow.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_pairwise_appendix.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_pairwise_appendix.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_robustness.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_robustness.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_attribution_route_definitions.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_attribution_route_definitions.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_cohort_flow.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_cohort_flow.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_pairwise_appendix.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_pairwise_appendix.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_robustness.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_robustness.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\pdf\\figure_exp2_attribution_sensitivity.pdf",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\svg\\figure_exp2_attribution_sensitivity.svg",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\png\\figure_exp2_attribution_sensitivity.png",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\data\\figure_exp2_attribution_sensitivity.csv",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\metadata\\figure_exp2_attribution_sensitivity.json",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:three_graphic_hashes",
+      "details": "dict_keys(['figure_exp2_attribution_sensitivity.pdf', 'figure_exp2_attribution_sensitivity.png', 'figure_exp2_attribution_sensitivity.svg'])",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:hash:figure_exp2_attribution_sensitivity.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\pdf\\figure_exp2_attribution_sensitivity.pdf",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:hash:figure_exp2_attribution_sensitivity.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\png\\figure_exp2_attribution_sensitivity.png",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:hash:figure_exp2_attribution_sensitivity.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\svg\\figure_exp2_attribution_sensitivity.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_ambiguity_heatmap.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_ambiguity_heatmap.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_delay_distribution.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_delay_distribution.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp2_appendix_pairwise_topk.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_pairwise_topk.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_ambiguity_heatmap.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_ambiguity_heatmap.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_delay_distribution.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_delay_distribution.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp2_appendix_pairwise_topk.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_pairwise_topk.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_ambiguity_heatmap.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_ambiguity_heatmap.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_delay_distribution.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_delay_distribution.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp2_appendix_pairwise_topk.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_pairwise_topk.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_ambiguity_heatmap.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_ambiguity_heatmap.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_delay_distribution.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_delay_distribution.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp2_appendix_pairwise_topk.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_pairwise_topk.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_ambiguity_heatmap.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_ambiguity_heatmap.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_delay_distribution.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_delay_distribution.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp2_appendix_pairwise_topk.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_pairwise_topk.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/figure_exp2_attribution_sensitivity.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\data\\figure_exp2_attribution_sensitivity.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/figure_exp2_attribution_sensitivity.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\metadata\\figure_exp2_attribution_sensitivity.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/figure_exp2_attribution_sensitivity.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\pdf\\figure_exp2_attribution_sensitivity.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/figure_exp2_attribution_sensitivity.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\png\\figure_exp2_attribution_sensitivity.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/figure_exp2_attribution_sensitivity.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\svg\\figure_exp2_attribution_sensitivity.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_attribution_route_definitions.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_attribution_route_definitions.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_cohort_flow.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_cohort_flow.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_pairwise_appendix.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_pairwise_appendix.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp2_robustness.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_exp2_robustness.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_attribution_route_definitions.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_attribution_route_definitions.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_cohort_flow.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_cohort_flow.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_pairwise_appendix.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_pairwise_appendix.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp2_robustness.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_exp2_robustness.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_attribution_route_definitions.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_attribution_route_definitions.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_cohort_flow.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_cohort_flow.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_pairwise_appendix.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_pairwise_appendix.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp2_robustness.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_exp2_robustness.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_ambiguity_heatmap.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_ambiguity_heatmap.svg",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_ambiguity_heatmap.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_ambiguity_heatmap.csv",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_ambiguity_heatmap.json",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:three_graphic_hashes",
+      "details": "dict_keys(['exp2_appendix_ambiguity_heatmap.pdf', 'exp2_appendix_ambiguity_heatmap.png', 'exp2_appendix_ambiguity_heatmap.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:hash:exp2_appendix_ambiguity_heatmap.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_ambiguity_heatmap.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:hash:exp2_appendix_ambiguity_heatmap.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_ambiguity_heatmap.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:hash:exp2_appendix_ambiguity_heatmap.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_ambiguity_heatmap.svg",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_delay_distribution.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_delay_distribution.svg",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_delay_distribution.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_delay_distribution.csv",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_delay_distribution.json",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:three_graphic_hashes",
+      "details": "dict_keys(['exp2_appendix_delay_distribution.pdf', 'exp2_appendix_delay_distribution.png', 'exp2_appendix_delay_distribution.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:hash:exp2_appendix_delay_distribution.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_delay_distribution.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:hash:exp2_appendix_delay_distribution.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_delay_distribution.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:hash:exp2_appendix_delay_distribution.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_delay_distribution.svg",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_pairwise_topk.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_pairwise_topk.svg",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_pairwise_topk.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\data\\exp2_appendix_pairwise_topk.csv",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\metadata\\exp2_appendix_pairwise_topk.json",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:three_graphic_hashes",
+      "details": "dict_keys(['exp2_appendix_pairwise_topk.pdf', 'exp2_appendix_pairwise_topk.png', 'exp2_appendix_pairwise_topk.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:hash:exp2_appendix_pairwise_topk.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_pairwise_topk.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:hash:exp2_appendix_pairwise_topk.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\png\\exp2_appendix_pairwise_topk.png",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:hash:exp2_appendix_pairwise_topk.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\svg\\exp2_appendix_pairwise_topk.svg",
+      "passed": true
+    },
+    {
+      "check": "presentation_manifest_exists",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\manifests\\presentation_manifest.json",
+      "passed": true
+    }
+  ],
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "paper_result": true,
+  "passed": true,
+  "run_id": "exp2-full-20260807T111616+0800",
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}

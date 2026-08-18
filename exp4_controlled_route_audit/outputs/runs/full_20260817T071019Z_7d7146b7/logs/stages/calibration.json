@@ -1,0 +1,12 @@
+{
+  "artifacts": {
+    "derived/calibration/exp4_delay_prior.csv": "194a9a753e5e42eb29ba57ed5293f1400cfbfb59d09848f3a8f0d40aa3d2845f",
+    "derived/calibration/exp4_proxy_distance_summary.csv": "917c00165ccd40230ca8a3d736c850821301b46f6abe1249cc8c7b6c07ed1998",
+    "derived/calibration/exp4_proxy_route_calibration.json": "09de6869590b1321eaf371397987eb45469295c0a123529aa8ae60ae0b7bccdc"
+  },
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "completed_at": "2026-08-17T07:10:22+00:00",
+  "completed_tasks": 20,
+  "stage": "calibration",
+  "status": "PASS"
+}

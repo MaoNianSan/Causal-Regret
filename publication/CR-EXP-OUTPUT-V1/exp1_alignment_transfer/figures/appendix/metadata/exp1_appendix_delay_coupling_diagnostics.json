@@ -1,0 +1,59 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    3.0
+  ],
+  "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
+  "experiment_id": "exp1_alignment_transfer",
+  "figure_file_hashes": {
+    "exp1_appendix_delay_coupling_diagnostics.pdf": "e01680ff74366746d4cb1d308d8565c8dc85f5eb3dd5f8cd5491498e2a717dfb",
+    "exp1_appendix_delay_coupling_diagnostics.png": "d3a0e2b9aaf5f9a6384056b5e793ed78af5ec3079a7c99d0094509aaf6ea165a",
+    "exp1_appendix_delay_coupling_diagnostics.svg": "b8d8b4d26d8d42007a1eeca863deb1b73bcf2a50bc5e39bcc9469349d6ed475f"
+  },
+  "figure_id": "exp1_appendix_delay_coupling_diagnostics",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:22.741756+00:00",
+  "input_manifest_hash": "NA",
+  "interpretation_boundary": "Appendix diagnostic from frozen full-run sources; no new scientific estimate.",
+  "marker_semantics": {},
+  "metric_definitions": {},
+  "narrative_claim": "Delay survival and state-coupling verification",
+  "panel_definitions": {
+    "a": "fig_exp1_delay_survival_data",
+    "b": "fig_exp1_state_coupling_data"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "f2216dd37ec9af81398c939ef7c30abc62700eaa4fc70b7697511ec7d8c2b2de",
+  "presentation_contract": {
+    "layout": [
+      1,
+      2
+    ],
+    "sources": [
+      "fig_exp1_delay_survival_data.csv",
+      "fig_exp1_state_coupling_data.csv"
+    ]
+  },
+  "presentation_source_lineage": "presentation:756870bf00b495bc0a204d526a5d6797940b22d2d5d8709c5a26a326471a112c",
+  "preview_root_relative_path": "exp1_alignment_transfer",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Delay survival and state-coupling verification",
+  "result_schema": "exp1_alignment_transfer_v1",
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "run_tier": "paper",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp1_appendix_delay_coupling_diagnostics.csv",
+  "source_data_file_hash": "a0367d1238296ca61b5068220b69a345804ff467f3e2b004526bb47b782e8e5c",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\figures\\data\\fig_exp1_delay_survival_data.csv": "48d0b230be37bee495586e3a1d02b36c00cdaee2b55892d53114b69d1869375d",
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\figures\\data\\fig_exp1_state_coupling_data.csv": "940e6eabca09412f212f86407cd95a6d4dfcdf76252374bd7cdee436e2278a30"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen source diagnostic",
+  "uncertainty_semantics": "Frozen source diagnostic"
+}

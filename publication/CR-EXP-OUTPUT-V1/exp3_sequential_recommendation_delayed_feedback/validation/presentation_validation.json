@@ -1,0 +1,744 @@
+{
+  "checks": [
+    {
+      "check": "source_files_present",
+      "details": "",
+      "passed": true
+    },
+    {
+      "check": "exp3_current_arrival_max_gap_source",
+      "details": "0.6417907610969317",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_calibration_and_selection.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_calibration_and_selection.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_carrier_and_gap_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_carrier_and_gap_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_support_and_dependence.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_support_and_dependence.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_calibration_and_selection.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_calibration_and_selection.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_carrier_and_gap_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_carrier_and_gap_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_support_and_dependence.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_support_and_dependence.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_calibration_and_selection.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_calibration_and_selection.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_support_and_dependence.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_support_and_dependence.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_calibration_and_selection.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_calibration_and_selection.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_carrier_and_gap_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_carrier_and_gap_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_support_and_dependence.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_support_and_dependence.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_calibration_and_selection.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_calibration_and_selection.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_support_and_dependence.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_support_and_dependence.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/exp3_main_score_gap_ranking.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\data\\exp3_main_score_gap_ranking.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/exp3_main_score_gap_ranking.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\metadata\\exp3_main_score_gap_ranking.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/exp3_main_score_gap_ranking.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\pdf\\exp3_main_score_gap_ranking.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/exp3_main_score_gap_ranking.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\png\\exp3_main_score_gap_ranking.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/exp3_main_score_gap_ranking.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\svg\\exp3_main_score_gap_ranking.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_action_space_coverage.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_action_space_coverage.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_paired_ranking_contrast.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_paired_ranking_contrast.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_primary_route_results.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_primary_route_results.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_resampling_structure_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_resampling_structure_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_ridge_coefficients.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_ridge_coefficients.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_ridge_history_cv.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_ridge_history_cv.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_support_coverage.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_support_coverage.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_action_space_coverage.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_action_space_coverage.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_paired_ranking_contrast.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_paired_ranking_contrast.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_primary_route_results.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_primary_route_results.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_resampling_structure_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_resampling_structure_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_ridge_coefficients.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_ridge_coefficients.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_ridge_history_cv.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_ridge_history_cv.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_support_coverage.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_support_coverage.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_action_space_coverage.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_action_space_coverage.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_paired_ranking_contrast.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_paired_ranking_contrast.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_primary_route_results.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_primary_route_results.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_resampling_structure_diagnostics.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_resampling_structure_diagnostics.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_ridge_coefficients.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_ridge_coefficients.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_ridge_history_cv.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_ridge_history_cv.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_support_coverage.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_support_coverage.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\pdf\\exp3_main_score_gap_ranking.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\svg\\exp3_main_score_gap_ranking.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\png\\exp3_main_score_gap_ranking.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\data\\exp3_main_score_gap_ranking.csv",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\metadata\\exp3_main_score_gap_ranking.json",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:three_graphic_hashes",
+      "details": "dict_keys(['exp3_main_score_gap_ranking.pdf', 'exp3_main_score_gap_ranking.png', 'exp3_main_score_gap_ranking.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:hash:exp3_main_score_gap_ranking.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\pdf\\exp3_main_score_gap_ranking.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:hash:exp3_main_score_gap_ranking.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\png\\exp3_main_score_gap_ranking.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:hash:exp3_main_score_gap_ranking.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\svg\\exp3_main_score_gap_ranking.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_calibration_and_selection.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_calibration_and_selection.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_carrier_and_gap_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_carrier_and_gap_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp3_appendix_support_and_dependence.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_support_and_dependence.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_calibration_and_selection.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_calibration_and_selection.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_carrier_and_gap_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_carrier_and_gap_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp3_appendix_support_and_dependence.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_support_and_dependence.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_calibration_and_selection.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_calibration_and_selection.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp3_appendix_support_and_dependence.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_support_and_dependence.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_calibration_and_selection.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_calibration_and_selection.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_carrier_and_gap_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_carrier_and_gap_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp3_appendix_support_and_dependence.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_support_and_dependence.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_calibration_and_selection.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_calibration_and_selection.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp3_appendix_support_and_dependence.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_support_and_dependence.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/exp3_main_score_gap_ranking.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\data\\exp3_main_score_gap_ranking.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/exp3_main_score_gap_ranking.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\metadata\\exp3_main_score_gap_ranking.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/exp3_main_score_gap_ranking.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\pdf\\exp3_main_score_gap_ranking.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/exp3_main_score_gap_ranking.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\png\\exp3_main_score_gap_ranking.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/exp3_main_score_gap_ranking.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\svg\\exp3_main_score_gap_ranking.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_action_space_coverage.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_action_space_coverage.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_paired_ranking_contrast.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_paired_ranking_contrast.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_primary_route_results.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_primary_route_results.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_resampling_structure_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_resampling_structure_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_ridge_coefficients.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_ridge_coefficients.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_ridge_history_cv.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_ridge_history_cv.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/exp3_support_coverage.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\exp3_support_coverage.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_action_space_coverage.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_action_space_coverage.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_paired_ranking_contrast.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_paired_ranking_contrast.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_primary_route_results.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_primary_route_results.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_resampling_structure_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_resampling_structure_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_ridge_coefficients.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_ridge_coefficients.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_ridge_history_cv.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_ridge_history_cv.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/exp3_support_coverage.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\exp3_support_coverage.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_action_space_coverage.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_action_space_coverage.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_paired_ranking_contrast.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_paired_ranking_contrast.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_primary_route_results.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_primary_route_results.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_resampling_structure_diagnostics.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_resampling_structure_diagnostics.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_ridge_coefficients.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_ridge_coefficients.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_ridge_history_cv.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_ridge_history_cv.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/exp3_support_coverage.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\exp3_support_coverage.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_support_and_dependence.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_support_and_dependence.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_support_and_dependence.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_support_and_dependence.csv",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_support_and_dependence.json",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:three_graphic_hashes",
+      "details": "dict_keys(['exp3_appendix_support_and_dependence.pdf', 'exp3_appendix_support_and_dependence.png', 'exp3_appendix_support_and_dependence.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:hash:exp3_appendix_support_and_dependence.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_support_and_dependence.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:hash:exp3_appendix_support_and_dependence.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_support_and_dependence.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:hash:exp3_appendix_support_and_dependence.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_support_and_dependence.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_carrier_and_gap_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_carrier_and_gap_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_carrier_and_gap_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:three_graphic_hashes",
+      "details": "dict_keys(['exp3_appendix_carrier_and_gap_diagnostics.pdf', 'exp3_appendix_carrier_and_gap_diagnostics.png', 'exp3_appendix_carrier_and_gap_diagnostics.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:hash:exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_carrier_and_gap_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:hash:exp3_appendix_carrier_and_gap_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_carrier_and_gap_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:hash:exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_carrier_and_gap_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_calibration_and_selection.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_calibration_and_selection.svg",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_calibration_and_selection.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\data\\exp3_appendix_calibration_and_selection.csv",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\metadata\\exp3_appendix_calibration_and_selection.json",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:three_graphic_hashes",
+      "details": "dict_keys(['exp3_appendix_calibration_and_selection.pdf', 'exp3_appendix_calibration_and_selection.png', 'exp3_appendix_calibration_and_selection.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:hash:exp3_appendix_calibration_and_selection.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_calibration_and_selection.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:hash:exp3_appendix_calibration_and_selection.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\png\\exp3_appendix_calibration_and_selection.png",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:hash:exp3_appendix_calibration_and_selection.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\svg\\exp3_appendix_calibration_and_selection.svg",
+      "passed": true
+    },
+    {
+      "check": "presentation_manifest_exists",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\manifests\\presentation_manifest.json",
+      "passed": true
+    }
+  ],
+  "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
+  "paper_result": true,
+  "passed": true,
+  "run_id": "exp3-full-20260807T072340Z",
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}

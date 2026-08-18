@@ -179,7 +179,7 @@ def build_main_long_form(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
+        paper_result=source.paper_result,
     )
 
 
@@ -415,7 +415,7 @@ def _appendix_composite(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
+        paper_result=source.paper_result,
         analysis_tier="appendix",
     )
     write_figure_bundle(
@@ -446,7 +446,9 @@ def render_presentation(
     source: PresentationSource, preview_root: Path
 ) -> dict[str, Any]:
     configure_matplotlib()
-    layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
+    layout = PreviewLayout(
+        preview_root, source.experiment_id, source.run_id, mode=source.mode
+    )
     module_a = (
         source.source_run / "derived/module_a/exp4_module_a_population_summary.csv"
     )
@@ -672,6 +674,7 @@ def render_presentation(
             source.source_run / "tables" / filename,
             stem,
             semantics=semantics,
+            paper_result=source.paper_result,
         )
     appendix_ids = [item[0] for item in appendix_groups]
     write_manifest(layout, source, figure_ids=[source.main_figure_id])

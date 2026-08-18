@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Iterable
 
@@ -25,6 +25,17 @@ class PresentationSource:
     config_hash: str
     required_files: tuple[str, ...]
     main_figure_id: str
+    mode: str = "preview"
+
+    @property
+    def paper_result(self) -> bool:
+        return self.mode == "publication"
+
+    @property
+    def promotion_status(self) -> str:
+        if self.mode == "publication":
+            return "CANONICAL_PUBLICATION"
+        return "NOT_PROMOTED_PRESENTATION_PREVIEW"
 
     def resolved(self) -> "PresentationSource":
         return PresentationSource(
@@ -42,6 +53,9 @@ class PresentationSource:
         safe = sanitize_run_id(self.run_id)
         return {
             "spec_id": SPEC_ID,
+            "mode": self.mode,
+            "paper_result": self.paper_result,
+            "promotion_status": self.promotion_status,
             "experiment": self.experiment,
             "experiment_id": self.experiment_id,
             "run_id": self.run_id,
@@ -148,7 +162,7 @@ SOURCES: dict[str, PresentationSource] = {
         / "outputs"
         / "runs"
         / "full_20260817T071019Z_7d7146b7",
-        scientific_source_paper_result=False,
+        scientific_source_paper_result=True,
         run_tier="full",
         result_schema="exp4_controlled_route_audit_v3",
         config_hash="9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
@@ -176,11 +190,32 @@ SOURCES: dict[str, PresentationSource] = {
 }
 
 
-def get_source(exp: str) -> PresentationSource:
+# Canonical publication registry: sources are the *promoted* paper results.
+# Exp1 points at the promoted paper_candidate (v1.2); Exp4 at the promoted v3
+# run; Exp2/Exp3 already point at their promoted canonical sources. Only the
+# ``mode`` and promotion-fact fields differ from the preview registry.
+PUBLICATION_SOURCES: dict[str, PresentationSource] = {
+    "1": replace(
+        SOURCES["1"],
+        mode="publication",
+        source_run=ROOT / "exp1_alignment_transfer" / "outputs" / "paper_candidate",
+        scientific_source_paper_result=True,
+        run_tier="paper",
+    ),
+    "2": replace(SOURCES["2"], mode="publication"),
+    "3": replace(SOURCES["3"], mode="publication"),
+    "4": replace(SOURCES["4"], mode="publication", scientific_source_paper_result=True),
+}
+
+
+def get_source(exp: str, mode: str = "preview") -> PresentationSource:
     key = str(exp).removeprefix("exp").removeprefix("EXP")
-    if key not in SOURCES:
+    if mode not in {"preview", "publication"}:
+        raise ValueError(f"Unknown mode {mode!r}; expected 'preview' or 'publication'")
+    registry = PUBLICATION_SOURCES if mode == "publication" else SOURCES
+    if key not in registry:
         raise KeyError(f"Unknown experiment {exp!r}; expected 1, 2, 3, or 4")
-    source = SOURCES[key].resolved()
+    source = registry[key].resolved()
     missing = source.missing_files()
     if missing:
         raise FileNotFoundError(
@@ -189,10 +224,10 @@ def get_source(exp: str) -> PresentationSource:
     return source
 
 
-def iter_sources(exp: str) -> Iterable[PresentationSource]:
+def iter_sources(exp: str, mode: str = "preview") -> Iterable[PresentationSource]:
     if str(exp).lower() == "all":
-        return [get_source(key) for key in ("1", "2", "3", "4")]
-    return [get_source(exp)]
+        return [get_source(key, mode=mode) for key in ("1", "2", "3", "4")]
+    return [get_source(exp, mode=mode)]
 
 
 def load_run_manifest(source: PresentationSource) -> dict[str, object]:

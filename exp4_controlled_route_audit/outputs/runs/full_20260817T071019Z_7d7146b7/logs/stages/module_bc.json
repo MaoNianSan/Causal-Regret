@@ -1,0 +1,16 @@
+{
+  "artifacts": {
+    "derived/module_b/exp4_module_b_ambiguity_deciles.parquet": "0f3d983fc68e6bd2b5f33da07cc2bc48c1562e6d21f58da10bed31070c4925fa",
+    "derived/module_b/exp4_module_b_audit_unit_level.parquet": "5b6ba87fbecac21c5b224b6e26f6baae50a9b062b43fc4ee5b5db2a5ce693b10",
+    "derived/module_b/exp4_module_b_condition_level.parquet": "93972583529303536ba9e563f706b5779b2fbc67cec5a7c33ec22b8af1d05d79",
+    "derived/module_c/exp4_module_c_correspondence_replication_level.parquet": "8e5baf1f03586f6d4b79497fb69c2ff2b2151ea0e97b5b1169f8c5c3db16081c",
+    "derived/module_c/exp4_module_c_parameter_level.parquet": "150106915846c97076d0240838f8e4d69f9905904f42f68906d9aae0fbfecca3",
+    "derived/module_c/exp4_module_c_replication_level.parquet": "9b32bc10e3c98b1609649280edcf0bc73297002481202bf76813b389a0a6a8e1",
+    "logs/exp4_module_bc_path_manifest.csv": "0b2eaf58666423faa42ff1d4d4105f11a14e147ad7a2f1e8fd87ecd4c0513863"
+  },
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "completed_at": "2026-08-17T07:58:01+00:00",
+  "completed_tasks": 1000,
+  "stage": "module_bc",
+  "status": "PASS"
+}

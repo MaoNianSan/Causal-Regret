@@ -1,0 +1,3 @@
+Control,Unit-level correspondence,Raw pairwise discrepancy,OOF calibrated pairwise discrepancy,Recoverability,Estimability rate
+Affine-linked control,preserved by construction,0.24076498393744061,0.045826642502820002,0.8094463061623256,1
+Temporally blocked correspondence-destroyed control,destroyed within temporal blocks,0.39609431680825757,0.29307320334805859,0.25982973532650788,1

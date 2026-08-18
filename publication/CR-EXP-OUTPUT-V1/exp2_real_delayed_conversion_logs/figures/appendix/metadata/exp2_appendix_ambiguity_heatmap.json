@@ -1,0 +1,56 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    2.8
+  ],
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "figure_file_hashes": {
+    "exp2_appendix_ambiguity_heatmap.pdf": "475a6c9bab48079bf0e4a0bfea8957e88b0df86f969a1b67669cc94c677f35a0",
+    "exp2_appendix_ambiguity_heatmap.png": "14f7aa96bf9f7d3584497a06bad607b1eabccab5ba7e6e76dfa1827bcb84217f",
+    "exp2_appendix_ambiguity_heatmap.svg": "8b9947e47cb4f536ae779dcc6ba0af87fb4b76b275aaadd2e1cc2ca4c29c1b96"
+  },
+  "figure_id": "exp2_appendix_ambiguity_heatmap",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:26.389203+00:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
+  "marker_semantics": {},
+  "metric_definitions": {
+    "allocation_tv": "allocation_tv"
+  },
+  "narrative_claim": "Ambiguity-mechanism diagnostics",
+  "panel_definitions": {
+    "a": "Ambiguity-mechanism diagnostics"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_contract": {
+    "layout": [
+      1,
+      1
+    ],
+    "source": "figure_exp2_ambiguity_mechanism_source.csv"
+  },
+  "presentation_source_lineage": "presentation:b2311a4923ad80ccc8372cfc274b65a937cec4d7b4e4f299faf7eaba8d4f8cc2",
+  "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Ambiguity-mechanism diagnostics",
+  "result_schema": "exp2_attribution_sensitivity_v2",
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "paper",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp2_appendix_ambiguity_heatmap.csv",
+  "source_data_file_hash": "1b7ecb9108af86ae6fd87bb857037ed8759d62383ae98432febf4f47f4b5fbe4",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_ambiguity_mechanism_source.csv": "01bc3c749e12c0bb00b88647e3e3e3dd4e33659db8e3010b7982bc6d0eb545e2"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen result-table diagnostic",
+  "uncertainty_semantics": "Frozen result-table diagnostic"
+}

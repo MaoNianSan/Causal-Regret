@@ -1,0 +1,61 @@
+{
+  "calibration_identity_match": true,
+  "config_hash_match": true,
+  "current_rebuild_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "current_stage_config_hashes": {
+    "aggregation_config_hash": "615736e52a5609301197612022acf0bc42cb433e5642f81fe7fab568e6ebcab1",
+    "calibration_config_hash": "94f8e497c2e1e759e08c7d29f081a0288c7cad949825ee585af0213912bea2d8",
+    "reporting_config_hash": "65dae0d3f476ee129e4e50d76c7348d3b521c553db5186c44c08e4ca4e4ebaea",
+    "scientific_generation_config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
+    "validation_config_hash": "cb14cd2fc50eed8fc6f8911ab09b594436d20fa4572ab155d44c2625cbfc7578"
+  },
+  "current_stage_hashes": {
+    "aggregation_source_hash": "d7d8064b5a12577f1aa41c79f50545375d1f3b84182a723422b557aae92cb977",
+    "calibration_source_hash": "e82637904c8bc99d1b6bcb20ba803f1ce849eac7abff5671a9a0b879abbf8645",
+    "reporting_source_hash": "a7972d7275aeb9f61dbe669883695d5f2e9c9ccf6e564655d6f290d80e0be29d",
+    "scientific_generation_source_hash": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
+    "validation_source_hash": "54c59f1090f19a26b71d97016a3a2caf9f7643da65b41b173a17b8002e02eb01"
+  },
+  "original_simulation_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "paper_result": true,
+  "promoted_at": "2026-08-18T08:58:04.368762+00:00",
+  "rebuilt_artifacts": {
+    "reporting": [
+      "figures/png/fig_exp1_alignment_transfer.png",
+      "figures/png/fig_exp1_delay_verification.png",
+      "figures/png/fig_exp1_reversal_margin.png",
+      "figures/png/fig_exp1_route_trajectory.png",
+      "figures/png/fig_exp1_targeted_validation.png",
+      "figures/pdf/fig_exp1_alignment_transfer.pdf",
+      "figures/pdf/fig_exp1_delay_verification.pdf",
+      "figures/pdf/fig_exp1_reversal_margin.pdf",
+      "figures/pdf/fig_exp1_route_trajectory.pdf",
+      "figures/pdf/fig_exp1_targeted_validation.pdf",
+      "figures/metadata/exp1_appendix_figures_metadata.json",
+      "figures/metadata/fig_exp1_alignment_transfer_metadata.json"
+    ]
+  },
+  "rebuilt_stages": [
+    "reporting"
+  ],
+  "reconciliation_timestamp": "2026-08-18T08:57:56.867468+00:00",
+  "run_tier": "paper",
+  "schema": "exp1_provenance_reconciliation_v1",
+  "scientific_generation_hash_match": true,
+  "simulation_outputs_reused": true,
+  "source_run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "stored_stage_config_hashes": {
+    "aggregation_config_hash": "615736e52a5609301197612022acf0bc42cb433e5642f81fe7fab568e6ebcab1",
+    "calibration_config_hash": "94f8e497c2e1e759e08c7d29f081a0288c7cad949825ee585af0213912bea2d8",
+    "reporting_config_hash": "65dae0d3f476ee129e4e50d76c7348d3b521c553db5186c44c08e4ca4e4ebaea",
+    "scientific_generation_config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
+    "validation_config_hash": "cb14cd2fc50eed8fc6f8911ab09b594436d20fa4572ab155d44c2625cbfc7578"
+  },
+  "stored_stage_hashes": {
+    "aggregation_source_hash": "d7d8064b5a12577f1aa41c79f50545375d1f3b84182a723422b557aae92cb977",
+    "calibration_source_hash": "e82637904c8bc99d1b6bcb20ba803f1ce849eac7abff5671a9a0b879abbf8645",
+    "reporting_source_hash": "055dfe010d60ccddb4457e9b1523267f68d4919f4d8b0346795edaa5095e3448",
+    "scientific_generation_source_hash": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
+    "validation_source_hash": "54c59f1090f19a26b71d97016a3a2caf9f7643da65b41b173a17b8002e02eb01"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "all_primary_gates_pass": true,
+  "checks": {
+    "no_nonfull_precision_status_in_full_run": true,
+    "nonprimary_statuses_are_reported_not_gated": true,
+    "primary_contrast_contract_valid": true,
+    "primary_gates_all_pass": true
+  },
+  "details": "run_tier=full; primary_contrasts=1; passed=1; failed=0; ids=['q_0.7_to_1__sigma_0.25']; gates=['PASS']",
+  "failed": 0,
+  "has_nonfull_precision_status_in_full": false,
+  "nonprimary_statuses": [
+    "REPORTED_NOT_GATED"
+  ],
+  "passed": 1,
+  "primary_contrast_count": 1,
+  "primary_contrast_ids": [
+    "q_0.7_to_1__sigma_0.25"
+  ],
+  "primary_gates": [
+    "PASS"
+  ],
+  "run_tier": "full",
+  "status": "PASS",
+  "validation": "exp4_monte_carlo_precision"
+}

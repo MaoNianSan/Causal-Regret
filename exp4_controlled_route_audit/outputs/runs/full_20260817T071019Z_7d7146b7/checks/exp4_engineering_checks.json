@@ -1,0 +1,101 @@
+{
+  "check_type": "engineering",
+  "checks": [
+    {
+      "check_name": "required_derived_files_complete",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "result_schema_is_v3",
+      "details": "run_schema=exp4_controlled_route_audit_v3",
+      "status": "PASS"
+    },
+    {
+      "check_name": "paper_result_state_consistent",
+      "details": "paper_result=True",
+      "status": "PASS"
+    },
+    {
+      "check_name": "figure_bundles_complete",
+      "details": "figure_count=11",
+      "status": "PASS"
+    },
+    {
+      "check_name": "figure_sources_reconstructable",
+      "details": "all figure sources match stored hashes",
+      "status": "PASS"
+    },
+    {
+      "check_name": "path_manifests_portable",
+      "details": "all stored paths are relative and exist",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_exists",
+      "details": "tbl_exp4_calibration_controls",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_has_required_rows",
+      "details": "rows=2",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_values_finite",
+      "details": "has_nan=False",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_matches_source",
+      "details": "mismatches=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_latex_nonempty",
+      "details": "data_rows=2",
+      "status": "PASS"
+    },
+    {
+      "check_name": "main_table_complete",
+      "details": "semantic_checks=12/12",
+      "status": "PASS"
+    },
+    {
+      "check_name": "primary_contrast_contract_valid",
+      "details": "count=1",
+      "status": "PASS"
+    },
+    {
+      "check_name": "primary_monte_carlo_precision_pass",
+      "details": "run_tier=full; primary_contrasts=1; passed=1; failed=0; ids=['q_0.7_to_1__sigma_0.25']; gates=['PASS']",
+      "status": "PASS"
+    },
+    {
+      "check_name": "no_nonfull_precision_status_in_full_run",
+      "details": "run_tier=full",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_a_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_b_unit_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_b_condition_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    },
+    {
+      "check_name": "module_c_schema",
+      "details": "missing=[]",
+      "status": "PASS"
+    }
+  ],
+  "status": "PASS"
+}

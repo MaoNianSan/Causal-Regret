@@ -1,0 +1,11 @@
+{
+  "csv_sha256": "3734a6be4622f984653d05e60ccb00fbe03e7f718bef3961c808224ce56e9436",
+  "paper_result": true,
+  "semantics": "Frozen route and route-pair labels used by the main and appendix outputs.",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_attribution_sensitivity_source.csv": "a25e7b75795629779fd1dd648f39c94ff58b92dff87e0c335eaa3976a2df1ae7"
+  },
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tab_exp2_attribution_route_definitions",
+  "tex_sha256": "ce37ce3abec38de70a418bb0ff7356f6cfe4a41d001c191b25f6d00707e5e0f3"
+}

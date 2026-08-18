@@ -1,0 +1,62 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    3.1
+  ],
+  "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_file_hashes": {
+    "exp4_appendix_route_alignment_detail.pdf": "2f38fdfb3541519b42ae72d637eac63cb4af112ce2da5897f3c013f95b478cc1",
+    "exp4_appendix_route_alignment_detail.png": "92df3f7b74962a0c516151f511459323c7ca65f191371f9f163ed9d2901414b4",
+    "exp4_appendix_route_alignment_detail.svg": "fdb9165546649221740dacdcf4fdf21eea2048de2ef719901f03d9dbf52694ef"
+  },
+  "figure_id": "exp4_appendix_route_alignment_detail",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:36.043556+00:00",
+  "input_manifest_hash": "NA",
+  "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
+  "marker_semantics": {},
+  "metric_definitions": {},
+  "narrative_claim": "Route-alignment detail",
+  "panel_definitions": {
+    "a": "exp4_module_a_population_summary",
+    "b": "fig_app_exp4_route_optimal_set_conflict_data",
+    "c": "fig_app_exp4_smooth_loss_robustness_data"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "ea10c7fa9a1bf7ae3c703511666656fbd6a068be4782fc4ee46b5eaca623376d",
+  "presentation_contract": {
+    "layout": [
+      1,
+      3
+    ],
+    "sources": [
+      "exp4_module_a_population_summary.csv",
+      "fig_app_exp4_route_optimal_set_conflict_data.csv",
+      "fig_app_exp4_smooth_loss_robustness_data.csv"
+    ]
+  },
+  "presentation_source_lineage": "presentation:78cf1915f1fa9f3cdde784f75d7fb11486c7c625ad84f7adf5d74a84abc9a4df",
+  "preview_root_relative_path": "exp4_controlled_route_audit",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Route-alignment detail",
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "run_tier": "full",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp4_appendix_route_alignment_detail.csv",
+  "source_data_file_hash": "5034d711a3db35266acf88006e6cb00c97db6332063973c4bf4c6c1de9b76fd3",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_a\\exp4_module_a_population_summary.csv": "04d85aecd5cc4c82ecff304c39bc7e9d987178adfd6afe7e303df3769f98d0b4",
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\figures\\data\\fig_app_exp4_route_optimal_set_conflict_data.csv": "3fcee0bc4dbdb0a62aaaa82e407c94a358b4261e6451c7dd2aae36b537fed4ce",
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\figures\\data\\fig_app_exp4_smooth_loss_robustness_data.csv": "39d7735853f98ea692b6bc2fa779986cd0b6aafcfac5b828d21303b53f27e6b3"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen diagnostic",
+  "uncertainty_semantics": "Frozen diagnostic"
+}

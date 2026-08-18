@@ -1,0 +1,11 @@
+{
+  "created_from_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "downstream_execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+  "downstream_source_run_id": null,
+  "exp4_worktree_clean_at_start": true,
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "run_tier": "full",
+  "schema": "exp4_run_lineage_v1",
+  "simulation_execution_mode": "FRESH",
+  "simulation_source_run_id": null
+}

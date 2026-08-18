@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "0d1c6e8a28925518237d57309887a86598995b81120998e02db2d317e6fee862",
+  "paper_result": true,
+  "semantics": "Frozen cohort-flow table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\tables\\table_exp2_cohort_flow.csv",
+  "source_file_sha256": "3bfd6aa9d81a09dff13b0702e93ceda187b7fc7f718ca46cc6b870bfbec80d7e",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tab_exp2_cohort_flow",
+  "tex_sha256": "64d0d0b87e8a3e296b09a817f32544432e369a673bad618e96e5a2d0feb039fa"
+}

@@ -1,0 +1,20 @@
+{
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "code_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_id": "fig_app_exp4_effective_support",
+  "generated_at": "2026-08-18T09:04:45+00:00",
+  "panel_definitions": {
+    "main": "Labelled and effective support for selective IPW."
+  },
+  "paper_result": true,
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "run_tier": "full",
+  "source_derived_files": [
+    "derived/module_b/exp4_module_b_weight_diagnostics.csv"
+  ],
+  "source_file_hashes": {
+    "derived/module_b/exp4_module_b_weight_diagnostics.csv": "3fbea153d488e6d6b5ed5b5cc6466fe847778b9c34deb6915e72a75a2bb2d8f8"
+  }
+}

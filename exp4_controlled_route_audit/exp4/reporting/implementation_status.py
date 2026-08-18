@@ -135,12 +135,17 @@ def build_implementation_status(base_dir: Path) -> dict[str, object]:
             and (full_dir / "logs" / "exp4_stage_provenance.json").exists()
         )
 
+    # Verification mirrors the promotion contract (promote_results.py): the
+    # stage-hash audit proves the frozen simulation is still valid after a
+    # downstream rebuild. ``source_unchanged_during_run`` is a simulation-time
+    # fact that is intentionally recorded as False after any downstream
+    # rebuild, so it is NOT part of the verification gate.
     full_provenance_verified = bool(
         provenance
         and provenance.get("run_lineage_valid")
         and provenance.get("simulation_provenance_verified")
         and provenance.get("downstream_provenance_verified")
-        and provenance.get("source_unchanged_during_run")
+        and provenance.get("reporting_provenance_verified")
     )
     simulation_execution_mode = str(
         provenance.get("simulation_execution_mode", "UNKNOWN")

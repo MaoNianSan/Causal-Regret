@@ -51,6 +51,12 @@ def validate_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
     run_config = json.loads(
         (run_dir / "logs" / "run_config.json").read_text(encoding="utf-8")
     )
+    status_path = run_dir / "logs" / "exp4_result_status.json"
+    result_status = (
+        json.loads(status_path.read_text(encoding="utf-8"))
+        if status_path.exists()
+        else {}
+    )
     seed_level = pd.read_parquet(
         run_dir / "derived" / "module_a" / "exp4_module_a_seed_level.parquet"
     )
@@ -129,9 +135,15 @@ def validate_run(run_dir: Path) -> tuple[dict[str, Any], dict[str, Any]]:
             f"run_schema={run_config['result_schema']}",
         ),
         _row(
-            "run_remains_nonpaper",
-            run_config["paper_result"] is False
-            and bool(seed_level["paper_result"].eq(False).all()),
+            "paper_result_state_consistent",
+            (
+                run_config["paper_result"] is False
+                and bool(seed_level["paper_result"].eq(False).all())
+            )
+            or (
+                run_config["paper_result"] is True
+                and result_status.get("paper_promotion") == "PASS"
+            ),
             f"paper_result={run_config['paper_result']}",
         ),
         _row(

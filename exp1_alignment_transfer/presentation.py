@@ -84,7 +84,7 @@ def build_main_long_form(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
+        paper_result=source.paper_result,
     )
 
 
@@ -172,7 +172,7 @@ def _appendix_composite(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
+        paper_result=source.paper_result,
         analysis_tier="appendix",
     )
     write_figure_bundle(
@@ -295,7 +295,7 @@ def _targeted_validation_figure(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
+        paper_result=source.paper_result,
         analysis_tier="appendix",
     )
     write_figure_bundle(
@@ -327,7 +327,9 @@ def render_presentation(
     source: PresentationSource, preview_root: Path
 ) -> dict[str, Any]:
     configure_matplotlib()
-    layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
+    layout = PreviewLayout(
+        preview_root, source.experiment_id, source.run_id, mode=source.mode
+    )
     data_path = source.source_run / "figures/data/fig_exp1_alignment_transfer_data.csv"
     table_path = source.source_run / "tables/tab_exp1_mechanism_summary.csv"
     data = pd.read_csv(data_path)
@@ -598,12 +600,14 @@ def render_presentation(
         "tab_exp1_mechanism_protocol",
         semantics="Mechanism protocol and matched-delay summary.",
         source_files=[table_path],
+        paper_result=source.paper_result,
     )
     write_standard_table(
         layout,
         table_path,
         "tab_exp1_mechanism_summary",
         semantics="Complete mechanism table including conflict-rate values removed from main Panel (a).",
+        paper_result=source.paper_result,
     )
     appendix_ids = [item[0] for item in appendix_groups] + [
         "exp1_appendix_targeted_validation"

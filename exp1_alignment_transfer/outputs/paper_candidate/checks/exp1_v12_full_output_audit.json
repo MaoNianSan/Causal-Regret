@@ -1,0 +1,378 @@
+{
+  "audit_id": "exp1_v12_full_output_audit",
+  "calibration_manifest_hash": "3ebb8ce93cecd9d76ef6358493113e3d186b46dc569038f73332c9cc58c495a3",
+  "checks": {
+    "A_design_identity": {
+      "evaluation_seed_count": 30,
+      "evaluation_seeds": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29
+      ],
+      "mechanism_order": [
+        "zero_delay",
+        "exact_valid_shift",
+        "geometric_delay",
+        "mixture_delay",
+        "state_coupled_delay",
+        "systematic_misbinding"
+      ],
+      "primary_mechanism_count": 6,
+      "status": "PASS",
+      "theory_sweeps_absent_from_primary": true
+    },
+    "B_required_new_route_metrics": {
+      "missing_round_columns": [],
+      "missing_seed_columns": [],
+      "required_round_columns": [
+        "complete_conflict",
+        "directed_choice_disagreement",
+        "pairwise_sign_disagreement",
+        "route_conflict_margin",
+        "structural_conflict_margin"
+      ],
+      "required_seed_columns": [
+        "regret_stability_slack_rate"
+      ],
+      "status": "PASS"
+    },
+    "C_exact_validity": {
+      "checked_row_count": 1200000,
+      "max_abs_chi": 0.0,
+      "max_abs_delta": 2.7755575615628914e-16,
+      "max_abs_rho": 0.0,
+      "status": "PASS"
+    },
+    "D_validity_hierarchy": {
+      "converses_asserted": false,
+      "delta_zero_implies_rho_zero_violations": 0,
+      "rho_zero_implies_chi_zero_violations": 0,
+      "status": "PASS"
+    },
+    "E_margin_bridge": {
+      "eligible_row_count": 1305105,
+      "status": "PASS",
+      "violation_count": 0
+    },
+    "F_complete_conflict": {
+      "complete_conflict_count": 360896,
+      "complete_conflict_equivalence_violations": 0,
+      "finite_margin_row_count": 360896,
+      "margin_bound_violations": 0,
+      "minimum_delta_minus_gamma_minus_eta": 0.0007936917511381977,
+      "status": "PASS"
+    },
+    "G_sharp_stability": {
+      "inequality_violations": 0,
+      "minimum_computed_slack": 1e-08,
+      "seed_route_count": 360,
+      "status": "PASS",
+      "stored_flag_violations": 0
+    },
+    "H_theory_sweeps": {
+      "exact_shift": {
+        "clipping_violations": 0,
+        "max_abs_chi": 0.0,
+        "max_abs_delta": 3.3306690738754696e-16,
+        "max_abs_rho": 0.0,
+        "row_count": 120,
+        "scales": [
+          0.6
+        ],
+        "status": "PASS"
+      },
+      "margin_threshold": {
+        "clipping_violations": 0,
+        "max_abs_chi_error": 0.0,
+        "max_abs_realized_ratio_error": 3.885780586188048e-15,
+        "ratios": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          0.9,
+          0.99,
+          1.0,
+          1.01,
+          1.1,
+          1.25,
+          1.5,
+          2.0
+        ],
+        "row_count": 360,
+        "status": "PASS"
+      },
+      "status": "PASS"
+    },
+    "I_legacy_primary_output_regression": {
+      "learner_seed_metrics": {
+        "fields": {
+          "paired_arrival_minus_source_regret_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "structural_regret": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "structural_regret_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          }
+        },
+        "merged_row_count": 360,
+        "status": "PASS",
+        "support_equal": true,
+        "unmatched_row_count": 0
+      },
+      "route_seed_metrics": {
+        "fields": {
+          "alignment_budget_rate": {
+            "max_abs_difference": 6.162975822039155e-33,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "generated_mean_delay": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "margin_preservation_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "mean_reversal_margin": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "ranking_reversal_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "route_regret_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "structural_regret_rate": {
+            "max_abs_difference": 0.0,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "transfer_bound_rate": {
+            "max_abs_difference": 6.162975822039155e-33,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          },
+          "transfer_slack_rate": {
+            "max_abs_difference": 6.162975822039155e-33,
+            "nan_pattern_equal": true,
+            "status": "PASS"
+          }
+        },
+        "merged_row_count": 360,
+        "status": "PASS",
+        "support_equal": true,
+        "unmatched_row_count": 0
+      },
+      "status": "PASS"
+    }
+  },
+  "code_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "code_lineage": "tree:094ece351cf80a8614e247dd21c08f58fb439bb31fb72dec427a80eb4fde90b1",
+  "config_version": "1.2",
+  "engineering_status": "PASS",
+  "experiment_id": "exp1_alignment_transfer",
+  "full_self_check_status": null,
+  "generated_at": "2026-08-17T06:57:02.371517+00:00",
+  "legacy_regression_tolerance": 1e-12,
+  "mechanism_route_summary": [
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 0.0,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "zero_delay",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 0.0,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "zero_delay",
+      "route_id": "source_bound"
+    },
+    {
+      "mean_alignment_budget_rate": 5.550217114606385e-17,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 14.970849673202615,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 5.550217114606385e-17,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "exact_valid_shift",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 14.970849673202615,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "exact_valid_shift",
+      "route_id": "source_bound"
+    },
+    {
+      "mean_alignment_budget_rate": 0.2587714326563771,
+      "mean_complete_conflict_rate": 0.6680466666666667,
+      "mean_directed_choice_disagreement_rate": 0.6680466666666667,
+      "mean_generated_mean_delay": 14.970849673202615,
+      "mean_pairwise_sign_disagreement_rate": 0.16196459259259255,
+      "mean_regret_stability_slack_rate": 0.22620628211697505,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.03256515053940198,
+      "mechanism_id": "geometric_delay",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 14.970849673202615,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "geometric_delay",
+      "route_id": "source_bound"
+    },
+    {
+      "mean_alignment_budget_rate": 0.2191296534230705,
+      "mean_complete_conflict_rate": 0.58616,
+      "mean_directed_choice_disagreement_rate": 0.58616,
+      "mean_generated_mean_delay": 14.970588235294118,
+      "mean_pairwise_sign_disagreement_rate": 0.1371444444444444,
+      "mean_regret_stability_slack_rate": 0.19172088487589503,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.027408768547175423,
+      "mechanism_id": "mixture_delay",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 14.970588235294118,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "mixture_delay",
+      "route_id": "source_bound"
+    },
+    {
+      "mean_alignment_budget_rate": 0.24808823278502953,
+      "mean_complete_conflict_rate": 0.6517533333333333,
+      "mean_directed_choice_disagreement_rate": 0.6517533333333333,
+      "mean_generated_mean_delay": 14.902045751633986,
+      "mean_pairwise_sign_disagreement_rate": 0.15537481481481477,
+      "mean_regret_stability_slack_rate": 0.21781882084996151,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.030269411935067957,
+      "mechanism_id": "state_coupled_delay",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 14.902045751633986,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "state_coupled_delay",
+      "route_id": "source_bound"
+    },
+    {
+      "mean_alignment_budget_rate": 0.5555703703703703,
+      "mean_complete_conflict_rate": 0.5000133333333333,
+      "mean_directed_choice_disagreement_rate": 0.5000133333333333,
+      "mean_generated_mean_delay": 15.0,
+      "mean_pairwise_sign_disagreement_rate": 0.41112207407407403,
+      "mean_regret_stability_slack_rate": 0.40124526748971184,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.15432510288065837,
+      "mechanism_id": "systematic_misbinding",
+      "route_id": "arrival_assigned"
+    },
+    {
+      "mean_alignment_budget_rate": 0.0,
+      "mean_complete_conflict_rate": 0.0,
+      "mean_directed_choice_disagreement_rate": 0.0,
+      "mean_generated_mean_delay": 15.0,
+      "mean_pairwise_sign_disagreement_rate": 0.0,
+      "mean_regret_stability_slack_rate": 0.0,
+      "mean_route_regret_rate": 0.0,
+      "mean_structural_regret_rate": 0.0,
+      "mechanism_id": "systematic_misbinding",
+      "route_id": "source_bound"
+    }
+  ],
+  "overall_status": "PASS",
+  "paper_candidate_replaced": false,
+  "paper_result": true,
+  "promoted_at": "2026-08-18T08:58:04.315679+00:00",
+  "promotion_executed": false,
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "run_tier": "paper",
+  "scientific_status": "PASS",
+  "targeted_full_status": "PASS",
+  "tolerance": 1e-10
+}

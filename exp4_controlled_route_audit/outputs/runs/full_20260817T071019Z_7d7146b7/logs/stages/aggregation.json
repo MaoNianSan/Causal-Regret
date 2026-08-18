@@ -1,0 +1,18 @@
+{
+  "artifacts": {
+    "derived/module_a/exp4_module_a_paired_contrasts.csv": "638d1ee3d874eeb30734d01b1465057b096003b32307441067dbfe07e6255936",
+    "derived/module_a/exp4_module_a_population_summary.csv": "04d85aecd5cc4c82ecff304c39bc7e9d987178adfd6afe7e303df3769f98d0b4",
+    "derived/module_a/exp4_module_a_seed_direction_summary.csv": "4a0840b64761e2f371bd3e9a0a001eeb3a842ebb9b18e01a7bb49c4433ffca43",
+    "derived/module_b/exp4_module_b_audit_performance.csv": "c4ab64f53d4c92b87bbb719a962fdc8d4036df7de6d67ede6e1db349ba02866d",
+    "derived/module_b/exp4_module_b_selection_diagnostics.csv": "0553d5bd282766196dd26eb32e68072114cd9514ab755b8b64db18cd17d31534",
+    "derived/module_b/exp4_module_b_weight_diagnostics.csv": "3fbea153d488e6d6b5ed5b5cc6466fe847778b9c34deb6915e72a75a2bb2d8f8",
+    "derived/module_c/exp4_module_c_control_summary.csv": "dce9f622a76613416dd3afacb429326241c790cf8382635dbfe9b34650256799",
+    "derived/module_c/exp4_module_c_correspondence_checks.csv": "d2ec9394aeaf23f3fb8ddbd7258adf45e20071d61b32390047915a200451dddb",
+    "derived/module_c/exp4_module_c_parameter_recovery.csv": "525c31712e895f77f9711636f3ae292aa810f374dd1eb23f4e84acc3d8c7fe14"
+  },
+  "completed_at": "2026-08-17T07:58:05+00:00",
+  "completed_tasks": 9,
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "stage": "aggregation",
+  "status": "PASS"
+}

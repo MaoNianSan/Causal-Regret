@@ -1,0 +1,11 @@
+{
+  "csv_sha256": "6d8636bcd4ab70c059bb04ddef13cd87d0a95c54f5a7b383ae8fae091efa2dfe",
+  "paper_result": true,
+  "semantics": "Mechanism protocol and matched-delay summary.",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\tables\\tab_exp1_mechanism_summary.csv": "065f2f09bf56a2f2eb0dd1f5894cac9cba50d2d3eac49fcc9091e4d9fbfc1568"
+  },
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tab_exp1_mechanism_protocol",
+  "tex_sha256": "3d0f7276f340d4a7a4e4bd9998eb82534eb7272a5704c3399f595f69e6969280"
+}

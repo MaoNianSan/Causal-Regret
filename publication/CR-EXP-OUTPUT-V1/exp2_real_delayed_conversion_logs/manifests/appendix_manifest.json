@@ -1,0 +1,107 @@
+{
+  "appendix_order": [
+    {
+      "id": "C.1",
+      "items": [
+        "reporting",
+        "uncertainty",
+        "provenance"
+      ]
+    },
+    {
+      "id": "C.2",
+      "items": [
+        "Exp1 protocol",
+        "complete table",
+        "diagnostics",
+        "targeted validation"
+      ]
+    },
+    {
+      "id": "C.3",
+      "items": [
+        "Exp2 cohort",
+        "route definitions",
+        "complete pairwise",
+        "diagnostics",
+        "robustness"
+      ]
+    },
+    {
+      "id": "C.4",
+      "items": [
+        "Exp3 support",
+        "primary tables",
+        "three composites",
+        "CV/coefficient",
+        "resampling diagnostics"
+      ]
+    },
+    {
+      "id": "C.5",
+      "items": [
+        "Exp4 v3 parameters",
+        "Module A",
+        "audit",
+        "calibration",
+        "three composites"
+      ]
+    },
+    {
+      "id": "C.6",
+      "items": [
+        "artifact lineage"
+      ]
+    }
+  ],
+  "artifact_hashes": {
+    "figures/appendix/data/exp2_appendix_ambiguity_heatmap.csv": "1b7ecb9108af86ae6fd87bb857037ed8759d62383ae98432febf4f47f4b5fbe4",
+    "figures/appendix/data/exp2_appendix_delay_distribution.csv": "78720068c27cfaf5ae4155d069c9721f56749b0c3a95f3bcedefa2a4db8c7489",
+    "figures/appendix/data/exp2_appendix_pairwise_topk.csv": "75850d745a7c23431c962f6fd232700943bad8c83a865c734d2ba6d835e6343f",
+    "figures/appendix/metadata/exp2_appendix_ambiguity_heatmap.json": "72a144a41908ede0e25e7c9da2c9ece0ab5919e703c85ae752af73ab649b7fda",
+    "figures/appendix/metadata/exp2_appendix_delay_distribution.json": "a14f70e7816def7309b76f6c37d6c04c00ce866ee10bd1fd10f2adbf68f44185",
+    "figures/appendix/metadata/exp2_appendix_pairwise_topk.json": "18d7319273ab4484ab9daa33a822d1d6f50839519ad7dc706983eb0ea286088b",
+    "figures/appendix/pdf/exp2_appendix_ambiguity_heatmap.pdf": "475a6c9bab48079bf0e4a0bfea8957e88b0df86f969a1b67669cc94c677f35a0",
+    "figures/appendix/pdf/exp2_appendix_delay_distribution.pdf": "65359f8951842777e1b17ec9352f9b1c3df448865cbbe8f9c84ee3e63d1c91fe",
+    "figures/appendix/pdf/exp2_appendix_pairwise_topk.pdf": "ab71dc5499b1447f24341421d2a6e57ffe0dddeada64d243c83f9ab5cee18c5e",
+    "figures/appendix/png/exp2_appendix_ambiguity_heatmap.png": "14f7aa96bf9f7d3584497a06bad607b1eabccab5ba7e6e76dfa1827bcb84217f",
+    "figures/appendix/png/exp2_appendix_delay_distribution.png": "0b437732952b62cb506d2e8c127d862456ae81ed60a220c1071597f3c8819e3d",
+    "figures/appendix/png/exp2_appendix_pairwise_topk.png": "0a5c96965b903655e2c34d260ffc084c6df08ab46ea47606d9ff25c42fde572e",
+    "figures/appendix/svg/exp2_appendix_ambiguity_heatmap.svg": "8b9947e47cb4f536ae779dcc6ba0af87fb4b76b275aaadd2e1cc2ca4c29c1b96",
+    "figures/appendix/svg/exp2_appendix_delay_distribution.svg": "f5c97a8f0093bfc6413038b07ccc3e5c88399286715bccc79d17b86d245afcd1",
+    "figures/appendix/svg/exp2_appendix_pairwise_topk.svg": "c801c34c339ddc6204a35e472a2eaf3be4174b1a9daa7b4f405b8b26629d768f",
+    "figures/main/data/figure_exp2_attribution_sensitivity.csv": "ac3a1436d917896a971095a00382853c3251f9832253546b441f0f9227bf1191",
+    "figures/main/metadata/figure_exp2_attribution_sensitivity.json": "97ece4f207af162c2feff77d295e268be9ae5b972a1d42f6577faa87ecde5801",
+    "figures/main/pdf/figure_exp2_attribution_sensitivity.pdf": "41560371785d12d1a1314a27c212b7e49d492f2fb2d23a861f3a2cb2bdc50771",
+    "figures/main/png/figure_exp2_attribution_sensitivity.png": "7d323526949a50751407e8cbf82c8fb4d581a9a679c457e89bd6b6343ebb29e4",
+    "figures/main/svg/figure_exp2_attribution_sensitivity.svg": "e186c050e985a9cfdfc7ee21654098d72365b63d0e79981420566fdf1da4012c",
+    "tables/csv/tab_exp2_attribution_route_definitions.csv": "3734a6be4622f984653d05e60ccb00fbe03e7f718bef3961c808224ce56e9436",
+    "tables/csv/tab_exp2_cohort_flow.csv": "0d1c6e8a28925518237d57309887a86598995b81120998e02db2d317e6fee862",
+    "tables/csv/tab_exp2_pairwise_appendix.csv": "c6e63beb34df4659892d5b243a85834e14be53f754c76f6617190555bc7a2de3",
+    "tables/csv/tab_exp2_robustness.csv": "3ba6d9dcdb5a497504c84d77ae15bb6b3aec50f98b8e043e7b079ce871ee4d53",
+    "tables/csv/tab_experimental_evidence_map.csv": "8537c09661dce8f9c7a71884453d5de2c260b7e5514bc092d0f5fbbb968678ff",
+    "tables/metadata/tab_exp2_attribution_route_definitions.json": "b7ba764ec3c9338420dd393cdc6e45b6a076fc216c9dcfcf948ed85937eb0da8",
+    "tables/metadata/tab_exp2_cohort_flow.json": "1d6d949f679c2ebe3379477a4c34edf744179670dfd69c5c798e9e8d8af7a93c",
+    "tables/metadata/tab_exp2_pairwise_appendix.json": "cc10569db3b454f0d1637953d37069ce97da8d460e8765869d1afdeea9085426",
+    "tables/metadata/tab_exp2_robustness.json": "e9154ad347f7a09284466ec406ccd84b9e05286fadc89f0e70bf06ecb66ca77b",
+    "tables/metadata/tab_experimental_evidence_map.json": "0170bca3a0ec1939b0d686ec6030fdd34a66d8038c5f70219c52fefd02a32a37",
+    "tables/tex/tab_exp2_attribution_route_definitions.tex": "ce37ce3abec38de70a418bb0ff7356f6cfe4a41d001c191b25f6d00707e5e0f3",
+    "tables/tex/tab_exp2_cohort_flow.tex": "64d0d0b87e8a3e296b09a817f32544432e369a673bad618e96e5a2d0feb039fa",
+    "tables/tex/tab_exp2_pairwise_appendix.tex": "10977cc6fda0bbe53cd0da852970a0a92308c65bd3224961b0a25d897b5ef8dc",
+    "tables/tex/tab_exp2_robustness.tex": "52cd41e9969260e2bcb3a130ef9e542f922b410451ddedd6f2a694f4ef9cf61b",
+    "tables/tex/tab_experimental_evidence_map.tex": "9763893a3e5cb979dc1e86aeb5eb90b2c476ba40e3cebd23c0acd5a9a9070810"
+  },
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "figure_ids": [
+    "exp2_appendix_ambiguity_heatmap",
+    "exp2_appendix_delay_distribution",
+    "exp2_appendix_pairwise_topk"
+  ],
+  "generated_at": "2026-08-18T09:31:27.756289+00:00",
+  "paper_result": true,
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "paper",
+  "scientific_source_paper_result": true,
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}

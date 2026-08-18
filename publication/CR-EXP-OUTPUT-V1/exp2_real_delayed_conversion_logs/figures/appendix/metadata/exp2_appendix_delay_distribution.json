@@ -1,0 +1,56 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    2.8
+  ],
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "figure_file_hashes": {
+    "exp2_appendix_delay_distribution.pdf": "65359f8951842777e1b17ec9352f9b1c3df448865cbbe8f9c84ee3e63d1c91fe",
+    "exp2_appendix_delay_distribution.png": "0b437732952b62cb506d2e8c127d862456ae81ed60a220c1071597f3c8819e3d",
+    "exp2_appendix_delay_distribution.svg": "f5c97a8f0093bfc6413038b07ccc3e5c88399286715bccc79d17b86d245afcd1"
+  },
+  "figure_id": "exp2_appendix_delay_distribution",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:26.868532+00:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
+  "marker_semantics": {},
+  "metric_definitions": {
+    "source_event_share": "source_event_share"
+  },
+  "narrative_claim": "Delay-distribution diagnostics",
+  "panel_definitions": {
+    "a": "Delay-distribution diagnostics"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_contract": {
+    "layout": [
+      1,
+      1
+    ],
+    "source": "figure_exp2_delay_appendix_data.csv"
+  },
+  "presentation_source_lineage": "presentation:057439bcd02b17d04b067ad7ae4a46c458e5ab623fe28f542616af19b674a5f1",
+  "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Delay-distribution diagnostics",
+  "result_schema": "exp2_attribution_sensitivity_v2",
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "paper",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp2_appendix_delay_distribution.csv",
+  "source_data_file_hash": "78720068c27cfaf5ae4155d069c9721f56749b0c3a95f3bcedefa2a4db8c7489",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_delay_appendix_data.csv": "eb2a07a9061d93f1263dd5ce437a8203bdb2dcdc9e307e25ed499447d6972097"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen result-table diagnostic",
+  "uncertainty_semantics": "Frozen result-table diagnostic"
+}

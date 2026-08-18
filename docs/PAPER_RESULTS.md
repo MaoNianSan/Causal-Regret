@@ -16,9 +16,16 @@ Each row gives, where applicable:
 
 ## Experiment 1 — Controlled Alignment and Regret Transfer
 
-Canonical run: `exp1_alignment_transfer/outputs/paper_candidate/` (promoted
-from the frozen full run; presentation-only patch does not alter scientific
-artifacts).
+Current canonical: `exp1_alignment_transfer/outputs/paper_candidate/` (v1.2).
+
+- Source full run:
+  `exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00`
+  (`exp1_alignment_transfer/outputs/full/`, code_commit `23199c48`)
+- Promotion date: 2026-08-18 (CHANGE_MEMO_EXP1_005)
+- Engineering / scientific: PASS / PASS; `paper_result=true`
+- CR-EXP-OUTPUT-V1 main figure ID: `fig_exp1_alignment_transfer`
+- CR-EXP-OUTPUT-V1 publication bundle:
+  `publication/CR-EXP-OUTPUT-V1/exp1_alignment_transfer/`
 
 | Manuscript item | Scientific question | Command | Canonical run | Source data | Final artifact |
 |---|---|---|---|---|---|
@@ -68,13 +75,45 @@ Canonical run: `exp3-full-20260807T072340Z`; paper-facing copy:
 
 ## Experiment 4 — Recoverability Boundary Diagnostic
 
-Canonical run: `exp4_controlled_route_audit/outputs/runs/full_20260807T045219Z_7eeb2a31/`.
+Current canonical:
+`exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/`
+(result schema `exp4_controlled_route_audit_v3`, `paper_result=true`,
+promotion PASS, provenance VERIFIED).
+
+- Source run: `full_20260817T071019Z_7d7146b7` (code_commit `23199c48`,
+  formal full, clean worktree at start)
+- Engineering / scientific: PASS / PASS; `paper_result=true`
+- CR-EXP-OUTPUT-V1 main figure ID:
+  `fig_exp4_route_alignment_and_audit_reliability`
+- CR-EXP-OUTPUT-V1 publication bundle:
+  `publication/CR-EXP-OUTPUT-V1/exp4_controlled_route_audit/`
+- Superseded legacy: `full_20260807T045219Z_7eeb2a31` (v2) was the previous
+  paper result; it is kept as a legacy run and is no longer the canonical or
+  paper-facing result.
 
 | Manuscript item | Scientific question | Command | Canonical run | Source data | Final artifact |
 |---|---|---|---|---|---|
-| Exp4 main figure (route alignment / audit reliability) | Route-label retention and audit reliability | `python exp4_controlled_route_audit/main.py plot --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | `figures/data/fig_exp4_route_alignment_and_audit_reliability_data.csv` | `figures/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf` |
-| Exp4 appendix figures (11) | Module A/B/C diagnostics | `python exp4_controlled_route_audit/main.py plot --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | `figures/data/fig_app_exp4_*.csv` | `figures/pdf/fig_app_exp4_*.pdf` |
-| Exp4 main table (calibration controls) | Calibration-family controls | `python exp4_controlled_route_audit/main.py tables --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | `derived/calibration/exp4_proxy_route_calibration.json` | `tables/tbl_exp4_calibration_controls.tex` |
-| Exp4 appendix tables | Paired contrasts, parameter recovery, audit performance, etc. | `python exp4_controlled_route_audit/main.py tables --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | `derived/module_*/*.csv` | `tables/tbl_app_exp4_*.tex` |
-| Exp4 checks | Scientific / engineering / precision / table checks | `python exp4_controlled_route_audit/main.py validate --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | `derived/*`, `tables/*` | `checks/exp4_scientific_checks.json`, `checks/exp4_engineering_checks.json` |
-| Exp4 run summary | Overall run report | `python exp4_controlled_route_audit/main.py report --run-dir outputs/runs/full_20260807T045219Z_7eeb2a31` | `outputs/runs/full_20260807T045219Z_7eeb2a31/` | all of the above | `reports/exp4_run_summary.md` |
+| Exp4 main figure (route alignment / audit reliability) | Route-label retention and audit reliability | `python exp4_controlled_route_audit/main.py plot --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | `figures/data/fig_exp4_route_alignment_and_audit_reliability_data.csv` | `figures/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf` |
+| Exp4 appendix figures (11) | Module A/B/C diagnostics | `python exp4_controlled_route_audit/main.py plot --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | `figures/data/fig_app_exp4_*.csv` | `figures/pdf/fig_app_exp4_*.pdf` |
+| Exp4 main table (calibration controls) | Calibration-family controls | `python exp4_controlled_route_audit/main.py tables --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | `derived/calibration/exp4_proxy_route_calibration.json` | `tables/tbl_exp4_calibration_controls.tex` |
+| Exp4 appendix tables | Paired contrasts, parameter recovery, audit performance, etc. | `python exp4_controlled_route_audit/main.py tables --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | `derived/module_*/*.csv` | `tables/tbl_app_exp4_*.tex` |
+| Exp4 checks | Scientific / engineering / precision / table checks | `python exp4_controlled_route_audit/main.py validate --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | `derived/*`, `tables/*` | `checks/exp4_scientific_checks.json`, `checks/exp4_engineering_checks.json` |
+| Exp4 run summary | Overall run report | `python exp4_controlled_route_audit/main.py report --run-dir outputs/runs/full_20260817T071019Z_7d7146b7` | `outputs/runs/full_20260817T071019Z_7d7146b7/` | all of the above | `reports/exp4_run_summary.md` |
+
+## CR-EXP-OUTPUT-V1 publication bundle
+
+The canonical publication presentation bundle is
+`publication/CR-EXP-OUTPUT-V1/` (one subdirectory per experiment). It is
+rebuilt from the promoted frozen sources above with:
+
+```bash
+python render_presentation.py render --mode publication --exp all
+python render_presentation.py validate --mode publication --exp all
+```
+
+Each experiment contains `figures/main|appendix/{pdf,svg,png,data,metadata}`,
+`tables/{csv,tex,metadata}` (including `tab_experimental_evidence_map`),
+`manifests/`, and `validation/`. Publication metadata records
+`paper_result=true` and `promotion_status=CANONICAL_PUBLICATION` while keeping
+`scientific_source_lineage` and `presentation_source_lineage` separate.
+Rebuilding the publication presentation does not rerun any experiment.

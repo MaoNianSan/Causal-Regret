@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import importlib.util
 from pathlib import Path
 import sys
 from typing import Any
@@ -11,7 +12,6 @@ if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
 import matplotlib.pyplot as plt
-from matplotlib.lines import Line2D
 import numpy as np
 import pandas as pd
 
@@ -23,12 +23,41 @@ from presentation.common import (
     write_figure_bundle,
 )
 from presentation.renderers import (
-    figure_metadata,
     write_manifest,
     write_standard_table,
     write_table_frame,
 )
 from presentation_sources import PresentationSource, load_run_manifest
+
+
+def _load_presentation_helpers() -> Any:
+    """Load the sibling plotting helpers without polluting ``sys.path``.
+
+    The presentation layer imports this renderer standalone; loading the
+    helpers module by file (same pattern as the registry renderer loader)
+    keeps the top-level ``presentation`` package from being shadowed by this
+    module's own ``presentation.py`` name.
+    """
+    module_name = "_cr_exp_output_exp2_presentation_helpers"
+    existing = sys.modules.get(module_name)
+    if existing is not None:
+        return existing
+    path = Path(__file__).resolve().parent / "presentation_helpers.py"
+    spec = importlib.util.spec_from_file_location(module_name, path)
+    if spec is None or spec.loader is None:
+        raise ImportError(f"Cannot load Exp2 presentation helpers: {path}")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[module_name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+_HELPERS = _load_presentation_helpers()
+appendix_figure = _HELPERS.appendix_figure
+build_metadata = _HELPERS.build_metadata
+draw_interval_panel = _HELPERS.draw_interval_panel
+main_legend_handles = _HELPERS.main_legend_handles
+
 
 MAIN_CONTRACT = {
     "layout": [2, 2],
@@ -78,135 +107,7 @@ def build_main_long_form(
         experiment_id=source.experiment_id,
         run_id=source.run_id,
         run_tier=source.run_tier,
-        paper_result=False,
-    )
-
-
-def _metadata(
-    source: PresentationSource,
-    *,
-    claim: str,
-    panels: dict[str, str],
-    metrics: dict[str, str],
-    boundary: str,
-    contract: dict[str, Any],
-    uncertainty: str,
-    sample_count: Any = "NA",
-    marker_semantics: dict[str, str] | None = None,
-) -> dict[str, Any]:
-    return figure_metadata(
-        source,
-        claim=claim,
-        panels=panels,
-        metrics=metrics,
-        boundary=boundary,
-        code_paths=[Path(__file__)],
-        contract=contract,
-        sample_count=sample_count,
-        uncertainty=uncertainty,
-        marker_semantics=marker_semantics,
-    )
-
-
-def _appendix_figure(
-    source: PresentationSource,
-    layout: PreviewLayout,
-    *,
-    figure_id: str,
-    title: str,
-    path: Path,
-) -> None:
-    frame = pd.read_csv(path)
-    fig, axis = plt.subplots(figsize=(7.1, 2.8), constrained_layout=True)
-    long_rows: list[dict[str, Any]] = []
-    if figure_id == "exp2_appendix_ambiguity_heatmap":
-        plotted = frame[frame.record_type.eq("source_route_pair")].copy()
-        matrix = plotted.pivot_table(
-            index="ambiguity_stratum",
-            columns="display_label",
-            values="allocation_tv",
-            aggfunc="first",
-        )
-        image = axis.imshow(matrix.to_numpy(float), aspect="auto", cmap="viridis")
-        axis.set_xticks(
-            np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right"
-        )
-        axis.set_yticks(np.arange(len(matrix.index)), matrix.index)
-        axis.set_xlabel("Source-time route pair")
-        axis.set_ylabel("Ambiguity stratum")
-        fig.colorbar(image, ax=axis, label="Allocation TV")
-        metric_columns = ["allocation_tv"]
-    elif figure_id == "exp2_appendix_delay_distribution":
-        plotted = frame.copy()
-        axis.bar(plotted.delay_bin, plotted.source_event_share, color="#1f4e79")
-        axis.set_xlabel("Source-to-conversion delay")
-        axis.set_ylabel("Source-event share")
-        metric_columns = ["source_event_share"]
-    else:
-        plotted = frame[frame.metric.eq("top_k_overlap")].copy()
-        matrix = plotted.pivot_table(
-            index="route_left", columns="route_right", values="value", aggfunc="first"
-        )
-        image = axis.imshow(matrix.to_numpy(float), vmin=0, vmax=1, cmap="viridis")
-        axis.set_xticks(
-            np.arange(len(matrix.columns)), matrix.columns, rotation=30, ha="right"
-        )
-        axis.set_yticks(np.arange(len(matrix.index)), matrix.index)
-        axis.set_xlabel("Right route")
-        axis.set_ylabel("Left route")
-        fig.colorbar(image, ax=axis, label="Top-k overlap")
-        metric_columns = ["value"]
-    for index, row in plotted.iterrows():
-        for column in metric_columns:
-            long_rows.append(
-                {
-                    "panel_id": "a",
-                    "metric_id": (
-                        "top_k_overlap"
-                        if figure_id == "exp2_appendix_pairwise_topk"
-                        else column
-                    ),
-                    "estimand_id": (
-                        "top_k_overlap"
-                        if figure_id == "exp2_appendix_pairwise_topk"
-                        else column
-                    ),
-                    "condition_id": path.stem,
-                    "series_id": column,
-                    "point_estimate": row[column],
-                    "uncertainty_role": "frozen appendix diagnostic",
-                    "uncertainty_method": "source table",
-                    "source_table": path.name,
-                    "source_row_key": str(index),
-                }
-            )
-    axis.set_title(title, loc="left", fontweight="bold")
-    assert_no_suptitle(fig)
-    long_frame = standardize_long_form(
-        pd.DataFrame(long_rows),
-        figure_id=figure_id,
-        experiment_id=source.experiment_id,
-        run_id=source.run_id,
-        run_tier=source.run_tier,
-        paper_result=False,
-        analysis_tier="appendix",
-    )
-    write_figure_bundle(
-        fig,
-        long_frame,
-        layout,
-        figure_id=figure_id,
-        section="appendix",
-        metadata=_metadata(
-            source,
-            claim=title,
-            panels={"a": title},
-            metrics={column: column for column in metric_columns},
-            boundary="Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
-            contract={"layout": [1, 1], "source": path.name},
-            uncertainty="Frozen result-table diagnostic",
-        ),
-        source_files=[path],
+        paper_result=source.paper_result,
     )
 
 
@@ -214,7 +115,9 @@ def render_presentation(
     source: PresentationSource, preview_root: Path
 ) -> dict[str, Any]:
     configure_matplotlib()
-    layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
+    layout = PreviewLayout(
+        preview_root, source.experiment_id, source.run_id, mode=source.mode
+    )
     figure_source = (
         source.source_run / "figures/figure_exp2_attribution_sensitivity_source.csv"
     )
@@ -261,24 +164,7 @@ def render_presentation(
         axis = axes[row_index, column_index]
         subset = frame[frame.comparison_group.eq(group)].reset_index(drop=True)
         y = np.arange(len(subset))[::-1]
-        point = subset[metric].to_numpy(float)
-        median = subset[f"{metric}_resampling_q500"].to_numpy(float)
-        low = subset[f"{metric}_resampling_q025"].to_numpy(float)
-        high = subset[f"{metric}_resampling_q975"].to_numpy(float)
-        cap = 0.10
-        axis.hlines(y, low, high, color="#1f4e79", linewidth=0.8)
-        axis.vlines(low, y - cap, y + cap, color="#1f4e79", linewidth=0.7)
-        axis.vlines(high, y - cap, y + cap, color="#1f4e79", linewidth=0.7)
-        axis.plot(point, y, "o", color="#1f4e79", markersize=4)
-        axis.plot(
-            median,
-            y,
-            "o",
-            markerfacecolor="white",
-            markeredgecolor="#1f4e79",
-            color="#1f4e79",
-            markersize=4,
-        )
+        draw_interval_panel(axis, subset, metric, y)
         axis.set_yticks(y, subset["display_label"].tolist())
         axis.set_xlabel(xlabel)
         axis.set_title(title, loc="left", fontweight="bold")
@@ -286,26 +172,7 @@ def render_presentation(
         if metric == "kendall_tau_b":
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
     fig.legend(
-        handles=[
-            Line2D(
-                [0],
-                [0],
-                marker="o",
-                color="#1f4e79",
-                linestyle="none",
-                label="Full-sample estimate",
-            ),
-            Line2D(
-                [0],
-                [0],
-                marker="o",
-                markerfacecolor="white",
-                markeredgecolor="#1f4e79",
-                color="#1f4e79",
-                linestyle="none",
-                label="UID-resampling median",
-            ),
-        ],
+        handles=main_legend_handles(),
         frameon=False,
         loc="lower center",
         ncol=2,
@@ -319,7 +186,7 @@ def render_presentation(
         layout,
         figure_id=source.main_figure_id,
         section="main",
-        metadata=_metadata(
+        metadata=build_metadata(
             source,
             claim="Attribution sensitivity on a fixed delayed-conversion cohort.",
             panels={
@@ -363,7 +230,7 @@ def render_presentation(
         ),
     ]
     for figure_id, title, path in appendix_specs:
-        _appendix_figure(source, layout, figure_id=figure_id, title=title, path=path)
+        appendix_figure(source, layout, figure_id=figure_id, title=title, path=path)
 
     for filename, stem, semantics in (
         (
@@ -387,6 +254,7 @@ def render_presentation(
             source.source_run / "tables" / filename,
             stem,
             semantics=semantics,
+            paper_result=source.paper_result,
         )
     route_rows = frame[
         ["route_left", "route_right", "display_label", "record_type"]
@@ -397,6 +265,7 @@ def render_presentation(
         "tab_exp2_attribution_route_definitions",
         semantics="Frozen route and route-pair labels used by the main and appendix outputs.",
         source_files=[figure_source],
+        paper_result=source.paper_result,
     )
     appendix_ids = [item[0] for item in appendix_specs]
     write_manifest(layout, source, figure_ids=[source.main_figure_id])

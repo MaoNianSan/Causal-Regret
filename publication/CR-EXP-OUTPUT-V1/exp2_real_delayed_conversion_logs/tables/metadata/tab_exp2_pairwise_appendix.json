@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "c6e63beb34df4659892d5b243a85834e14be53f754c76f6617190555bc7a2de3",
+  "paper_result": true,
+  "semantics": "Complete pairwise and Top-k appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\tables\\table_exp2_pairwise_appendix.csv",
+  "source_file_sha256": "0b9a4904a2f1793e732a66fdfbff41e0e3321616110819cecc5c78c303e09b43",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tab_exp2_pairwise_appendix",
+  "tex_sha256": "10977cc6fda0bbe53cd0da852970a0a92308c65bd3224961b0a25d897b5ef8dc"
+}

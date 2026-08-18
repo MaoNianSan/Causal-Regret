@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "00c06f39a22d016ce8656e6ae3914828319cfb397836c8816cc6119fbe0c33b8",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_ridge_history_cv.csv",
+  "source_file_sha256": "ccce515b3137e2d79195b8364346b12d931abca5db19165585cdbe091c11df12",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_ridge_history_cv",
+  "tex_sha256": "3660e3716680764f6bac0256eaf767ea9ef3e93db0ac92cc857894026e715f4c"
+}

@@ -1,0 +1,9 @@
+Cohort stage,Journey count,Retention from previous stage,Retention from candidate journeys
+candidate_journeys_after_temporal_filters,308605,1,1
+complete_lookback_journeys,243298,0.78837996792015685,0.78837996792015685
+unique_uid_journeys,242419,0.99638714662677041,0.78553166669366992
+single_campaign_journeys,241590,0.99658030104901019,0.78284538487710831
+source_cell_support_eligible_journeys,241590,1,0.78284538487710831
+unique_arrival_anchor_journeys,241590,1,0.78284538487710831
+arrival_anchor_support_eligible_journeys,240981,0.99747920029802561,0.78087198846421801
+final_retained_journeys,240981,1,0.78087198846421801

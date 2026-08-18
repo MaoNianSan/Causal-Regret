@@ -3,10 +3,10 @@ zero_delay,Zero delay,arrival_clock,Arrival-clock binding,structural_regret_rate
 zero_delay,Zero delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.0983372786618008,0.0003361116849287,0.097686754115815,0.0989943698422759,2000,0.95,paper,True
 zero_delay,Zero delay,source_round,Source-round binding,structural_regret_rate,30,0.1128961344263348,0.0003197841216383,0.1122714506325005,0.1135052120840204,2000,0.95,paper,True
 zero_delay,Zero delay,source_round,Source-round binding,context_constrained_regret_rate,30,0.0983372786618008,0.0003361116849287,0.0977072149126514,0.0989668396332814,2000,0.95,paper,True
-exact_valid_shift,Exact-valid shift,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1983179199999999,0.0007079707087648,0.1968407519999999,0.1996782959999999,2000,0.95,paper,True
-exact_valid_shift,Exact-valid shift,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.0878439999999999,0.0021206122972647,0.083828156,0.0918754079999999,2000,0.95,paper,True
-exact_valid_shift,Exact-valid shift,source_round,Source-round binding,structural_regret_rate,30,0.13082288,0.0002590520838058,0.1303489319999999,0.131373164,2000,0.95,paper,True
-exact_valid_shift,Exact-valid shift,source_round,Source-round binding,context_constrained_regret_rate,30,0.02034896,0.0018220429934592,0.016876264,0.0237596599999999,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1983179199999999,0.0007079707087648,0.1968407519999999,0.1996782959999999,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.0878439999999999,0.0021206122972647,0.083828156,0.0918754079999999,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,source_round,Source-round binding,structural_regret_rate,30,0.13082288,0.0002590520838058,0.1303489319999999,0.131373164,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,source_round,Source-round binding,context_constrained_regret_rate,30,0.02034896,0.0018220429934592,0.016876264,0.0237596599999999,2000,0.95,paper,True
 geometric_delay,Geometric delay,arrival_clock,Arrival-clock binding,structural_regret_rate,30,0.1681658529961595,0.0010037127688585,0.1662847102190587,0.1700214146542534,2000,0.95,paper,True
 geometric_delay,Geometric delay,arrival_clock,Arrival-clock binding,context_constrained_regret_rate,30,0.1536069972316255,0.001038621654834,0.1516347291608356,0.1555706818861694,2000,0.95,paper,True
 geometric_delay,Geometric delay,source_round,Source-round binding,structural_regret_rate,30,0.1137261560013622,0.0003266584372667,0.1131115333422739,0.1143686861032218,2000,0.95,paper,True

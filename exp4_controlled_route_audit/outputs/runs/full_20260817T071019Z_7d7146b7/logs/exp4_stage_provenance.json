@@ -1,0 +1,44 @@
+{
+  "calibration_hash": null,
+  "complete_source_hash": "31329883a3523376945ce43bd92ab2fc71d40211331b88927ed2da4311dc9834",
+  "complete_source_hash_algorithm_version": "exp4-source-code-v2",
+  "config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "downstream_rebuilt_at": "2026-08-18T09:06:28+00:00",
+  "downstream_rebuilt_stages": [
+    "reporting",
+    "validation"
+  ],
+  "exp4_worktree_clean_at_start": true,
+  "legacy_complete_config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "recorded_at": "2026-08-18T09:06:28+00:00",
+  "recorded_git_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "schema": "exp4_stage_provenance_v3",
+  "source_hash_algorithm_version": "exp4-stage-source-v3",
+  "source_unchanged_during_run": false,
+  "stage_config_hashes": {
+    "aggregation_config_hash": "21d1d81c652138900d9968f77da005952149be0d3ab4256ef137d92e19a770b4",
+    "artifact_metadata_config_hash": "e709e0a83a269653b4d4d952ad02dd8862d3e3c38b61755a51468ab44649e9ed",
+    "reporting_config_hash": "e5b48bbef3b74c17c9c934b2c48082552130295aeadc5afb1126fcfed768864a",
+    "scientific_config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+    "validation_config_hash": "b233014b77e542135a2f25022afbbeb105dffa580a2339f7b07999aaa9484ad3"
+  },
+  "stages": {
+    "aggregation": {
+      "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+      "source_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4"
+    },
+    "reporting": {
+      "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+      "source_hash": "900f7201a026d05959216a383b19f9e87976af7a85aad9a38ab0902116e5e040"
+    },
+    "simulation": {
+      "execution_mode": "FRESH",
+      "source_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+      "source_run_id": null
+    },
+    "validation": {
+      "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+      "source_hash": "37c28cc9f84eae2e4640c197d2d51f7acd61aabd682c56ca4a2210302a25fb17"
+    }
+  }
+}

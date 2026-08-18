@@ -1,0 +1,62 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    3.1
+  ],
+  "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_file_hashes": {
+    "exp4_appendix_calibration_diagnostics.pdf": "b90c46294a95e06d6639e9ad5ae2b7a8c430af48a8263e9810c0c76c51178da4",
+    "exp4_appendix_calibration_diagnostics.png": "7ad9e3d4d9938d6ad44d85c74569de8173018b11792e5aa72474c06ddf8fd57a",
+    "exp4_appendix_calibration_diagnostics.svg": "cebe0008eb6e4e348b31b0d26379e31207d0d2f5b62f27c7ff02d895ef108a95"
+  },
+  "figure_id": "exp4_appendix_calibration_diagnostics",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:38.164662+00:00",
+  "input_manifest_hash": "NA",
+  "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
+  "marker_semantics": {},
+  "metric_definitions": {},
+  "narrative_claim": "Calibration diagnostics",
+  "panel_definitions": {
+    "a": "exp4_module_c_correspondence_checks",
+    "b": "exp4_module_c_parameter_recovery",
+    "c": "exp4_module_c_control_summary"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "ea10c7fa9a1bf7ae3c703511666656fbd6a068be4782fc4ee46b5eaca623376d",
+  "presentation_contract": {
+    "layout": [
+      1,
+      3
+    ],
+    "sources": [
+      "exp4_module_c_correspondence_checks.csv",
+      "exp4_module_c_parameter_recovery.csv",
+      "exp4_module_c_control_summary.csv"
+    ]
+  },
+  "presentation_source_lineage": "presentation:314f1691ba9bf1663e80a00e40d6cfc21a1fe6a34e5113c77dbe7e3b178e339d",
+  "preview_root_relative_path": "exp4_controlled_route_audit",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Calibration diagnostics",
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "run_tier": "full",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp4_appendix_calibration_diagnostics.csv",
+  "source_data_file_hash": "6c1df994eb7d47134bcfacbc760294515cc9ad0d6d603ebbcaa5e23a0cafbe89",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_c\\exp4_module_c_control_summary.csv": "dce9f622a76613416dd3afacb429326241c790cf8382635dbfe9b34650256799",
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_c\\exp4_module_c_correspondence_checks.csv": "d2ec9394aeaf23f3fb8ddbd7258adf45e20071d61b32390047915a200451dddb",
+    "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_c\\exp4_module_c_parameter_recovery.csv": "525c31712e895f77f9711636f3ae292aa810f374dd1eb23f4e84acc3d8c7fe14"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen diagnostic",
+  "uncertainty_semantics": "Frozen diagnostic"
+}

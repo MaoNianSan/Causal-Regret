@@ -1,0 +1,707 @@
+{
+  "migrated_at": "2026-08-17T10:04:11.798439+00:00",
+  "migration_prerequisites": {
+    "calibration_identity_match": true,
+    "config_hash_match": true,
+    "full_run": true,
+    "raw_scientific_artifacts_complete": true,
+    "raw_scientific_artifacts_unchanged": true,
+    "run_lineage_valid": true,
+    "scientific_run_previously_verified": true
+  },
+  "new_scientific_generation_source_hash": "899fefa40dbf8e47b99347d61e45a73d468bc7784a65df89e10d0c2c2d841590",
+  "old_scientific_generation_source_hash": "a27334e39be265cee404ca01936fcef89ef8a4c1359a3c0f44e2696bf14585e2",
+  "paper_result": true,
+  "promoted_at": "2026-08-18T08:58:04.384582+00:00",
+  "raw_artifact_hashes_after": {
+    "raw/exp1_delay_source_rounds.parquet": "53bef700cf0db02c74762bc086f4483c1de8bf3a725a8d7edfec18ccdba012a6",
+    "raw/exp1_learner_consequence_rounds.parquet": "d54eda3832f931576b5215c5e9a42a0d9f8f0bf831e1cb24d89f82f64b08bf5f",
+    "raw/exp1_path_manifest.parquet": "95e93667b5c7b7c1c9813813023fa7b0bfb9be374406cea73de7c72ffe4dcca6",
+    "raw/exp1_route_diagnostic_rounds.parquet": "ea6c433fb0dfef40d605dd90ed73e226f8f2753421bcc2f1d9ee16b71cc62376",
+    "seed_metrics/exp1_learner_seed_metrics.parquet": "710f1a4a5ce672b8c17299d9c0f1a38e609601d9760189803990c9d7c807dd67",
+    "seed_metrics/exp1_route_seed_metrics.parquet": "68c8ef244768d960b5c695ccd46e460e3cc94e87ed1a19aa943ac360dbaaa670"
+  },
+  "raw_artifact_hashes_before": {
+    "raw/exp1_delay_source_rounds.parquet": "53bef700cf0db02c74762bc086f4483c1de8bf3a725a8d7edfec18ccdba012a6",
+    "raw/exp1_learner_consequence_rounds.parquet": "d54eda3832f931576b5215c5e9a42a0d9f8f0bf831e1cb24d89f82f64b08bf5f",
+    "raw/exp1_path_manifest.parquet": "95e93667b5c7b7c1c9813813023fa7b0bfb9be374406cea73de7c72ffe4dcca6",
+    "raw/exp1_route_diagnostic_rounds.parquet": "ea6c433fb0dfef40d605dd90ed73e226f8f2753421bcc2f1d9ee16b71cc62376",
+    "seed_metrics/exp1_learner_seed_metrics.parquet": "710f1a4a5ce672b8c17299d9c0f1a38e609601d9760189803990c9d7c807dd67",
+    "seed_metrics/exp1_route_seed_metrics.parquet": "68c8ef244768d960b5c695ccd46e460e3cc94e87ed1a19aa943ac360dbaaa670"
+  },
+  "raw_scientific_artifacts_unchanged": true,
+  "reason": "SEMANTICS_PRESERVING_EXECUTION_CONTRACT_EXTRACTION",
+  "replay_comparison_results": [
+    {
+      "bundle_hash": "3fa967f47994dd3a359f1c4c956468a89b6e886da9a9ef9e42562d9905663505",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "268ebd633d8cae2456643389a01c40a2afb9a6d7c5ac1e80d420509c0ffe817f",
+      "mechanism_id": "zero_delay",
+      "seed": 0,
+      "status": "PASS",
+      "structural_path_hash": "3eac5d8df853cf8877a8cf2da4676afa083247dfec16cc899f30c0dac1d94879"
+    },
+    {
+      "bundle_hash": "871153d792dc57abad298d467fd65b69c0e0c0d29eb7a3dbbcdb1a3403ea677c",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "449d0528613e9bd741367ae635170bd2e73e6815704622422f7f064e1aabef19",
+      "mechanism_id": "exact_valid_shift",
+      "seed": 0,
+      "status": "PASS",
+      "structural_path_hash": "28b553f55321b08af6ca7287240a03bf6442722a6a48d8da4f237af9d99d735e"
+    },
+    {
+      "bundle_hash": "2cc225e7fbf2b226013473ba18601150be26ee3318d8fa69d9da24e89ab278b8",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "449d0528613e9bd741367ae635170bd2e73e6815704622422f7f064e1aabef19",
+      "mechanism_id": "geometric_delay",
+      "seed": 0,
+      "status": "PASS",
+      "structural_path_hash": "3eac5d8df853cf8877a8cf2da4676afa083247dfec16cc899f30c0dac1d94879"
+    },
+    {
+      "bundle_hash": "ddc144ce815d56b6392d282b47d515ee8eb64deccd1f467d19c2642730e5da43",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "af5a1a0b23e1ac7af58311708632d7004a3b87cf594d371805774f01b9a41769",
+      "mechanism_id": "systematic_misbinding",
+      "seed": 0,
+      "status": "PASS",
+      "structural_path_hash": "518ddbe24dffbe578c3230b8f34f940a3e1069b5126fe8202e35306eb3cb3423"
+    },
+    {
+      "bundle_hash": "eb023c949e50c33ceae21063b3dfcacd0713d74b013f307c4df4761f3384ba93",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "658cb8be65c4ca17482408f5da952d89e3b98411888e39480738492235a64014",
+      "mechanism_id": "zero_delay",
+      "seed": 1,
+      "status": "PASS",
+      "structural_path_hash": "e1430fe6f9f591e9188c1a5b7f54fe22e3e9178eae3e37f663672f70a33fb6cb"
+    },
+    {
+      "bundle_hash": "8e6bfb481c7323bebffe69cbb745a0cc000e1a95e5ada1375aba57f6f5dbe141",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "89eff64041f2ff6c415bb09978616cc0077c546d34080b751ab6327c9f017bbe",
+      "mechanism_id": "exact_valid_shift",
+      "seed": 1,
+      "status": "PASS",
+      "structural_path_hash": "6cb9c19ed48285c0fb9ecf835697bf0b11513cb5955377cd2de515b21a563469"
+    },
+    {
+      "bundle_hash": "80b829ad8b0e0d6027f2ade8334225c32d5cbd3bfe8501e9908dd3e7e93a6d03",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "89eff64041f2ff6c415bb09978616cc0077c546d34080b751ab6327c9f017bbe",
+      "mechanism_id": "geometric_delay",
+      "seed": 1,
+      "status": "PASS",
+      "structural_path_hash": "e1430fe6f9f591e9188c1a5b7f54fe22e3e9178eae3e37f663672f70a33fb6cb"
+    },
+    {
+      "bundle_hash": "320d7223336fd06debb79efeff48a92b6048e136067dfd61d8712ed5ed37223d",
+      "components": {
+        "delay_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 5100,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "learner_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "path_manifest": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 1,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_round": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 10000,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        },
+        "route_seed": {
+          "extra_columns": [],
+          "max_abs_error": 0.0,
+          "mismatched_columns": [],
+          "missing_columns": [],
+          "rows": 2,
+          "status": "PASS",
+          "tolerance": {
+            "atol": 1e-12,
+            "rtol": 1e-12
+          }
+        }
+      },
+      "delay_path_hash": "8373bb5d78a3a94f15ab7f25860493838224e487719bb274085b8e8d59a4d9ac",
+      "mechanism_id": "systematic_misbinding",
+      "seed": 1,
+      "status": "PASS",
+      "structural_path_hash": "58163e4c284576e8e9dc0db4264f5d8ed820e9dcb6fd4a4d67029f89f0798daa"
+    }
+  ],
+  "replay_mechanisms": [
+    "zero_delay",
+    "exact_valid_shift",
+    "geometric_delay",
+    "systematic_misbinding"
+  ],
+  "replay_seeds": [
+    0,
+    1
+  ],
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "run_tier": "paper",
+  "schema": "exp1_scientific_execution_contract_migration_v1",
+  "scientific_equivalence": "PASS",
+  "scientific_full_rerun_executed": false
+}

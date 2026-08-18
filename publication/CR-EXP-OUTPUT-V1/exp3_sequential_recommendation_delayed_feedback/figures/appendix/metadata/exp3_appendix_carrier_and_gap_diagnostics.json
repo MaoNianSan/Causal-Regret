@@ -1,0 +1,59 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    3.1
+  ],
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
+  "figure_file_hashes": {
+    "exp3_appendix_carrier_and_gap_diagnostics.pdf": "76809ae6b9bb3f93fb9e2c3e02acef712a9543b3fdcc2bd2446b29e3cd48de2b",
+    "exp3_appendix_carrier_and_gap_diagnostics.png": "03cf042344ab280c1e365a580e3b0fb9ad81600c43039c4c42fe376de17b7a49",
+    "exp3_appendix_carrier_and_gap_diagnostics.svg": "d2d1b7dd113d1fa85c152a300438a8a889551e70a3cc265494bd38d3f3b5d228"
+  },
+  "figure_id": "exp3_appendix_carrier_and_gap_diagnostics",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:31.860143+00:00",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
+  "marker_semantics": {},
+  "metric_definitions": {},
+  "narrative_claim": "Carrier and gap diagnostics",
+  "panel_definitions": {
+    "a": "exp3_appendix_arrival_carrier_diagnostic_data",
+    "b": "exp3_appendix_gap_error_distribution_data"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_contract": {
+    "layout": [
+      1,
+      2
+    ],
+    "sources": [
+      "exp3_appendix_arrival_carrier_diagnostic_data.csv",
+      "exp3_appendix_gap_error_distribution_data.csv"
+    ]
+  },
+  "presentation_source_lineage": "presentation:7f4264529b5a9091fd7eab703e6189e7bc84528bc43457eab4fc273d2464c7ef",
+  "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Carrier and gap diagnostics",
+  "result_schema": "exp3_paper_candidate",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp3_appendix_carrier_and_gap_diagnostics.csv",
+  "source_data_file_hash": "d5a092cbac7e37e5d3634b4ddb9817c064a858f500f0ccf05395996c595d1b92",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_appendix_arrival_carrier_diagnostic_data.csv": "dfb9a47ce38a59bb997d84c1ad5b744d9a0be17c1d43ba2c0a76fa00c1ada3f4",
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_appendix_gap_error_distribution_data.csv": "4df81c19560a5336e2c5e31b6a8bba195a5fda4525b04bc3f9d823652cf8a53f"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen diagnostic; sensitivity ranges are not confidence intervals",
+  "uncertainty_semantics": "Frozen diagnostic; sensitivity ranges are not confidence intervals"
+}

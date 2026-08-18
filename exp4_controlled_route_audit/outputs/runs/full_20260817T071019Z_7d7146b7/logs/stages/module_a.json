@@ -1,0 +1,11 @@
+{
+  "artifacts": {
+    "derived/module_a/exp4_module_a_seed_level.parquet": "406ec6fba424132398ea4aaa06a6c40713457eafd26b1a07edb686aedee529e5",
+    "logs/exp4_module_a_path_manifest.csv": "18c110558d2de6e3643f86b1c9882ee506d6948161197ffcb647d1def9765411"
+  },
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "completed_at": "2026-08-17T07:42:51+00:00",
+  "completed_tasks": 100,
+  "stage": "module_a",
+  "status": "PASS"
+}

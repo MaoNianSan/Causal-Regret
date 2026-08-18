@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "f8deeb1764fb26d43d42a403f5725939f55d964ee41ae27a853a43b1da9ba466",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_action_space_coverage.csv",
+  "source_file_sha256": "b5289d641275fbeb4474768598282ebd86e8342ac70c55288eb9253213e05151",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_action_space_coverage",
+  "tex_sha256": "bd29481798fa3d1d1741b3dbbe49999ae38353bf1525671cf60619064d002e70"
+}

@@ -239,34 +239,86 @@
         {
           "delta_formula_error": 0.0,
           "mechanism_id": "zero_delay",
-          "random_action_slack": 0.0
+          "random_action_slack": 0.0,
+          "random_action_stability_slack": 0.0
         },
         {
           "delta_formula_error": 1.1102230246251565e-16,
           "mechanism_id": "exact_valid_shift",
-          "random_action_slack": 4.5474735088646414e-17
+          "random_action_slack": 4.5474735088646414e-17,
+          "random_action_stability_slack": 5.650913764698728e-17
         },
         {
           "delta_formula_error": 1.1102230246251565e-16,
           "mechanism_id": "geometric_delay",
-          "random_action_slack": 0.23949471290640617
+          "random_action_slack": 0.23949471290640617,
+          "random_action_stability_slack": 0.23949471290640623
         },
         {
           "delta_formula_error": 1.1102230246251565e-16,
           "mechanism_id": "mixture_delay",
-          "random_action_slack": 0.20395498128240938
+          "random_action_slack": 0.20395498128240938,
+          "random_action_stability_slack": 0.20395498128240938
         },
         {
           "delta_formula_error": 1.1102230246251565e-16,
           "mechanism_id": "state_coupled_delay",
-          "random_action_slack": 0.23899314212148115
+          "random_action_slack": 0.23899314212148115,
+          "random_action_stability_slack": 0.2389931421214812
         },
         {
           "delta_formula_error": 0.0,
           "mechanism_id": "systematic_misbinding",
-          "random_action_slack": 0.5608024691358023
+          "random_action_slack": 0.5608024691358023,
+          "random_action_stability_slack": 0.550753086419753
         }
       ],
+      "status": "PASS"
+    },
+    {
+      "check": "validity_hierarchy",
+      "details": {
+        "delta_implies_rho_violations": 0,
+        "rho_implies_chi_violations": 0
+      },
+      "status": "PASS"
+    },
+    {
+      "check": "binary_legacy_ranking_reversal_consistency",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "complete_conflict_equals_unit_chi",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "margin_bridge_strict",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "complete_conflict_margin_bound",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "sharp_pathwise_regret_stability",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "exact_cardinal_validity_delta_rho_chi_zero",
+      "details": 0,
+      "status": "PASS"
+    },
+    {
+      "check": "theory_sweep_invariants",
+      "details": {
+        "exact_cardinal_shift": true,
+        "margin_threshold": true
+      },
       "status": "PASS"
     },
     {
@@ -349,10 +401,10 @@
     {
       "check": "calibration_artifact_hashes_match",
       "details": {
-        "context": "37083f44f5610868af8afb9be102fc6b497e9f30c4f566ba04b019899df443f8",
-        "delay": "b4446316bc448871134b0b3cf1b11ac55a9754a930e89668cad99d68bd670efb",
-        "misbinding": "ceb71f724ae0fff0e80c482154ee4c1a2b612536e71763026d0215f4f1057275",
-        "structural": "346e65ece0c5392f65a9af37402f2de8543b67b2670d038b6b58f698439e6ef0"
+        "context": "ac013980722598b69c6413dd375ae24c32c75ecb70095c90313674d1ee5072d8",
+        "delay": "415e14018c99b3219532c2b082f40f86279285900ab9145889ba24db331b91d0",
+        "misbinding": "daa5c9d31fb3ea728e71e502df8bef9239bad54c3db59625008f7ca379281205",
+        "structural": "7ce1405bd4bfa34b661ac39f1992ad188a933cbec1dd16bbcd5c3e80c87624af"
       },
       "status": "PASS"
     },
@@ -364,10 +416,11 @@
   ],
   "engineering_status": "PASS",
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-07-26T11:59:54.356975+00:00",
+  "generated_at": "2026-08-17T10:10:46.086967+00:00",
   "paper_promotion_status": "ELIGIBLE_FOR_PROMOTION_REVIEW",
   "paper_result": true,
-  "promoted_at": "2026-08-05T10:59:06.645203+00:00",
+  "promoted_at": "2026-08-18T08:58:04.330644+00:00",
   "run_tier": "paper",
-  "scientific_status": "PASS"
+  "scientific_status": "PASS",
+  "validation_source_hash": "dd04b3e7ae565004b9e74f4d74a32aa6a61f8a90cffc3d7a28772b9630424f6e"
 }

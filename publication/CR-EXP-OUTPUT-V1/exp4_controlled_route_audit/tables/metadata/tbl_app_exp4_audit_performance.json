@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "b44ad93eb31503114f496473c1396ea224e377258cd987dfecaff0229156d96f",
+  "paper_result": true,
+  "semantics": "Complete audit-performance table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\tables\\tbl_app_exp4_audit_performance.csv",
+  "source_file_sha256": "6a7dccb7614a6b28e22f340739d0dbb888561efa761c49ea2646e436484a231f",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tbl_app_exp4_audit_performance",
+  "tex_sha256": "8f98776acfceca02f3f7f5ac745340e4bfaf53347a4f8e6500ea965d5a14310c"
+}

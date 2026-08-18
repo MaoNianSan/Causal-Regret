@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "151054c77189f6f4cff8ee75de99ebd57b49b012747200734952b9f13281181c",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_paired_ranking_contrast.csv",
+  "source_file_sha256": "1511ff5308f6442adc981dc6a4f1c3b6d959a0c6ab7de93159b9de21c9153667",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_paired_ranking_contrast",
+  "tex_sha256": "94891f108decb95c04d6a387d7b4da1e5789dd9acea922eb752ccb0abddb7e98"
+}

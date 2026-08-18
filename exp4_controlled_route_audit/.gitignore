@@ -23,3 +23,23 @@ outputs/runs/*/
 !outputs/runs/full_20260807T045219Z_7eeb2a31/derived/
 !outputs/runs/full_20260807T045219Z_7eeb2a31/derived/**
 outputs/runs/full_20260807T045219Z_7eeb2a31/derived/**/*.parquet
+# Curated v3 full run candidate to publish (results only, no raw/parquet).
+# logs/ holds the small canonical provenance records (run_config, result
+# status, output manifest, lineage, stage provenance, promotion check inputs)
+# so a fresh clone can prove the v3 run is the promoted paper result.
+!outputs/runs/full_20260817T071019Z_7d7146b7/
+!outputs/runs/full_20260817T071019Z_7d7146b7/logs/
+!outputs/runs/full_20260817T071019Z_7d7146b7/logs/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/logs/stages/
+!outputs/runs/full_20260817T071019Z_7d7146b7/logs/stages/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/figures/
+!outputs/runs/full_20260817T071019Z_7d7146b7/figures/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/tables/
+!outputs/runs/full_20260817T071019Z_7d7146b7/tables/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/reports/
+!outputs/runs/full_20260817T071019Z_7d7146b7/reports/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/checks/
+!outputs/runs/full_20260817T071019Z_7d7146b7/checks/**
+!outputs/runs/full_20260817T071019Z_7d7146b7/derived/
+!outputs/runs/full_20260817T071019Z_7d7146b7/derived/**
+outputs/runs/full_20260817T071019Z_7d7146b7/derived/**/*.parquet

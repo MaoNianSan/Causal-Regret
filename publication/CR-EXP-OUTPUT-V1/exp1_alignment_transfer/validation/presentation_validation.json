@@ -1,0 +1,594 @@
+{
+  "checks": [
+    {
+      "check": "source_files_present",
+      "details": "",
+      "passed": true
+    },
+    {
+      "check": "exp1_scientific_generation_config_hash",
+      "details": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_delay_coupling_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_delay_coupling_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_reversal_trajectory_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_reversal_trajectory_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_targeted_validation.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_targeted_validation.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_delay_coupling_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_delay_coupling_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_reversal_trajectory_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_reversal_trajectory_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_targeted_validation.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_targeted_validation.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_delay_coupling_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_delay_coupling_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_targeted_validation.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_targeted_validation.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_delay_coupling_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_delay_coupling_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_reversal_trajectory_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_reversal_trajectory_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_targeted_validation.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_targeted_validation.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_delay_coupling_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_delay_coupling_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_targeted_validation.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_targeted_validation.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/fig_exp1_alignment_transfer.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\data\\fig_exp1_alignment_transfer.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/fig_exp1_alignment_transfer.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\metadata\\fig_exp1_alignment_transfer.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/fig_exp1_alignment_transfer.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\pdf\\fig_exp1_alignment_transfer.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/fig_exp1_alignment_transfer.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\png\\fig_exp1_alignment_transfer.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/fig_exp1_alignment_transfer.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\svg\\fig_exp1_alignment_transfer.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp1_mechanism_protocol.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_exp1_mechanism_protocol.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp1_mechanism_summary.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_exp1_mechanism_summary.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp1_mechanism_protocol.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_exp1_mechanism_protocol.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp1_mechanism_summary.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_exp1_mechanism_summary.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp1_mechanism_protocol.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_exp1_mechanism_protocol.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp1_mechanism_summary.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_exp1_mechanism_summary.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\pdf\\fig_exp1_alignment_transfer.pdf",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\svg\\fig_exp1_alignment_transfer.svg",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\png\\fig_exp1_alignment_transfer.png",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\data\\fig_exp1_alignment_transfer.csv",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\metadata\\fig_exp1_alignment_transfer.json",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:three_graphic_hashes",
+      "details": "dict_keys(['fig_exp1_alignment_transfer.pdf', 'fig_exp1_alignment_transfer.png', 'fig_exp1_alignment_transfer.svg'])",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:hash:fig_exp1_alignment_transfer.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\pdf\\fig_exp1_alignment_transfer.pdf",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:hash:fig_exp1_alignment_transfer.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\png\\fig_exp1_alignment_transfer.png",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:hash:fig_exp1_alignment_transfer.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\svg\\fig_exp1_alignment_transfer.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_delay_coupling_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_delay_coupling_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_reversal_trajectory_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_reversal_trajectory_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp1_appendix_targeted_validation.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_targeted_validation.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_delay_coupling_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_delay_coupling_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_reversal_trajectory_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_reversal_trajectory_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp1_appendix_targeted_validation.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_targeted_validation.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_delay_coupling_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_delay_coupling_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp1_appendix_targeted_validation.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_targeted_validation.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_delay_coupling_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_delay_coupling_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_reversal_trajectory_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_reversal_trajectory_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp1_appendix_targeted_validation.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_targeted_validation.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_delay_coupling_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_delay_coupling_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp1_appendix_targeted_validation.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_targeted_validation.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/fig_exp1_alignment_transfer.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\data\\fig_exp1_alignment_transfer.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/fig_exp1_alignment_transfer.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\metadata\\fig_exp1_alignment_transfer.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/fig_exp1_alignment_transfer.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\pdf\\fig_exp1_alignment_transfer.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/fig_exp1_alignment_transfer.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\png\\fig_exp1_alignment_transfer.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/fig_exp1_alignment_transfer.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\svg\\fig_exp1_alignment_transfer.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp1_mechanism_protocol.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_exp1_mechanism_protocol.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_exp1_mechanism_summary.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_exp1_mechanism_summary.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp1_mechanism_protocol.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_exp1_mechanism_protocol.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_exp1_mechanism_summary.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_exp1_mechanism_summary.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp1_mechanism_protocol.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_exp1_mechanism_protocol.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_exp1_mechanism_summary.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_exp1_mechanism_summary.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_delay_coupling_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_delay_coupling_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_delay_coupling_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_delay_coupling_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_delay_coupling_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:three_graphic_hashes",
+      "details": "dict_keys(['exp1_appendix_delay_coupling_diagnostics.pdf', 'exp1_appendix_delay_coupling_diagnostics.png', 'exp1_appendix_delay_coupling_diagnostics.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:hash:exp1_appendix_delay_coupling_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_delay_coupling_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:hash:exp1_appendix_delay_coupling_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_delay_coupling_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:hash:exp1_appendix_delay_coupling_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_delay_coupling_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_reversal_trajectory_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_reversal_trajectory_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_reversal_trajectory_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:source_hashes",
+      "details": "2",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:three_graphic_hashes",
+      "details": "dict_keys(['exp1_appendix_reversal_trajectory_diagnostics.pdf', 'exp1_appendix_reversal_trajectory_diagnostics.png', 'exp1_appendix_reversal_trajectory_diagnostics.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:hash:exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_reversal_trajectory_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:hash:exp1_appendix_reversal_trajectory_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_reversal_trajectory_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:hash:exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_reversal_trajectory_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_targeted_validation.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_targeted_validation.svg",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_targeted_validation.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\data\\exp1_appendix_targeted_validation.csv",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\metadata\\exp1_appendix_targeted_validation.json",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:source_hashes",
+      "details": "1",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:three_graphic_hashes",
+      "details": "dict_keys(['exp1_appendix_targeted_validation.pdf', 'exp1_appendix_targeted_validation.png', 'exp1_appendix_targeted_validation.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:hash:exp1_appendix_targeted_validation.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_targeted_validation.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:hash:exp1_appendix_targeted_validation.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\png\\exp1_appendix_targeted_validation.png",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:hash:exp1_appendix_targeted_validation.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\svg\\exp1_appendix_targeted_validation.svg",
+      "passed": true
+    },
+    {
+      "check": "presentation_manifest_exists",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\manifests\\presentation_manifest.json",
+      "passed": true
+    }
+  ],
+  "experiment_id": "exp1_alignment_transfer",
+  "paper_result": true,
+  "passed": true,
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}

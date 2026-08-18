@@ -1,0 +1,664 @@
+{
+  "checks": [
+    {
+      "check": "source_files_present",
+      "details": "",
+      "passed": true
+    },
+    {
+      "check": "exp4_scientific_config_hash",
+      "details": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+      "passed": true
+    },
+    {
+      "check": "exp4_v3_schema",
+      "details": "exp4_controlled_route_audit_v3",
+      "passed": true
+    },
+    {
+      "check": "exp4_source_paper_result_matches",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_audit_support.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_audit_support.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_calibration_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_calibration_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_route_alignment_detail.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_route_alignment_detail.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_audit_support.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_audit_support.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_calibration_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_calibration_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_route_alignment_detail.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_route_alignment_detail.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_audit_support.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_audit_support.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_calibration_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_calibration_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_route_alignment_detail.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_route_alignment_detail.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_audit_support.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_audit_support.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_calibration_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_calibration_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_route_alignment_detail.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_route_alignment_detail.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_audit_support.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_audit_support.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_calibration_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_calibration_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_route_alignment_detail.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_route_alignment_detail.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/fig_exp4_route_alignment_and_audit_reliability.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\data\\fig_exp4_route_alignment_and_audit_reliability.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/fig_exp4_route_alignment_and_audit_reliability.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\metadata\\fig_exp4_route_alignment_and_audit_reliability.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\pdf\\fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/fig_exp4_route_alignment_and_audit_reliability.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\png\\fig_exp4_route_alignment_and_audit_reliability.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/fig_exp4_route_alignment_and_audit_reliability.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\svg\\fig_exp4_route_alignment_and_audit_reliability.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_audit_performance.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_audit_performance.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_paired_contrasts.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_paired_contrasts.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_parameters.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_parameters.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_exp4_calibration_controls.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_exp4_calibration_controls.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_audit_performance.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_audit_performance.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_paired_contrasts.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_paired_contrasts.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_parameters.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_parameters.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_exp4_calibration_controls.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_exp4_calibration_controls.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_audit_performance.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_audit_performance.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_paired_contrasts.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_paired_contrasts.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_parameters.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_parameters.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_exp4_calibration_controls.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_exp4_calibration_controls.tex",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\pdf\\fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\svg\\fig_exp4_route_alignment_and_audit_reliability.svg",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\png\\fig_exp4_route_alignment_and_audit_reliability.png",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\data\\fig_exp4_route_alignment_and_audit_reliability.csv",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\metadata\\fig_exp4_route_alignment_and_audit_reliability.json",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:source_hashes",
+      "details": "3",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:three_graphic_hashes",
+      "details": "dict_keys(['fig_exp4_route_alignment_and_audit_reliability.pdf', 'fig_exp4_route_alignment_and_audit_reliability.png', 'fig_exp4_route_alignment_and_audit_reliability.svg'])",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:hash:fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\pdf\\fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:hash:fig_exp4_route_alignment_and_audit_reliability.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\png\\fig_exp4_route_alignment_and_audit_reliability.png",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:hash:fig_exp4_route_alignment_and_audit_reliability.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\svg\\fig_exp4_route_alignment_and_audit_reliability.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_audit_support.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_audit_support.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_calibration_diagnostics.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_calibration_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/data/exp4_appendix_route_alignment_detail.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_route_alignment_detail.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_audit_support.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_audit_support.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_calibration_diagnostics.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_calibration_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/metadata/exp4_appendix_route_alignment_detail.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_route_alignment_detail.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_audit_support.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_audit_support.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_calibration_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_calibration_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/pdf/exp4_appendix_route_alignment_detail.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_route_alignment_detail.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_audit_support.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_audit_support.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_calibration_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_calibration_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/png/exp4_appendix_route_alignment_detail.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_route_alignment_detail.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_audit_support.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_audit_support.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_calibration_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_calibration_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/appendix/svg/exp4_appendix_route_alignment_detail.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_route_alignment_detail.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/data/fig_exp4_route_alignment_and_audit_reliability.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\data\\fig_exp4_route_alignment_and_audit_reliability.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/metadata/fig_exp4_route_alignment_and_audit_reliability.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\metadata\\fig_exp4_route_alignment_and_audit_reliability.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\pdf\\fig_exp4_route_alignment_and_audit_reliability.pdf",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/png/fig_exp4_route_alignment_and_audit_reliability.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\png\\fig_exp4_route_alignment_and_audit_reliability.png",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:figures/main/svg/fig_exp4_route_alignment_and_audit_reliability.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\svg\\fig_exp4_route_alignment_and_audit_reliability.svg",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tab_experimental_evidence_map.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tab_experimental_evidence_map.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_audit_performance.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_audit_performance.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_paired_contrasts.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_paired_contrasts.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_app_exp4_parameters.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_app_exp4_parameters.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/csv/tbl_exp4_calibration_controls.csv",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\csv\\tbl_exp4_calibration_controls.csv",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tab_experimental_evidence_map.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tab_experimental_evidence_map.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_audit_performance.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_audit_performance.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_paired_contrasts.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_paired_contrasts.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_app_exp4_parameters.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_app_exp4_parameters.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/metadata/tbl_exp4_calibration_controls.json",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\metadata\\tbl_exp4_calibration_controls.json",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tab_experimental_evidence_map.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tab_experimental_evidence_map.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_audit_performance.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_audit_performance.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_paired_contrasts.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_paired_contrasts.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_app_exp4_parameters.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_app_exp4_parameters.tex",
+      "passed": true
+    },
+    {
+      "check": "artifact_hash:tables/tex/tbl_exp4_calibration_controls.tex",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\tables\\tex\\tbl_exp4_calibration_controls.tex",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_route_alignment_detail.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_route_alignment_detail.svg",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_route_alignment_detail.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_route_alignment_detail.csv",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_route_alignment_detail.json",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:source_hashes",
+      "details": "3",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:three_graphic_hashes",
+      "details": "dict_keys(['exp4_appendix_route_alignment_detail.pdf', 'exp4_appendix_route_alignment_detail.png', 'exp4_appendix_route_alignment_detail.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:hash:exp4_appendix_route_alignment_detail.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_route_alignment_detail.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:hash:exp4_appendix_route_alignment_detail.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_route_alignment_detail.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:hash:exp4_appendix_route_alignment_detail.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_route_alignment_detail.svg",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_audit_support.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_audit_support.svg",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_audit_support.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_audit_support.csv",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_audit_support.json",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:source_hashes",
+      "details": "3",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:three_graphic_hashes",
+      "details": "dict_keys(['exp4_appendix_audit_support.pdf', 'exp4_appendix_audit_support.png', 'exp4_appendix_audit_support.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:hash:exp4_appendix_audit_support.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_audit_support.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:hash:exp4_appendix_audit_support.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_audit_support.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:hash:exp4_appendix_audit_support.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_audit_support.svg",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:pdf:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_calibration_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:svg:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_calibration_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:png:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_calibration_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:data:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\data\\exp4_appendix_calibration_diagnostics.csv",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:metadata:nonempty",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\metadata\\exp4_appendix_calibration_diagnostics.json",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:long_form_schema",
+      "details": "complete",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:spec",
+      "details": "CR-EXP-OUTPUT-V1",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:paper_result_contract",
+      "details": "True",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:source_hashes",
+      "details": "3",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:three_graphic_hashes",
+      "details": "dict_keys(['exp4_appendix_calibration_diagnostics.pdf', 'exp4_appendix_calibration_diagnostics.png', 'exp4_appendix_calibration_diagnostics.svg'])",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:svg_live_text",
+      "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:hash:exp4_appendix_calibration_diagnostics.pdf",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_calibration_diagnostics.pdf",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:hash:exp4_appendix_calibration_diagnostics.png",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\png\\exp4_appendix_calibration_diagnostics.png",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:hash:exp4_appendix_calibration_diagnostics.svg",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\svg\\exp4_appendix_calibration_diagnostics.svg",
+      "passed": true
+    },
+    {
+      "check": "presentation_manifest_exists",
+      "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\manifests\\presentation_manifest.json",
+      "passed": true
+    }
+  ],
+  "experiment_id": "exp4_controlled_route_audit",
+  "paper_result": true,
+  "passed": true,
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}

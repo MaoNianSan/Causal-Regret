@@ -11,9 +11,9 @@
     "C": "same contextual Delayed EXP3 under arrival-clock and source-round binding"
   },
   "paper_result": true,
-  "promoted_at": "2026-08-05T10:59:06.648206+00:00",
+  "promoted_at": "2026-08-18T08:58:04.335654+00:00",
   "run_tier": "paper",
-  "source_data_sha256": "c2857a9d75ba662727c30a014d2f0371a7bc2184f66d57e7a74128c29fdeb835",
+  "source_data_sha256": "d093c8de537decd2a15f8d3743366e3adb0ae587aeece04406fcb8eb0915b280",
   "source_derived_files": [
     "derived/exp1_route_summary.csv",
     "derived/exp1_learner_summary.csv",

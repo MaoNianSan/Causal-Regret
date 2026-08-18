@@ -82,15 +82,21 @@ paper figure and table. [`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) maps
 each manuscript item to its experiment, canonical run, source-data artifact,
 and final figure/table artifact.
 
-The current authoritative result of each experiment is the one that appears
-in the paper-facing artifact directories:
+The current authoritative result of each experiment is the promoted
+paper-facing canonical artifact:
 
-| Experiment | Authoritative artifact |
-|---|---|
-| Exp1 | `exp1_alignment_transfer/outputs/paper_candidate/` |
-| Exp2 | `exp2_real_delayed_conversion_logs/outputs/paper/` |
-| Exp3 | `exp3_sequential_recommendation_delayed_feedback/paper_candidate/` |
-| Exp4 | `exp4_controlled_route_audit/outputs/runs/full_20260807T045219Z_7eeb2a31/` |
+| Experiment | Canonical result | Schema | Paper status |
+|---|---|---|---|
+| Exp1 | `exp1_alignment_transfer/outputs/paper_candidate/` | current v1.2 | `paper_result=true` |
+| Exp2 | `exp2_real_delayed_conversion_logs/outputs/paper/` (`exp2-full-20260807T111616+0800`) | — | `paper_result=true` |
+| Exp3 | `exp3_sequential_recommendation_delayed_feedback/paper_candidate/` (`exp3-full-20260807T072340Z`) | — | `paper_result=true` |
+| Exp4 | `exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/` | `exp4_controlled_route_audit_v3` | `paper_result=true` |
+
+The canonical publication presentation bundle (CR-EXP-OUTPUT-V1) lives in
+`publication/CR-EXP-OUTPUT-V1/`; see
+[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) for per-item provenance and
+artifact pointers. Historical migration details and superseded runs are
+documented in the per-experiment READMEs and `docs/PAPER_RESULTS.md`, not here.
 
 ## Data
 

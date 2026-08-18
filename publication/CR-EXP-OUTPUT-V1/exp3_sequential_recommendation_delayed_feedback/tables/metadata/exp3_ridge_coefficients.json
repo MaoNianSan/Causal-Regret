@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "edcc3b650ec279dab1169ff8dc14fbfca8768477c25b0978a610dfafb162c753",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_ridge_coefficients.csv",
+  "source_file_sha256": "f07c8a8f4f7e362a10685af7b01fa05b35d56f7784aa18ed431434a696633664",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_ridge_coefficients",
+  "tex_sha256": "d23e9325336f61db753d861ceae09cdb3d5af26e590b8cc01ff6077d8a046a3b"
+}

@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "d9efe3ec05130409e5e76bdda1a760e13c6efb8efb46f94b9aae54ac1857eb93",
+  "paper_result": true,
+  "semantics": "Frozen Exp3 appendix table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_resampling_structure_diagnostics.csv",
+  "source_file_sha256": "532a6eea587675d9ccbaee80c0a9de0ad1996a4bcafe9b1e7162e4fa3247ede2",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "exp3_resampling_structure_diagnostics",
+  "tex_sha256": "972fb65988dedf63acff4115cac2c9b5d47fe85e1a4d7bdb5d459a3ae0c22691"
+}

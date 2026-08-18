@@ -1,0 +1,59 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    3.1
+  ],
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
+  "figure_file_hashes": {
+    "exp3_appendix_calibration_and_selection.pdf": "a4f43556adb4f8f882406659c46ef6b0120eea1dcf5b0bcb35e9875313e89144",
+    "exp3_appendix_calibration_and_selection.png": "a6d6c04c3c84f213edfdbddc59831903ef647119922f3508f5b098569b6a79b0",
+    "exp3_appendix_calibration_and_selection.svg": "67f68439b23b45ea030ad7f8794afea59438d7cf42e865c1e4f6103d34dc0482"
+  },
+  "figure_id": "exp3_appendix_calibration_and_selection",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:32.796041+00:00",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
+  "marker_semantics": {},
+  "metric_definitions": {},
+  "narrative_claim": "Calibration and selection",
+  "panel_definitions": {
+    "a": "exp3_decile_calibration",
+    "b": "exp3_appendix_route_selection_concentration_data"
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_contract": {
+    "layout": [
+      1,
+      2
+    ],
+    "sources": [
+      "exp3_decile_calibration.csv",
+      "exp3_appendix_route_selection_concentration_data.csv"
+    ]
+  },
+  "presentation_source_lineage": "presentation:4112e5967ae64b17062803af96986f7aff95199f235d9a8ffa6154c7f1098e70",
+  "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Calibration and selection",
+  "result_schema": "exp3_paper_candidate",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "sample_or_seed_count": "NA",
+  "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/appendix/data/exp3_appendix_calibration_and_selection.csv",
+  "source_data_file_hash": "c52ce5173a9d8f29acb699cefcca0824b78f6c5e022eeb3b0e5a74267753b6e9",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_appendix_route_selection_concentration_data.csv": "9499b0dbd8f7145c8e39147b12f7767515ac33d661490ed39d772415767098c7",
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_decile_calibration.csv": "3728e5a71ecf5fe3facd0a4ace9025d9f6a820b8ab4f9b520c4d6a35564364c9"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Frozen diagnostic; sensitivity ranges are not confidence intervals",
+  "uncertainty_semantics": "Frozen diagnostic; sensitivity ranges are not confidence intervals"
+}

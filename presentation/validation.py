@@ -23,7 +23,9 @@ def _bundle_paths(layout: PreviewLayout, figure_id: str, section: str) -> dict[s
     }
 
 
-def _validate_bundle(layout: PreviewLayout, figure_id: str, section: str) -> list[dict[str, Any]]:
+def _validate_bundle(
+    layout: PreviewLayout, figure_id: str, section: str, expected_paper_result: bool = False
+) -> list[dict[str, Any]]:
     paths = _bundle_paths(layout, figure_id, section)
     results: list[dict[str, Any]] = []
     for label, path in paths.items():
@@ -36,7 +38,7 @@ def _validate_bundle(layout: PreviewLayout, figure_id: str, section: str) -> lis
     metadata = read_json(paths["metadata"])
     results.extend([
         {"check": f"{figure_id}:spec", "passed": metadata.get("spec_id") == SPEC_ID, "details": str(metadata.get("spec_id"))},
-        {"check": f"{figure_id}:preview_not_promoted", "passed": metadata.get("paper_result") is False, "details": str(metadata.get("paper_result"))},
+        {"check": f"{figure_id}:paper_result_contract", "passed": metadata.get("paper_result") is expected_paper_result, "details": str(metadata.get("paper_result"))},
         {"check": f"{figure_id}:source_hashes", "passed": bool(metadata.get("source_file_hashes")), "details": str(len(metadata.get("source_file_hashes", {})))},
         {"check": f"{figure_id}:three_graphic_hashes", "passed": set(metadata.get("figure_file_hashes", {})) == {paths["pdf"].name, paths["svg"].name, paths["png"].name}, "details": str(metadata.get("figure_file_hashes", {}).keys())},
     ])
@@ -61,7 +63,7 @@ def _source_contract(source: PresentationSource) -> list[dict[str, Any]]:
         run = json.loads((source.source_run / "logs/run_config.json").read_text(encoding="utf-8"))
         results.extend([
             {"check": "exp4_v3_schema", "passed": run.get("result_schema") == "exp4_controlled_route_audit_v3", "details": str(run.get("result_schema"))},
-            {"check": "exp4_source_not_paper_result", "passed": run.get("paper_result") is False, "details": str(run.get("paper_result"))},
+            {"check": "exp4_source_paper_result_matches", "passed": run.get("paper_result") == source.scientific_source_paper_result, "details": str(run.get("paper_result"))},
         ])
     elif source.experiment == "Exp3":
         frame = pd.read_csv(source.source_run / "tables/exp3_primary_route_results.csv")
@@ -87,8 +89,10 @@ def _manifest_artifact_checks(
     return results
 
 
-def validate_preview(source: PresentationSource, preview_root: Path) -> dict[str, Any]:
-    layout = PreviewLayout(preview_root, source.experiment_id, source.run_id)
+def validate_preview(
+    source: PresentationSource, preview_root: Path, mode: str = "preview"
+) -> dict[str, Any]:
+    layout = PreviewLayout(preview_root, source.experiment_id, source.run_id, mode=mode)
     manifest_path = layout.base / "manifests/presentation_manifest.json"
     figure_ids: list[str] = []
     if manifest_path.exists():
@@ -98,16 +102,22 @@ def validate_preview(source: PresentationSource, preview_root: Path) -> dict[str
     else:
         results = _source_contract(source)
     for figure_id in figure_ids:
-        results.extend(_validate_bundle(layout, figure_id, "main"))
+        results.extend(
+            _validate_bundle(layout, figure_id, "main", expected_paper_result=source.paper_result)
+        )
     appendix_path = layout.base / "manifests/appendix_manifest.json"
     if appendix_path.exists():
         appendix = read_json(appendix_path)
         results.extend(_manifest_artifact_checks(layout, appendix))
         for figure_id in appendix.get("figure_ids", []):
-            results.extend(_validate_bundle(layout, figure_id, "appendix"))
+            results.extend(
+                _validate_bundle(
+                    layout, figure_id, "appendix", expected_paper_result=source.paper_result
+                )
+            )
     results.append({"check": "presentation_manifest_exists", "passed": manifest_path.exists(), "details": str(manifest_path)})
     passed = all(row["passed"] for row in results)
-    payload = {"spec_id": SPEC_ID, "experiment_id": source.experiment_id, "run_id": source.run_id, "paper_result": False, "passed": passed, "checks": results}
+    payload = {"spec_id": SPEC_ID, "experiment_id": source.experiment_id, "run_id": source.run_id, "paper_result": source.paper_result, "passed": passed, "checks": results}
     layout.ensure()
     write_json(layout.base / "validation/presentation_validation.json", payload)
     return payload

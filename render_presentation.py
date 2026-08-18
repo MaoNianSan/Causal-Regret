@@ -12,6 +12,9 @@ from presentation.renderers import render_source, write_appendix_order, write_ov
 from presentation.validation import validate_preview
 from presentation_sources import iter_sources
 
+ROOT = Path(__file__).resolve().parent
+PUBLICATION_ROOT = ROOT / "publication" / SPEC_ID
+
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Plan, render, or validate presentation-only previews.")
@@ -20,7 +23,17 @@ def _parser() -> argparse.ArgumentParser:
         sub = subparsers.add_parser(command)
         sub.add_argument("--spec", default=SPEC_ID)
         sub.add_argument("--exp", default="all", choices=("all", "1", "2", "3", "4"))
-        sub.add_argument("--preview-root", type=Path, required=command in {"render", "validate"})
+        sub.add_argument(
+            "--mode",
+            default="preview",
+            choices=("preview", "publication"),
+            help="preview writes outside the repo; publication writes the canonical in-repo bundle",
+        )
+        sub.add_argument(
+            "--preview-root",
+            type=Path,
+            help="required in preview mode; ignored in publication mode",
+        )
     return parser
 
 
@@ -29,30 +42,59 @@ def _check_spec(value: str) -> None:
         raise SystemExit(f"Unsupported output spec {value!r}; expected {SPEC_ID}")
 
 
+def _output_root(args: argparse.Namespace) -> Path:
+    if args.mode == "publication":
+        return PUBLICATION_ROOT.resolve()
+    if args.preview_root is None:
+        raise SystemExit("--preview-root is required in preview mode")
+    return args.preview_root.expanduser().resolve()
+
+
 def _plan(args: argparse.Namespace) -> int:
-    root = args.preview_root or Path("<PREVIEW_ROOT>")
-    plans = [source.as_plan(root) for source in iter_sources(args.exp)]
-    print(json.dumps({"spec_id": SPEC_ID, "mode": "read_only_plan", "experiments": plans}, indent=2))
+    root = _output_root(args) if args.preview_root else Path("<PREVIEW_ROOT>")
+    plans = [source.as_plan(root) for source in iter_sources(args.exp, mode=args.mode)]
+    print(json.dumps({"spec_id": SPEC_ID, "mode": args.mode, "experiments": plans}, indent=2))
     return 0 if all(not plan["missing_source_files"] for plan in plans) else 2
 
 
 def _render(args: argparse.Namespace) -> int:
-    root = args.preview_root.expanduser().resolve()
+    root = _output_root(args)
     summaries = []
-    for source in iter_sources(args.exp):
+    for source in iter_sources(args.exp, mode=args.mode):
         result = render_source(source, root)
         layout = result["layout"]
-        write_overview_table(layout)
-        write_appendix_order(layout)
-        summaries.append({"experiment_id": source.experiment_id, "run_id": source.run_id, "preview_directory": str(layout.base)})
-    print(json.dumps({"spec_id": SPEC_ID, "paper_result": False, "rendered": summaries}, indent=2))
+        write_overview_table(layout, paper_result=source.paper_result)
+        write_appendix_order(layout, paper_result=source.paper_result)
+        summaries.append(
+            {
+                "experiment_id": source.experiment_id,
+                "run_id": source.run_id,
+                "mode": args.mode,
+                "source_run": str(source.source_run),
+                "output_directory": str(layout.base),
+            }
+        )
+    print(
+        json.dumps(
+            {
+                "spec_id": SPEC_ID,
+                "mode": args.mode,
+                "paper_result": args.mode == "publication",
+                "rendered": summaries,
+            },
+            indent=2,
+        )
+    )
     return 0
 
 
 def _validate(args: argparse.Namespace) -> int:
-    root = args.preview_root.expanduser().resolve()
-    reports = [validate_preview(source, root) for source in iter_sources(args.exp)]
-    print(json.dumps({"spec_id": SPEC_ID, "passed": all(report["passed"] for report in reports), "reports": reports}, indent=2))
+    root = _output_root(args)
+    reports = [
+        validate_preview(source, root, mode=args.mode)
+        for source in iter_sources(args.exp, mode=args.mode)
+    ]
+    print(json.dumps({"spec_id": SPEC_ID, "mode": args.mode, "passed": all(report["passed"] for report in reports), "reports": reports}, indent=2))
     return 0 if all(report["passed"] for report in reports) else 1
 
 

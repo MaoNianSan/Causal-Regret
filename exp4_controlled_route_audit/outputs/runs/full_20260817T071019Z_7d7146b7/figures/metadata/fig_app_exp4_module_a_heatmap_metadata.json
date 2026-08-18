@@ -1,0 +1,20 @@
+{
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "code_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_id": "fig_app_exp4_module_a_heatmap",
+  "generated_at": "2026-08-18T09:04:43+00:00",
+  "panel_definitions": {
+    "main": "Module A population-defect grid."
+  },
+  "paper_result": true,
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "run_tier": "full",
+  "source_derived_files": [
+    "derived/module_a/exp4_module_a_population_summary.csv"
+  ],
+  "source_file_hashes": {
+    "derived/module_a/exp4_module_a_population_summary.csv": "04d85aecd5cc4c82ecff304c39bc7e9d987178adfd6afe7e303df3769f98d0b4"
+  }
+}

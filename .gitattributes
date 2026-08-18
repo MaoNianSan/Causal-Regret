@@ -15,7 +15,9 @@
 *.html text eol=lf
 *.css text eol=lf
 *.js text eol=lf
-*.svg text eol=lf
+# Generated SVG path data is emitted multi-line with trailing spaces by
+# matplotlib; disable trailing-whitespace checks for these generated files.
+*.svg text eol=lf whitespace=-trailing-space
 *.diff text eol=lf
 *.lock text eol=lf
 *.ini text eol=lf

@@ -1,0 +1,87 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    4.8
+  ],
+  "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
+  "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
+  "figure_file_hashes": {
+    "exp3_main_score_gap_ranking.pdf": "bc5be23d201c5171a364dd9344ba61648eb28f5a40453e5ab599c527a3380a2c",
+    "exp3_main_score_gap_ranking.png": "93a79b013b8a0d9bb450deef102ece7acd966c1c00245ca5bad6494da10551b1",
+    "exp3_main_score_gap_ranking.svg": "4def6519ea13df9d3b8d881c4754658c15decdb11e7917a9c3d9163b7deac1b5"
+  },
+  "figure_id": "exp3_main_score_gap_ranking",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:28.808355+00:00",
+  "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
+  "interpretation_boundary": "Score recovery need not transfer to decision recovery; not OPE or causal regret.",
+  "marker_semantics": {
+    "filled_marker": "full-sample estimate",
+    "horizontal_range": "empirical user-cluster sensitivity range",
+    "open_marker": "user-cluster resampling median",
+    "shape": "route identity"
+  },
+  "metric_definitions": {
+    "heldout_reference_pair_sign_agreement": "Sign agreement",
+    "maximum_heldout_reference_pair_gap_error": "Max held-out gap error",
+    "pooled_supported_cell_mae": "MAE",
+    "pooled_supported_cell_spearman": "Spearman",
+    "ridge_over_historical_paired_value_gain": "Ridge-minus-Historical paired value gain",
+    "top_action_agreement_with_fold_reference": "Top-action agreement"
+  },
+  "narrative_claim": "Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",
+  "panel_definitions": {
+    "a": "Pooled supported-cell score recovery.",
+    "b": "Held-out reference-pair gap recovery.",
+    "c": "Logged-supported ranking recovery."
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_contract": {
+    "canvas_inches": [
+      7.1,
+      4.8
+    ],
+    "layout": [
+      2,
+      3
+    ],
+    "metrics": [
+      "pooled_supported_cell_spearman",
+      "pooled_supported_cell_mae",
+      "maximum_heldout_reference_pair_gap_error",
+      "heldout_reference_pair_sign_agreement",
+      "top_action_agreement_with_fold_reference",
+      "ridge_over_historical_paired_value_gain"
+    ],
+    "routes": [
+      "arrival_carrier",
+      "history_mean_control",
+      "ridge_proxy"
+    ],
+    "scope_paragraph_on_canvas": false,
+    "uncertainty_role": "sensitivity range, not confidence interval"
+  },
+  "presentation_source_lineage": "presentation:c3f815daef1bf93abef47a74f8bdae679a83de1c2fae8acb5ee76bf474c6419d",
+  "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",
+  "result_schema": "exp3_paper_candidate",
+  "run_id": "exp3-full-20260807T072340Z",
+  "run_tier": "full",
+  "sample_or_seed_count": 1000,
+  "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/main/data/exp3_main_score_gap_ranking.csv",
+  "source_data_file_hash": "15ffa216938722dd72b295f44401609fd6bb1f7643178024e4cf926f3a0d4848",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_main_score_gap_ranking_data.csv": "b71d1e421ac22fe819fd8f7563ebb0097a24f57169100519c4b524d629a9d4cf",
+    "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_primary_route_results.csv": "9a49107f4060c7f9ca99bb6622bced4786ad1d40c317ec80da6efd73c5d6a8b7"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Empirical 2.5%-97.5% user-cluster resampling sensitivity range; not a confidence interval",
+  "uncertainty_semantics": "Empirical 2.5%-97.5% user-cluster resampling sensitivity range; not a confidence interval"
+}

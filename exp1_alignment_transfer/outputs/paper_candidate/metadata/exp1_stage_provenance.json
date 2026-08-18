@@ -1,0 +1,48 @@
+{
+  "bootstrap_mode": "HISTORICAL_COMMIT_RECONCILIATION",
+  "calibration_manifest_hash": "3ebb8ce93cecd9d76ef6358493113e3d186b46dc569038f73332c9cc58c495a3",
+  "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
+  "downstream_execution_mode": "REBUILT",
+  "downstream_rebuilt_at": "2026-08-18T08:57:56.870483+00:00",
+  "kind": "run",
+  "last_rebuilt_stages": [
+    "reporting"
+  ],
+  "legacy_complete_config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
+  "original_simulation_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "paper_result": true,
+  "promoted_at": "2026-08-18T08:58:04.401755+00:00",
+  "raw_artifacts": {
+    "raw/exp1_delay_source_rounds.parquet": "53bef700cf0db02c74762bc086f4483c1de8bf3a725a8d7edfec18ccdba012a6",
+    "raw/exp1_learner_consequence_rounds.parquet": "d54eda3832f931576b5215c5e9a42a0d9f8f0bf831e1cb24d89f82f64b08bf5f",
+    "raw/exp1_path_manifest.parquet": "95e93667b5c7b7c1c9813813023fa7b0bfb9be374406cea73de7c72ffe4dcca6",
+    "raw/exp1_route_diagnostic_rounds.parquet": "ea6c433fb0dfef40d605dd90ed73e226f8f2753421bcc2f1d9ee16b71cc62376",
+    "seed_metrics/exp1_learner_seed_metrics.parquet": "710f1a4a5ce672b8c17299d9c0f1a38e609601d9760189803990c9d7c807dd67",
+    "seed_metrics/exp1_route_seed_metrics.parquet": "68c8ef244768d960b5c695ccd46e460e3cc94e87ed1a19aa943ac360dbaaa670"
+  },
+  "recorded_at": "2026-08-17T09:00:37.029538+00:00",
+  "recorded_git_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "run_tier": "paper",
+  "schema": "exp1_stage_provenance_v1",
+  "scientific_execution_contract_migrated_at": "2026-08-17T10:04:11.798439+00:00",
+  "scientific_execution_contract_migration": "metadata/exp1_scientific_execution_contract_migration.json",
+  "simulation_execution_mode": "FRESH",
+  "source_hash_algorithm_version": "exp1-stage-source-v2",
+  "stage_config_hashes": {
+    "aggregation_config_hash": "615736e52a5609301197612022acf0bc42cb433e5642f81fe7fab568e6ebcab1",
+    "calibration_config_hash": "94f8e497c2e1e759e08c7d29f081a0288c7cad949825ee585af0213912bea2d8",
+    "reporting_config_hash": "65dae0d3f476ee129e4e50d76c7348d3b521c553db5186c44c08e4ca4e4ebaea",
+    "scientific_generation_config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
+    "validation_config_hash": "cb14cd2fc50eed8fc6f8911ab09b594436d20fa4572ab155d44c2625cbfc7578"
+  },
+  "stage_config_migrated_at": "2026-08-17T11:04:50.153747+00:00",
+  "stage_config_provenance_migration": "metadata/exp1_stage_config_provenance_migration.json",
+  "stage_source_hashes": {
+    "aggregation_source_hash": "d7d8064b5a12577f1aa41c79f50545375d1f3b84182a723422b557aae92cb977",
+    "calibration_source_hash": "e82637904c8bc99d1b6bcb20ba803f1ce849eac7abff5671a9a0b879abbf8645",
+    "reporting_source_hash": "a7972d7275aeb9f61dbe669883695d5f2e9c9ccf6e564655d6f290d80e0be29d",
+    "scientific_generation_source_hash": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
+    "validation_source_hash": "54c59f1090f19a26b71d97016a3a2caf9f7643da65b41b173a17b8002e02eb01"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "7582aa37e24533be65479ecb41e54540b7facaa223f1516670453fcc30f39403",
+  "paper_result": true,
+  "semantics": "Calibration-control table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\tables\\tbl_exp4_calibration_controls.csv",
+  "source_file_sha256": "74a57efbfa59269deffa1a348d96f6d05633289f16267e8570f3a61d8b2919ab",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tbl_exp4_calibration_controls",
+  "tex_sha256": "71a876b8915553dd9cebdd3ec0be8bace2d6c1c209d245911235e5040df5b947"
+}

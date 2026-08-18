@@ -1,0 +1,76 @@
+{
+  "canvas_size_inches": [
+    7.1,
+    4.6
+  ],
+  "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
+  "experiment_id": "exp2_real_delayed_conversion_logs",
+  "figure_file_hashes": {
+    "figure_exp2_attribution_sensitivity.pdf": "41560371785d12d1a1314a27c212b7e49d492f2fb2d23a861f3a2cb2bdc50771",
+    "figure_exp2_attribution_sensitivity.png": "7d323526949a50751407e8cbf82c8fb4d581a9a679c457e89bd6b6343ebb29e4",
+    "figure_exp2_attribution_sensitivity.svg": "e186c050e985a9cfdfc7ee21654098d72365b63d0e79981420566fdf1da4012c"
+  },
+  "figure_id": "figure_exp2_attribution_sensitivity",
+  "figure_version": "v1",
+  "generated_at": "2026-08-18T09:31:25.753864+00:00",
+  "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
+  "interpretation_boundary": "Fixed-cohort attribution sensitivity; not causal attribution or policy value.",
+  "marker_semantics": {
+    "filled_marker": "full-sample estimate",
+    "horizontal_range": "empirical UID-cluster sensitivity range",
+    "open_marker": "UID-resampling median"
+  },
+  "metric_definitions": {
+    "allocation_tv": "Allocation TV",
+    "kendall_tau_b": "Kendall tau-b"
+  },
+  "narrative_claim": "Attribution sensitivity on a fixed delayed-conversion cohort.",
+  "panel_definitions": {
+    "a": "Four source-time routes versus arrival accounting, Allocation TV.",
+    "b": "Four source-time routes versus arrival accounting, Kendall tau-b.",
+    "c": "Six source-route pairs, Allocation TV.",
+    "d": "Six source-route pairs, Kendall tau-b."
+  },
+  "paper_result": true,
+  "png_dpi": 300,
+  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_contract": {
+    "canvas_inches": [
+      7.1,
+      4.6
+    ],
+    "layout": [
+      2,
+      2
+    ],
+    "main_exclusions": [
+      "top_k_overlap"
+    ],
+    "metrics": [
+      "allocation_tv",
+      "kendall_tau_b"
+    ],
+    "source_pair_rows": 6,
+    "source_vs_arrival_rows": 4
+  },
+  "presentation_source_lineage": "presentation:a58b71f85ae9a4e7bf8dff0b33cadc35a29921a69b48645c2c7e1f46d17673e7",
+  "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "question_or_claim": "Attribution sensitivity on a fixed delayed-conversion cohort.",
+  "result_schema": "exp2_attribution_sensitivity_v2",
+  "run_id": "exp2-full-20260807T111616+0800",
+  "run_tier": "paper",
+  "sample_or_seed_count": 1000,
+  "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
+  "scientific_source_paper_result": true,
+  "source_data": "figures/main/data/figure_exp2_attribution_sensitivity.csv",
+  "source_data_file_hash": "ac3a1436d917896a971095a00382853c3251f9832253546b441f0f9227bf1191",
+  "source_file_hashes": {
+    "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_attribution_sensitivity_source.csv": "a25e7b75795629779fd1dd648f39c94ff58b92dff87e0c335eaa3976a2df1ae7"
+  },
+  "source_run_path": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "uncertainty_definition": "Empirical 2.5%-97.5% UID-cluster resampling sensitivity range; not a confidence interval",
+  "uncertainty_semantics": "Empirical 2.5%-97.5% UID-cluster resampling sensitivity range; not a confidence interval"
+}

@@ -1,0 +1,5 @@
+Exp.,Data/design,Route contrast,Primary readout,Supported inference and boundary
+Exp1,Controlled simulator plus scalar-feedback learner,"exact-valid, matched-mean misaligned, systematic misbinding","alignment budget, structural regret, binding contrast",Action-gap alignment controls transfer; learner allocation is a separate consequence.
+Exp2,Criteo delayed-conversion log,arrival accounting vs four source-time attribution rules,allocation TV and Kendall tau-b,Attribution sensitivity on a fixed cohort; not causal attribution or policy value.
+Exp3,KuaiRand-1K held-out logged support,"Arrival carrier, Historical mean, Ridge","score, pairwise gap, ranking recovery",Score recovery need not transfer to decision recovery; not OPE or causal regret.
+Exp4,Controlled route/audit/calibration simulator,"label retention, audit selection/IPW, calibration controls","D_pair, audit bias/RMSE, OOF recoverability","Population alignment, audit reliability, and calibratability are distinct."

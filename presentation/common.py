@@ -32,6 +32,7 @@ class PreviewLayout:
     root: Path
     experiment_id: str
     run_id: str
+    mode: str = "preview"
 
     @property
     def safe_run_id(self) -> str:
@@ -39,6 +40,10 @@ class PreviewLayout:
 
     @property
     def base(self) -> Path:
+        if self.mode == "publication":
+            # Canonical publication layout: one frozen promoted run per
+            # experiment, so the run-id/spec nesting is collapsed.
+            return self.root / self.experiment_id
         return self.root / self.experiment_id / self.safe_run_id / SPEC_ID
 
     def ensure(self) -> None:
@@ -167,9 +172,11 @@ def write_figure_bundle(
         "sample_or_seed_count": metadata.get("sample_or_seed_count", "NA"),
         "run_id": metadata.get("run_id"),
         "run_tier": metadata.get("run_tier"),
-        "paper_result": False,
+        "paper_result": bool(metadata.get("paper_result", False)),
         "scientific_source_paper_result": bool(metadata.get("scientific_source_paper_result", False)),
-        "promotion_status": "NOT_PROMOTED_PRESENTATION_PREVIEW",
+        "promotion_status": metadata.get(
+            "promotion_status", "NOT_PROMOTED_PRESENTATION_PREVIEW"
+        ),
         "result_schema": metadata.get("result_schema", "NA"),
         "config_hash": metadata.get("config_hash", "NA"),
         "input_manifest_hash": metadata.get("input_manifest_hash", "NA"),

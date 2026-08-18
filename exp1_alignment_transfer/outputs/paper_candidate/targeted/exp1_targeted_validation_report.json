@@ -1,8 +1,8 @@
 {
   "analysis_tier": "targeted",
-  "code_lineage": "tree:7821dc5d1f9cb634b1ce180ce8310b2d357ee89184a76b06e08bee5097093fe2",
+  "code_lineage": "tree:0502d428da878b5499ad515cdb8489709f7f582855770355a8cfc4f32f5e750c",
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-07-26T12:04:01.236956+00:00",
+  "generated_at": "2026-08-17T10:18:31.320547+00:00",
   "horizon_levels": [
     1000,
     5000,
@@ -15,7 +15,47 @@
     30
   ],
   "paper_result": true,
-  "promoted_at": "2026-08-05T10:59:06.662017+00:00",
+  "promoted_at": "2026-08-18T08:58:04.415399+00:00",
   "run_tier": "paper",
-  "status": "PASS"
+  "status": "PASS",
+  "theory_exact_cardinal_shift_sweep": {
+    "chi_all_zero": true,
+    "delta_all_zero": true,
+    "n_cells": 120,
+    "no_clipping": true,
+    "passed": true,
+    "rho_all_zero": true,
+    "scales": [
+      0.0,
+      0.05,
+      0.1,
+      0.2
+    ],
+    "sweep_id": "exact_cardinal_shift_amplitude"
+  },
+  "theory_margin_threshold_sweep": {
+    "clipping_violations": 0,
+    "eligible_round_support_total": 150000,
+    "n_cells": 360,
+    "no_clipping": true,
+    "passed": true,
+    "ratios": [
+      0.0,
+      0.25,
+      0.5,
+      0.75,
+      0.9,
+      0.99,
+      1.0,
+      1.01,
+      1.1,
+      1.25,
+      1.5,
+      2.0
+    ],
+    "realized_delta_over_mu_matches_ratio": true,
+    "sweep_id": "margin_distortion_threshold",
+    "threshold_behavior_correct": true
+  },
+  "validation_source_hash": "dd04b3e7ae565004b9e74f4d74a32aa6a61f8a90cffc3d7a28772b9630424f6e"
 }

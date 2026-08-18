@@ -20,11 +20,18 @@ The pipeline validates source-bound and full-label zero defect, action-pair inva
 ## 6. Output Artifacts
 Outputs are separated into calibration, module A, module B, and module C results, with figure bundles and tables written from the frozen derived outputs.
 
-The currently published/canonical run,
-`outputs/runs/full_20260807T045219Z_7eeb2a31/`, is a legacy v2 result. It remains in place while a formal v3 full run is pending output regeneration and human review. The legacy v2 field `population_action_gap_defect` corresponds to the v3 secondary `mean_round_max_gap_defect`; it is not a numerical reference target for the newly recomputed primary `D_pair`.
+The current canonical (promoted paper result) is
+`outputs/runs/full_20260817T071019Z_7d7146b7/` (result schema
+`exp4_controlled_route_audit_v3`, `paper_result=true`, promotion PASS,
+provenance VERIFIED). The earlier v2 run
+`outputs/runs/full_20260807T045219Z_7eeb2a31/` is kept as a **superseded
+legacy** result; it is no longer the canonical or paper-facing result. The
+legacy v2 field `population_action_gap_defect` corresponds to the v3 secondary
+`mean_round_max_gap_defect`; it is not a numerical reference target for the
+recomputed primary `D_pair`.
 
 ## 7. Validation and Self-check
-The self-check validates scientific invariants and output consistency. Promotion remains a separate manual action that accepts only a completed full v3 run that passes the relevant gates and receives human approval.
+The self-check validates scientific invariants and output consistency. Promotion is a separate manual action that accepts only a completed full v3 run that passes the relevant gates and receives human approval; the current v3 run has completed that approval (`paper_promotion=PASS`).
 
 ## 8. Running Commands
 ```powershell

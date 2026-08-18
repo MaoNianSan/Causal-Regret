@@ -1,0 +1,13 @@
+{
+  "aggregation_config_hash": "21d1d81c652138900d9968f77da005952149be0d3ab4256ef137d92e19a770b4",
+  "artifact_metadata_config_hash": "e709e0a83a269653b4d4d952ad02dd8862d3e3c38b61755a51468ab44649e9ed",
+  "legacy_config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "migrated_at": "2026-08-17T11:03:10+00:00",
+  "migration_type": "MONOLITHIC_CONFIG_TO_STAGE_AWARE_CONFIG",
+  "recorded_scientific_config_matches": true,
+  "reporting_config_hash": "e5b48bbef3b74c17c9c934b2c48082552130295aeadc5afb1126fcfed768864a",
+  "schema": "exp4_stage_config_provenance_migration_v1",
+  "scientific_config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+  "scientific_full_rerun_executed": false,
+  "validation_config_hash": "b233014b77e542135a2f25022afbbeb105dffa580a2339f7b07999aaa9484ad3"
+}

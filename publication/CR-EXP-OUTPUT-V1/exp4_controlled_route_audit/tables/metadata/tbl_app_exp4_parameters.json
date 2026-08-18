@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "e5cd158e5aac085c35fb0a1cfdd3bab77cf3d25b982ae080e864f0b41f0436ba",
+  "paper_result": true,
+  "semantics": "Frozen v3 parameter table.",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\tables\\tbl_app_exp4_parameters.csv",
+  "source_file_sha256": "e5cd158e5aac085c35fb0a1cfdd3bab77cf3d25b982ae080e864f0b41f0436ba",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tbl_app_exp4_parameters",
+  "tex_sha256": "365a435fe82dc1b5587da3eb4ac760d6089041c9370accea8801b989cc54462d"
+}

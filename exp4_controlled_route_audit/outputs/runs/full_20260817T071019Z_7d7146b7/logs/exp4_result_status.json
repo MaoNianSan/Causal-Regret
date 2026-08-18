@@ -1,0 +1,11 @@
+{
+  "engineering_status": "PASS",
+  "paper_promotion": "PASS",
+  "paper_result": true,
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "run_dir": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7",
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "run_tier": "full",
+  "scientific_status": "PASS",
+  "source_changed_during_run": false
+}

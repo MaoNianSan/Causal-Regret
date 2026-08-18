@@ -186,7 +186,10 @@ python exp4_controlled_route_audit/main.py reconcile --run-dir outputs/runs/<run
 
 `main.py full` refuses to start from a dirty Exp4 worktree or an unresolvable
 git commit. The canonical published run is
-`exp4_controlled_route_audit/outputs/runs/full_20260807T045219Z_7eeb2a31/`.
+`exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/`
+(result schema `exp4_controlled_route_audit_v3`, `paper_result=true`). The
+previous v2 run `full_20260807T045219Z_7eeb2a31` is kept as a superseded
+legacy run and is no longer canonical.
 
 Selective rebuilds write an explicit reconciliation artifact. A changed
 complete source tree or Git commit alone does not force a new simulation;
@@ -205,7 +208,24 @@ rebuild path that reads the frozen derived data of the canonical run.
 | Exp1 | `exp1_alignment_transfer/outputs/paper_candidate/figures/`, `.../tables/`, `.../source_data/` |
 | Exp2 | `exp2_real_delayed_conversion_logs/outputs/paper/figures/`, `.../tables/`, `.../derived/` |
 | Exp3 | `exp3_sequential_recommendation_delayed_feedback/paper_candidate/figures/`, `.../tables/`, `.../source_data/` |
-| Exp4 | `exp4_controlled_route_audit/outputs/runs/full_20260807T045219Z_7eeb2a31/figures/`, `.../tables/`, `.../derived/` |
+| Exp4 | `exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/figures/`, `.../tables/`, `.../derived/` |
+
+### Publication presentation rebuild (no scientific rerun)
+
+The canonical CR-EXP-OUTPUT-V1 publication bundle is rebuilt from the promoted
+frozen sources with the presentation CLI. This path **does not rerun any
+experiment**; it re-renders the same frozen point estimates and uncertainty:
+
+```bash
+python render_presentation.py render --mode publication --exp all
+python render_presentation.py validate --mode publication --exp all
+```
+
+Output: `publication/CR-EXP-OUTPUT-V1/<experiment_id>/` (figures, tables,
+manifests, validation). Publication metadata records `paper_result=true` and
+`promotion_status=CANONICAL_PUBLICATION`, and keeps `scientific_source_lineage`
+separate from `presentation_source_lineage`. Use `--mode preview --preview-root
+<dir>` for an out-of-repo preview instead.
 
 ## 9. Expected outputs
 

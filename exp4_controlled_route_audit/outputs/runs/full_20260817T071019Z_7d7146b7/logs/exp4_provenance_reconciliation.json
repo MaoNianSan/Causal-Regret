@@ -1,0 +1,46 @@
+{
+  "calibration_identity_match": true,
+  "config_hash_match": true,
+  "current_rebuild_commit": "325374bf01471660558eda142db16f5859d5ad97",
+  "current_stage_config_hashes": {
+    "aggregation_config_hash": "21d1d81c652138900d9968f77da005952149be0d3ab4256ef137d92e19a770b4",
+    "artifact_metadata_config_hash": "e709e0a83a269653b4d4d952ad02dd8862d3e3c38b61755a51468ab44649e9ed",
+    "reporting_config_hash": "e5b48bbef3b74c17c9c934b2c48082552130295aeadc5afb1126fcfed768864a",
+    "scientific_config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+    "validation_config_hash": "b233014b77e542135a2f25022afbbeb105dffa580a2339f7b07999aaa9484ad3"
+  },
+  "current_stage_hashes": {
+    "aggregation_source_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4",
+    "reporting_source_hash": "900f7201a026d05959216a383b19f9e87976af7a85aad9a38ab0902116e5e040",
+    "simulation_source_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+    "validation_source_hash": "37c28cc9f84eae2e4640c197d2d51f7acd61aabd682c56ca4a2210302a25fb17"
+  },
+  "original_recorded_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "original_run_id": "full_20260817T071019Z_7d7146b7",
+  "original_simulation_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "raw_path_manifest_hashes": {
+    "exp4_module_a_path_manifest.csv": "18c110558d2de6e3643f86b1c9882ee506d6948161197ffcb647d1def9765411",
+    "exp4_module_bc_path_manifest.csv": "0b2eaf58666423faa42ff1d4d4105f11a14e147ad7a2f1e8fd87ecd4c0513863"
+  },
+  "raw_simulation_artifacts_complete": true,
+  "rebuilt_stages": [
+    "reporting",
+    "validation"
+  ],
+  "reconciliation_timestamp": "2026-08-18T09:06:30+00:00",
+  "scientific_generation_hash_match": true,
+  "simulation_outputs_reused": true,
+  "stored_simulation_source_hash": "09ee24069d13022c183bf11e1a77a50f199e568d0470a58060967b45016a0964",
+  "stored_stage_config_hashes": {
+    "aggregation_config_hash": "21d1d81c652138900d9968f77da005952149be0d3ab4256ef137d92e19a770b4",
+    "reporting_config_hash": "e5b48bbef3b74c17c9c934b2c48082552130295aeadc5afb1126fcfed768864a",
+    "scientific_config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
+    "validation_config_hash": "b233014b77e542135a2f25022afbbeb105dffa580a2339f7b07999aaa9484ad3"
+  },
+  "stored_stage_hashes": {
+    "aggregation_source_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4",
+    "reporting_source_hash": "066453860b6841891dc0665cb904021375d5838ca94cca4c2e63af06ad6e1e72",
+    "simulation_source_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+    "validation_source_hash": "37c28cc9f84eae2e4640c197d2d51f7acd61aabd682c56ca4a2210302a25fb17"
+  }
+}

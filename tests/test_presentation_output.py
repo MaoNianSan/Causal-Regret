@@ -24,6 +24,7 @@ from presentation.renderers import (
     render_source,
     write_appendix_order,
     write_manifest,
+    write_overview_table,
 )
 from presentation.validation import validate_preview
 from presentation_sources import PresentationSource, get_source
@@ -90,10 +91,31 @@ def test_source_registry_resolves_every_frozen_render_input() -> None:
         exp4.config_hash
         == "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7"
     )
-    assert exp4.scientific_source_paper_result is False
+    assert exp4.scientific_source_paper_result is True
     assert all(
         not source.missing_files() for source in map(get_source, ("1", "2", "3", "4"))
     )
+
+
+def test_publication_registry_points_at_promoted_sources() -> None:
+    pub1 = get_source("1", mode="publication")
+    assert pub1.mode == "publication"
+    assert pub1.paper_result is True
+    assert pub1.promotion_status == "CANONICAL_PUBLICATION"
+    assert (
+        pub1.source_run.resolve()
+        == Path("exp1_alignment_transfer/outputs/paper_candidate").resolve()
+    )
+    assert pub1.scientific_source_paper_result is True
+    pub4 = get_source("4", mode="publication")
+    assert pub4.mode == "publication"
+    assert pub4.paper_result is True
+    assert pub4.scientific_source_paper_result is True
+    assert (
+        pub4.run_id == "full_20260817T071019Z_7d7146b7"
+    )
+    assert not pub1.missing_files()
+    assert not pub4.missing_files()
 
 
 def _svg_vertical_segment_count(svg_path: Path) -> int:
@@ -157,7 +179,7 @@ def test_plan_is_read_only_and_reports_sources(tmp_path: Path) -> None:
         text=True,
     )
     payload = json.loads(result.stdout)
-    assert payload["mode"] == "read_only_plan"
+    assert payload["mode"] == "preview"
     assert len(payload["experiments"]) == 4
     assert all(not item["missing_source_files"] for item in payload["experiments"])
     assert set(tmp_path.rglob("*")) == before
@@ -597,3 +619,37 @@ def test_real_render_exp4_dpair_and_marker_registry(tmp_path: Path) -> None:
         marker_semantics["sigma_proxy_q1_endpoint"]
         == "open version of the sigma marker"
     )
+
+
+def test_publication_mode_renders_and_validates_promoted_bundle(tmp_path: Path) -> None:
+    for key in ("1", "2", "3", "4"):
+        source = get_source(key, mode="publication")
+        assert source.paper_result is True
+        assert source.promotion_status == "CANONICAL_PUBLICATION"
+        result = render_source(source, tmp_path)
+        layout = result["layout"]
+        assert layout.mode == "publication"
+        # Publication layout collapses run-id/spec nesting to one dir per experiment.
+        assert layout.base == tmp_path / source.experiment_id
+        write_overview_table(layout, paper_result=source.paper_result)
+        write_appendix_order(layout, paper_result=source.paper_result)
+        main_files = _figure_bundle_paths(layout, source.main_figure_id, "main")
+        assert all(
+            path.exists() and path.stat().st_size > 0 for path in main_files.values()
+        )
+        main_metadata = json.loads(main_files["metadata"].read_text(encoding="utf-8"))
+        assert main_metadata["paper_result"] is True
+        assert main_metadata["promotion_status"] == "CANONICAL_PUBLICATION"
+        assert main_metadata["scientific_source_paper_result"] is True
+        long = pd.read_csv(main_files["data"])
+        assert long.paper_result.eq(True).all()
+        report = validate_preview(source, tmp_path, mode="publication")
+        assert report["passed"] is True
+        assert report["paper_result"] is True
+        assert (layout.base / "tables/csv/tab_experimental_evidence_map.csv").exists()
+        overview_meta = json.loads(
+            (layout.base / "tables/metadata/tab_experimental_evidence_map.json").read_text(
+                encoding="utf-8"
+            )
+        )
+        assert overview_meta["paper_result"] is True

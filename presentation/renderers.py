@@ -97,6 +97,8 @@ def figure_metadata(
         "run_id": source.run_id,
         "run_tier": source.run_tier,
         "scientific_source_paper_result": source.scientific_source_paper_result,
+        "paper_result": source.paper_result,
+        "promotion_status": source.promotion_status,
         "result_schema": source.result_schema,
         "config_hash": source.config_hash,
         "input_manifest_hash": manifest.get("input_manifest_hash", "NA"),
@@ -119,13 +121,13 @@ def figure_metadata(
 
 
 def write_standard_table(
-    layout: PreviewLayout, source: Path, stem: str, *, semantics: str
+    layout: PreviewLayout, source: Path, stem: str, *, semantics: str, paper_result: bool = False
 ) -> None:
     copy_table_bundle(
         source,
         layout,
         stem=stem,
-        metadata={"semantics": semantics, "paper_result": False},
+        metadata={"semantics": semantics, "paper_result": paper_result},
     )
 
 
@@ -136,6 +138,7 @@ def write_table_frame(
     *,
     semantics: str,
     source_files: Iterable[Path],
+    paper_result: bool = False,
 ) -> None:
     layout.ensure()
     csv_path = layout.base / "tables" / "csv" / f"{stem}.csv"
@@ -148,7 +151,7 @@ def write_table_frame(
         {
             "spec_id": SPEC_ID,
             "table_id": stem,
-            "paper_result": False,
+            "paper_result": paper_result,
             "semantics": semantics,
             "source_file_hashes": {
                 str(path): sha256_file(path) for path in source_files if path.exists()
@@ -185,9 +188,9 @@ def write_manifest(
         "experiment_id": source.experiment_id,
         "run_id": source.run_id,
         "run_tier": source.run_tier,
-        "paper_result": False,
+        "paper_result": source.paper_result,
         "scientific_source_paper_result": source.scientific_source_paper_result,
-        "promotion_status": "NOT_PROMOTED_PRESENTATION_PREVIEW",
+        "promotion_status": source.promotion_status,
         "figure_ids": figure_ids or [],
         "artifact_hashes": _artifact_hashes(layout),
         "generated_at": utc_now(),
@@ -218,7 +221,7 @@ def render_source(source: PresentationSource, preview_root: Path) -> dict[str, A
     return module.render_presentation(source, preview_root)
 
 
-def write_overview_table(layout: PreviewLayout) -> None:
+def write_overview_table(layout: PreviewLayout, paper_result: bool = False) -> None:
     rows = [
         ["Exp1", "Controlled simulator plus scalar-feedback learner", "exact-valid, matched-mean misaligned, systematic misbinding", "alignment budget, structural regret, binding contrast", "Action-gap alignment controls transfer; learner allocation is a separate consequence."],
         ["Exp2", "Criteo delayed-conversion log", "arrival accounting vs four source-time attribution rules", "allocation TV and Kendall tau-b", "Attribution sensitivity on a fixed cohort; not causal attribution or policy value."],
@@ -245,7 +248,7 @@ def write_overview_table(layout: PreviewLayout) -> None:
         {
             "spec_id": SPEC_ID,
             "table_id": "tab_experimental_evidence_map",
-            "paper_result": False,
+            "paper_result": paper_result,
             "editorial_only": True,
             "csv_sha256": sha256_file(csv_path),
             "tex_sha256": sha256_file(tex_path),
@@ -253,13 +256,13 @@ def write_overview_table(layout: PreviewLayout) -> None:
     )
 
 
-def write_appendix_order(layout: PreviewLayout) -> None:
+def write_appendix_order(layout: PreviewLayout, paper_result: bool = False) -> None:
     path = layout.base / "manifests/appendix_manifest.json"
     existing = read_json(path) if path.exists() else {}
     existing.update(
         {
             "spec_id": SPEC_ID,
-            "paper_result": False,
+            "paper_result": paper_result,
             "experiment_id": existing.get("experiment_id", layout.experiment_id),
             "run_id": existing.get("run_id", layout.run_id),
             "figure_ids": existing.get("figure_ids", []),

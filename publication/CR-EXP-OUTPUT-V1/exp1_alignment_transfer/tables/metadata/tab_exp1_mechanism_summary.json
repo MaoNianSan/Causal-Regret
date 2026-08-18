@@ -1,0 +1,10 @@
+{
+  "csv_sha256": "6843ba4ec79c15c750a5ba55c73fd5632066d3bbee9f7172698acafca78e29b5",
+  "paper_result": true,
+  "semantics": "Complete mechanism table including conflict-rate values removed from main Panel (a).",
+  "source_file": "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\tables\\tab_exp1_mechanism_summary.csv",
+  "source_file_sha256": "065f2f09bf56a2f2eb0dd1f5894cac9cba50d2d3eac49fcc9091e4d9fbfc1568",
+  "spec_id": "CR-EXP-OUTPUT-V1",
+  "table_id": "tab_exp1_mechanism_summary",
+  "tex_sha256": "2ad352a9fccb247018ae6932a8b6e44454e859b85949be1955fca0078d910b29"
+}

@@ -1,0 +1,280 @@
+{
+  "audit_id": "exp4_v3_full_output_audit",
+  "calibration_hash": "8176e473628088778162119d7b32a639e778f5e5b2b4885a2d7310c2dc103a97",
+  "canonical_docs_repointed": false,
+  "checks": {
+    "module_a_v3": {
+      "dpair_lower_bound_violations": 0,
+      "dpair_numerically_distinct_from_round_max_on_nonzero_support": true,
+      "dpair_upper_bound_violations": 0,
+      "exact_full_label_max_abs": {
+        "mean_pairwise_gap_discrepancy": 0.0,
+        "mean_round_max_gap_defect": 0.0,
+        "pairwise_gap_sign_disagreement_rate": 0.0,
+        "route_optimal_set_conflict_rate": 0.0
+      },
+      "legacy_population_action_gap_defect_equals_mean_round_max_gap_defect_max_abs_diff": 0.0,
+      "required_fields_present": true,
+      "seed_level_row_count": 2100,
+      "source_bound_max_abs": {
+        "mean_pairwise_gap_discrepancy": 0.0,
+        "mean_round_max_gap_defect": 0.0,
+        "pairwise_gap_sign_disagreement_rate": 0.0,
+        "route_optimal_set_conflict_rate": 0.0
+      },
+      "status": "PASS"
+    },
+    "module_b_v3": {
+      "cross_design_common_rate": 0.3,
+      "cross_design_unit_target_identity": {
+        "ambiguity_selective_ipw": {
+          "row_count": 1900000,
+          "support_equal": true,
+          "target_finite": true,
+          "target_max_abs_difference": 0.0
+        },
+        "ambiguity_selective_unweighted": {
+          "row_count": 1900000,
+          "support_equal": true,
+          "target_finite": true,
+          "target_max_abs_difference": 0.0
+        },
+        "mcar_unweighted": {
+          "row_count": 1900000,
+          "support_equal": true,
+          "target_finite": true,
+          "target_max_abs_difference": 0.0
+        }
+      },
+      "estimand_ids": [
+        "mean_pairwise_gap_discrepancy"
+      ],
+      "full_population_max_abs_audited_minus_population": 0.0,
+      "secondary_field_classification": "secondary_only",
+      "secondary_field_present": true,
+      "status": "PASS",
+      "unit_target_field": "true_unit_mean_pairwise_gap_discrepancy"
+    },
+    "module_c_v3": {
+      "controls": [
+        "affine_linked",
+        "blocked_correspondence_destroyed",
+        "nonlinear_monotone"
+      ],
+      "positive_recoverability_interpreted_as_route_validity": false,
+      "required_fields_present": true,
+      "status": "PASS",
+      "temporal_held_out_fold_exclusion": true
+    },
+    "provenance": {
+      "commit_during_formal_run": false,
+      "current_git_head_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+      "current_source_code_hash": "09ee24069d13022c183bf11e1a77a50f199e568d0470a58060967b45016a0964",
+      "required_flags": {
+        "downstream_provenance_verified": true,
+        "formal_full_started_clean": true,
+        "run_lineage_valid": true,
+        "simulation_provenance_verified": true,
+        "source_unchanged_during_run": true
+      },
+      "status": "PASS",
+      "stored_git_head_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+      "stored_source_code_hash": "09ee24069d13022c183bf11e1a77a50f199e568d0470a58060967b45016a0964"
+    },
+    "run_contract": {
+      "engineering_status": "PASS",
+      "paper_result": false,
+      "result_schema": "exp4_controlled_route_audit_v3",
+      "scientific_status": "PASS",
+      "status": "PASS"
+    },
+    "v2_to_v3_semantic_break": {
+      "corresponding_v3_field": "mean_round_max_gap_defect",
+      "directly_comparable_row_count": 2100,
+      "max_abs_difference": 0.0,
+      "new_primary_dpair_compared_to_old_v2_field": false,
+      "old_v2_field": "population_action_gap_defect",
+      "statement": "The v3 pair-average D_pair is newly recomputed and is not a v2 numerical regression target.",
+      "status": "PASS",
+      "support_equal": true
+    }
+  },
+  "code_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "config_hash": "969661f6374bc82caef3a93573f0cca950b808a0fda426e1d0b4236cd98b5377",
+  "generated_at": "2026-08-17T08:07:20.171820+00:00",
+  "new_run_whitelisted": false,
+  "old_v2_canonical_deleted": false,
+  "overall_status": "PASS",
+  "promotion_executed": false,
+  "result_schema": "exp4_controlled_route_audit_v3",
+  "result_summary": {
+    "module_a_by_route_label_rate": [
+      {
+        "margin_certificate_rate_mean": 0.8990231578947367,
+        "mean_pairwise_gap_discrepancy_mean": 0.0257478287341646,
+        "mean_round_max_gap_defect_mean": 0.085976536459264,
+        "pairwise_gap_sign_disagreement_rate_mean": 0.0333251461988304,
+        "route_label_rate": 0.0,
+        "route_optimal_set_conflict_rate_mean": 0.0249284210526315
+      },
+      {
+        "margin_certificate_rate_mean": 0.9279852631578948,
+        "mean_pairwise_gap_discrepancy_mean": 0.0192837496826631,
+        "mean_round_max_gap_defect_mean": 0.0644520981012076,
+        "pairwise_gap_sign_disagreement_rate_mean": 0.0270712046783625,
+        "route_label_rate": 0.3,
+        "route_optimal_set_conflict_rate_mean": 0.019178947368421
+      },
+      {
+        "margin_certificate_rate_mean": 0.9709515789473684,
+        "mean_pairwise_gap_discrepancy_mean": 0.0086951808340326,
+        "mean_round_max_gap_defect_mean": 0.0291393742682267,
+        "pairwise_gap_sign_disagreement_rate_mean": 0.0151468538011695,
+        "route_label_rate": 0.7,
+        "route_optimal_set_conflict_rate_mean": 0.0077705263157894
+      },
+      {
+        "margin_certificate_rate_mean": 1.0,
+        "mean_pairwise_gap_discrepancy_mean": 0.0,
+        "mean_round_max_gap_defect_mean": 0.0,
+        "pairwise_gap_sign_disagreement_rate_mean": 0.0,
+        "route_label_rate": 1.0,
+        "route_optimal_set_conflict_rate_mean": 0.0
+      }
+    ],
+    "module_a_primary_proxy_noise_sd": 0.25,
+    "module_b_by_design_and_audit_rate": [
+      {
+        "audit_design_id": "ambiguity_selective_ipw",
+        "audit_evidence_rate": 0.1,
+        "bias": 0.0001774859682077,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 108.77872971300316,
+        "rmse": 0.0026226111952852
+      },
+      {
+        "audit_design_id": "ambiguity_selective_ipw",
+        "audit_evidence_rate": 0.3,
+        "bias": 7.246185987611081e-05,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 365.36173612045184,
+        "rmse": 0.0010617175226875
+      },
+      {
+        "audit_design_id": "ambiguity_selective_ipw",
+        "audit_evidence_rate": 0.5,
+        "bias": 2.4227530612002616e-05,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 774.3999433051836,
+        "rmse": 0.0006345278172084
+      },
+      {
+        "audit_design_id": "ambiguity_selective_unweighted",
+        "audit_evidence_rate": 0.1,
+        "bias": 0.0316266553340589,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 189.853,
+        "rmse": 0.031934157891766
+      },
+      {
+        "audit_design_id": "ambiguity_selective_unweighted",
+        "audit_evidence_rate": 0.3,
+        "bias": 0.0165563614633544,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 570.271,
+        "rmse": 0.0166807861359758
+      },
+      {
+        "audit_design_id": "ambiguity_selective_unweighted",
+        "audit_evidence_rate": 0.5,
+        "bias": 0.0087262045082685,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 950.109,
+        "rmse": 0.0087974091734441
+      },
+      {
+        "audit_design_id": "full_population",
+        "audit_evidence_rate": 1.0,
+        "bias": 0.0,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 1900.0,
+        "rmse": 0.0
+      },
+      {
+        "audit_design_id": "mcar_unweighted",
+        "audit_evidence_rate": 0.1,
+        "bias": -8.798035417890052e-06,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 190.05,
+        "rmse": 0.0028287915070699
+      },
+      {
+        "audit_design_id": "mcar_unweighted",
+        "audit_evidence_rate": 0.3,
+        "bias": -1.979754824155524e-05,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 569.782,
+        "rmse": 0.0014269630329086
+      },
+      {
+        "audit_design_id": "mcar_unweighted",
+        "audit_evidence_rate": 0.5,
+        "bias": 2.636170532655089e-05,
+        "estimability_rate": 1.0,
+        "mean_effective_sample_size": 948.192,
+        "rmse": 0.0009349760324458
+      }
+    ],
+    "module_c_by_control": [
+      {
+        "control_id": "affine_linked",
+        "correspondence_status": "preserved by construction",
+        "mean_difference_in_pair_marginal_mean": 0.0,
+        "mean_difference_in_pair_marginal_sd": 0.0,
+        "oof_calibrated_pairwise_discrepancy": 0.04582664250282,
+        "permutation_hash_count": 0,
+        "post_mean_abs_pearson": 0.9950390788874988,
+        "post_mean_abs_spearman": 0.9399216873551254,
+        "pre_mean_abs_pearson": 0.9950390788874988,
+        "pre_mean_abs_spearman": 0.9399216873551254,
+        "raw_pairwise_discrepancy": 0.2407649839374406,
+        "recoverability": 0.8094463061623256,
+        "status": "NOT_APPLICABLE"
+      },
+      {
+        "control_id": "blocked_correspondence_destroyed",
+        "correspondence_status": "destroyed within temporal blocks",
+        "mean_difference_in_pair_marginal_mean": 9.539480611180204e-18,
+        "mean_difference_in_pair_marginal_sd": 1.2911535266872204e-17,
+        "oof_calibrated_pairwise_discrepancy": 0.2930732033480586,
+        "permutation_hash_count": 1000,
+        "post_mean_abs_pearson": 0.0570053781547287,
+        "post_mean_abs_spearman": 0.0572643103867506,
+        "pre_mean_abs_pearson": 0.988425426147875,
+        "pre_mean_abs_spearman": 0.9738822224218042,
+        "raw_pairwise_discrepancy": 0.3960943168082576,
+        "recoverability": 0.2598297353265079,
+        "status": "PASS"
+      },
+      {
+        "control_id": "nonlinear_monotone",
+        "correspondence_status": "monotone but outside affine family",
+        "mean_difference_in_pair_marginal_mean": 0.0,
+        "mean_difference_in_pair_marginal_sd": 0.0,
+        "oof_calibrated_pairwise_discrepancy": 0.03178432070291,
+        "permutation_hash_count": 0,
+        "post_mean_abs_pearson": 0.9931964001311276,
+        "post_mean_abs_spearman": 0.9429549875426848,
+        "pre_mean_abs_pearson": 0.9931964001311276,
+        "pre_mean_abs_spearman": 0.9429549875426848,
+        "raw_pairwise_discrepancy": 0.0460357395374307,
+        "recoverability": 0.3090920630284814,
+        "status": "NOT_APPLICABLE"
+      }
+    ]
+  },
+  "run_dir": "outputs\\runs\\full_20260817T071019Z_7d7146b7",
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "source_code_hash": "09ee24069d13022c183bf11e1a77a50f199e568d0470a58060967b45016a0964",
+  "source_hash_algorithm_version": "exp4-source-code-v2"
+}

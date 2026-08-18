@@ -1,0 +1,149 @@
+{
+  "checks": {
+    "aggregation_config_hash_match": true,
+    "aggregation_stage_hash_match": true,
+    "aggregation_stage_record_present": true,
+    "all_required_derived_files_complete": true,
+    "downstream_provenance_verified": true,
+    "engineering_status_pass": true,
+    "formal_full_started_clean": true,
+    "fresh_calibration_hash_consistent": true,
+    "fresh_config_hash_match": true,
+    "fresh_recorded_commit_matches_run_config": true,
+    "fresh_simulation_source_run_id_absent": true,
+    "fresh_simulation_stage_verified": true,
+    "main_figure_complete": true,
+    "main_table_complete": true,
+    "main_table_exists": true,
+    "main_table_has_required_rows": true,
+    "main_table_latex_nonempty": true,
+    "main_table_matches_source": true,
+    "main_table_values_finite": true,
+    "monte_carlo_precision_pass": true,
+    "no_nonfull_precision_status_in_full_run": true,
+    "paper_claims_within_scope": true,
+    "primary_contrast_contract_valid": true,
+    "primary_monte_carlo_precision_pass": true,
+    "reporting_config_hash_match": true,
+    "reporting_provenance_verified": true,
+    "reporting_stage_hash_match": true,
+    "reporting_stage_record_present": true,
+    "result_schema_is_v3": true,
+    "run_lineage_present": true,
+    "run_lineage_valid": true,
+    "run_tier_is_full": true,
+    "scientific_status_pass": true,
+    "simulation_config_hash_match": true,
+    "simulation_config_record_present": true,
+    "simulation_provenance_verified": true,
+    "simulation_stage_hash_match": true,
+    "simulation_stage_record_present": true,
+    "source_hash_algorithm_version_present": true,
+    "validation_config_hash_match": true,
+    "validation_stage_hash_match": true,
+    "validation_stage_record_present": true
+  },
+  "precision": {
+    "no_nonfull_precision_status_in_full_run": true,
+    "primary_contrast_contract_valid": true,
+    "primary_monte_carlo_precision_pass": true
+  },
+  "provenance": {
+    "config_hash_match": true,
+    "current_pre_fix_source_code_hash": "d660a1193d85db10269bc5a3bbd2ff7338587b503878c2b9cc9db55a33d1eb9e",
+    "downstream_execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+    "downstream_provenance_verified": true,
+    "downstream_source_run_id": null,
+    "formal_full_started_clean": true,
+    "full_simulation_reuse_decision": "REUSE",
+    "full_simulation_reuse_eligibility": "ELIGIBLE",
+    "run_lineage_present": true,
+    "run_lineage_valid": true,
+    "simulation_execution_mode": "FRESH",
+    "simulation_provenance_verified": true,
+    "simulation_source_run_id": null,
+    "source_hash_algorithm_version_present": true,
+    "source_hash_match": false,
+    "source_unchanged_during_run": false,
+    "stage_source_hashes": {
+      "aggregation_source_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4",
+      "reporting_source_hash": "066453860b6841891dc0665cb904021375d5838ca94cca4c2e63af06ad6e1e72",
+      "simulation_source_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+      "validation_source_hash": "1334c1760e1658330a98918963a116e815c0db4f7a5c1f64c5dde111f884ff61"
+    },
+    "stages": {
+      "aggregation": {
+        "current_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "fac94b3f21a8765462c9781895f3a5744dfb300336aa5b2ce9a7096964bd5af4"
+      },
+      "reporting": {
+        "current_hash": "066453860b6841891dc0665cb904021375d5838ca94cca4c2e63af06ad6e1e72",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "066453860b6841891dc0665cb904021375d5838ca94cca4c2e63af06ad6e1e72"
+      },
+      "simulation": {
+        "current_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
+        "execution_mode": "FRESH",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321"
+      },
+      "validation": {
+        "current_hash": "1334c1760e1658330a98918963a116e815c0db4f7a5c1f64c5dde111f884ff61",
+        "execution_mode": "REBUILT_FROM_OWN_SIMULATION",
+        "hash_match": true,
+        "record_present": true,
+        "source_run_id": null,
+        "stored_hash": "1334c1760e1658330a98918963a116e815c0db4f7a5c1f64c5dde111f884ff61"
+      }
+    },
+    "stored_source_code_hash": "09ee24069d13022c183bf11e1a77a50f199e568d0470a58060967b45016a0964"
+  },
+  "status": "PASS",
+  "table": {
+    "checks": {
+      "correspondence_status_nonempty": true,
+      "main_table_columns_complete": true,
+      "main_table_control_order_correct": true,
+      "main_table_csv_exists": true,
+      "main_table_has_exactly_two_rows": true,
+      "main_table_hashes_recorded": true,
+      "main_table_latex_has_data_beyond_rules": true,
+      "main_table_latex_has_two_data_rows": true,
+      "main_table_matches_source": true,
+      "main_table_tex_exists": true,
+      "main_table_values_finite": true,
+      "required_controls_each_exactly_once_in_summary": true
+    },
+    "details": {
+      "hashes": {
+        "main_table_csv_sha256": "74a57efbfa59269deffa1a348d96f6d05633289f16267e8570f3a61d8b2919ab",
+        "main_table_id": "tbl_exp4_calibration_controls",
+        "main_table_tex_sha256": "fcef3cadc3fe63905ced31ff3151bf934e2e6f44b90c99691af3c01d8e35b1cc"
+      },
+      "main_table_display_names": [
+        "Affine-linked control",
+        "Temporally blocked correspondence-destroyed control"
+      ],
+      "main_table_has_nan": false,
+      "main_table_latex_data_row_count": 2,
+      "main_table_row_count": 2,
+      "missing_columns": [],
+      "summary_control_counts": {
+        "affine_linked": 1,
+        "blocked_correspondence_destroyed": 1
+      },
+      "value_mismatches": []
+    },
+    "status": "PASS",
+    "validation": "exp4_main_calibration_table"
+  }
+}

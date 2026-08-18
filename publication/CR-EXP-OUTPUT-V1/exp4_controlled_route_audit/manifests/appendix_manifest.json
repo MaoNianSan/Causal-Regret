@@ -1,0 +1,107 @@
+{
+  "appendix_order": [
+    {
+      "id": "C.1",
+      "items": [
+        "reporting",
+        "uncertainty",
+        "provenance"
+      ]
+    },
+    {
+      "id": "C.2",
+      "items": [
+        "Exp1 protocol",
+        "complete table",
+        "diagnostics",
+        "targeted validation"
+      ]
+    },
+    {
+      "id": "C.3",
+      "items": [
+        "Exp2 cohort",
+        "route definitions",
+        "complete pairwise",
+        "diagnostics",
+        "robustness"
+      ]
+    },
+    {
+      "id": "C.4",
+      "items": [
+        "Exp3 support",
+        "primary tables",
+        "three composites",
+        "CV/coefficient",
+        "resampling diagnostics"
+      ]
+    },
+    {
+      "id": "C.5",
+      "items": [
+        "Exp4 v3 parameters",
+        "Module A",
+        "audit",
+        "calibration",
+        "three composites"
+      ]
+    },
+    {
+      "id": "C.6",
+      "items": [
+        "artifact lineage"
+      ]
+    }
+  ],
+  "artifact_hashes": {
+    "figures/appendix/data/exp4_appendix_audit_support.csv": "dcbd6150dfd03601e26cffa2a777808b33aa87d66e0cdd07151c4117ba0688f8",
+    "figures/appendix/data/exp4_appendix_calibration_diagnostics.csv": "6c1df994eb7d47134bcfacbc760294515cc9ad0d6d603ebbcaa5e23a0cafbe89",
+    "figures/appendix/data/exp4_appendix_route_alignment_detail.csv": "5034d711a3db35266acf88006e6cb00c97db6332063973c4bf4c6c1de9b76fd3",
+    "figures/appendix/metadata/exp4_appendix_audit_support.json": "4e1d2d37026124b672adfd86fa18993b75b85076ec13e6eefb7992b797d2d54b",
+    "figures/appendix/metadata/exp4_appendix_calibration_diagnostics.json": "4c6787bd20c54a3dcc071dba544fdb49954f42b318753fb0b8e85f3ca07a89b6",
+    "figures/appendix/metadata/exp4_appendix_route_alignment_detail.json": "0ae6088c4c416098f5985d45f54ff4fe5d5d97f72bbfcbcaa3221a30bc11add2",
+    "figures/appendix/pdf/exp4_appendix_audit_support.pdf": "91361d2f75066bde3aea6ab8cdba22b8045863e5608decbffdbe0dba52bcf17b",
+    "figures/appendix/pdf/exp4_appendix_calibration_diagnostics.pdf": "b90c46294a95e06d6639e9ad5ae2b7a8c430af48a8263e9810c0c76c51178da4",
+    "figures/appendix/pdf/exp4_appendix_route_alignment_detail.pdf": "2f38fdfb3541519b42ae72d637eac63cb4af112ce2da5897f3c013f95b478cc1",
+    "figures/appendix/png/exp4_appendix_audit_support.png": "1f369d8f582d0a4bdf92e2fc871d51f22732b5801b8d9254d85665392df4a929",
+    "figures/appendix/png/exp4_appendix_calibration_diagnostics.png": "7ad9e3d4d9938d6ad44d85c74569de8173018b11792e5aa72474c06ddf8fd57a",
+    "figures/appendix/png/exp4_appendix_route_alignment_detail.png": "92df3f7b74962a0c516151f511459323c7ca65f191371f9f163ed9d2901414b4",
+    "figures/appendix/svg/exp4_appendix_audit_support.svg": "edcfc39d640bfcd3f638ccd035c945b7e0f0442106fdd76b9047eeb9c3346e2f",
+    "figures/appendix/svg/exp4_appendix_calibration_diagnostics.svg": "cebe0008eb6e4e348b31b0d26379e31207d0d2f5b62f27c7ff02d895ef108a95",
+    "figures/appendix/svg/exp4_appendix_route_alignment_detail.svg": "fdb9165546649221740dacdcf4fdf21eea2048de2ef719901f03d9dbf52694ef",
+    "figures/main/data/fig_exp4_route_alignment_and_audit_reliability.csv": "4635527a05846ccab58ff9e356445d75f87b693602abf2a4ecadbd8ef2a4db04",
+    "figures/main/metadata/fig_exp4_route_alignment_and_audit_reliability.json": "096cb803d0c3ce59fb08fb5ee31aba553a5591fb41e1ec98b2c057c201d1fb36",
+    "figures/main/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf": "ac5cb2954cb085b0a4e8ef3edef2515bb24ef383dbf97c35c966ff27c258848c",
+    "figures/main/png/fig_exp4_route_alignment_and_audit_reliability.png": "3e782c2ff1d542938bb6c2ebae1fcb78b29c65f2b9e6b7366bb49d42305e286a",
+    "figures/main/svg/fig_exp4_route_alignment_and_audit_reliability.svg": "5fe0d2ef9bc0fe22a18118f94c987b59a0365f57dc3bba54009df03a41ee783e",
+    "tables/csv/tab_experimental_evidence_map.csv": "8537c09661dce8f9c7a71884453d5de2c260b7e5514bc092d0f5fbbb968678ff",
+    "tables/csv/tbl_app_exp4_audit_performance.csv": "b44ad93eb31503114f496473c1396ea224e377258cd987dfecaff0229156d96f",
+    "tables/csv/tbl_app_exp4_paired_contrasts.csv": "8f4f7c08fd76e1204df928e343032f5b68f88c1b995a1eb0a862769e34974892",
+    "tables/csv/tbl_app_exp4_parameters.csv": "e5cd158e5aac085c35fb0a1cfdd3bab77cf3d25b982ae080e864f0b41f0436ba",
+    "tables/csv/tbl_exp4_calibration_controls.csv": "7582aa37e24533be65479ecb41e54540b7facaa223f1516670453fcc30f39403",
+    "tables/metadata/tab_experimental_evidence_map.json": "0170bca3a0ec1939b0d686ec6030fdd34a66d8038c5f70219c52fefd02a32a37",
+    "tables/metadata/tbl_app_exp4_audit_performance.json": "f3a88ab4ef947578c9565df378a661ceb7815dd586c47c4e2c27cb18b3a927d4",
+    "tables/metadata/tbl_app_exp4_paired_contrasts.json": "52e75892ad81e9334bde0b36ee3f0666c53fb9844de4b95e5aa4851a81b00064",
+    "tables/metadata/tbl_app_exp4_parameters.json": "41f660e29398eba25159c7d098017393fb57fbe210a5493cbb3ec73d23a3183a",
+    "tables/metadata/tbl_exp4_calibration_controls.json": "929334891f8f20911a946c1e05ebfcebe778a654f6ad5faac5eeb46454ac3de7",
+    "tables/tex/tab_experimental_evidence_map.tex": "9763893a3e5cb979dc1e86aeb5eb90b2c476ba40e3cebd23c0acd5a9a9070810",
+    "tables/tex/tbl_app_exp4_audit_performance.tex": "8f98776acfceca02f3f7f5ac745340e4bfaf53347a4f8e6500ea965d5a14310c",
+    "tables/tex/tbl_app_exp4_paired_contrasts.tex": "9388ca493d8f0162cc48f56de205fa82247d27b280cf0b905280f996ce8d2fb4",
+    "tables/tex/tbl_app_exp4_parameters.tex": "365a435fe82dc1b5587da3eb4ac760d6089041c9370accea8801b989cc54462d",
+    "tables/tex/tbl_exp4_calibration_controls.tex": "71a876b8915553dd9cebdd3ec0be8bace2d6c1c209d245911235e5040df5b947"
+  },
+  "experiment_id": "exp4_controlled_route_audit",
+  "figure_ids": [
+    "exp4_appendix_route_alignment_detail",
+    "exp4_appendix_audit_support",
+    "exp4_appendix_calibration_diagnostics"
+  ],
+  "generated_at": "2026-08-18T09:31:38.395159+00:00",
+  "paper_result": true,
+  "promotion_status": "CANONICAL_PUBLICATION",
+  "run_id": "full_20260817T071019Z_7d7146b7",
+  "run_tier": "full",
+  "scientific_source_paper_result": true,
+  "spec_id": "CR-EXP-OUTPUT-V1"
+}
