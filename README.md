@@ -1,128 +1,95 @@
-# Causal Regret Minimization under Delayed Feedback
+# Causal Regret Minimization under Delayed Feedback — Submission Companion Repository
 
-This repository accompanies a study of regret minimization in sequential
-decision problems under **delayed feedback**. In online advertising and
-recommendation systems, the outcome of a decision (a conversion, a reward)
-arrives after a random delay and is conventionally **attributed to an earlier
-decision** (source-time attribution). This repository studies how delayed,
-attributed feedback changes what an offline benchmark measures and whether
-regret-relevant structure can be recovered from logged data.
+This repository accompanies the paper on regret minimization in sequential decision problems under **delayed feedback**. In online advertising and recommendation systems, the outcome of a decision arrives after a random delay and is conventionally attributed to an earlier decision (source-time attribution). This repository studies how delayed, attributed feedback changes what an offline benchmark measures and whether regret-relevant structure can be recovered from logged data.
 
-Each experiment is a self-contained package with a frozen design, a canonical
-CLI, self-check gates, and explicit promotion rules. The four packages share a
-scientific theme but have independent scientific contracts.
-
-## Overview
-
-- **Delayed feedback.** Outcomes are observed only after a random delay;
-  evaluation must be conducted before all feedback has arrived.
-- **Source-time attribution.** Each outcome is attributed to the decision that
-  generated it, and the attribution convention determines what a benchmark
-  actually ranks.
-- **Benchmark-validity problem.** Attribution rules, delay structure, and
-  logged support interact so that a benchmark can disagree with the true
-  structural objective. The experiments localize where and why that happens.
-
-## Experiments
-
-| Experiment | Directory | Scientific question |
-|---|---|---|
-| Experiment 1: Controlled Alignment and Regret Transfer | [`exp1_alignment_transfer/`](exp1_alignment_transfer/README.md) | Does action-gap alignment, rather than delay magnitude alone, govern whether route-level optimization can control structural regret? |
-| Experiment 2: Attribution Sensitivity in Delayed Conversion Logs | [`exp2_real_delayed_conversion_logs/`](exp2_real_delayed_conversion_logs/README.md) | How sensitive are allocation and ranking diagnostics to the attribution convention on a fixed delayed-conversion log? |
-| Experiment 3: Logged-Supported Ranking Recovery | [`exp3_sequential_recommendation_delayed_feedback/`](exp3_sequential_recommendation_delayed_feedback/README.md) | Can logged support recover the reference ranking through the score -> reference-pair gap -> ranking recovery chain? |
-| Experiment 4: Recoverability Boundary Diagnostic | [`exp4_controlled_route_audit/`](exp4_controlled_route_audit/README.md) | Where is the recoverability boundary of route alignment and audit reliability under controlled simulation? |
-
-Each experiment README documents the scientific objective, boundary, frozen
-data and split, estimands, implementation contract, output artifacts,
-validation/self-check, and the commands used to produce the reported results.
+The repository is organized as **code + data instructions + experiment contracts + canonical paper results + publication figures + reproduction/validation entry points**. It is not a development-history log.
 
 ## Repository structure
 
 ```text
 Causal-Regret/
-├── README.md               # this landing page
-├── REPRODUCE.md            # step-by-step reproduction guide
-├── DATA.md                 # data provenance for all four experiments
-├── CITATION.cff            # citation metadata
-├── environment.yml         # frozen environment used for the reported results
-├── reproduce.py            # thin smoke / full forwarding wrapper
+├── README.md                          # this landing page
+├── REPRODUCE.md                       # reviewer-facing reproduction guide
+├── DATA.md                            # data provenance and availability
+├── CITATION.cff                       # citation metadata
+├── environment.yml                    # frozen environment
+├── reproduce.py                       # thin smoke/full forwarding wrapper
+├── scripts/
+│   └── validate_submission_repository.py   # read-only submission validator
+├── tests/
+│   ├── test_presentation_output.py
+│   └── test_submission_repository_contract.py
 ├── docs/
-│   └── PAPER_RESULTS.md    # manuscript item -> repository artifact map
-├── notebooks/
-│   └── overview.ipynb      # rendered overview with figure previews (read-only)
-├── exp1_alignment_transfer/                      # Experiment 1
-├── exp2_real_delayed_conversion_logs/            # Experiment 2
+│   ├── EXPERIMENT_IO_CONTRACT.md      # per-experiment input/output contracts (authoritative)
+│   ├── PAPER_RESULTS.md               # canonical result registry
+│   └── DEVELOPMENT_HISTORY.md         # dev-noise classification of non-submission files
+├── publication/
+│   └── CR-EXP-OUTPUT-V1/              # paper-facing publication bundle (README inside)
+├── exp1_alignment_transfer/           # Experiment 1
+├── exp2_real_delayed_conversion_logs/ # Experiment 2
 ├── exp3_sequential_recommendation_delayed_feedback/  # Experiment 3
-└── exp4_controlled_route_audit/                  # Experiment 4
+└── exp4_controlled_route_audit/       # Experiment 4
 ```
 
 ## Quick start
 
 ```bash
-# 1. Create the environment (see REPRODUCE.md for alternatives)
+# 1. Environment (see REPRODUCE.md)
 conda env create -f environment.yml
 conda activate causal-regret
 
-# 2. Smoke test (lightweight fast-tier runs / self-checks)
-python reproduce.py smoke --dry-run   # preview the commands
-python reproduce.py smoke             # run them
+# 2. Validate the published results (lightest possible; read-only)
+python scripts/validate_submission_repository.py
+pytest -q tests/test_submission_repository_contract.py
 
-# 3. Per-experiment full runs and paper artifacts
-python reproduce.py full --exp 1      # forwards to the Experiment 1 full CLI
+# 3. Rebuild the publication figures (no scientific re-run)
+python render_presentation.py render --mode publication --exp all
+python render_presentation.py validate --mode publication --exp all
+
+# 4. Smoke test (fast-tier runs / self-checks)
+python reproduce.py smoke --dry-run
+python reproduce.py smoke
 ```
 
-The commands behind the wrapper are documented in full in
-[`REPRODUCE.md`](REPRODUCE.md), so the wrapper can be bypassed at any time.
+Full per-experiment commands are in `REPRODUCE.md` and `docs/EXPERIMENT_IO_CONTRACT.md`.
 
-## Reproducing paper results
+## Experiments and canonical results
 
-[`REPRODUCE.md`](REPRODUCE.md) gives the environment, data preparation, smoke
-test, per-experiment run commands, and the commands that regenerate every
-paper figure and table. [`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) maps
-each manuscript item to its experiment, canonical run, source-data artifact,
-and final figure/table artifact.
+| Experiment | Role in evidence chain | Input | Canonical output | Main artifact |
+|---|---|---|---|---|
+| Exp1 | Controlled alignment and regret transfer | controlled simulator (no external data) | `exp1_alignment_transfer/outputs/paper_candidate/` | `fig_exp1_alignment_transfer` |
+| Exp2 | Attribution sensitivity in delayed-conversion logs | Criteo log (download required) | `exp2_.../outputs/paper/exp2-full-20260807T111616+0800/` | `figure_exp2_attribution_sensitivity` |
+| Exp3 | Delayed-feedback recommendation and decision recovery | KuaiRand-1K logs (download required) | `exp3_.../paper_candidate/` (run `exp3-full-20260807T072340Z`) | `exp3_main_score_gap_ranking` |
+| Exp4 | Route alignment, audit reliability, recoverability | controlled simulator (no external data) | `exp4_.../outputs/runs/full_20260817T071019Z_7d7146b7/` | `fig_exp4_route_alignment_and_audit_reliability` |
 
-The current authoritative result of each experiment is the promoted
-paper-facing canonical artifact:
+All four canonical outputs carry `paper_result = true`. Exp4 uses result schema `exp4_controlled_route_audit_v3`. The authoritative per-experiment input/output contracts (commands, metrics, uncertainty semantics, interpretation boundaries) are in [`docs/EXPERIMENT_IO_CONTRACT.md`](docs/EXPERIMENT_IO_CONTRACT.md). The paper-facing presentation bundle with all figures, tables, and per-figure metadata is in [`publication/CR-EXP-OUTPUT-V1/`](publication/CR-EXP-OUTPUT-V1/README.md).
 
-| Experiment | Canonical result | Schema | Paper status |
-|---|---|---|---|
-| Exp1 | `exp1_alignment_transfer/outputs/paper_candidate/` | current v1.2 | `paper_result=true` |
-| Exp2 | `exp2_real_delayed_conversion_logs/outputs/paper/` (`exp2-full-20260807T111616+0800`) | — | `paper_result=true` |
-| Exp3 | `exp3_sequential_recommendation_delayed_feedback/paper_candidate/` (`exp3-full-20260807T072340Z`) | — | `paper_result=true` |
-| Exp4 | `exp4_controlled_route_audit/outputs/runs/full_20260817T071019Z_7d7146b7/` | `exp4_controlled_route_audit_v3` | `paper_result=true` |
+## Reproduce / validate
 
-The canonical publication presentation bundle (CR-EXP-OUTPUT-V1) lives in
-`publication/CR-EXP-OUTPUT-V1/`; see
-[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md) for per-item provenance and
-artifact pointers. Historical migration details and superseded runs are
-documented in the per-experiment READMEs and `docs/PAPER_RESULTS.md`, not here.
+- **[`REPRODUCE.md`](REPRODUCE.md)** — environment setup, validation of published results, publication figure rebuild (no scientific re-run), per-experiment reproduction, data limitations, and full scientific rerun.
+- **[`scripts/validate_submission_repository.py`](scripts/validate_submission_repository.py)** — read-only check that the repository matches the paper-facing canonical state.
+- **[`tests/test_submission_repository_contract.py`](tests/test_submission_repository_contract.py)** — the same contract as executable tests.
+- **[`docs/PAPER_RESULTS.md`](docs/PAPER_RESULTS.md)** — canonical result registry (experiment, canonical id/path, schema, paper status, main figure/table).
 
-## Data
+## Data availability
 
-Raw external datasets are **not redistributed** by this repository. Experiment
-2 uses the Criteo delayed-conversion attribution dataset and Experiment 3 uses
-the KuaiRand-1K logged recommendation dataset; both are downloaded from their
-official sources under their respective licenses. See
-[`DATA.md`](DATA.md) for sources, citations, expected file names, placement,
-and the fields used. Local input directories are kept intact; only the README
-describing them is tracked.
+- Exp1, Exp4: controlled simulators — **`AVAILABLE_IN_REPO`** (no external data).
+- Exp2: Criteo delayed-conversion log — **`DOWNLOAD_REQUIRED`**, not redistributed.
+- Exp3: KuaiRand-1K logs — **`DOWNLOAD_REQUIRED`**, not redistributed.
 
-## Compute
+See [`DATA.md`](DATA.md) for sources, expected paths, required fields, and license/terms.
 
-All experiments run on a single workstation. The full tiers use CPU-parallel
-jobs (`--n-jobs`), and the heaviest step is the Exp3 bootstrap over 1000
-replications. See [`REPRODUCE.md`](REPRODUCE.md#10-compute-requirements) for
-per-experiment runtime and memory expectations.
+## Uncertainty semantics (summary)
+
+- Exp1: 95% seed-bootstrap interval.
+- Exp2: empirical 2.5%–97.5% UID-cluster resampling sensitivity range (**not** a confidence interval).
+- Exp3: empirical 2.5%–97.5% user-cluster resampling sensitivity range (**not** a confidence interval).
+- Exp4: paired-seed frozen interval (panel a), estimate ±1.96 MCSE (panels b/c), no interval at deterministic endpoints.
 
 ## Citation
 
-If you use this repository in your work, please cite it using the metadata in
-[`CITATION.cff`](CITATION.cff). The final paper DOI and journal metadata will
-be added when they become available.
+If you use this repository or its results, cite it via the metadata in [`CITATION.cff`](CITATION.cff). The final paper DOI and journal metadata will be added when available.
 
 ## License
 
-The license for this repository is pending author decision; no license has
-been silently chosen. See [`LICENSE_SELECTION_REQUIRED.md`](LICENSE_SELECTION_REQUIRED.md)
-for the decision that is required before public release.
+The license for this repository is pending author decision; no license has been formally selected yet (see [`LICENSE_SELECTION_REQUIRED.md`](LICENSE_SELECTION_REQUIRED.md)). Until a license is chosen, treat the repository as all-rights-reserved by the authors.

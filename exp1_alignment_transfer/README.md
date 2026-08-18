@@ -1,40 +1,44 @@
 # Experiment 1: Controlled Alignment and Regret Transfer
 
-## 1. Experiment Objective
-This experiment tests whether action-gap alignment, rather than delay magnitude alone, governs whether route-level optimization can control structural regret.
+## Overview
 
-## 2. Scientific Boundary
-The implementation separates two distinct objects:
-- route-map diagnostic: simulator-only full-map analysis of route validity and regret transfer;
-- learner consequence: the same contextual Delayed EXP3 learner under arrival-clock and source-round scalar-feedback binding.
+This experiment tests whether **action-gap alignment**, rather than delay
+magnitude alone, governs whether route-level optimization can control
+structural regret under delayed feedback. The implementation separates two
+distinct objects:
 
-## 3. Data and Split
-The frozen design uses the fixed simulation settings in the package configuration, including the listed delay mechanisms and evaluation/calibration seed grids. Formal runs require the parquet engine and respect the frozen calibration artifacts.
+- **route-map diagnostic**: simulator-only full-map analysis of route validity
+  and regret transfer;
+- **learner consequence**: the same contextual Delayed EXP3 learner under
+  arrival-clock and source-round scalar-feedback binding.
 
-## 4. Estimand / Metrics
-The core estimand is the bounded structural loss associated with the route-level alignment diagnostic, with calibration and bootstrap summaries reported from the frozen scientific outputs.
+This is a controlled-simulation experiment. The authoritative input/output
+contract (units, mechanisms, config hashes, metrics, uncertainty semantics) is
+in [`docs/EXPERIMENT_IO_CONTRACT.md`](../docs/EXPERIMENT_IO_CONTRACT.md).
 
-## 5. Implementation Contract
-The implementation is organized around the frozen configuration, calibration workflow, route-map diagnostics, delayed learner execution, derived outputs, self-check, targeted validation, plotting, and promotion. The scientific source tree is validated by calibration lineage and self-check gates.
+## Input
 
-## 6. Output Artifacts
-Main outputs are written under the run-tier output tree and include raw data, seed metrics, derived tables, figures, checks, metadata, and manuscript artifacts. The paper candidate is produced from frozen derived data only.
+- **Data availability**: `AVAILABLE_IN_REPO` — no external raw dataset.
+- The frozen simulation settings live in `config.py`; the frozen calibration
+  artifacts (delay, misbinding, structural, and context calibration JSON +
+  manifest) live in `calibration/`.
+- Formal runs require the parquet engine and respect the frozen calibration
+  artifacts.
 
-## 7. Validation and Self-check
-Use the formal self-check and targeted validation commands before any promotion step. The package hard-fails when required scientific invariants or calibration checks do not pass.
+## Run
 
-## 8. Running Commands
 ```bash
 python -m pip install -r requirements.txt
 python calibrate.py
+
+# Fast tier (engineering gate; not a paper result)
 python main.py fast
 python self_check.py --run fast
 python targeted.py --run fast
 python plot_main.py --run fast
 python plot_appendix.py --run fast
-```
 
-```bash
+# Formal full run + promotion
 python main.py full
 python self_check.py --run full
 python targeted.py --run full
@@ -43,31 +47,38 @@ python plot_appendix.py --run full
 python promote.py --run full
 ```
 
-## 9. Known Limitations
-Presentation-only rebuilds do not rerun the scientific experiment. Formal full runs remain separate from presentation-only regeneration and require the existing frozen artifacts.
+Selective rebuild of a downstream stage without a scientific rerun uses
+`reconcile.py --source-run outputs/full --rebuild {validation,aggregation,
+reporting,downstream}` (see `REPRODUCE.md` section D.1).
 
-## 10. Selective Rebuild Without Scientific Rerun
-`reconcile.py` is the only supported reuse interface for an existing run. It
-requires explicit run lineage, stage provenance, compatible scientific and
-calibration hashes, complete raw/seed artifacts, and a prior scientific PASS.
-It never reruns the primary scientific full or changes `raw/`, path manifests,
-or seed-level scientific artifacts. A validation rebuild may rerun only the
-separately classified targeted-validation grids.
+## Output
 
-```bash
-python reconcile.py --source-run outputs/full --audit
-python reconcile.py --source-run outputs/full --rebuild validation
-python reconcile.py --source-run outputs/full --rebuild aggregation
-python reconcile.py --source-run outputs/full --rebuild reporting
-python reconcile.py --source-run outputs/full --rebuild downstream
-```
+Main outputs are written under the run-tier output tree (`outputs/`) and
+include raw data, seed metrics, derived tables, figures, checks, metadata,
+and manuscript artifacts. The paper candidate is produced from frozen derived
+data only.
 
-`validation` reruns checks and targeted validation; `aggregation` rebuilds derived
-outputs and validation; `reporting` rebuilds figures and tables; `downstream`
-rebuilds aggregation, validation, and reporting. Each rebuild records
-`metadata/exp1_provenance_reconciliation.json`. A scientific-generation,
-scientific-generation source/config, or calibration mismatch refuses reuse and
-requires a separately approved full scientific run. Bootstrap/CI changes are
-aggregation rebuilds, theorem-sweep changes are validation rebuilds, and
-`DISPLAY_NAMES` changes are reporting rebuilds. The historical `config_hash`
-remains as `legacy_complete_config_hash` metadata and is not a reuse gate.
+## Paper-facing artifacts
+
+- Canonical result: `outputs/paper_candidate/` (schema current **v1.2**,
+  `paper_result=true`).
+- Source full run: `exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00`
+  (code_commit `23199c48`).
+- Publication bundle: `../publication/CR-EXP-OUTPUT-V1/exp1_alignment_transfer/`
+  (main figure ID `fig_exp1_alignment_transfer`).
+
+## Validation
+
+The formal self-check and targeted validation must report `PASS` before any
+promotion step. The package hard-fails when required scientific invariants or
+calibration checks do not pass. `reconcile.py` is the only supported reuse
+interface for an existing run and never reruns the primary scientific full or
+changes `raw/` or seed-level scientific artifacts.
+
+## Interpretation boundary
+
+- The experiment is a controlled-simulation diagnostic of route-level
+  alignment and structural regret transfer; it does not estimate deployment
+  value or real-world policy performance.
+- Presentation-only rebuilds do not rerun the scientific experiment.
+- Formal full runs remain separate from presentation-only regeneration.

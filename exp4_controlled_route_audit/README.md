@@ -1,91 +1,87 @@
 # Experiment 4: Recoverability Boundary Diagnostic
 
-## 1. Experiment Objective
-This experiment studies the recoverability boundary of route alignment and audit reliability under controlled simulation settings. It evaluates whether route-label retention, source-signature noise, and finite evidence produce recoverable diagnostics without claiming causal identification.
+## Overview
 
-## 2. Scientific Boundary
-Experiment 4 is a recoverability boundary diagnostic. It does not identify a real-world causal attribution rule, prove proxy impossibility, or treat calibration improvement as route validity.
+This experiment studies the **recoverability boundary** of route alignment and
+audit reliability under controlled simulation settings. It evaluates whether
+route-label retention, source-signature noise, and finite evidence produce
+recoverable diagnostics — without claiming causal identification. It is a
+recoverability boundary diagnostic: it does not identify a real-world causal
+attribution rule, prove proxy impossibility, or treat calibration improvement
+as route validity. The authoritative input/output contract (module structure,
+metrics, uncertainty semantics, provenance) is in
+[`docs/EXPERIMENT_IO_CONTRACT.md`](../docs/EXPERIMENT_IO_CONTRACT.md).
 
-## 3. Data and Split
-The design uses controlled simulation settings for module A, module B, and module C, with frozen route-label rates, source-signature noise levels, audit rates, and calibration-fold structure. The current result schema is `exp4_controlled_route_audit_v3`.
+## Input
 
-## 4. Estimand / Metrics
-Module A's primary discrepancy is the mean pairwise gap discrepancy, `D_pair` (`mean_pairwise_gap_discrepancy`). Its secondary complete-map quantity is the mean round-max gap defect, `A_T/T` (`mean_round_max_gap_defect`). These are distinct quantities and must not be reinterpreted as equal.
+- **Data availability**: `AVAILABLE_IN_REPO` — no external raw dataset.
+- The controlled simulation (state process, delay process, observation proxy,
+  calibration) is part of the package under `exp4/simulation/`.
+- The design uses frozen route-label rates, source-signature noise levels,
+  audit rates, and calibration-fold structure (module A/B/C). Current result
+  schema: `exp4_controlled_route_audit_v3`.
 
-Module B audits the pair-average unit discrepancy. Module C reports pair-average comparison discrepancy before and after out-of-fold calibration. All outputs remain recoverability diagnostics rather than policy value estimates or route-validity certificates.
+## Run
 
-## 5. Implementation Contract
-The pipeline validates source-bound and full-label zero defect, action-pair invariants, positivity, temporal leakage constraints, affine recovery, and the Exp1-Exp4 boundary. The run and figure outputs are generated from frozen derived data and validated by the self-check mechanism.
-
-## 6. Output Artifacts
-Outputs are separated into calibration, module A, module B, and module C results, with figure bundles and tables written from the frozen derived outputs.
-
-The current canonical (promoted paper result) is
-`outputs/runs/full_20260817T071019Z_7d7146b7/` (result schema
-`exp4_controlled_route_audit_v3`, `paper_result=true`, promotion PASS,
-provenance VERIFIED). The earlier v2 run
-`outputs/runs/full_20260807T045219Z_7eeb2a31/` is kept as a **superseded
-legacy** result; it is no longer the canonical or paper-facing result. The
-legacy v2 field `population_action_gap_defect` corresponds to the v3 secondary
-`mean_round_max_gap_defect`; it is not a numerical reference target for the
-recomputed primary `D_pair`.
-
-## 7. Validation and Self-check
-The self-check validates scientific invariants and output consistency. Promotion is a separate manual action that accepts only a completed full v3 run that passes the relevant gates and receives human approval; the current v3 run has completed that approval (`paper_promotion=PASS`).
-
-## 8. Running Commands
-```powershell
+```bash
 python -m pip install -r requirements.txt
+
+# Fast / middle / formal full tiers
 python main.py fast --n-jobs 4
 python main.py middle --n-jobs 8
 python main.py full --n-jobs 8
-```
 
-```powershell
+# Downstream stages for a completed run
 python main.py validate --run-dir outputs/runs/<run_id>
 python main.py aggregate --run-dir outputs/runs/<run_id>
 python main.py plot --run-dir outputs/runs/<run_id>
 python main.py tables --run-dir outputs/runs/<run_id>
 python main.py report --run-dir outputs/runs/<run_id>
+python main.py provenance --run-dir outputs/runs/<run_id>
 ```
 
-### Selective rebuild without scientific rerun
+Selective rebuild of a downstream stage without a scientific rerun uses
+`main.py reconcile --run-dir outputs/runs/<run_id> --rebuild {validation,
+aggregation,reporting,downstream}` (see `REPRODUCE.md` section D.4). `main.py
+full` refuses to start from a dirty Exp4 worktree or an unresolvable git
+commit.
 
-Use the explicit reconcile command for a verified source run. It audits the
-simulation-stage source and scientific-config hashes, calibration identity, raw path
-manifests, run lineage, and prior scientific validity before reusing raw
-simulation outputs.
+## Output
 
-```powershell
-python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild validation
-python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild aggregation
-python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild reporting
-python main.py reconcile --run-dir outputs/runs/<run_id> --rebuild downstream
-```
+Outputs are separated into calibration, module A, module B, and module C
+results, with figure bundles and tables written from the frozen derived
+outputs.
 
-The command writes `logs/exp4_provenance_reconciliation.json` and preserves
-raw simulation data. A different complete source-tree hash or Git commit alone
-does not require a new simulation; only a simulation/configuration/calibration
-mismatch or incomplete raw evidence does.
+## Paper-facing artifacts
 
-Stage identity is `source_hash(stage) + config_hash(stage)`. The simulation
-source closure contains the recursively consumed Module A/B/C scientific code,
-including `metrics/action_gaps.py` and `metrics/ranking_diagnostics.py`.
-`metrics/monte_carlo.py` is aggregation-only; provenance/manifest writers are
-infrastructure. `EXPERIMENT_DISPLAY_NAME` and figure/table IDs are reporting
-metadata. Full Module A seed count and Module B replication count are scientific
-design, while aggregation bootstrap replication count is downstream-only. The
-legacy monolithic `config_hash` and complete source-tree hash remain
-informational compatibility metadata.
+- Canonical result: `outputs/runs/full_20260817T071019Z_7d7146b7/`
+  (schema `exp4_controlled_route_audit_v3`, `paper_result=true`,
+  `paper_promotion=PASS`, provenance VERIFIED).
+- Main figure ID: `fig_exp4_route_alignment_and_audit_reliability`.
+- Publication bundle:
+  `../publication/CR-EXP-OUTPUT-V1/exp4_controlled_route_audit/`.
+- Superseded legacy: `outputs/runs/full_20260807T045219Z_7eeb2a31/` (v2) is
+  kept but is no longer canonical. The legacy v2 field
+  `population_action_gap_defect` corresponds to the v3 secondary
+  `mean_round_max_gap_defect`; it is not a numerical reference target for the
+  recomputed primary `D_pair`.
 
-For an accepted historical run whose hash definition predates this closure:
+## Validation
 
-```powershell
-python main.py migrate-provenance --run-dir outputs/runs/<run_id>
-```
+The self-check validates scientific invariants and output consistency
+(including `panel_a` `D_pair` and legacy v2 exclusion). Promotion is a
+separate manual action that accepts only a completed full v3 run that passes
+the relevant gates and receives human approval; the current v3 run has
+completed that approval. A changed source tree or Git commit alone does not
+force a new simulation; only a simulation/configuration/calibration mismatch
+or incomplete raw evidence does.
 
-The migration reconstructs the corrected simulation hash from the recorded Git
-commit and stops for human review if it differs from the corrected current hash.
+## Interpretation boundary
 
-## 9. Known Limitations
-The experiment is limited to controlled recoverability diagnostics and does not support claims about real-world causal identification or policy validity.
+- Module A's primary discrepancy is the mean pairwise gap discrepancy `D_pair`
+  (`mean_pairwise_gap_discrepancy`); its secondary complete-map quantity is
+  `A_T/T` (`mean_round_max_gap_defect`). These are distinct quantities and
+  must not be reinterpreted as equal.
+- All outputs remain recoverability diagnostics rather than policy value
+  estimates or route-validity certificates. The experiment does not support
+  claims about real-world causal identification or policy validity.

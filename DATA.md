@@ -5,7 +5,17 @@ datasets are **not redistributed** by this repository. Local input
 directories are kept intact on the researcher's machine; only the README
 describing each input directory is tracked by git.
 
+## Availability summary
+
+| Experiment | Status | Note |
+|---|---|---|
+| Exp1 | `AVAILABLE_IN_REPO` | controlled simulator; no external data |
+| Exp2 | `DOWNLOAD_REQUIRED` / `NOT_REDISTRIBUTED` | Criteo delayed-conversion log |
+| Exp3 | `DOWNLOAD_REQUIRED` / `NOT_REDISTRIBUTED` | KuaiRand-1K logged recommendation data |
+| Exp4 | `AVAILABLE_IN_REPO` | controlled simulator; no external data |
+
 ## Experiment 1
+*(`AVAILABLE_IN_REPO`)*
 
 - **Type**: synthetic / controlled simulator.
 - **No external raw dataset.**
@@ -17,6 +27,7 @@ describing each input directory is tracked by git.
 - Expected local data: none to download.
 
 ## Experiment 2
+*(`DOWNLOAD_REQUIRED` / `NOT_REDISTRIBUTED`)*
 
 - **Dataset**: Criteo delayed-conversion attribution dataset
   ("Attribution Modeling for Bidding").
@@ -49,6 +60,7 @@ describing each input directory is tracked by git.
   `exp2_real_delayed_conversion_logs/.gitignore`).
 
 ## Experiment 3
+*(`DOWNLOAD_REQUIRED` / `NOT_REDISTRIBUTED`)*
 
 - **Dataset**: KuaiRand-1K (logged sequential recommendation feedback).
 - **Official source**: released by Kuaishou; see
@@ -71,6 +83,7 @@ describing each input directory is tracked by git.
   `exp3_sequential_recommendation_delayed_feedback/.gitignore`). Fast mode
   can run on a deterministic synthetic fixture that is never paper eligible.
 
+*(`AVAILABLE_IN_REPO`)*
 ## Experiment 4
 
 - **Type**: synthetic / controlled simulator.

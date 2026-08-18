@@ -1,43 +1,72 @@
 # Experiment 3: Logged-Supported Ranking Recovery
 
-## 1. Experiment Objective
-This experiment evaluates logged-supported ranking recovery using the frozen KuaiRand design, with score recovery, reference-pair gap recovery, and ranking recovery as the scientific chain.
+## Overview
 
-## 2. Scientific Boundary
-The experiment is a logged-support diagnostic. It does not estimate structural causal regret, causal action gaps, off-policy value, online policy value, deployment performance, or optimal recommendations.
+This experiment evaluates **logged-supported ranking recovery** on the frozen
+KuaiRand design, with score recovery → reference-pair gap recovery → ranking
+recovery as the scientific chain. It is a logged-support diagnostic: it does
+not estimate structural causal regret, causal action gaps, off-policy value,
+online policy value, deployment performance, or optimal recommendations. The
+authoritative input/output contract (route families, paper-term ↔
+code-identifier mapping, metrics, uncertainty semantics) is in
+[`docs/EXPERIMENT_IO_CONTRACT.md`](../docs/EXPERIMENT_IO_CONTRACT.md).
 
-## 3. Data and Split
-The frozen design uses the fixed history and evaluation logs, a deterministic two-fold user split, support thresholds, time bins, and the constructed six-hour post-exposure target. The three route families are the arrival carrier, historical mean, and ridge proxy.
+## Input
 
-## 4. Estimand / Metrics
-The primary estimands are pooled supported-cell Spearman, MAE, maximum reference-pair gap error, sign agreement, and paired ranking contrast. The route contrast is reported as the Ridge-over-Historical paired value gain.
+- **Data availability**: `DOWNLOAD_REQUIRED` / `NOT_REDISTRIBUTED` — KuaiRand-1K
+  logs; see [`DATA.md`](../DATA.md) and `inputs/README.md`.
+- Expected local files under `inputs/KuaiRand-1K/data/`:
+  `log_standard_4_08_to_4_21_1k.csv`, `log_standard_4_22_to_5_08_1k.csv`,
+  `video_features_basic_1k.csv`.
+- The frozen design uses a deterministic two-fold user split, support
+  thresholds, time bins, and a constructed six-hour post-exposure target. The
+  three route families are the arrival carrier, historical mean, and ridge
+  proxy.
 
-## 5. Implementation Contract
-The pipeline reconstructs the design contract, applies the route scores, audits target components, conducts support preflight checks, generates the primary metrics, and writes the self-check manifest. The ridge selection is part of the frozen logic and is validated independently.
+## Run
 
-## 6. Output Artifacts
-Canonical outputs include the metric registry, primary route results, paired ranking contrast, support coverage, gap error distribution, target audit, ridge history cross-validation summary, and diagnostics tables.
-
-The paper-facing artifact set is curated in [`paper_candidate/`](paper_candidate/) (main and appendix figures, figure source data, paper tables, and `manifest.json`) from the canonical full run `exp3-full-20260807T072340Z`.
-
-## 7. Validation and Self-check
-The independent self-check validates the frozen design, route support, ridge selection, target audit, and figure-data contract. Fast runs are engineering gates only and are not paper results.
-
-## 8. Running Commands
 ```bash
+# From the experiment directory (see RUN_THIS_FIRST.txt for the full checklist)
 python -m compileall .
 pytest -q
-python main.py fast --synthetic-fixture --n-jobs 4
-python main.py self-check --mode fast --output-dir outputs/<fixture_run_id>
+
+# Audit the real split before any run
+python main.py audit-inputs
+
+# Fast tier (engineering gate)
 python main.py fast --n-jobs 4
 python main.py self-check --mode fast --run-id <real_fast_run_id>
-```
+python main.py fast --synthetic-fixture --n-jobs 4   # no external data needed
 
-```bash
+# Formal full run + promotion
 python main.py full --n-jobs <N>
 python main.py self-check --mode full --run-id <new_full_run_id>
 python promote.py --run-id <new_full_run_id>
 ```
 
-## 9. Known Limitations
-The experiment remains limited to logged-supported recovery and does not claim deployment or causal identification beyond the frozen contract.
+## Output
+
+Canonical outputs include the metric registry, primary route results, paired
+ranking contrast, support coverage, gap error distribution, target audit,
+ridge history cross-validation summary, and diagnostics tables.
+
+## Paper-facing artifacts
+
+- Canonical result: `paper_candidate/` from the canonical full run
+  `exp3-full-20260807T072340Z` (`paper_result=true`).
+- Main figure ID: `exp3_main_score_gap_ranking`.
+- Publication bundle:
+  `../publication/CR-EXP-OUTPUT-V1/exp3_sequential_recommendation_delayed_feedback/`.
+
+## Validation
+
+The independent self-check validates the frozen design, route support, ridge
+selection, target audit, and figure-data contract. Fast runs are engineering
+gates only and are not paper results.
+
+## Interpretation boundary
+
+- The resampling interval is a user-cluster empirical **sensitivity range**
+  (2.5%–97.5%), **not** a confidence interval.
+- The experiment remains limited to logged-supported recovery and does not
+  claim deployment or causal identification beyond the frozen contract.
