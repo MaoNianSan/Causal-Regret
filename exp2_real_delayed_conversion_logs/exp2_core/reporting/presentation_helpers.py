@@ -205,6 +205,7 @@ def appendix_figure(
         layout,
         figure_id=figure_id,
         section="appendix",
+        layout_profile="appendix",
         metadata=build_metadata(
             source,
             claim=title,

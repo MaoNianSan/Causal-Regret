@@ -6,15 +6,38 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_appendix_carrier_and_gap_diagnostics.pdf": "76809ae6b9bb3f93fb9e2c3e02acef712a9543b3fdcc2bd2446b29e3cd48de2b",
-    "exp3_appendix_carrier_and_gap_diagnostics.png": "03cf042344ab280c1e365a580e3b0fb9ad81600c43039c4c42fe376de17b7a49",
-    "exp3_appendix_carrier_and_gap_diagnostics.svg": "d2d1b7dd113d1fa85c152a300438a8a889551e70a3cc265494bd38d3f3b5d228"
+    "exp3_appendix_carrier_and_gap_diagnostics.pdf": "8e4ecced7e310b503c53f1b0a12ee738379b719f9c3ff522e2820470c9ce2b75",
+    "exp3_appendix_carrier_and_gap_diagnostics.png": "486fd98e57af7aa41679e9d638bc1a782af5b6efa6c4c6528c93e267fc759a34",
+    "exp3_appendix_carrier_and_gap_diagnostics.svg": "3f3cc8cdc5c308675544de5eb15f5c0eef616bcb1de69db1b4ea396c4b723a24"
   },
   "figure_id": "exp3_appendix_carrier_and_gap_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:31.860143+00:00",
+  "generated_at": "2026-08-19T03:42:08.500491+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {},
   "narrative_claim": "Carrier and gap diagnostics",
@@ -24,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
   "presentation_contract": {
     "layout": [
       1,
@@ -36,7 +59,7 @@
       "exp3_appendix_gap_error_distribution_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:7f4264529b5a9091fd7eab703e6189e7bc84528bc43457eab4fc273d2464c7ef",
+  "presentation_source_lineage": "presentation:fb40568064ee468186ee0c7887d18a1bf40f15179973c4a17f6676e3de89eb92",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Carrier and gap diagnostics",
@@ -47,7 +70,7 @@
   "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp3_appendix_carrier_and_gap_diagnostics.csv",
-  "source_data_file_hash": "d5a092cbac7e37e5d3634b4ddb9817c064a858f500f0ccf05395996c595d1b92",
+  "source_data_file_hash": "b0ccdd6cd0700e69da5af7b0d77bde1730419ee6b80f26c7fc6d3179f3c36296",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_appendix_arrival_carrier_diagnostic_data.csv": "dfb9a47ce38a59bb997d84c1ad5b744d9a0be17c1d43ba2c0a76fa00c1ada3f4",
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_appendix_gap_error_distribution_data.csv": "4df81c19560a5336e2c5e31b6a8bba195a5fda4525b04bc3f9d823652cf8a53f"

@@ -125,7 +125,14 @@ def render_presentation(
     frame["comparison_group"] = frame["record_type"].map(
         {"arrival_route": "source_vs_arrival", "source_route_pair": "source_pair"}
     )
-    fig, axes = plt.subplots(2, 2, figsize=(7.1, 4.6), constrained_layout=True)
+    fig, axes = plt.subplots(2, 2, figsize=(7.1, 4.6), constrained_layout=False)
+    # Explicit fixed margins (constrained_layout does not account for
+    # figure-level legends): the bottom band reserves room for the legend
+    # *inside* the canvas, below the bottom-row x labels.  ``left`` covers
+    # the long attribution labels of the left column.
+    fig.subplots_adjust(
+        left=0.30, right=0.985, top=0.94, bottom=0.20, wspace=0.24, hspace=0.52
+    )
     specs = [
         (
             0,
@@ -133,7 +140,7 @@ def render_presentation(
             "source_vs_arrival",
             "allocation_tv",
             "Allocation TV",
-            "(a) Source-time route vs arrival",
+            "(a) Route vs arrival",
         ),
         (
             0,
@@ -141,7 +148,7 @@ def render_presentation(
             "source_vs_arrival",
             "kendall_tau_b",
             "Kendall tau-b",
-            "(b) Source-time route vs arrival",
+            None,
         ),
         (
             1,
@@ -149,7 +156,7 @@ def render_presentation(
             "source_pair",
             "allocation_tv",
             "Allocation TV",
-            "(c) Pairwise source-time routes",
+            "(b) Source-route pairs",
         ),
         (
             1,
@@ -157,7 +164,7 @@ def render_presentation(
             "source_pair",
             "kendall_tau_b",
             "Kendall tau-b",
-            "(d) Pairwise source-time routes",
+            None,
         ),
     ]
     for row_index, column_index, group, metric, xlabel, title in specs:
@@ -165,18 +172,26 @@ def render_presentation(
         subset = frame[frame.comparison_group.eq(group)].reset_index(drop=True)
         y = np.arange(len(subset))[::-1]
         draw_interval_panel(axis, subset, metric, y)
-        axis.set_yticks(y, subset["display_label"].tolist())
+        axis.set_yticks(
+            y,
+            subset["display_label"].tolist() if column_index == 0 else [],
+        )
         axis.set_xlabel(xlabel)
-        axis.set_title(title, loc="left", fontweight="bold")
+        if title:
+            # Row identity is a single short title on the left column; the
+            # right column repeats the metric through its x label only.
+            axis.set_title(title, loc="left", fontweight="bold")
         axis.grid(axis="x", alpha=0.22, linewidth=0.55)
         if metric == "kendall_tau_b":
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
+    # Legend sits inside the reserved bottom band: anchored at the canvas
+    # bottom edge (never outside), clear of every bottom-row x label.
     fig.legend(
         handles=main_legend_handles(),
         frameon=False,
         loc="lower center",
         ncol=2,
-        bbox_to_anchor=(0.5, -0.02),
+        bbox_to_anchor=(0.5, 0.02),
     )
     assert_no_suptitle(fig)
     manifest = load_run_manifest(source)
@@ -186,6 +201,7 @@ def render_presentation(
         layout,
         figure_id=source.main_figure_id,
         section="main",
+        layout_profile="exp2_main",
         metadata=build_metadata(
             source,
             claim="Attribution sensitivity on a fixed delayed-conversion cohort.",

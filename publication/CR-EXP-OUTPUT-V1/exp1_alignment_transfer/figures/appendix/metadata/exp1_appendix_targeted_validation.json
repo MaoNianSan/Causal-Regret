@@ -6,15 +6,38 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "exp1_appendix_targeted_validation.pdf": "e7796efccffc729e5f3dee3b37480ad1ad046c413155ac9ff60bab04beb37938",
-    "exp1_appendix_targeted_validation.png": "43c77b5b54e5ab0dcc03ab21a0439121d10ebc38cb6dd3e6404918c670ac2e88",
-    "exp1_appendix_targeted_validation.svg": "77fe78d259d1155d3ea4bda6e86b5d95aa72f95a08177eea85e9638cffc35d4b"
+    "exp1_appendix_targeted_validation.pdf": "35eb2598bb28be2f8731d25ad22cda4268426bd30f9dc8922a06ad99efec7950",
+    "exp1_appendix_targeted_validation.png": "3b15320bde83e68cebe42bcd17a6a5a58e94d3ba79ea30a5666a7e8c0a4f7942",
+    "exp1_appendix_targeted_validation.svg": "62ef54892e959e7634f010f296e2f4dd96b8420d0273d6b70c00a2938851d525"
   },
   "figure_id": "exp1_appendix_targeted_validation",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:24.454370+00:00",
+  "generated_at": "2026-08-19T03:41:56.451458+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix diagnostic from the frozen targeted-validation source; no targeted recomputation.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {
     "structural_regret": "R_T^c",
@@ -27,8 +50,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "f2216dd37ec9af81398c939ef7c30abc62700eaa4fc70b7697511ec7d8c2b2de",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
   "presentation_contract": {
     "layout": [
       1,
@@ -38,7 +61,7 @@
       "fig_exp1_targeted_validation_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:be1a0f815ba646d3accdf64a99307d1c0b899faeee946df8a7f16075b5b81de1",
+  "presentation_source_lineage": "presentation:9ac9d5703df4857df35586ded51518c8d9c770b63eb41ce9f132fbd1073ef9fd",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Mean-delay robustness and systematic-misbinding horizon scaling from the frozen targeted validation.",
@@ -49,7 +72,7 @@
   "scientific_source_lineage": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp1_appendix_targeted_validation.csv",
-  "source_data_file_hash": "8a4e2978c9fa41348bb073bc4319006ac36193389618432c9ae774dfda7a11b9",
+  "source_data_file_hash": "ea7c9183c7904216f49212d10179b0ca4c8162d5888a74321da4ca74036c8039",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\targeted\\fig_exp1_targeted_validation_data.csv": "2a28c427ecefb9d8d5c45e7daaee9ff1201730882c4e2b7c2eb458415763fb42"
   },

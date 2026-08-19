@@ -6,15 +6,38 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "exp2_appendix_ambiguity_heatmap.pdf": "475a6c9bab48079bf0e4a0bfea8957e88b0df86f969a1b67669cc94c677f35a0",
-    "exp2_appendix_ambiguity_heatmap.png": "14f7aa96bf9f7d3584497a06bad607b1eabccab5ba7e6e76dfa1827bcb84217f",
-    "exp2_appendix_ambiguity_heatmap.svg": "8b9947e47cb4f536ae779dcc6ba0af87fb4b76b275aaadd2e1cc2ca4c29c1b96"
+    "exp2_appendix_ambiguity_heatmap.pdf": "d3e3df2e79200175f87cdda508786e91394081fdb77830f6eaba4ccfe2ef735f",
+    "exp2_appendix_ambiguity_heatmap.png": "e0bc3925985fd9003b05b5e04821298ab565395e3525819046c4308896c53c91",
+    "exp2_appendix_ambiguity_heatmap.svg": "9cf3ee2bb5a20861312357206c9940de4a94066c38dd6690434dce69761f2d0d"
   },
   "figure_id": "exp2_appendix_ambiguity_heatmap",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:26.389203+00:00",
+  "generated_at": "2026-08-19T03:41:59.132076+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {
     "allocation_tv": "allocation_tv"
@@ -25,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
   "presentation_contract": {
     "layout": [
       1,
@@ -34,7 +57,7 @@
     ],
     "source": "figure_exp2_ambiguity_mechanism_source.csv"
   },
-  "presentation_source_lineage": "presentation:b2311a4923ad80ccc8372cfc274b65a937cec4d7b4e4f299faf7eaba8d4f8cc2",
+  "presentation_source_lineage": "presentation:bade1e15a30ad9abb5f8fd5f08f79479d36452535d863a95241818bb7c9046fa",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Ambiguity-mechanism diagnostics",
@@ -45,7 +68,7 @@
   "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp2_appendix_ambiguity_heatmap.csv",
-  "source_data_file_hash": "1b7ecb9108af86ae6fd87bb857037ed8759d62383ae98432febf4f47f4b5fbe4",
+  "source_data_file_hash": "0ddbcbfe600908977abdf1aac61ce1ca72c802bfad1e51fbaa3f266ac6aba594",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_ambiguity_mechanism_source.csv": "01bc3c749e12c0bb00b88647e3e3e3dd4e33659db8e3010b7982bc6d0eb545e2"
   },

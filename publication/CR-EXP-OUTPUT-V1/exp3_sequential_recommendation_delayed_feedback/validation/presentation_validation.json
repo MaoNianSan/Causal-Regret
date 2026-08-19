@@ -286,6 +286,46 @@
       "passed": true
     },
     {
+      "check": "exp3_main_score_gap_ranking:layout_gates_recorded",
+      "details": "exp3_main",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:legend_xlabel_clearance",
+      "details": "legend clear of every x label",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:no_long_legend_text",
+      "details": "legend entries are short and single-purpose",
+      "passed": true
+    },
+    {
+      "check": "exp3_main_score_gap_ranking:layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    },
+    {
       "check": "exp3_main_score_gap_ranking:hash:exp3_main_score_gap_ranking.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\main\\pdf\\exp3_main_score_gap_ranking.pdf",
       "passed": true
@@ -576,6 +616,31 @@
       "passed": true
     },
     {
+      "check": "exp3_appendix_support_and_dependence:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_support_and_dependence:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp3_appendix_support_and_dependence:hash:exp3_appendix_support_and_dependence.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_support_and_dependence.pdf",
       "passed": true
@@ -646,6 +711,31 @@
       "passed": true
     },
     {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_carrier_and_gap_diagnostics:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp3_appendix_carrier_and_gap_diagnostics:hash:exp3_appendix_carrier_and_gap_diagnostics.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp3_sequential_recommendation_delayed_feedback\\figures\\appendix\\pdf\\exp3_appendix_carrier_and_gap_diagnostics.pdf",
       "passed": true
@@ -713,6 +803,31 @@
     {
       "check": "exp3_appendix_calibration_and_selection:svg_live_text",
       "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp3_appendix_calibration_and_selection:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
       "passed": true
     },
     {

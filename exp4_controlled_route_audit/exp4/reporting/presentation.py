@@ -29,6 +29,23 @@ AUDIT_DESIGNS = [
     ("ambiguity_selective_unweighted", "#b54708", "s"),
     ("ambiguity_selective_ipw", "#2e7d32", "^"),
 ]
+# Internal identifiers are kept for data selection only; every paper-facing
+# label is a short display name (no snake_case identifier reaches the canvas).
+AUDIT_DESIGN_DISPLAY = {
+    "mcar_unweighted": "MCAR, unweighted",
+    "ambiguity_selective_unweighted": "Ambiguity-selective, unweighted",
+    "ambiguity_selective_ipw": "Ambiguity-selective, IPW",
+}
+CALIBRATION_DISPLAY = {
+    "affine_linked": "Affine-linked control",
+    "blocked_correspondence_destroyed": "Correspondence-destroyed control",
+}
+# Dense appendix composites reuse compact forms of the same display names so
+# three-panel layouts keep room for data and titles.
+CALIBRATION_DISPLAY_COMPACT = {
+    "affine_linked": "Affine-linked",
+    "blocked_correspondence_destroyed": "Corr.-destroyed",
+}
 SIGMA_PROXY_MARKERS = {
     0.0: "o",
     0.1: "s",
@@ -216,6 +233,7 @@ def _appendix_composite(
     figure_id: str,
     title: str,
     paths: list[Path],
+    panel_titles: list[str] | None = None,
 ) -> None:
     fig, axes = plt.subplots(
         1, len(paths), figsize=(7.1, 3.1), constrained_layout=True, squeeze=False
@@ -250,6 +268,7 @@ def _appendix_composite(
             fig.colorbar(
                 image,
                 ax=axis,
+                fraction=0.03,
                 label="D_pair" if panel_index == 0 else "Optimal-set conflict",
             )
             plotted = [
@@ -287,7 +306,9 @@ def _appendix_composite(
                     group[metric],
                     marker="o",
                     linewidth=0.8,
-                    label=design.replace("_", " "),
+                    label=AUDIT_DESIGN_DISPLAY.get(
+                        design, design.replace("_", " ")
+                    ),
                 )
             axis.set_xlabel(r"$\rho_{audit}$")
             axis.set_ylabel(metric.replace("_", " "))
@@ -326,7 +347,15 @@ def _appendix_composite(
                         ),
                     ]
                 )
-            axis.set_yticks(np.arange(len(frame)), frame.control_id)
+            axis.set_yticks(
+                np.arange(len(frame)),
+                [
+                    CALIBRATION_DISPLAY_COMPACT.get(
+                        str(value), str(value).replace("_", " ")
+                    )
+                    for value in frame.control_id
+                ],
+            )
             axis.set_xlabel("Mean absolute Spearman correspondence")
         elif panel_index == 1:
             axis.scatter(
@@ -377,7 +406,15 @@ def _appendix_composite(
                         ),
                     ]
                 )
-            axis.set_yticks(np.arange(len(frame)), frame.control_id)
+            axis.set_yticks(
+                np.arange(len(frame)),
+                [
+                    CALIBRATION_DISPLAY_COMPACT.get(
+                        str(value), str(value).replace("_", " ")
+                    )
+                    for value in frame.control_id
+                ],
+            )
             axis.set_xlabel("Pairwise discrepancy")
         for source_index, metric, value in plotted:
             long_rows.append(
@@ -399,7 +436,9 @@ def _appendix_composite(
                 }
             )
         axis.set_title(
-            path.stem.replace("exp4_", "")
+            panel_titles[panel_index]
+            if panel_titles is not None and panel_index < len(panel_titles)
+            else path.stem.replace("exp4_", "")
             .replace("fig_app_", "")
             .replace("_data", "")
             .replace("_", " ")
@@ -424,6 +463,7 @@ def _appendix_composite(
         layout,
         figure_id=figure_id,
         section="appendix",
+        layout_profile="appendix",
         metadata=_metadata(
             source,
             claim=title,
@@ -520,7 +560,7 @@ def render_presentation(
                 marker=marker,
                 linewidth=0.9,
                 capsize=2,
-                label=design.replace("_", " "),
+                label=AUDIT_DESIGN_DISPLAY[design],
             )
         full = audit[audit.audit_design_id.eq("full_population")]
         axis.plot(1, full[metric].iloc[0], marker="D", color="black")
@@ -559,10 +599,12 @@ def render_presentation(
             va="center",
             fontsize=7,
         )
-    axes[1, 1].set_yticks([1, 0], CALIBRATION_CONTROLS)
+    axes[1, 1].set_yticks(
+        [1, 0], [CALIBRATION_DISPLAY[key] for key in CALIBRATION_CONTROLS]
+    )
     axes[1, 1].set_xlabel("Pairwise discrepancy")
     axes[1, 1].set_title(
-        "(d) Calibration-family recoverability", loc="left", fontweight="bold"
+        "(d) Calibration recoverability", loc="left", fontweight="bold"
     )
     axes[1, 1].grid(axis="x", alpha=0.2)
     assert_no_suptitle(fig)
@@ -573,6 +615,7 @@ def render_presentation(
         layout,
         figure_id=source.main_figure_id,
         section="main",
+        layout_profile="exp4_main",
         metadata=_metadata(
             source,
             claim="Population route alignment, audit reliability, and calibration-family recoverability are distinct diagnostics.",
@@ -620,6 +663,7 @@ def render_presentation(
                 source.source_run
                 / "figures/data/fig_app_exp4_smooth_loss_robustness_data.csv",
             ],
+            ["D_pair heatmap", "Conflict heatmap", "Loss robustness"],
         ),
         (
             "exp4_appendix_audit_support",
@@ -630,6 +674,7 @@ def render_presentation(
                 weights,
                 performance,
             ],
+            ["Effective support", "Weight diagnostics", "Audit performance"],
         ),
         (
             "exp4_appendix_calibration_diagnostics",
@@ -641,11 +686,17 @@ def render_presentation(
                 / "derived/module_c/exp4_module_c_parameter_recovery.csv",
                 controls_path,
             ],
+            ["Correspondence checks", "Parameter recovery", "Control summary"],
         ),
     ]
-    for figure_id, title, paths in appendix_groups:
+    for figure_id, title, paths, panel_titles in appendix_groups:
         _appendix_composite(
-            source, layout, figure_id=figure_id, title=title, paths=paths
+            source,
+            layout,
+            figure_id=figure_id,
+            title=title,
+            paths=paths,
+            panel_titles=panel_titles,
         )
     for filename, stem, semantics in (
         (

@@ -251,6 +251,41 @@
       "passed": true
     },
     {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout_gates_recorded",
+      "details": "exp4_main",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:no_internal_ids_in_labels",
+      "details": "no internal identifiers in labels",
+      "passed": true
+    },
+    {
+      "check": "fig_exp4_route_alignment_and_audit_reliability:layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    },
+    {
       "check": "fig_exp4_route_alignment_and_audit_reliability:hash:fig_exp4_route_alignment_and_audit_reliability.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\main\\pdf\\fig_exp4_route_alignment_and_audit_reliability.pdf",
       "passed": true
@@ -496,6 +531,31 @@
       "passed": true
     },
     {
+      "check": "exp4_appendix_route_alignment_detail:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_route_alignment_detail:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp4_appendix_route_alignment_detail:hash:exp4_appendix_route_alignment_detail.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_route_alignment_detail.pdf",
       "passed": true
@@ -566,6 +626,31 @@
       "passed": true
     },
     {
+      "check": "exp4_appendix_audit_support:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_audit_support:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp4_appendix_audit_support:hash:exp4_appendix_audit_support.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp4_controlled_route_audit\\figures\\appendix\\pdf\\exp4_appendix_audit_support.pdf",
       "passed": true
@@ -633,6 +718,31 @@
     {
       "check": "exp4_appendix_calibration_diagnostics:svg_live_text",
       "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp4_appendix_calibration_diagnostics:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
       "passed": true
     },
     {

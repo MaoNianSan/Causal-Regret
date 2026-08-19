@@ -8,6 +8,7 @@ from pathlib import Path
 import sys
 
 from presentation import SPEC_ID
+from presentation.common import PreviewLayout
 from presentation.renderers import render_source, write_appendix_order, write_overview_table
 from presentation.validation import validate_preview
 from presentation_sources import iter_sources
@@ -61,9 +62,12 @@ def _render(args: argparse.Namespace) -> int:
     root = _output_root(args)
     summaries = []
     for source in iter_sources(args.exp, mode=args.mode):
+        layout = PreviewLayout(root, source.experiment_id, source.run_id, mode=args.mode)
+        # The overview table must exist before the renderer snapshots
+        # artifact hashes into the presentation manifest.
+        write_overview_table(layout, paper_result=source.paper_result)
         result = render_source(source, root)
         layout = result["layout"]
-        write_overview_table(layout, paper_result=source.paper_result)
         write_appendix_order(layout, paper_result=source.paper_result)
         summaries.append(
             {

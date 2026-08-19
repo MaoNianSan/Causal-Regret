@@ -6,15 +6,48 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "fig_exp4_route_alignment_and_audit_reliability.pdf": "ac5cb2954cb085b0a4e8ef3edef2515bb24ef383dbf97c35c966ff27c258848c",
-    "fig_exp4_route_alignment_and_audit_reliability.png": "3e782c2ff1d542938bb6c2ebae1fcb78b29c65f2b9e6b7366bb49d42305e286a",
-    "fig_exp4_route_alignment_and_audit_reliability.svg": "5fe0d2ef9bc0fe22a18118f94c987b59a0365f57dc3bba54009df03a41ee783e"
+    "fig_exp4_route_alignment_and_audit_reliability.pdf": "3df71383a60b7d40e1b1821bc58ec14ff351b6d4f0c718fa493dc94bb859d02a",
+    "fig_exp4_route_alignment_and_audit_reliability.png": "3ec2277839a635612a96cd1171f515193d052c3bd6e14f7da9603b37b759cb97",
+    "fig_exp4_route_alignment_and_audit_reliability.svg": "ac31a5f35257422ba84e058eff744b6614adb278c73fd61e0dcb81d952a8a44c"
   },
   "figure_id": "fig_exp4_route_alignment_and_audit_reliability",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:34.758431+00:00",
+  "generated_at": "2026-08-19T03:42:13.318028+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Population alignment, audit reliability, and calibratability are distinct; lower calibrated discrepancy does not prove route validity.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:no_internal_ids_in_labels",
+      "details": "no internal identifiers in labels",
+      "passed": true
+    },
+    {
+      "check": "layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    }
+  ],
+  "layout_profile": "exp4_main",
   "marker_semantics": {
     "filled_markers": "full-sample audit estimates or raw discrepancy",
     "open_diamond": "deterministic controlled endpoint",
@@ -43,8 +76,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "ea10c7fa9a1bf7ae3c703511666656fbd6a068be4782fc4ee46b5eaca623376d",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -79,7 +112,7 @@
       "blocked_correspondence_destroyed"
     ]
   },
-  "presentation_source_lineage": "presentation:033c76bc498088880826fc0e81326cf7129209c71fe1ed7c4f8aa44acffd7b4c",
+  "presentation_source_lineage": "presentation:64bf8a360c2f3648ac3c2d6b3c6e451b6661213d59b0bf70dce5297574217701",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Population route alignment, audit reliability, and calibration-family recoverability are distinct diagnostics.",
@@ -90,7 +123,7 @@
   "scientific_source_lineage": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
   "scientific_source_paper_result": true,
   "source_data": "figures/main/data/fig_exp4_route_alignment_and_audit_reliability.csv",
-  "source_data_file_hash": "4635527a05846ccab58ff9e356445d75f87b693602abf2a4ecadbd8ef2a4db04",
+  "source_data_file_hash": "dddfeab7293f4c32e85a5f355deb315446d6dbf652178533b716e4bcc84b2db8",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_a\\exp4_module_a_population_summary.csv": "04d85aecd5cc4c82ecff304c39bc7e9d987178adfd6afe7e303df3769f98d0b4",
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_b\\exp4_module_b_audit_performance.csv": "c4ab64f53d4c92b87bbb719a962fdc8d4036df7de6d67ede6e1db349ba02866d",

@@ -373,8 +373,14 @@ def test_fixture_bundle_writes_complete_hashable_artifacts(tmp_path: Path) -> No
     )
     source_path = tmp_path / "fixture.csv"
     source_path.write_text("value\n0.12345678901234568\n", encoding="utf-8")
-    fig, axis = plt.subplots(figsize=(7.1, 3.6), constrained_layout=True)
+    fig, axis = plt.subplots(figsize=(7.1, 3.6), constrained_layout=False)
+    # Explicit margins so edge tick labels stay inside the fixed canvas;
+    # this fixture exercises the layout-gate path used by real renderers.
+    fig.subplots_adjust(left=0.12, right=0.94, top=0.92, bottom=0.18)
     axis.plot([0, 1], [0, 1], marker="o")
+    # Explicit limits keep the auto locator's ticks inside the fixed canvas.
+    axis.set_xlim(0, 1)
+    axis.set_ylim(0, 1)
     axis.set_title("Live text")
     files = write_figure_bundle(
         fig,
@@ -382,6 +388,7 @@ def test_fixture_bundle_writes_complete_hashable_artifacts(tmp_path: Path) -> No
         layout,
         figure_id="fixture_figure",
         section="main",
+        layout_profile="appendix",
         metadata={
             "experiment_id": "fixture",
             "run_id": "run:1",
@@ -626,12 +633,17 @@ def test_publication_mode_renders_and_validates_promoted_bundle(tmp_path: Path) 
         source = get_source(key, mode="publication")
         assert source.paper_result is True
         assert source.promotion_status == "CANONICAL_PUBLICATION"
+        # Canonical CLI order: overview table first, then render (which
+        # snapshots artifact hashes), then appendix order.
+        write_overview_table(
+            PreviewLayout(tmp_path, source.experiment_id, source.run_id, mode="publication"),
+            paper_result=source.paper_result,
+        )
         result = render_source(source, tmp_path)
         layout = result["layout"]
         assert layout.mode == "publication"
         # Publication layout collapses run-id/spec nesting to one dir per experiment.
         assert layout.base == tmp_path / source.experiment_id
-        write_overview_table(layout, paper_result=source.paper_result)
         write_appendix_order(layout, paper_result=source.paper_result)
         main_files = _figure_bundle_paths(layout, source.main_figure_id, "main")
         assert all(

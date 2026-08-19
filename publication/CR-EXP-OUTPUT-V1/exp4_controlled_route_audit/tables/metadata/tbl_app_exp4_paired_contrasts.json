@@ -1,5 +1,5 @@
 {
-  "csv_sha256": "8f4f7c08fd76e1204df928e343032f5b68f88c1b995a1eb0a862769e34974892",
+  "csv_sha256": "194dcd8d73389855f96b32e677386aecea0de137c8eb4a7467962fe3fbab405e",
   "paper_result": true,
   "semantics": "Complete Module-A D_pair and secondary diagnostic table.",
   "source_file": "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\tables\\tbl_app_exp4_paired_contrasts.csv",

@@ -181,6 +181,7 @@ def _appendix_composite(
         layout,
         figure_id=figure_id,
         section="appendix",
+        layout_profile="appendix",
         metadata=_metadata(
             source,
             claim=title,
@@ -233,7 +234,7 @@ def _targeted_validation_figure(
             "structural_regret",
             r"Horizon $T$",
             r"Cumulative structural regret, $R_T^c$",
-            "(b) Systematic-misbinding horizon scaling",
+            "(b) Misbinding horizon scaling",
         ),
     ]
     for panel_index, component, x_column, metric_id, xlabel, ylabel, title in specs:
@@ -304,6 +305,7 @@ def _targeted_validation_figure(
         layout,
         figure_id=figure_id,
         section="appendix",
+        layout_profile="appendix",
         metadata=_metadata(
             source,
             claim="Mean-delay robustness and systematic-misbinding horizon scaling from the frozen targeted validation.",
@@ -344,12 +346,28 @@ def render_presentation(
         .tolist()
     )
     y = np.arange(len(MECHANISMS))[::-1]
-    fig, axes = plt.subplots(1, 3, figsize=(7.1, 3.6), constrained_layout=True)
+    # Width ratios mirror the known-good experimental figure: panel (c)
+    # carries the contrast annotations and the longest x label, so it gets
+    # the widest share.
+    fig, axes = plt.subplots(
+        1,
+        3,
+        figsize=(7.1, 3.6),
+        gridspec_kw={"width_ratios": [1.0, 1.05, 1.25]},
+        constrained_layout=True,
+    )
     for axis in axes:
         axis.axvline(0, color="0.55", linewidth=0.7, linestyle="--", zorder=0)
         axis.grid(axis="x", alpha=0.22, linewidth=0.55)
 
     panel_a = data[data.panel_id.eq("A")]
+    # Panel (a) keeps one right-aligned auxiliary column (mean delay, 1
+    # decimal).  The data forest is confined to the left ``DATA_WIDTH``
+    # fraction of the panel so the column never competes with the title or
+    # the mechanism labels.  Header sits *inside* the axes near the top,
+    # right-aligned with its numbers, away from the left-aligned panel title.
+    DATA_WIDTH = 0.62
+    ANNOT_X = 0.975
     for yi, mechanism in zip(y, MECHANISMS, strict=True):
         row = panel_a[
             panel_a.mechanism_id.eq(mechanism)
@@ -370,31 +388,37 @@ def render_presentation(
             & panel_a.series_id.eq("generated_mean_delay")
         ].iloc[0]
         axes[0].text(
-            0.98,
+            ANNOT_X,
             yi,
             f"{delay.estimate:.1f}",
             transform=axes[0].get_yaxis_transform(),
             ha="right",
             va="center",
             fontsize=7.2,
+            color="#333333",
         )
     axes[0].text(
-        0.98,
-        y.max() + 0.52,
+        ANNOT_X,
+        y.max() + 0.62,
         "Mean delay",
         transform=axes[0].get_yaxis_transform(),
         ha="right",
         va="center",
         fontsize=7.4,
         fontweight="bold",
+        color="#333333",
     )
+    anchor = float(panel_a[panel_a.series_id.eq("alignment_budget_rate")].ci_upper.max())
+    axes[0].set_xlim(left=0, right=anchor / DATA_WIDTH)
+    axes[0].set_ylim(-0.6, float(y.max()) + 0.95)
     axes[0].set_yticks(y, labels)
     axes[0].set_xlabel(r"Alignment budget rate, $A_T^{arr}/T$")
-    axes[0].set_title(
-        "(a) Route alignment under matched delay", loc="left", fontweight="bold"
-    )
+    axes[0].set_title("(a) Route alignment", loc="left", fontweight="bold")
 
     panel_b = data[data.panel_id.eq("B")]
+    # Vertical offset mirrors the known-good experimental figure: the two
+    # markers of one mechanism never sit on the same y position.
+    offset = 0.13
     for yi, mechanism in zip(y, MECHANISMS, strict=True):
         structural = panel_b[
             panel_b.mechanism_id.eq(mechanism)
@@ -409,7 +433,7 @@ def render_presentation(
         )
         axes[1].errorbar(
             structural.estimate,
-            yi,
+            yi - offset,
             xerr=[
                 [structural.estimate - structural.ci_lower],
                 [structural.ci_upper - structural.estimate],
@@ -421,7 +445,7 @@ def render_presentation(
         )
         axes[1].plot(
             structural.estimate,
-            yi,
+            yi - offset,
             marker="o",
             color="#182b49",
             markersize=4.2,
@@ -429,7 +453,7 @@ def render_presentation(
         )
         axes[1].errorbar(
             bound.estimate,
-            yi,
+            yi + offset,
             xerr=[[bound.estimate - bound.ci_lower], [bound.ci_upper - bound.estimate]],
             fmt="none",
             ecolor="#b8860b",
@@ -438,7 +462,7 @@ def render_presentation(
         )
         axes[1].plot(
             bound.estimate,
-            yi,
+            yi + offset,
             marker="s",
             markerfacecolor="white",
             markeredgecolor="#b8860b",
@@ -447,10 +471,10 @@ def render_presentation(
             label=r"$(R_T^r+A_T^r)/T$" if yi == y[0] else None,
         )
     axes[1].set_yticks(y, [])
+    axes[1].set_ylim(-0.7, float(y.max()) + 0.7)
+    axes[1].set_xlim(left=0)
     axes[1].set_xlabel("Rate")
-    axes[1].set_title(
-        "(b) Structural regret and transfer bound", loc="left", fontweight="bold"
-    )
+    axes[1].set_title("(b) Regret transfer", loc="left", fontweight="bold")
     axes[1].legend(frameon=False, loc="upper right")
 
     panel_c = data[data.panel_id.eq("C")]
@@ -522,8 +546,12 @@ def render_presentation(
             fontsize=7.1,
         )
     axes[2].set_yticks(y, [])
+    # Right-edge headroom: the last auto tick must stay inside the fixed
+    # canvas instead of poking past the rightmost panel edge.
+    bound_series = panel_c[panel_c.series_id.isin(["arrival_clock", "source_round"])]
+    axes[2].set_xlim(0, float(bound_series.ci_upper.max()) * 1.12)
     axes[2].set_xlabel(r"Structural regret $R_T^c/T$")
-    axes[2].set_title("(c) Factual-feedback binding", loc="left", fontweight="bold")
+    axes[2].set_title("(c) Feedback binding", loc="left", fontweight="bold")
     axes[2].legend(frameon=False, loc="upper left")
     assert_no_suptitle(fig)
 
@@ -533,6 +561,7 @@ def render_presentation(
         layout,
         figure_id=source.main_figure_id,
         section="main",
+        layout_profile="exp1_main",
         metadata=_metadata(
             source,
             claim="Alignment, structural regret transfer, and scalar-feedback binding across canonical mechanisms.",

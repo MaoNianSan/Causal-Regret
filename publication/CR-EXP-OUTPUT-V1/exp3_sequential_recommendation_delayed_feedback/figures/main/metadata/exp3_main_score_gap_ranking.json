@@ -6,15 +6,53 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_main_score_gap_ranking.pdf": "bc5be23d201c5171a364dd9344ba61648eb28f5a40453e5ab599c527a3380a2c",
-    "exp3_main_score_gap_ranking.png": "93a79b013b8a0d9bb450deef102ece7acd966c1c00245ca5bad6494da10551b1",
-    "exp3_main_score_gap_ranking.svg": "4def6519ea13df9d3b8d881c4754658c15decdb11e7917a9c3d9163b7deac1b5"
+    "exp3_main_score_gap_ranking.pdf": "7bd98d5a918c67223d3f0d4ec12045acfd737c33bb5ceb47efcfeb9f96204268",
+    "exp3_main_score_gap_ranking.png": "ba6990a51c3a24c89393a40f4f5b4cd794358870aba75758a59bfdabc750ed33",
+    "exp3_main_score_gap_ranking.svg": "49dd9b1f4f91763e14db9bcb5aad9ed55c61b3e1e64ef7ffb9a0ba4764ccba40"
   },
   "figure_id": "exp3_main_score_gap_ranking",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:28.808355+00:00",
+  "generated_at": "2026-08-19T03:42:02.919822+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Score recovery need not transfer to decision recovery; not OPE or causal regret.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_xlabel_clearance",
+      "details": "legend clear of every x label",
+      "passed": true
+    },
+    {
+      "check": "layout:no_long_legend_text",
+      "details": "legend entries are short and single-purpose",
+      "passed": true
+    },
+    {
+      "check": "layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    }
+  ],
+  "layout_profile": "exp3_main",
   "marker_semantics": {
     "filled_marker": "full-sample estimate",
     "horizontal_range": "empirical user-cluster sensitivity range",
@@ -26,7 +64,7 @@
     "maximum_heldout_reference_pair_gap_error": "Max held-out gap error",
     "pooled_supported_cell_mae": "MAE",
     "pooled_supported_cell_spearman": "Spearman",
-    "ridge_over_historical_paired_value_gain": "Ridge-minus-Historical paired value gain",
+    "ridge_over_historical_paired_value_gain": "Paired value gain",
     "top_action_agreement_with_fold_reference": "Top-action agreement"
   },
   "narrative_claim": "Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",
@@ -37,8 +75,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -64,7 +102,7 @@
     "scope_paragraph_on_canvas": false,
     "uncertainty_role": "sensitivity range, not confidence interval"
   },
-  "presentation_source_lineage": "presentation:c3f815daef1bf93abef47a74f8bdae679a83de1c2fae8acb5ee76bf474c6419d",
+  "presentation_source_lineage": "presentation:12c11e548261ae8985dc0ad6c385f799ca06a0af3428ac18f4bd9418b8d4ed55",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",
@@ -75,7 +113,7 @@
   "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
   "scientific_source_paper_result": true,
   "source_data": "figures/main/data/exp3_main_score_gap_ranking.csv",
-  "source_data_file_hash": "15ffa216938722dd72b295f44401609fd6bb1f7643178024e4cf926f3a0d4848",
+  "source_data_file_hash": "67b3fdfe2bf90bbb500a7f1d452ff9091a28751bb7172a40b793afa6e4ad8628",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\figures\\data\\exp3_main_score_gap_ranking_data.csv": "b71d1e421ac22fe819fd8f7563ebb0097a24f57169100519c4b524d629a9d4cf",
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_primary_route_results.csv": "9a49107f4060c7f9ca99bb6622bced4786ad1d40c317ec80da6efd73c5d6a8b7"

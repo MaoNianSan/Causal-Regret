@@ -44,6 +44,27 @@ def _validate_bundle(
     ])
     svg_text = paths["svg"].read_text(encoding="utf-8", errors="ignore")
     results.append({"check": f"{figure_id}:svg_live_text", "passed": "<text" in svg_text, "details": "SVG text elements"})
+    layout_checks = metadata.get("layout_checks")
+    results.append(
+        {
+            "check": f"{figure_id}:layout_gates_recorded",
+            "passed": isinstance(layout_checks, list) and bool(layout_checks),
+            "details": (
+                "no layout gates recorded"
+                if not isinstance(layout_checks, list) or not layout_checks
+                else metadata.get("layout_profile")
+            ),
+        }
+    )
+    if isinstance(layout_checks, list):
+        for row in layout_checks:
+            results.append(
+                {
+                    "check": f"{figure_id}:{row['check']}",
+                    "passed": bool(row["passed"]),
+                    "details": str(row.get("details", "")),
+                }
+            )
     for filename, digest in metadata.get("figure_file_hashes", {}).items():
         file_path = paths["pdf"].parent / filename if filename.endswith(".pdf") else paths["svg"].parent / filename if filename.endswith(".svg") else paths["png"].parent / filename
         results.append({"check": f"{figure_id}:hash:{filename}", "passed": file_path.exists() and sha256_file(file_path) == digest, "details": str(file_path)})

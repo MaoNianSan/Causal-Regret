@@ -6,15 +6,38 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "exp4_appendix_audit_support.pdf": "91361d2f75066bde3aea6ab8cdba22b8045863e5608decbffdbe0dba52bcf17b",
-    "exp4_appendix_audit_support.png": "1f369d8f582d0a4bdf92e2fc871d51f22732b5801b8d9254d85665392df4a929",
-    "exp4_appendix_audit_support.svg": "edcfc39d640bfcd3f638ccd035c945b7e0f0442106fdd76b9047eeb9c3346e2f"
+    "exp4_appendix_audit_support.pdf": "81f1089af6fd347135e2ba47be7d92d1fbff4b19568f0f31726e2f2aaa9cba9b",
+    "exp4_appendix_audit_support.png": "f173c9b603e4914b8b08f03fb26811ed2ceff882c533a5f07a17d01a23a285c8",
+    "exp4_appendix_audit_support.svg": "6587b1d4ee873f087d77befe6181a1f36b8498c3db04776714b2ea870d07ca23"
   },
   "figure_id": "exp4_appendix_audit_support",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:37.339016+00:00",
+  "generated_at": "2026-08-19T03:42:17.812083+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {},
   "narrative_claim": "Audit support",
@@ -25,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "ea10c7fa9a1bf7ae3c703511666656fbd6a068be4782fc4ee46b5eaca623376d",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
   "presentation_contract": {
     "layout": [
       1,
@@ -38,7 +61,7 @@
       "exp4_module_b_audit_performance.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:6da99b3f85e600554c5778cbfab64315886ca6d2e415294c02e78f1e66127c0a",
+  "presentation_source_lineage": "presentation:6a69ad1c79e18034281fa7f27cd6ecce7d12b14edf98005aa9c1353aaf6d46b7",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Audit support",
@@ -49,7 +72,7 @@
   "scientific_source_lineage": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp4_appendix_audit_support.csv",
-  "source_data_file_hash": "dcbd6150dfd03601e26cffa2a777808b33aa87d66e0cdd07151c4117ba0688f8",
+  "source_data_file_hash": "f6b438c65a704c0f97e8b81daadcdc13ba818383fe8f717c00e737a7cb3f4953",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_b\\exp4_module_b_audit_performance.csv": "c4ab64f53d4c92b87bbb719a962fdc8d4036df7de6d67ede6e1db349ba02866d",
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_b\\exp4_module_b_weight_diagnostics.csv": "3fbea153d488e6d6b5ed5b5cc6466fe847778b9c34deb6915e72a75a2bb2d8f8",

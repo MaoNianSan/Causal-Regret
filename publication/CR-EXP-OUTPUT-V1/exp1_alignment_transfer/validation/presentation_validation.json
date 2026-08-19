@@ -211,6 +211,41 @@
       "passed": true
     },
     {
+      "check": "fig_exp1_alignment_transfer:layout_gates_recorded",
+      "details": "exp1_main",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:exp1_mean_delay_vs_title",
+      "details": "Mean delay header clear of panel title",
+      "passed": true
+    },
+    {
+      "check": "fig_exp1_alignment_transfer:layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    },
+    {
       "check": "fig_exp1_alignment_transfer:hash:fig_exp1_alignment_transfer.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\main\\pdf\\fig_exp1_alignment_transfer.pdf",
       "passed": true
@@ -426,6 +461,31 @@
       "passed": true
     },
     {
+      "check": "exp1_appendix_delay_coupling_diagnostics:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_delay_coupling_diagnostics:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp1_appendix_delay_coupling_diagnostics:hash:exp1_appendix_delay_coupling_diagnostics.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_delay_coupling_diagnostics.pdf",
       "passed": true
@@ -496,6 +556,31 @@
       "passed": true
     },
     {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_reversal_trajectory_diagnostics:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp1_appendix_reversal_trajectory_diagnostics:hash:exp1_appendix_reversal_trajectory_diagnostics.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp1_alignment_transfer\\figures\\appendix\\pdf\\exp1_appendix_reversal_trajectory_diagnostics.pdf",
       "passed": true
@@ -563,6 +648,31 @@
     {
       "check": "exp1_appendix_targeted_validation:svg_live_text",
       "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp1_appendix_targeted_validation:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
       "passed": true
     },
     {

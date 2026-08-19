@@ -1,5 +1,5 @@
 {
-  "csv_sha256": "3ba6d9dcdb5a497504c84d77ae15bb6b3aec50f98b8e043e7b079ce871ee4d53",
+  "csv_sha256": "6dbf6a2bfd3f83e4ec893d300e40365b18a8e738fd84f02d648092d5608787f9",
   "paper_result": true,
   "semantics": "Frozen 30-day, threshold, half-life, and k robustness table.",
   "source_file": "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\tables\\table_exp2_robustness_summary.csv",

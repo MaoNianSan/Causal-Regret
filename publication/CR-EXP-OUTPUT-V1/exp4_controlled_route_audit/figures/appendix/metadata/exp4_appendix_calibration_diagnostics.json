@@ -6,15 +6,38 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "exp4_appendix_calibration_diagnostics.pdf": "b90c46294a95e06d6639e9ad5ae2b7a8c430af48a8263e9810c0c76c51178da4",
-    "exp4_appendix_calibration_diagnostics.png": "7ad9e3d4d9938d6ad44d85c74569de8173018b11792e5aa72474c06ddf8fd57a",
-    "exp4_appendix_calibration_diagnostics.svg": "cebe0008eb6e4e348b31b0d26379e31207d0d2f5b62f27c7ff02d895ef108a95"
+    "exp4_appendix_calibration_diagnostics.pdf": "d3227e75878c1afd8c33b0d60e7bd46905e47c865a9097c4d2195accb57ff08b",
+    "exp4_appendix_calibration_diagnostics.png": "d18afe9d0ad1d86aa805bd887f68429784f27e29ce23e32167bd648e0bc6fe3b",
+    "exp4_appendix_calibration_diagnostics.svg": "3f8f1838eda89ab070b209ad1bc3e19b0d197da28afc7340f027fdf49f37aed4"
   },
   "figure_id": "exp4_appendix_calibration_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:38.164662+00:00",
+  "generated_at": "2026-08-19T03:42:19.236807+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {},
   "narrative_claim": "Calibration diagnostics",
@@ -25,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "ea10c7fa9a1bf7ae3c703511666656fbd6a068be4782fc4ee46b5eaca623376d",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
   "presentation_contract": {
     "layout": [
       1,
@@ -38,7 +61,7 @@
       "exp4_module_c_control_summary.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:314f1691ba9bf1663e80a00e40d6cfc21a1fe6a34e5113c77dbe7e3b178e339d",
+  "presentation_source_lineage": "presentation:30b57645d1fbbf9601c1dc7ccd3cf5581f5f2b30f28ee95728b980c68416aab9",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Calibration diagnostics",
@@ -49,7 +72,7 @@
   "scientific_source_lineage": "24ff05e73bd5b42a52dc0b6bd821bdf01723a64d85aaa461a608e5ba234ea321",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp4_appendix_calibration_diagnostics.csv",
-  "source_data_file_hash": "6c1df994eb7d47134bcfacbc760294515cc9ad0d6d603ebbcaa5e23a0cafbe89",
+  "source_data_file_hash": "bd09457410ba48b47d87d5cf5f4bd6ec10a316b602a7514f4c7a204e005708b5",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_c\\exp4_module_c_control_summary.csv": "dce9f622a76613416dd3afacb429326241c790cf8382635dbfe9b34650256799",
     "D:\\research\\causalregret\\experiment\\github\\exp4_controlled_route_audit\\outputs\\runs\\full_20260817T071019Z_7d7146b7\\derived\\module_c\\exp4_module_c_correspondence_checks.csv": "d2ec9394aeaf23f3fb8ddbd7258adf45e20071d61b32390047915a200451dddb",

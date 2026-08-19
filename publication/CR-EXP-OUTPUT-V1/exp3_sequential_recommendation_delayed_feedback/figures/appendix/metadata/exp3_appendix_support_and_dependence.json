@@ -6,15 +6,38 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_appendix_support_and_dependence.pdf": "272cdd5ede9678e6dd592cbba064349af4e07ce9f32cab0ad90b22b133e0f179",
-    "exp3_appendix_support_and_dependence.png": "2748e1509e3eeb0ef166bb8a7b39492d0468906afa84885dd10862402843cd26",
-    "exp3_appendix_support_and_dependence.svg": "4eaf657164352d8bb12da6baf8de32098887fe7b1a5464d98d3a3aad4ea9ed67"
+    "exp3_appendix_support_and_dependence.pdf": "fbb8c029fd98d6ee991a1ade3fa5be814043af2634711cce50a0fee64428708d",
+    "exp3_appendix_support_and_dependence.png": "e103cbfc632d479c2130b76a246ec766abdc784d6a38aede0cc967fbd293e4dd",
+    "exp3_appendix_support_and_dependence.svg": "5193fc45c07fa5d474ee6be551072644dd80111a45af930e1faa1d10b4d4364c"
   },
   "figure_id": "exp3_appendix_support_and_dependence",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:29.681483+00:00",
+  "generated_at": "2026-08-19T03:42:04.588052+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {},
   "narrative_claim": "Support and dependence",
@@ -24,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "d8d81f8a9c5014f82fc35fd9c4214dc169c87a4c1857c8fbb3488f07b8a0ac00",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
   "presentation_contract": {
     "layout": [
       1,
@@ -36,7 +59,7 @@
       "exp3_data_dependence_structure.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:6eddd876357e630e9f18ccd9efe969820e21a10857b04559e17be2e5aeecbdf9",
+  "presentation_source_lineage": "presentation:44db317c40deccf1a9d997c325831da82896a658e234ecd7ffdde3f5fa827cc4",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Support and dependence",
@@ -47,7 +70,7 @@
   "scientific_source_lineage": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp3_appendix_support_and_dependence.csv",
-  "source_data_file_hash": "c237fa3b646ccd005c9e5ce2522d76e9b3d6c75bb10b6e1abdce2c0cc700b6cc",
+  "source_data_file_hash": "c57d0cc43cbe9706226e5b45236c9a640d3d5d8d887df0edeae6ae3256cb63dc",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_data_dependence_structure.csv": "d3529e94f79217df09c529ff62e5659bf204530792ef878de8c284bbc91a946f",
     "D:\\research\\causalregret\\experiment\\github\\exp3_sequential_recommendation_delayed_feedback\\paper_candidate\\tables\\exp3_full_design_support_preflight.csv": "d6ff15e43b72d5321a9d49d4c5f1900edd403ccf00b05f7afe36339317882402"

@@ -6,15 +6,38 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "exp2_appendix_delay_distribution.pdf": "65359f8951842777e1b17ec9352f9b1c3df448865cbbe8f9c84ee3e63d1c91fe",
-    "exp2_appendix_delay_distribution.png": "0b437732952b62cb506d2e8c127d862456ae81ed60a220c1071597f3c8819e3d",
-    "exp2_appendix_delay_distribution.svg": "f5c97a8f0093bfc6413038b07ccc3e5c88399286715bccc79d17b86d245afcd1"
+    "exp2_appendix_delay_distribution.pdf": "64f82b72e3f769966e25bb4eaff180339a9a81742391aaefb4a4d8156436a23c",
+    "exp2_appendix_delay_distribution.png": "9fb2ddcc9f04d8f7f622af9f2d966a4681ffa5d690e89ebbbbb989c978a00a4e",
+    "exp2_appendix_delay_distribution.svg": "7abec6ac8fe4016d6daf3802c208db6159369f09670377123ad6ae23fae752b4"
   },
   "figure_id": "exp2_appendix_delay_distribution",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:26.868532+00:00",
+  "generated_at": "2026-08-19T03:41:59.941656+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {
     "source_event_share": "source_event_share"
@@ -25,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "4eb226e48b3ae7dfed6352f5ed97c16eee54490ecdb21b9710a8f5da5ba3fa39",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
   "presentation_contract": {
     "layout": [
       1,
@@ -34,7 +57,7 @@
     ],
     "source": "figure_exp2_delay_appendix_data.csv"
   },
-  "presentation_source_lineage": "presentation:057439bcd02b17d04b067ad7ae4a46c458e5ab623fe28f542616af19b674a5f1",
+  "presentation_source_lineage": "presentation:67e34b4f2d92c929f1c0a7575477b3af93dad0c1d958ed7ca102f4c41c0824bc",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Delay-distribution diagnostics",
@@ -45,7 +68,7 @@
   "scientific_source_lineage": "46255dee41427969da17b81ce9b1f71107ecf78179a796a175a1371c62a458a0",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp2_appendix_delay_distribution.csv",
-  "source_data_file_hash": "78720068c27cfaf5ae4155d069c9721f56749b0c3a95f3bcedefa2a4db8c7489",
+  "source_data_file_hash": "056f58685c5dc64b185035bbb229c83aae8cffa9958307d988ee91f85c922d2e",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp2_real_delayed_conversion_logs\\outputs\\paper\\exp2-full-20260807T111616+0800\\figures\\figure_exp2_delay_appendix_data.csv": "eb2a07a9061d93f1263dd5ce437a8203bdb2dcdc9e307e25ed499447d6972097"
   },

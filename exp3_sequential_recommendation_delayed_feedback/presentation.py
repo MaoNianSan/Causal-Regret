@@ -52,10 +52,11 @@ METRICS = [
     ),
     (
         "ridge_over_historical_paired_value_gain",
-        "Ridge-minus-Historical paired value gain",
+        "Paired value gain",
         "panel_c_ranking",
     ),
 ]
+ROUTE_DISPLAY = ["Arrival carrier", "Historical mean", "Ridge proxy"]
 MAIN_CONTRACT = {
     "layout": [2, 3],
     "canvas_inches": [7.1, 4.8],
@@ -140,6 +141,7 @@ def _appendix_composite(
     figure_id: str,
     title: str,
     paths: list[Path],
+    panel_titles: list[str] | None = None,
 ) -> None:
     fig, axes = plt.subplots(
         1, len(paths), figsize=(7.1, 3.1), constrained_layout=True, squeeze=False
@@ -173,11 +175,12 @@ def _appendix_composite(
                 )
         if numeric:
             axis.legend(frameon=False, fontsize=6.5)
-        axis.set_title(
-            path.stem.replace("exp3_", "").replace("_", " ").title(),
-            loc="left",
-            fontweight="bold",
-        )
+        # Short paper-facing panel titles; raw file stems are never exposed.
+        if panel_titles is not None and panel_index < len(panel_titles):
+            panel_title = panel_titles[panel_index]
+        else:
+            panel_title = path.stem.replace("exp3_", "").replace("_", " ").title()
+        axis.set_title(panel_title, loc="left", fontweight="bold")
         axis.set_xlabel("Frozen source row")
         axis.grid(axis="y", alpha=0.2)
     assert_no_suptitle(fig)
@@ -196,6 +199,7 @@ def _appendix_composite(
         layout,
         figure_id=figure_id,
         section="appendix",
+        layout_profile="appendix",
         metadata=_metadata(
             source,
             claim=title,
@@ -226,14 +230,25 @@ def render_presentation(
     )
     table_source = source.source_run / "tables/exp3_primary_route_results.csv"
     frame = pd.read_csv(figure_source)
-    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.8), constrained_layout=True)
+    fig, axes = plt.subplots(2, 3, figsize=(7.1, 4.8), constrained_layout=False)
+    # Explicit fixed margins (mirrors the known-good experimental figure,
+    # which also reserves a bottom band instead of relying on tight bbox):
+    # the bottom band keeps the figure legend inside the canvas, below the
+    # bottom-row x labels.
+    fig.subplots_adjust(
+        left=0.15, right=0.985, top=0.94, bottom=0.20, wspace=0.32, hspace=0.55
+    )
+    # Column-level conceptual meaning sits on the top row only; the row-level
+    # metric identity is carried by each panel's x label, so no subplot
+    # repeats a long sentence.
     column_titles = [
         "(a) Score recovery",
-        "(b) Held-out reference-pair gap recovery",
-        "(c) Logged-supported ranking recovery",
+        "(b) Pair-gap recovery",
+        "(c) Ranking recovery",
     ]
     for index, (metric, xlabel, _) in enumerate(METRICS):
-        axis = axes[index % 2, index // 2]
+        row_index, column_index = index % 2, index // 2
+        axis = axes[row_index, column_index]
         subset = frame[frame.metric_id.eq(metric)]
         if metric == "ridge_over_historical_paired_value_gain":
             row = subset.iloc[0]
@@ -262,9 +277,32 @@ def render_presentation(
             )
             axis.set_yticks([0], ["Ridge - Historical"])
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
+            span = max(
+                row.sensitivity_upper - row.sensitivity_lower,
+                abs(row.full_sample_estimate),
+                abs(row.resampling_median),
+                1e-6,
+            )
+            axis.set_xlim(
+                min(
+                    row.sensitivity_lower,
+                    row.full_sample_estimate,
+                    row.resampling_median,
+                    0.0,
+                )
+                - 0.15 * span,
+                max(
+                    row.sensitivity_upper,
+                    row.full_sample_estimate,
+                    row.resampling_median,
+                    0.0,
+                )
+                + 0.15 * span,
+            )
         else:
             subset = subset.set_index("route_id").reindex(ROUTE_ORDER).reset_index()
             y = np.arange(len(subset))[::-1]
+            values: list[float] = []
             for yi, row in zip(y, subset.itertuples(index=False), strict=True):
                 color = ROUTE_COLORS[row.route_id]
                 marker = ROUTE_MARKERS[row.route_id]
@@ -291,13 +329,30 @@ def render_presentation(
                     markerfacecolor="white",
                     markersize=4,
                 )
-            axis.set_yticks(y, ["Arrival carrier", "Historical mean", "Ridge proxy"])
+                values.extend(
+                    [
+                        row.full_sample_estimate,
+                        row.resampling_median,
+                        row.sensitivity_lower,
+                        row.sensitivity_upper,
+                    ]
+                )
+            # Route identity is shown once on the left column; the other
+            # columns reuse the route shape/color semantics from the legend.
+            axis.set_yticks(y, ROUTE_DISPLAY if column_index == 0 else [])
+            if metric == "maximum_heldout_reference_pair_gap_error":
+                axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
+                lower = min(0.0, min(values))
+            else:
+                lower = min(values)
+            upper = max(values)
+            span = max(upper - lower, 1e-6)
+            axis.set_xlim(lower - 0.06 * span, upper + 0.10 * span)
         axis.set_xlabel(xlabel)
-        axis.set_title(
-            column_titles[index // 2] if index % 2 == 0 else xlabel,
-            loc="left",
-            fontweight="bold",
-        )
+        if row_index == 0:
+            axis.set_title(
+                column_titles[column_index], loc="left", fontweight="bold"
+            )
         axis.grid(axis="x", alpha=0.22, linewidth=0.55)
     fig.legend(
         handles=[
@@ -331,13 +386,23 @@ def render_presentation(
                 marker="o",
                 color="0.25",
                 linestyle="none",
-                label="Filled: full sample / open: resampling median",
+                label="Filled: full sample",
+            ),
+            Line2D(
+                [0],
+                [0],
+                marker="o",
+                markerfacecolor="white",
+                markeredgecolor="0.25",
+                color="0.25",
+                linestyle="none",
+                label="Open: resampling median",
             ),
         ],
         frameon=False,
         loc="lower center",
-        ncol=2,
-        bbox_to_anchor=(0.5, -0.02),
+        ncol=5,
+        bbox_to_anchor=(0.5, 0.02),
     )
     assert_no_suptitle(fig)
     manifest = load_run_manifest(source)
@@ -347,6 +412,7 @@ def render_presentation(
         layout,
         figure_id=source.main_figure_id,
         section="main",
+        layout_profile="exp3_main",
         metadata=_metadata(
             source,
             claim="Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",
@@ -380,6 +446,7 @@ def render_presentation(
                 table_dir / "exp3_full_design_support_preflight.csv",
                 table_dir / "exp3_data_dependence_structure.csv",
             ],
+            ["Support preflight", "Dependence structure"],
         ),
         (
             "exp3_appendix_carrier_and_gap_diagnostics",
@@ -388,6 +455,7 @@ def render_presentation(
                 figure_dir / "exp3_appendix_arrival_carrier_diagnostic_data.csv",
                 figure_dir / "exp3_appendix_gap_error_distribution_data.csv",
             ],
+            ["Arrival-carrier diagnostic", "Gap-error distribution"],
         ),
         (
             "exp3_appendix_calibration_and_selection",
@@ -396,11 +464,17 @@ def render_presentation(
                 table_dir / "exp3_decile_calibration.csv",
                 figure_dir / "exp3_appendix_route_selection_concentration_data.csv",
             ],
+            ["Decile calibration", "Route-selection concentration"],
         ),
     ]
-    for figure_id, title, paths in appendix_groups:
+    for figure_id, title, paths, panel_titles in appendix_groups:
         _appendix_composite(
-            source, layout, figure_id=figure_id, title=title, paths=paths
+            source,
+            layout,
+            figure_id=figure_id,
+            title=title,
+            paths=paths,
+            panel_titles=panel_titles,
         )
     for filename in (
         "exp3_action_space_coverage.csv",

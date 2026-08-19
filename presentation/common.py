@@ -137,11 +137,49 @@ def write_figure_bundle(
     section: str,
     metadata: dict[str, Any],
     source_files: Iterable[Path],
+    layout_profile: str | None = None,
 ) -> dict[str, Path]:
     if section not in {"main", "appendix"}:
         raise ValueError(section)
     layout.ensure()
     configure_matplotlib()
+    # Layout regression gates: measure real rendered bounding boxes on a
+    # canvas draw and fail hard before any file is written.  No gate is run
+    # for callers that do not opt in via ``layout_profile``.
+    layout_checks: list[dict[str, Any]] = []
+    if layout_profile is not None:
+        from .layout import run_layout_gates
+
+        # Fixed-canvas normalization, applied before measurement:
+        # 1. matplotlib 3.11's AutoLocator can emit the next 'nice' tick
+        #    beyond vmax on narrow axes, whose label then pokes past the
+        #    canvas edge.  Re-declaring MaxNLocator with prune='both' clips
+        #    such ticks at draw time (explicit FixedLocator choices, e.g.
+        #    colorbars, are left untouched).
+        # 2. Constrained figures get a minimum outer pad: the default pad is
+        #    1/24 in and dense panels can push titles/annotations up to the
+        #    canvas edge.
+        from matplotlib.ticker import MaxNLocator
+
+        for axis in figure.axes:
+            for ticker in (axis.xaxis, axis.yaxis):
+                if isinstance(ticker.get_major_locator(), MaxNLocator):
+                    ticker.set_major_locator(MaxNLocator(nbins="auto", prune="both"))
+        if figure.get_constrained_layout():
+            engine = figure.get_layout_engine()
+            if engine is not None and hasattr(engine, "set"):
+                engine.set(w_pad=0.08, h_pad=0.08)
+            else:  # matplotlib < 3.6 fallback
+                figure.set_constrained_layout_pads(w_pad=0.08, h_pad=0.08)
+
+        layout_checks = run_layout_gates(figure, layout_profile)
+        failures = [check for check in layout_checks if not check["passed"]]
+        if failures:
+            raise AssertionError(
+                f"layout gates failed for {figure_id} "
+                f"(profile={layout_profile}): "
+                + "; ".join(f"{item['check']}: {item['details']}" for item in failures)
+            )
     prefix = layout.base / "figures" / section
     pdf = prefix / "pdf" / f"{figure_id}.pdf"
     svg = prefix / "svg" / f"{figure_id}.svg"
@@ -152,7 +190,8 @@ def write_figure_bundle(
     figure.savefig(pdf)
     figure.savefig(svg)
     figure.savefig(png, dpi=300)
-    source_data.to_csv(data_path, index=False, float_format="%.17g")
+    # LF line endings keep the data CSV byte-stable across platforms.
+    source_data.to_csv(data_path, index=False, float_format="%.17g", lineterminator="\n")
     source_hashes = {str(path): sha256_file(path) for path in source_files if path.exists()}
     file_hashes = {path.name: sha256_file(path) for path in (pdf, svg, png)}
     source_data_hash = sha256_file(data_path)
@@ -194,6 +233,8 @@ def write_figure_bundle(
         "canvas_size_inches": canvas_size,
         "png_dpi": 300,
         "source_data": str(data_path.relative_to(layout.base)).replace(os.sep, "/"),
+        "layout_profile": layout_profile,
+        "layout_checks": layout_checks,
         **{k: v for k, v in metadata.items() if k not in {"figure_file_hashes", "source_file_hashes"}},
     }
     write_json(meta_path, payload)
@@ -207,7 +248,7 @@ def copy_table_bundle(source: Path, layout: PreviewLayout, *, stem: str, metadat
     csv_path = layout.base / "tables" / "csv" / f"{stem}.csv"
     tex_path = layout.base / "tables" / "tex" / f"{stem}.tex"
     meta_path = layout.base / "tables" / "metadata" / f"{stem}.json"
-    frame.to_csv(csv_path, index=False, float_format="%.17g")
+    frame.to_csv(csv_path, index=False, float_format="%.17g", lineterminator="\n")
     tex_path.write_text(frame.to_latex(index=False, escape=True), encoding="utf-8")
     write_json(meta_path, {
         "spec_id": SPEC_ID, "table_id": stem, "source_file": str(source),

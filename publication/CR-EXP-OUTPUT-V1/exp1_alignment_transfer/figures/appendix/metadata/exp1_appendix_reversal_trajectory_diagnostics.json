@@ -6,15 +6,38 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "exp1_appendix_reversal_trajectory_diagnostics.pdf": "7f4fc94f2b1fb1fbd9bb4eac053e5b8842a7fe3f026ddde766a98cc2326c86a0",
-    "exp1_appendix_reversal_trajectory_diagnostics.png": "fa4cd57cd21753c1a90c82a5b45258cde6b4d4383a08083966bbb63a42d728ef",
-    "exp1_appendix_reversal_trajectory_diagnostics.svg": "d1a03715d9bd6694f2fd43de106808b8f22cfdfe25bf4c54b9628c0c25a2858a"
+    "exp1_appendix_reversal_trajectory_diagnostics.pdf": "652f52e6f3a1ad9f143390be880984ec57fd5ee11dccc880f7bf301d63e9a787",
+    "exp1_appendix_reversal_trajectory_diagnostics.png": "b5a54dbf27f35b22a6f09a9e05947677fb0f18871b4b8978859908064d8c0db4",
+    "exp1_appendix_reversal_trajectory_diagnostics.svg": "0ffdfe4c28f42764483870688c54ca4ea6650b059eaad3322230d02ec1a5272f"
   },
   "figure_id": "exp1_appendix_reversal_trajectory_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-18T09:31:23.501050+00:00",
+  "generated_at": "2026-08-19T03:41:54.608032+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix diagnostic from frozen full-run sources; no new scientific estimate.",
+  "layout_checks": [
+    {
+      "check": "layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    }
+  ],
+  "layout_profile": "appendix",
   "marker_semantics": {},
   "metric_definitions": {},
   "narrative_claim": "Reversal-margin and route-trajectory diagnostics",
@@ -24,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "325374bf01471660558eda142db16f5859d5ad97",
-  "presentation_code_hash": "f2216dd37ec9af81398c939ef7c30abc62700eaa4fc70b7697511ec7d8c2b2de",
+  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
+  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
   "presentation_contract": {
     "layout": [
       1,
@@ -36,7 +59,7 @@
       "fig_exp1_route_trajectory_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:c2c9d8bf763baba3716321958d3c6935b23a6d0253607916602856869fcd00e9",
+  "presentation_source_lineage": "presentation:c9ed5f50144e42194cd49d6665b9576a076c69ab0f30be1358ffc5aa8573c951",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Reversal-margin and route-trajectory diagnostics",
@@ -47,7 +70,7 @@
   "scientific_source_lineage": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
   "scientific_source_paper_result": true,
   "source_data": "figures/appendix/data/exp1_appendix_reversal_trajectory_diagnostics.csv",
-  "source_data_file_hash": "5e2764e8ed1f17c28807e500e038eb50545c0f28d2152032b1130c962d93a5b7",
+  "source_data_file_hash": "2c90c366baa742b37f62e4521d3803ca17e9d017fac7e4c09025f9587e581273",
   "source_file_hashes": {
     "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\figures\\data\\fig_exp1_reversal_margin_data.csv": "77bf808c336bffe8ca5b52775fdc141b699c371feb1b7341331aef5a07c50643",
     "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\paper_candidate\\figures\\data\\fig_exp1_route_trajectory_data.csv": "06bb4ebe04916909101e3e9763555bb28ecf43902911396603345830a0c619ff"

@@ -144,7 +144,7 @@ def write_table_frame(
     csv_path = layout.base / "tables" / "csv" / f"{stem}.csv"
     tex_path = layout.base / "tables" / "tex" / f"{stem}.tex"
     metadata_path = layout.base / "tables" / "metadata" / f"{stem}.json"
-    frame.to_csv(csv_path, index=False, float_format="%.17g")
+    frame.to_csv(csv_path, index=False, float_format="%.17g", lineterminator="\n")
     tex_path.write_text(frame.to_latex(index=False, escape=True), encoding="utf-8")
     write_json(
         metadata_path,
@@ -241,7 +241,7 @@ def write_overview_table(layout: PreviewLayout, paper_result: bool = False) -> N
     layout.ensure()
     csv_path = layout.base / "tables/csv/tab_experimental_evidence_map.csv"
     tex_path = layout.base / "tables/tex/tab_experimental_evidence_map.tex"
-    frame.to_csv(csv_path, index=False, float_format="%.17g")
+    frame.to_csv(csv_path, index=False, float_format="%.17g", lineterminator="\n")
     tex_path.write_text(frame.to_latex(index=False, escape=True), encoding="utf-8")
     write_json(
         layout.base / "tables/metadata/tab_experimental_evidence_map.json",

@@ -236,6 +236,41 @@
       "passed": true
     },
     {
+      "check": "figure_exp2_attribution_sensitivity:layout_gates_recorded",
+      "details": "exp2_main",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:legend_xlabel_clearance",
+      "details": "legend clear of every x label",
+      "passed": true
+    },
+    {
+      "check": "figure_exp2_attribution_sensitivity:layout:cross_panel_title_collision",
+      "details": "no panel-title collisions",
+      "passed": true
+    },
+    {
       "check": "figure_exp2_attribution_sensitivity:hash:figure_exp2_attribution_sensitivity.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\main\\pdf\\figure_exp2_attribution_sensitivity.pdf",
       "passed": true
@@ -481,6 +516,31 @@
       "passed": true
     },
     {
+      "check": "exp2_appendix_ambiguity_heatmap:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_ambiguity_heatmap:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp2_appendix_ambiguity_heatmap:hash:exp2_appendix_ambiguity_heatmap.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_ambiguity_heatmap.pdf",
       "passed": true
@@ -551,6 +611,31 @@
       "passed": true
     },
     {
+      "check": "exp2_appendix_delay_distribution:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_delay_distribution:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
+      "passed": true
+    },
+    {
       "check": "exp2_appendix_delay_distribution:hash:exp2_appendix_delay_distribution.pdf",
       "details": "D:\\research\\causalregret\\experiment\\github\\publication\\CR-EXP-OUTPUT-V1\\exp2_real_delayed_conversion_logs\\figures\\appendix\\pdf\\exp2_appendix_delay_distribution.pdf",
       "passed": true
@@ -618,6 +703,31 @@
     {
       "check": "exp2_appendix_pairwise_topk:svg_live_text",
       "details": "SVG text elements",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:layout_gates_recorded",
+      "details": "appendix",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:layout:canvas_containment",
+      "details": "all texts on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:layout:legend_inside_canvas",
+      "details": "all legends on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:layout:title_inside_canvas",
+      "details": "all titles on canvas",
+      "passed": true
+    },
+    {
+      "check": "exp2_appendix_pairwise_topk:layout:axis_label_inside_canvas",
+      "details": "all axis labels on canvas",
       "passed": true
     },
     {
