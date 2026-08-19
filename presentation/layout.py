@@ -86,7 +86,9 @@ def _tick_labels(axes: Iterable[Axes]) -> list[Text]:
     labels: list[Text] = []
     for axis in axes:
         labels.extend(axis.get_xticklabels() + axis.get_yticklabels())
-        labels.extend(axis.get_xticklabels(minor=True) + axis.get_yticklabels(minor=True))
+        labels.extend(
+            axis.get_xticklabels(minor=True) + axis.get_yticklabels(minor=True)
+        )
     return labels
 
 
@@ -153,7 +155,10 @@ def _check_canvas_containment(
             continue
         if not _inside(box, figure_box):
             offenders.append(f"tick label {tick.get_text()!r} outside canvas")
-    return (not offenders, "; ".join(offenders[:6]) if offenders else "all texts on canvas")
+    return (
+        not offenders,
+        "; ".join(offenders[:6]) if offenders else "all texts on canvas",
+    )
 
 
 def _check_legend_inside_canvas(figure: Figure, renderer) -> tuple[bool, str]:
@@ -194,7 +199,10 @@ def _check_axis_label_inside_canvas(figure: Figure, renderer) -> tuple[bool, str
             continue
         if not _inside(box, figure_box):
             failures.append(f"axis label {label.get_text()!r} outside canvas")
-    return (not failures, "; ".join(failures) if failures else "all axis labels on canvas")
+    return (
+        not failures,
+        "; ".join(failures) if failures else "all axis labels on canvas",
+    )
 
 
 def _check_legend_xlabel_clearance(figure: Figure, renderer) -> tuple[bool, str]:
@@ -282,10 +290,16 @@ def _check_no_long_legend_text(figure: Figure) -> tuple[bool, str]:
             if " / " in value:
                 failures.append(f"legend entry packs two semantics: {value!r}")
             if len(value) > 26:
-                failures.append(f"legend entry too long ({len(value)} chars): {value!r}")
+                failures.append(
+                    f"legend entry too long ({len(value)} chars): {value!r}"
+                )
     return (
         not failures,
-        "; ".join(failures) if failures else "legend entries are short and single-purpose",
+        (
+            "; ".join(failures)
+            if failures
+            else "legend entries are short and single-purpose"
+        ),
     )
 
 
@@ -395,7 +409,9 @@ _GATE_FUNCTIONS = {
     "exp1_mean_delay_vs_title": lambda fig, renderer, profile: _check_exp1_mean_delay_vs_title(
         fig, renderer
     ),
-    "no_long_legend_text": lambda fig, renderer, profile: _check_no_long_legend_text(fig),
+    "no_long_legend_text": lambda fig, renderer, profile: _check_no_long_legend_text(
+        fig
+    ),
     "no_internal_ids_in_labels": lambda fig, renderer, profile: _check_no_internal_ids_in_labels(
         fig
     ),
@@ -408,7 +424,9 @@ def run_layout_gates(figure: Figure, profile: str) -> list[dict[str, object]]:
     Returns one result dict per gate: ``{"check", "passed", "details"}``.
     """
     if profile not in PROFILES:
-        raise KeyError(f"Unknown layout profile {profile!r}; expected {sorted(PROFILES)}")
+        raise KeyError(
+            f"Unknown layout profile {profile!r}; expected {sorted(PROFILES)}"
+        )
     spec = PROFILES[profile]
     renderer = _renderer(figure)
     results: list[dict[str, object]] = []

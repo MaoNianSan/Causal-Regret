@@ -408,7 +408,9 @@ def render_presentation(
         fontweight="bold",
         color="#333333",
     )
-    anchor = float(panel_a[panel_a.series_id.eq("alignment_budget_rate")].ci_upper.max())
+    anchor = float(
+        panel_a[panel_a.series_id.eq("alignment_budget_rate")].ci_upper.max()
+    )
     axes[0].set_xlim(left=0, right=anchor / DATA_WIDTH)
     axes[0].set_ylim(-0.6, float(y.max()) + 0.95)
     axes[0].set_yticks(y, labels)

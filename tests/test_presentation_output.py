@@ -111,9 +111,7 @@ def test_publication_registry_points_at_promoted_sources() -> None:
     assert pub4.mode == "publication"
     assert pub4.paper_result is True
     assert pub4.scientific_source_paper_result is True
-    assert (
-        pub4.run_id == "full_20260817T071019Z_7d7146b7"
-    )
+    assert pub4.run_id == "full_20260817T071019Z_7d7146b7"
     assert not pub1.missing_files()
     assert not pub4.missing_files()
 
@@ -636,7 +634,9 @@ def test_publication_mode_renders_and_validates_promoted_bundle(tmp_path: Path) 
         # Canonical CLI order: overview table first, then render (which
         # snapshots artifact hashes), then appendix order.
         write_overview_table(
-            PreviewLayout(tmp_path, source.experiment_id, source.run_id, mode="publication"),
+            PreviewLayout(
+                tmp_path, source.experiment_id, source.run_id, mode="publication"
+            ),
             paper_result=source.paper_result,
         )
         result = render_source(source, tmp_path)
@@ -660,8 +660,8 @@ def test_publication_mode_renders_and_validates_promoted_bundle(tmp_path: Path) 
         assert report["paper_result"] is True
         assert (layout.base / "tables/csv/tab_experimental_evidence_map.csv").exists()
         overview_meta = json.loads(
-            (layout.base / "tables/metadata/tab_experimental_evidence_map.json").read_text(
-                encoding="utf-8"
-            )
+            (
+                layout.base / "tables/metadata/tab_experimental_evidence_map.json"
+            ).read_text(encoding="utf-8")
         )
         assert overview_meta["paper_result"] is True

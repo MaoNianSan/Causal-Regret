@@ -16,12 +16,29 @@ import pandas as pd
 from . import SPEC_ID
 
 LONG_FORM_COLUMNS = [
-    "figure_id", "panel_id", "experiment_id", "run_id", "run_tier",
-    "paper_result", "analysis_tier", "metric_id", "estimand_id",
-    "condition_id", "series_id", "point_estimate", "resampling_median",
-    "interval_lower", "interval_upper", "uncertainty_role",
-    "uncertainty_method", "repetition_count", "sample_count", "unit",
-    "better_direction", "source_table", "source_row_key",
+    "figure_id",
+    "panel_id",
+    "experiment_id",
+    "run_id",
+    "run_tier",
+    "paper_result",
+    "analysis_tier",
+    "metric_id",
+    "estimand_id",
+    "condition_id",
+    "series_id",
+    "point_estimate",
+    "resampling_median",
+    "interval_lower",
+    "interval_upper",
+    "uncertainty_role",
+    "uncertainty_method",
+    "repetition_count",
+    "sample_count",
+    "unit",
+    "better_direction",
+    "source_table",
+    "source_row_key",
 ]
 
 INVALID_PATH_CHARS = re.compile(r'[<>:"/\\|?*\x00-\x1f]')
@@ -49,7 +66,9 @@ class PreviewLayout:
     def ensure(self) -> None:
         for section in ("main", "appendix"):
             for ext in ("pdf", "svg", "png", "data", "metadata"):
-                (self.base / "figures" / section / ext).mkdir(parents=True, exist_ok=True)
+                (self.base / "figures" / section / ext).mkdir(
+                    parents=True, exist_ok=True
+                )
         for path in (
             self.base / "tables" / "csv",
             self.base / "tables" / "tex",
@@ -85,36 +104,48 @@ def utc_now() -> str:
 
 def configure_matplotlib() -> None:
     mpl.use("Agg", force=True)
-    mpl.rcParams.update({
-        "svg.fonttype": "none",
-        "pdf.fonttype": 42,
-        "ps.fonttype": 42,
-        "font.size": 8.0,
-        "axes.titlesize": 9.0,
-        "axes.labelsize": 8.5,
-        "xtick.labelsize": 7.5,
-        "ytick.labelsize": 7.5,
-        "legend.fontsize": 7.5,
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "axes.linewidth": 0.8,
-        "lines.linewidth": 0.9,
-        "patch.linewidth": 0.8,
-    })
+    mpl.rcParams.update(
+        {
+            "svg.fonttype": "none",
+            "pdf.fonttype": 42,
+            "ps.fonttype": 42,
+            "font.size": 8.0,
+            "axes.titlesize": 9.0,
+            "axes.labelsize": 8.5,
+            "xtick.labelsize": 7.5,
+            "ytick.labelsize": 7.5,
+            "legend.fontsize": 7.5,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "axes.linewidth": 0.8,
+            "lines.linewidth": 0.9,
+            "patch.linewidth": 0.8,
+        }
+    )
 
 
 def write_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n", encoding="utf-8")
+    path.write_text(
+        json.dumps(payload, indent=2, sort_keys=True, ensure_ascii=True) + "\n",
+        encoding="utf-8",
+    )
 
 
 def read_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def standardize_long_form(frame: pd.DataFrame, *, figure_id: str, experiment_id: str,
-                          run_id: str, run_tier: str, paper_result: bool,
-                          analysis_tier: str = "primary") -> pd.DataFrame:
+def standardize_long_form(
+    frame: pd.DataFrame,
+    *,
+    figure_id: str,
+    experiment_id: str,
+    run_id: str,
+    run_tier: str,
+    paper_result: bool,
+    analysis_tier: str = "primary",
+) -> pd.DataFrame:
     result = frame.copy()
     for column in LONG_FORM_COLUMNS:
         if column not in result.columns:
@@ -191,8 +222,12 @@ def write_figure_bundle(
     figure.savefig(svg)
     figure.savefig(png, dpi=300)
     # LF line endings keep the data CSV byte-stable across platforms.
-    source_data.to_csv(data_path, index=False, float_format="%.17g", lineterminator="\n")
-    source_hashes = {str(path): sha256_file(path) for path in source_files if path.exists()}
+    source_data.to_csv(
+        data_path, index=False, float_format="%.17g", lineterminator="\n"
+    )
+    source_hashes = {
+        str(path): sha256_file(path) for path in source_files if path.exists()
+    }
     file_hashes = {path.name: sha256_file(path) for path in (pdf, svg, png)}
     source_data_hash = sha256_file(data_path)
     canvas_size = [float(value) for value in figure.get_size_inches()]
@@ -205,14 +240,18 @@ def write_figure_bundle(
         "panel_definitions": metadata.get("panel_definitions", {}),
         "metric_definitions": metadata.get("metric_definitions", {}),
         "interpretation_boundary": metadata.get("interpretation_boundary", ""),
-        "question_or_claim": metadata.get("question_or_claim", metadata.get("narrative_claim", "")),
+        "question_or_claim": metadata.get(
+            "question_or_claim", metadata.get("narrative_claim", "")
+        ),
         "marker_semantics": metadata.get("marker_semantics", {}),
         "uncertainty_semantics": metadata.get("uncertainty_semantics", ""),
         "sample_or_seed_count": metadata.get("sample_or_seed_count", "NA"),
         "run_id": metadata.get("run_id"),
         "run_tier": metadata.get("run_tier"),
         "paper_result": bool(metadata.get("paper_result", False)),
-        "scientific_source_paper_result": bool(metadata.get("scientific_source_paper_result", False)),
+        "scientific_source_paper_result": bool(
+            metadata.get("scientific_source_paper_result", False)
+        ),
         "promotion_status": metadata.get(
             "promotion_status", "NOT_PROMOTED_PRESENTATION_PREVIEW"
         ),
@@ -224,25 +263,43 @@ def write_figure_bundle(
         "source_file_hashes": source_hashes,
         "figure_file_hashes": file_hashes,
         "source_data_file_hash": source_data_hash,
-        "uncertainty_definition": metadata.get("uncertainty_definition", metadata.get("uncertainty_semantics", "")),
+        "uncertainty_definition": metadata.get(
+            "uncertainty_definition", metadata.get("uncertainty_semantics", "")
+        ),
         "generated_at": utc_now(),
         "source_run_path": metadata.get("source_run_path", ""),
-        "presentation_build_commit": metadata.get("presentation_build_commit", "unknown"),
+        "presentation_build_commit": metadata.get(
+            "presentation_build_commit", "unknown"
+        ),
         "presentation_code_hash": metadata.get("presentation_code_hash", ""),
-        "preview_root_relative_path": str(layout.base.relative_to(layout.root)).replace(os.sep, "/"),
+        "preview_root_relative_path": str(layout.base.relative_to(layout.root)).replace(
+            os.sep, "/"
+        ),
         "canvas_size_inches": canvas_size,
         "png_dpi": 300,
         "source_data": str(data_path.relative_to(layout.base)).replace(os.sep, "/"),
         "layout_profile": layout_profile,
         "layout_checks": layout_checks,
-        **{k: v for k, v in metadata.items() if k not in {"figure_file_hashes", "source_file_hashes"}},
+        **{
+            k: v
+            for k, v in metadata.items()
+            if k not in {"figure_file_hashes", "source_file_hashes"}
+        },
     }
     write_json(meta_path, payload)
     plt.close(figure)
-    return {"pdf": pdf, "svg": svg, "png": png, "data": data_path, "metadata": meta_path}
+    return {
+        "pdf": pdf,
+        "svg": svg,
+        "png": png,
+        "data": data_path,
+        "metadata": meta_path,
+    }
 
 
-def copy_table_bundle(source: Path, layout: PreviewLayout, *, stem: str, metadata: dict[str, Any]) -> tuple[Path, Path, Path]:
+def copy_table_bundle(
+    source: Path, layout: PreviewLayout, *, stem: str, metadata: dict[str, Any]
+) -> tuple[Path, Path, Path]:
     layout.ensure()
     frame = pd.read_csv(source)
     csv_path = layout.base / "tables" / "csv" / f"{stem}.csv"
@@ -250,11 +307,19 @@ def copy_table_bundle(source: Path, layout: PreviewLayout, *, stem: str, metadat
     meta_path = layout.base / "tables" / "metadata" / f"{stem}.json"
     frame.to_csv(csv_path, index=False, float_format="%.17g", lineterminator="\n")
     tex_path.write_text(frame.to_latex(index=False, escape=True), encoding="utf-8")
-    write_json(meta_path, {
-        "spec_id": SPEC_ID, "table_id": stem, "source_file": str(source),
-        "source_file_sha256": sha256_file(source), "csv_sha256": sha256_file(csv_path),
-        "tex_sha256": sha256_file(tex_path), "paper_result": False, **metadata,
-    })
+    write_json(
+        meta_path,
+        {
+            "spec_id": SPEC_ID,
+            "table_id": stem,
+            "source_file": str(source),
+            "source_file_sha256": sha256_file(source),
+            "csv_sha256": sha256_file(csv_path),
+            "tex_sha256": sha256_file(tex_path),
+            "paper_result": False,
+            **metadata,
+        },
+    )
     return csv_path, tex_path, meta_path
 
 

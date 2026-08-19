@@ -21,13 +21,22 @@ from .common import (
 )
 from presentation_sources import PresentationSource, load_run_manifest
 
-
 ROOT = Path(__file__).resolve().parents[1]
 RENDERER_PATHS = {
     "Exp1": ROOT / "exp1_alignment_transfer" / "presentation.py",
-    "Exp2": ROOT / "exp2_real_delayed_conversion_logs" / "exp2_core" / "reporting" / "presentation.py",
-    "Exp3": ROOT / "exp3_sequential_recommendation_delayed_feedback" / "presentation.py",
-    "Exp4": ROOT / "exp4_controlled_route_audit" / "exp4" / "reporting" / "presentation.py",
+    "Exp2": ROOT
+    / "exp2_real_delayed_conversion_logs"
+    / "exp2_core"
+    / "reporting"
+    / "presentation.py",
+    "Exp3": ROOT
+    / "exp3_sequential_recommendation_delayed_feedback"
+    / "presentation.py",
+    "Exp4": ROOT
+    / "exp4_controlled_route_audit"
+    / "exp4"
+    / "reporting"
+    / "presentation.py",
 }
 
 
@@ -121,7 +130,12 @@ def figure_metadata(
 
 
 def write_standard_table(
-    layout: PreviewLayout, source: Path, stem: str, *, semantics: str, paper_result: bool = False
+    layout: PreviewLayout,
+    source: Path,
+    stem: str,
+    *,
+    semantics: str,
+    paper_result: bool = False,
 ) -> None:
     copy_table_bundle(
         source,
@@ -167,7 +181,8 @@ def _artifact_hashes(layout: PreviewLayout) -> dict[str, str]:
     paths = [
         path
         for path in layout.base.rglob("*")
-        if path.is_file() and not excluded.intersection(path.relative_to(layout.base).parts)
+        if path.is_file()
+        and not excluded.intersection(path.relative_to(layout.base).parts)
     ]
     return {
         path.relative_to(layout.base).as_posix(): sha256_file(path)
@@ -223,10 +238,34 @@ def render_source(source: PresentationSource, preview_root: Path) -> dict[str, A
 
 def write_overview_table(layout: PreviewLayout, paper_result: bool = False) -> None:
     rows = [
-        ["Exp1", "Controlled simulator plus scalar-feedback learner", "exact-valid, matched-mean misaligned, systematic misbinding", "alignment budget, structural regret, binding contrast", "Action-gap alignment controls transfer; learner allocation is a separate consequence."],
-        ["Exp2", "Criteo delayed-conversion log", "arrival accounting vs four source-time attribution rules", "allocation TV and Kendall tau-b", "Attribution sensitivity on a fixed cohort; not causal attribution or policy value."],
-        ["Exp3", "KuaiRand-1K held-out logged support", "Arrival carrier, Historical mean, Ridge", "score, pairwise gap, ranking recovery", "Score recovery need not transfer to decision recovery; not OPE or causal regret."],
-        ["Exp4", "Controlled route/audit/calibration simulator", "label retention, audit selection/IPW, calibration controls", "D_pair, audit bias/RMSE, OOF recoverability", "Population alignment, audit reliability, and calibratability are distinct."],
+        [
+            "Exp1",
+            "Controlled simulator plus scalar-feedback learner",
+            "exact-valid, matched-mean misaligned, systematic misbinding",
+            "alignment budget, structural regret, binding contrast",
+            "Action-gap alignment controls transfer; learner allocation is a separate consequence.",
+        ],
+        [
+            "Exp2",
+            "Criteo delayed-conversion log",
+            "arrival accounting vs four source-time attribution rules",
+            "allocation TV and Kendall tau-b",
+            "Attribution sensitivity on a fixed cohort; not causal attribution or policy value.",
+        ],
+        [
+            "Exp3",
+            "KuaiRand-1K held-out logged support",
+            "Arrival carrier, Historical mean, Ridge",
+            "score, pairwise gap, ranking recovery",
+            "Score recovery need not transfer to decision recovery; not OPE or causal regret.",
+        ],
+        [
+            "Exp4",
+            "Controlled route/audit/calibration simulator",
+            "label retention, audit selection/IPW, calibration controls",
+            "D_pair, audit bias/RMSE, OOF recoverability",
+            "Population alignment, audit reliability, and calibratability are distinct.",
+        ],
     ]
     frame = pd.DataFrame(
         rows,
@@ -269,10 +308,45 @@ def write_appendix_order(layout: PreviewLayout, paper_result: bool = False) -> N
             "artifact_hashes": _artifact_hashes(layout),
             "appendix_order": [
                 {"id": "C.1", "items": ["reporting", "uncertainty", "provenance"]},
-                {"id": "C.2", "items": ["Exp1 protocol", "complete table", "diagnostics", "targeted validation"]},
-                {"id": "C.3", "items": ["Exp2 cohort", "route definitions", "complete pairwise", "diagnostics", "robustness"]},
-                {"id": "C.4", "items": ["Exp3 support", "primary tables", "three composites", "CV/coefficient", "resampling diagnostics"]},
-                {"id": "C.5", "items": ["Exp4 v3 parameters", "Module A", "audit", "calibration", "three composites"]},
+                {
+                    "id": "C.2",
+                    "items": [
+                        "Exp1 protocol",
+                        "complete table",
+                        "diagnostics",
+                        "targeted validation",
+                    ],
+                },
+                {
+                    "id": "C.3",
+                    "items": [
+                        "Exp2 cohort",
+                        "route definitions",
+                        "complete pairwise",
+                        "diagnostics",
+                        "robustness",
+                    ],
+                },
+                {
+                    "id": "C.4",
+                    "items": [
+                        "Exp3 support",
+                        "primary tables",
+                        "three composites",
+                        "CV/coefficient",
+                        "resampling diagnostics",
+                    ],
+                },
+                {
+                    "id": "C.5",
+                    "items": [
+                        "Exp4 v3 parameters",
+                        "Module A",
+                        "audit",
+                        "calibration",
+                        "three composites",
+                    ],
+                },
                 {"id": "C.6", "items": ["artifact lineage"]},
             ],
             "generated_at": utc_now(),

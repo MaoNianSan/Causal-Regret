@@ -306,9 +306,7 @@ def _appendix_composite(
                     group[metric],
                     marker="o",
                     linewidth=0.8,
-                    label=AUDIT_DESIGN_DISPLAY.get(
-                        design, design.replace("_", " ")
-                    ),
+                    label=AUDIT_DESIGN_DISPLAY.get(design, design.replace("_", " ")),
                 )
             axis.set_xlabel(r"$\rho_{audit}$")
             axis.set_ylabel(metric.replace("_", " "))
@@ -436,13 +434,15 @@ def _appendix_composite(
                 }
             )
         axis.set_title(
-            panel_titles[panel_index]
-            if panel_titles is not None and panel_index < len(panel_titles)
-            else path.stem.replace("exp4_", "")
-            .replace("fig_app_", "")
-            .replace("_data", "")
-            .replace("_", " ")
-            .title(),
+            (
+                panel_titles[panel_index]
+                if panel_titles is not None and panel_index < len(panel_titles)
+                else path.stem.replace("exp4_", "")
+                .replace("fig_app_", "")
+                .replace("_data", "")
+                .replace("_", " ")
+                .title()
+            ),
             loc="left",
             fontweight="bold",
         )

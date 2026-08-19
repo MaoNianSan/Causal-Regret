@@ -350,9 +350,7 @@ def render_presentation(
             axis.set_xlim(lower - 0.06 * span, upper + 0.10 * span)
         axis.set_xlabel(xlabel)
         if row_index == 0:
-            axis.set_title(
-                column_titles[column_index], loc="left", fontweight="bold"
-            )
+            axis.set_title(column_titles[column_index], loc="left", fontweight="bold")
         axis.grid(axis="x", alpha=0.22, linewidth=0.55)
     fig.legend(
         handles=[
