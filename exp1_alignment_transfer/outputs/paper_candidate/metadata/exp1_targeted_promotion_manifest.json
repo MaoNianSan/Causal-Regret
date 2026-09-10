@@ -1,0 +1,361 @@
+{
+  "analysis_tier": "targeted",
+  "artifacts": [
+    {
+      "byte_identical_to_source": false,
+      "declared_transform": "metadata_governance_update",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_validation_report.json",
+      "destination_sha256": "8a2d554a723124c90055166268f2f0d798d37caf8f41ddb93b86e73f03f24431",
+      "destination_size_bytes": 2874,
+      "effective_transform": "metadata_governance_update",
+      "fields_updated": [
+        "paper_result",
+        "promotion_scope",
+        "run_tier"
+      ],
+      "nested_payload_unchanged": true,
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_validation_report.json",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_validation_report.json",
+      "source_sha256": "6a0bf750ffd1d5b85960c6bfdf0978f448b006b2db1384afe3bcd4d2007eeaf5"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_cancellation_summary.csv",
+      "destination_sha256": "a746238dad4a291130fddc79884ad3e647d5f92c09dfa3cb54ab6121ab5f00b5",
+      "destination_size_bytes": 55191,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_cancellation_summary.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_cancellation_summary.csv",
+      "source_sha256": "1ce2d985a3cf51347d54dd60ecc7f73edd7c924e80ccff383bfdf8b5f41cc189"
+    },
+    {
+      "byte_identical_to_source": true,
+      "columns_updated": [],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_cancellation_sweep.csv",
+      "destination_sha256": "fcd449129a25efc383e4a70a0e0d59cdd199de4cc6c1cc21db58a1b19d6f3e8c",
+      "destination_size_bytes": 532091,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_cancellation_sweep.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_cancellation_sweep.csv",
+      "source_sha256": "fcd449129a25efc383e4a70a0e0d59cdd199de4cc6c1cc21db58a1b19d6f3e8c"
+    },
+    {
+      "byte_identical_to_source": false,
+      "declared_transform": "metadata_governance_update",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_cancellation_invariants.json",
+      "destination_sha256": "557b8ec0bcabafde70ec23930ffd724214ae4b94bcf4f8b72501a3fdd7d23a85",
+      "destination_size_bytes": 3429,
+      "effective_transform": "metadata_governance_update",
+      "fields_updated": [
+        "paper_result",
+        "promotion_scope",
+        "run_tier"
+      ],
+      "nested_payload_unchanged": true,
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_cancellation_invariants.json",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_cancellation_invariants.json",
+      "source_sha256": "1514a6e1c7f48c9da0a2ab439f220964397b7f12f7ba530a4999a4c62bbb4834"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+      "destination_sha256": "0a65cbf6641241f5ba3acb3efcc073ede4cf2df078d528b25d1293b21ccc0d92",
+      "destination_size_bytes": 181214,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+      "source_sha256": "80870538408c217dc3f0fae5d15c603fc94df14493328c6e6c3ce1f39f061369"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_horizon_route_summary.csv",
+      "destination_sha256": "5e3cc0b92bfd33b709ff7f26347862d72444ab781fcc97ff1dbba9e4e09968d7",
+      "destination_size_bytes": 6996,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_horizon_route_summary.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_horizon_route_summary.csv",
+      "source_sha256": "c1bb2613399b1141feef83a94f765231b246d11a854c032a4bb61a18a1efc264"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_horizon_seed_metrics.csv",
+      "destination_sha256": "e51ef4581c286ab36d97bd85b823c912e4f58852e639accc8a0907624e591103",
+      "destination_size_bytes": 178642,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_horizon_seed_metrics.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_horizon_seed_metrics.csv",
+      "source_sha256": "0e799c15d3f870da1c846074a685f793c36300684883dc1d6975490326f5027f"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_horizon_summary.csv",
+      "destination_sha256": "e1d5254ec836b95652bb7c7412c11d1773ac1cdfd1a06bf66f30d5229399559f",
+      "destination_size_bytes": 1968,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_horizon_summary.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_horizon_summary.csv",
+      "source_sha256": "38cd52329cfb5d672e5ae4c9a894bea59d7a5a5c5e3b2437e3d844d1b18f48d1"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_mean_delay_seed_metrics.csv",
+      "destination_sha256": "9e30f00f8447b7d038de48cbb07eb1497568fc726b97b8b0515d80cdf0472031",
+      "destination_size_bytes": 179304,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_mean_delay_seed_metrics.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_mean_delay_seed_metrics.csv",
+      "source_sha256": "7e5bdf90cae789724e2197ed6d76bdb585744bfda1d6ae0bbdfcbb14cc564589"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_mean_delay_summary.csv",
+      "destination_sha256": "4a63e454ff1394b81f13860c2e3dffc905f94d5bc7e4db4da6dc3aaaf7c86a30",
+      "destination_size_bytes": 1546,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_mean_delay_summary.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_mean_delay_summary.csv",
+      "source_sha256": "8e9849e6a68cbff356c6ec5f5a7e688ee0bc4b24abe8b4ff7922e12a99bba6fa"
+    },
+    {
+      "byte_identical_to_source": true,
+      "columns_updated": [],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_theory_exact_shift_sweep.csv",
+      "destination_sha256": "564ecf0bfc6709ee779631df1f2f1aa01db1312d93cd976529e2803517836814",
+      "destination_size_bytes": 8564,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_theory_exact_shift_sweep.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_theory_exact_shift_sweep.csv",
+      "source_sha256": "564ecf0bfc6709ee779631df1f2f1aa01db1312d93cd976529e2803517836814"
+    },
+    {
+      "byte_identical_to_source": true,
+      "columns_updated": [],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/exp1_targeted_theory_margin_threshold_sweep.csv",
+      "destination_sha256": "f6abd984121a26e65ab7630e437ce7799d5e6a8aa58fc63bed92cfab4e366ff1",
+      "destination_size_bytes": 22070,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/exp1_targeted_theory_margin_threshold_sweep.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/exp1_targeted_theory_margin_threshold_sweep.csv",
+      "source_sha256": "f6abd984121a26e65ab7630e437ce7799d5e6a8aa58fc63bed92cfab4e366ff1"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/targeted/fig_exp1_targeted_validation_data.csv",
+      "destination_sha256": "ce9db546e4645fce435c1c2f0298369fca7c2c1b31cdc8b39bf434b6d3478d27",
+      "destination_size_bytes": 3460,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "targeted/fig_exp1_targeted_validation_data.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/targeted/fig_exp1_targeted_validation_data.csv",
+      "source_sha256": "321ecf8ddb077e1b32561c58134763563b5b837f5cf20bc39594142f1e5e84dd"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/derived/exp1_regret_stability_utilization_summary.csv",
+      "destination_sha256": "39a7071e19948ef06fd6f6814de5e1a609346122261ff0596e58dde48aaee0a8",
+      "destination_size_bytes": 2141,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "derived/exp1_regret_stability_utilization_summary.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/derived/exp1_regret_stability_utilization_summary.csv",
+      "source_sha256": "90356f8001b29dcad5714dfcad174ccf22c875d6acf963413e4a64d65f67d35b"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/derived/exp1_regret_stability_utilization.csv",
+      "destination_sha256": "83d62f74524d43b031e2f7db68ed505ff81a18a0a803ffceaf28337b26ec2e77",
+      "destination_size_bytes": 322975,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "derived/exp1_regret_stability_utilization.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/derived/exp1_regret_stability_utilization.csv",
+      "source_sha256": "6fcc615e22bf8544f0fc23863a910b02be5045b8bc963d999722c0e1980db55e"
+    },
+    {
+      "byte_identical_to_source": false,
+      "columns_updated": [
+        "run_tier",
+        "paper_result"
+      ],
+      "declared_transform": "paper_flag_only",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/figures/data/fig_exp1_appendix_targeted_cancellation_data.csv",
+      "destination_sha256": "cc3146393f3aba15bc4b4bbcafed9f4d44c1d4afa61e372184a4f88825ea9904",
+      "destination_size_bytes": 6254,
+      "effective_transform": "paper_flag_only",
+      "operation": "updated",
+      "relative_path": "figures/data/fig_exp1_appendix_targeted_cancellation_data.csv",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/figures/data/fig_exp1_appendix_targeted_cancellation_data.csv",
+      "source_sha256": "73c81ae5fbf568e0eb011976c24a66dd5e262c3770b755c3ac3c92a186d3de93"
+    },
+    {
+      "byte_identical_to_source": false,
+      "declared_transform": "metadata_governance_update",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/figures/metadata/fig_exp1_appendix_targeted_cancellation_metadata.json",
+      "destination_sha256": "8736d05be41d097b69aa69eacdc8a6dc3b4c53de77fc27b80363507a9356bf8f",
+      "destination_size_bytes": 1505,
+      "effective_transform": "metadata_governance_update",
+      "fields_updated": [
+        "paper_result",
+        "promotion_scope",
+        "run_tier"
+      ],
+      "nested_payload_unchanged": true,
+      "operation": "updated",
+      "relative_path": "figures/metadata/fig_exp1_appendix_targeted_cancellation_metadata.json",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/figures/metadata/fig_exp1_appendix_targeted_cancellation_metadata.json",
+      "source_sha256": "dcf492e0178929c13cd211cf5ea949e579303ec963155f41b8b4070a630cce2f"
+    },
+    {
+      "columns_updated": [],
+      "declared_transform": "byte_copy",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/figures/pdf/fig_exp1_appendix_targeted_cancellation.pdf",
+      "destination_sha256": "b88e8b8cf2ca39aa7c70c9c0ded54ca17feda33c9f3fd37e47d06ce15b970308",
+      "destination_size_bytes": 32817,
+      "effective_transform": "byte_copy",
+      "fields_updated": [],
+      "operation": "updated",
+      "relative_path": "figures/pdf/fig_exp1_appendix_targeted_cancellation.pdf",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/figures/pdf/fig_exp1_appendix_targeted_cancellation.pdf",
+      "source_sha256": "b88e8b8cf2ca39aa7c70c9c0ded54ca17feda33c9f3fd37e47d06ce15b970308"
+    },
+    {
+      "columns_updated": [],
+      "declared_transform": "byte_copy",
+      "destination_existed_before": true,
+      "destination_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/paper_candidate/figures/png/fig_exp1_appendix_targeted_cancellation.png",
+      "destination_sha256": "368f87003de624d67b26af9d6876b5d8d675279b7426680320616da201e80aa3",
+      "destination_size_bytes": 379453,
+      "effective_transform": "byte_copy",
+      "fields_updated": [],
+      "operation": "updated",
+      "relative_path": "figures/png/fig_exp1_appendix_targeted_cancellation.png",
+      "source_path": "D:/research/causalregret/experiment/github/exp1_alignment_transfer/outputs/full/figures/png/fig_exp1_appendix_targeted_cancellation.png",
+      "source_sha256": "368f87003de624d67b26af9d6876b5d8d675279b7426680320616da201e80aa3"
+    }
+  ],
+  "authorization_memo_id": "CHANGE_MEMO_EXP1_006",
+  "cancellation_invariants_sha256": "1514a6e1c7f48c9da0a2ab439f220964397b7f12f7ba530a4999a4c62bbb4834",
+  "candidate_ledger": {
+    "entries_added": [
+      "targeted/exp1_targeted_cancellation_summary.csv",
+      "targeted/exp1_targeted_cancellation_sweep.csv",
+      "targeted/exp1_targeted_cancellation_invariants.json",
+      "targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+      "targeted/exp1_targeted_horizon_route_summary.csv",
+      "derived/exp1_regret_stability_utilization_summary.csv",
+      "derived/exp1_regret_stability_utilization.csv",
+      "figures/data/fig_exp1_appendix_targeted_cancellation_data.csv",
+      "figures/metadata/fig_exp1_appendix_targeted_cancellation_metadata.json",
+      "figures/pdf/fig_exp1_appendix_targeted_cancellation.pdf",
+      "figures/png/fig_exp1_appendix_targeted_cancellation.png"
+    ],
+    "entries_refreshed": [
+      "targeted/exp1_targeted_validation_report.json",
+      "targeted/exp1_targeted_horizon_seed_metrics.csv",
+      "targeted/exp1_targeted_horizon_summary.csv",
+      "targeted/exp1_targeted_mean_delay_seed_metrics.csv",
+      "targeted/exp1_targeted_mean_delay_summary.csv",
+      "targeted/exp1_targeted_theory_exact_shift_sweep.csv",
+      "targeted/exp1_targeted_theory_margin_threshold_sweep.csv",
+      "targeted/fig_exp1_targeted_validation_data.csv"
+    ],
+    "non_promoted_entries_unchanged": true,
+    "records_total": 58,
+    "relative_path": "metadata/artifact_manifest.json",
+    "sha256_after": "75ff87a43406d0fca1d1af596175706176fa2b0838f2fb0196dcb38de0f1ea26",
+    "sha256_before": "ee73ef0b05db465cd92ef07b0db96d100c92e4b7e91e8e21d779afbd976e0dc6",
+    "status": "REFRESHED",
+    "transformation": "candidate_ledger_refresh"
+  },
+  "destination_root": "outputs/paper_candidate",
+  "experiment_id": "exp1_alignment_transfer",
+  "paper_result": true,
+  "primary_candidate_baseline_hash": "54a65ecad60248d297501bebf9c86e412525ed18cbf79854a9250e0533e30c50",
+  "primary_candidate_protected_artifacts": 40,
+  "promoted_at": "2026-09-10T11:55:03.698846+00:00",
+  "promotion_scope": "targeted_extension",
+  "scientific_acceptance": "PASS",
+  "scientific_generation_source_hash": "d2d2f3c999c070c91e450bc39f0a1f8a0e77574dcabcbf21a9382a4d04a28922",
+  "source_root": "outputs/full",
+  "source_run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "targeted_validation_report_sha256": "6a0bf750ffd1d5b85960c6bfdf0978f448b006b2db1384afe3bcd4d2007eeaf5",
+  "validation_config_hash": "e5604c77e3a3640f5facdc7d3161839c2d8260e358e8aed0e075db55cebc8409"
+}

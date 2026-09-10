@@ -197,43 +197,98 @@
     },
     {
       "path": "targeted/exp1_targeted_horizon_seed_metrics.csv",
-      "sha256": "d4b1c99e389243a5481ed40c7eff0276ce40da71f29f85e350899b0553814c27",
-      "size_bytes": 178090
+      "sha256": "e51ef4581c286ab36d97bd85b823c912e4f58852e639accc8a0907624e591103",
+      "size_bytes": 178642
     },
     {
       "path": "targeted/exp1_targeted_horizon_summary.csv",
-      "sha256": "ea97063facc99fb4764ba4d43d0c03dfc6ec7e32f24db2e1ab114c9b2943dd48",
-      "size_bytes": 1937
+      "sha256": "e1d5254ec836b95652bb7c7412c11d1773ac1cdfd1a06bf66f30d5229399559f",
+      "size_bytes": 1968
     },
     {
       "path": "targeted/exp1_targeted_mean_delay_seed_metrics.csv",
-      "sha256": "633e77ff0483f9a76bbdc59d1781e306d9b02ebfbf72abf2d9f82f5c0ce1b98a",
-      "size_bytes": 178729
+      "sha256": "9e30f00f8447b7d038de48cbb07eb1497568fc726b97b8b0515d80cdf0472031",
+      "size_bytes": 179304
     },
     {
       "path": "targeted/exp1_targeted_mean_delay_summary.csv",
-      "sha256": "d9de6df604e117f62d3b4a186df0972be7b4a981fa6c5c0a62cd883426cf3f90",
-      "size_bytes": 1506
+      "sha256": "4a63e454ff1394b81f13860c2e3dffc905f94d5bc7e4db4da6dc3aaaf7c86a30",
+      "size_bytes": 1546
     },
     {
       "path": "targeted/exp1_targeted_theory_exact_shift_sweep.csv",
-      "sha256": "7a7bbb983aa0c0cadeee58240d680caf06dea942bb7484111180e1f3d7f0c0a3",
-      "size_bytes": 8415
+      "sha256": "564ecf0bfc6709ee779631df1f2f1aa01db1312d93cd976529e2803517836814",
+      "size_bytes": 8564
     },
     {
       "path": "targeted/exp1_targeted_theory_margin_threshold_sweep.csv",
-      "sha256": "21bb55f184857fecc969349d2d65a34e54a1372bb6e628b68cb33353c4dbc6a3",
-      "size_bytes": 21482
+      "sha256": "f6abd984121a26e65ab7630e437ce7799d5e6a8aa58fc63bed92cfab4e366ff1",
+      "size_bytes": 22070
     },
     {
       "path": "targeted/exp1_targeted_validation_report.json",
-      "sha256": "e601cf8bb9d9465848bcef24dae009e749d157b671e569adc4e446dc45b3b52a",
-      "size_bytes": 1430
+      "sha256": "8a2d554a723124c90055166268f2f0d798d37caf8f41ddb93b86e73f03f24431",
+      "size_bytes": 2874
     },
     {
       "path": "targeted/fig_exp1_targeted_validation_data.csv",
-      "sha256": "2a28c427ecefb9d8d5c45e7daaee9ff1201730882c4e2b7c2eb458415763fb42",
-      "size_bytes": 3389
+      "sha256": "ce9db546e4645fce435c1c2f0298369fca7c2c1b31cdc8b39bf434b6d3478d27",
+      "size_bytes": 3460
+    },
+    {
+      "path": "targeted/exp1_targeted_cancellation_summary.csv",
+      "sha256": "a746238dad4a291130fddc79884ad3e647d5f92c09dfa3cb54ab6121ab5f00b5",
+      "size_bytes": 55191
+    },
+    {
+      "path": "targeted/exp1_targeted_cancellation_sweep.csv",
+      "sha256": "fcd449129a25efc383e4a70a0e0d59cdd199de4cc6c1cc21db58a1b19d6f3e8c",
+      "size_bytes": 532091
+    },
+    {
+      "path": "targeted/exp1_targeted_cancellation_invariants.json",
+      "sha256": "557b8ec0bcabafde70ec23930ffd724214ae4b94bcf4f8b72501a3fdd7d23a85",
+      "size_bytes": 3429
+    },
+    {
+      "path": "targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+      "sha256": "0a65cbf6641241f5ba3acb3efcc073ede4cf2df078d528b25d1293b21ccc0d92",
+      "size_bytes": 181214
+    },
+    {
+      "path": "targeted/exp1_targeted_horizon_route_summary.csv",
+      "sha256": "5e3cc0b92bfd33b709ff7f26347862d72444ab781fcc97ff1dbba9e4e09968d7",
+      "size_bytes": 6996
+    },
+    {
+      "path": "derived/exp1_regret_stability_utilization_summary.csv",
+      "sha256": "39a7071e19948ef06fd6f6814de5e1a609346122261ff0596e58dde48aaee0a8",
+      "size_bytes": 2141
+    },
+    {
+      "path": "derived/exp1_regret_stability_utilization.csv",
+      "sha256": "83d62f74524d43b031e2f7db68ed505ff81a18a0a803ffceaf28337b26ec2e77",
+      "size_bytes": 322975
+    },
+    {
+      "path": "figures/data/fig_exp1_appendix_targeted_cancellation_data.csv",
+      "sha256": "cc3146393f3aba15bc4b4bbcafed9f4d44c1d4afa61e372184a4f88825ea9904",
+      "size_bytes": 6254
+    },
+    {
+      "path": "figures/metadata/fig_exp1_appendix_targeted_cancellation_metadata.json",
+      "sha256": "8736d05be41d097b69aa69eacdc8a6dc3b4c53de77fc27b80363507a9356bf8f",
+      "size_bytes": 1505
+    },
+    {
+      "path": "figures/pdf/fig_exp1_appendix_targeted_cancellation.pdf",
+      "sha256": "b88e8b8cf2ca39aa7c70c9c0ded54ca17feda33c9f3fd37e47d06ce15b970308",
+      "size_bytes": 32817
+    },
+    {
+      "path": "figures/png/fig_exp1_appendix_targeted_cancellation.png",
+      "sha256": "368f87003de624d67b26af9d6876b5d8d675279b7426680320616da201e80aa3",
+      "size_bytes": 379453
     }
   ],
   "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",

@@ -1,13 +1,13 @@
 mechanism_id,mechanism_display_name,route_id,route_display_name,metric_id,n_total_seeds,n_defined,n_seeds,estimate,se,ci_lower,ci_upper,bootstrap_repetitions,ci_level,run_tier,paper_result
-zero_delay,Zero delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-zero_delay,Zero delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-exact_valid_shift,Exact-cardinal-valid shift,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-exact_valid_shift,Exact-cardinal-valid shift,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-geometric_delay,Geometric delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.1256766378398699,0.0009289173149444072,0.12386762675858247,0.12746560030830256,2000,0.95,full,False
-geometric_delay,Geometric delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-mixture_delay,Mixture delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.12492243900500252,0.0009829826443439101,0.12298435892872603,0.12682683567400985,2000,0.95,full,False
-mixture_delay,Mixture delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-state_coupled_delay,State-coupled delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.1218197990899347,0.0009100397072725704,0.12014545886805225,0.12355108390166515,2000,0.95,full,False
-state_coupled_delay,State-coupled delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
-systematic_misbinding,Systematic misbinding,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.2777777777777778,3.2597270411533123e-18,0.2777777777777778,0.27777777777777785,2000,0.95,full,False
-systematic_misbinding,Systematic misbinding,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,full,False
+zero_delay,Zero delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+zero_delay,Zero delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+exact_valid_shift,Exact-cardinal-valid shift,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+geometric_delay,Geometric delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.1256766378398699,0.0009289173149444072,0.12386762675858247,0.12746560030830256,2000,0.95,paper,True
+geometric_delay,Geometric delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+mixture_delay,Mixture delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.12492243900500252,0.0009829826443439101,0.12298435892872603,0.12682683567400985,2000,0.95,paper,True
+mixture_delay,Mixture delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.1218197990899347,0.0009100397072725704,0.12014545886805225,0.12355108390166515,2000,0.95,paper,True
+state_coupled_delay,State-coupled delay,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,arrival_assigned,Arrival-time assignment,regret_stability_utilization,30,30,30,0.2777777777777778,3.2597270411533123e-18,0.2777777777777778,0.27777777777777785,2000,0.95,paper,True
+systematic_misbinding,Systematic misbinding,source_bound,Source-bound assignment,regret_stability_utilization,30,0,0,,,,,2000,0.95,paper,True

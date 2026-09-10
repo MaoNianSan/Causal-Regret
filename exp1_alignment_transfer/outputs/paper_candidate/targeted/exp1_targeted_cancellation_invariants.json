@@ -1,0 +1,115 @@
+{
+  "analysis_tier": "targeted",
+  "cancellation_sweep": {
+    "C1_pure_shared": {
+      "cells": 240,
+      "max_complete_conflict_rate": 0.0,
+      "max_delta": 2.220446049250313e-16,
+      "max_mean_chi": 0.0,
+      "max_mean_rho": 0.0,
+      "max_regret_map_linf_to_structural": 2.220446049250313e-16,
+      "optimal_mask_mismatch_count_to_structural": 0,
+      "passed": true
+    },
+    "C2_shared_amplitude_invariance": {
+      "cells_compared": 1080,
+      "max_deviation": 2.220446049250313e-16,
+      "optimal_mask_mismatch_count": 0,
+      "passed": true
+    },
+    "C3_profile_invariance": {
+      "cells_compared": 720,
+      "max_deviation": 2.220446049250313e-16,
+      "optimal_mask_mismatch_count": 0,
+      "passed": true
+    },
+    "C4_delta_margin_ratio": {
+      "c4_native_identity_pass": true,
+      "c4_native_max_abs_error": 2.220446049250313e-16,
+      "c4_native_max_tolerance_ratio": 0.020801529894995525,
+      "c4_ratio_condition_threshold_max": 9.933398062396789e-06,
+      "c4_ratio_condition_threshold_min": 7.105427357601001e-06,
+      "c4_ratio_conditioned_pass": true,
+      "c4_ratio_conditioned_rounds": 7195680,
+      "c4_ratio_max_error_all_diagnostic": 3.6638658649504434e-09,
+      "c4_ratio_max_error_conditioned": 1.7323216343381245e-11,
+      "c4_ratio_unconditioned_rounds": 4320,
+      "machine_eps": 2.220446049250313e-16,
+      "max_absolute_deviation": 3.6638658649504434e-09,
+      "passed": true,
+      "ratio_tol": 1e-09,
+      "round_evaluations": 7200000,
+      "roundoff_safety_factor": 32.0
+    },
+    "C5_choice_threshold": {
+      "cells": 1440,
+      "max_absolute_deviation": 0.0,
+      "passed": true
+    },
+    "C6_no_clipping_no_learner": {
+      "artifact_writes": 0,
+      "counts": {
+        "clipping_calls": 0,
+        "learner_calls": 0,
+        "write_calls": 0
+      },
+      "mechanism_order": [
+        "zero_delay",
+        "exact_valid_shift",
+        "geometric_delay",
+        "mixture_delay",
+        "state_coupled_delay",
+        "systematic_misbinding"
+      ],
+      "mechanism_order_intact": true,
+      "passed": true,
+      "primary_raw_writes": 0,
+      "primary_seed_metrics_writes": 0
+    },
+    "delta_ratio_tolerance": 1e-09,
+    "dep_ratios": [
+      0.0,
+      0.5,
+      0.99,
+      1.0,
+      1.01,
+      1.5
+    ],
+    "eligible_round_support_total": 150000,
+    "grid_cells_per_seed": 48,
+    "max_numerical_deviation": 2.220446049250313e-16,
+    "n_cells": 1440,
+    "n_seeds": 30,
+    "passed": true,
+    "reference_agreement_mask_mismatches": 0,
+    "reference_agreement_max_deviation": 2.220446049250313e-16,
+    "reference_cell": {
+      "alpha_shared": 0.0,
+      "shared_profile": "static_shared"
+    },
+    "shared_profiles": [
+      "static_shared",
+      "state_varying_shared"
+    ],
+    "shared_scales": [
+      0.0,
+      0.05,
+      0.1,
+      0.2
+    ],
+    "sweep_id": "cancellation_shared_vs_action_dependent",
+    "tolerance": 1e-10
+  },
+  "experiment_id": "exp1_alignment_transfer",
+  "generated_at": "2026-09-10T09:18:42.559968+00:00",
+  "horizon_levels": [
+    1000,
+    5000,
+    10000
+  ],
+  "paper_result": true,
+  "promotion_scope": "targeted_extension",
+  "run_tier": "paper",
+  "status": "PASS",
+  "validation_source_hash": "e5604c77e3a3640f5facdc7d3161839c2d8260e358e8aed0e075db55cebc8409"
+}

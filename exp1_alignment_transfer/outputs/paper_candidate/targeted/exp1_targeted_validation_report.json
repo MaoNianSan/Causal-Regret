@@ -1,13 +1,77 @@
 {
   "analysis_tier": "targeted",
-  "code_lineage": "tree:0502d428da878b5499ad515cdb8489709f7f582855770355a8cfc4f32f5e750c",
+  "cancellation_sweep": {
+    "gates": {
+      "C1_pure_shared": true,
+      "C2_shared_amplitude_invariance": true,
+      "C3_profile_invariance": true,
+      "C4_delta_margin_ratio": true,
+      "C5_choice_threshold": true,
+      "C6_no_clipping_no_learner": true
+    },
+    "grid_cells_per_seed": 48,
+    "invariants": "targeted/exp1_targeted_cancellation_invariants.json",
+    "max_numerical_deviation": 2.220446049250313e-16,
+    "n_cells": 1440,
+    "paper_result": false,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29
+    ],
+    "summary": "targeted/exp1_targeted_cancellation_summary.csv",
+    "sweep": "targeted/exp1_targeted_cancellation_sweep.csv",
+    "sweep_id": "cancellation_shared_vs_action_dependent",
+    "tolerance": 1e-10
+  },
+  "code_lineage": "tree:33e62b551b32f3ce524306d884202d8e07dcd95e478d596a1c314a1c4242e279",
   "experiment_id": "exp1_alignment_transfer",
-  "generated_at": "2026-08-17T10:18:31.320547+00:00",
+  "generated_at": "2026-09-10T09:18:42.549152+00:00",
   "horizon_levels": [
     1000,
     5000,
     10000
   ],
+  "horizon_route_map": {
+    "levels": [
+      1000,
+      5000,
+      10000
+    ],
+    "manuscript_facing_route": "arrival_assigned",
+    "paper_result": false,
+    "seed_metrics": "targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+    "stability_inequality_pass": true,
+    "summary": "targeted/exp1_targeted_horizon_route_summary.csv",
+    "utilization_defined_rows": 90
+  },
   "horizon_shared_prefix_pass": true,
   "mean_delay_levels": [
     5,
@@ -15,7 +79,7 @@
     30
   ],
   "paper_result": true,
-  "promoted_at": "2026-08-18T08:58:04.415399+00:00",
+  "promotion_scope": "targeted_extension",
   "run_tier": "paper",
   "status": "PASS",
   "theory_exact_cardinal_shift_sweep": {
@@ -57,5 +121,5 @@
     "sweep_id": "margin_distortion_threshold",
     "threshold_behavior_correct": true
   },
-  "validation_source_hash": "dd04b3e7ae565004b9e74f4d74a32aa6a61f8a90cffc3d7a28772b9630424f6e"
+  "validation_source_hash": "e5604c77e3a3640f5facdc7d3161839c2d8260e358e8aed0e075db55cebc8409"
 }

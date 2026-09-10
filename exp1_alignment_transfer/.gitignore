@@ -58,6 +58,7 @@ status/full_targeted_status.json
 status/fast_validation_status.json
 status/full_validation_status.json
 status/paper_promotion_status.json
+status/targeted_paper_promotion_status.json
 
 # --- Cloud-readable selective unignore of the accepted full run (2026-09-10) ---
 # Expose lightweight scientific result subtrees for GitHub readers while
