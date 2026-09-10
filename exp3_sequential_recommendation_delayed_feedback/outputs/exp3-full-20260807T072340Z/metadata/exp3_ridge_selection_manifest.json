@@ -1,0 +1,21 @@
+{
+  "selection_scope": "history_only",
+  "evaluation_data_used": false,
+  "alpha_grid": [
+    0.1,
+    0.3,
+    1.0,
+    3.0,
+    10.0,
+    30.0
+  ],
+  "selected_alpha": 30.0,
+  "selection_metric": "macro_supported_cell_mae",
+  "tie_tolerance": 0.0001,
+  "tie_break_rule": "larger_alpha",
+  "tie_break_applied": true,
+  "origin_count": 7,
+  "validation_support_scope": "history_common_supported_action_cells",
+  "feature_schema_hash": "6b56bc0aadc75ddefbb1b5c08a6c84a16690b4c1e8932be2b974e90b78401833",
+  "history_design_hash": "619cf7efc38ffe2aaa8dd71c55a0236493c3ba4116a01a33f1ff0c18e8a786b0"
+}

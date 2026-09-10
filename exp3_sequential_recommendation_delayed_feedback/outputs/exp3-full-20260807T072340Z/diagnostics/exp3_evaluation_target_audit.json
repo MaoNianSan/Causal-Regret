@@ -1,0 +1,15 @@
+{
+  "split_id": "evaluation",
+  "unique_user_count": 1000,
+  "source_event_count": 6127661,
+  "eligible_source_event_count": 5997212,
+  "positive_outcome_event_count": 1733718,
+  "right_censoring_rate": 0.021288547130789426,
+  "outcome_event_reuse_rate": 0.9993078459126571,
+  "mean_source_windows_per_outcome_event": 210.662984406922,
+  "median_source_windows_per_outcome_event": 137.0,
+  "p90_source_windows_per_outcome_event": 475.0,
+  "maximum_source_windows_per_outcome_event": 5534.0,
+  "mean_source_events_per_user": 6127.661,
+  "p90_source_events_per_user": 12856.1
+}

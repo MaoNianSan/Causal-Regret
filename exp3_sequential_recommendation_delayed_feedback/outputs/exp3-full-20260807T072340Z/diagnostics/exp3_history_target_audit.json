@@ -1,0 +1,15 @@
+{
+  "split_id": "history",
+  "unique_user_count": 983,
+  "source_event_count": 4643582,
+  "eligible_source_event_count": 4522259,
+  "positive_outcome_event_count": 1330808,
+  "right_censoring_rate": 0.026127028660202445,
+  "outcome_event_reuse_rate": 0.9992733737699202,
+  "mean_source_windows_per_outcome_event": 206.5864685213795,
+  "median_source_windows_per_outcome_event": 136.0,
+  "p90_source_windows_per_outcome_event": 475.0,
+  "maximum_source_windows_per_outcome_event": 3723.0,
+  "mean_source_events_per_user": 4723.888097660224,
+  "p90_source_events_per_user": 10504.80000000001
+}

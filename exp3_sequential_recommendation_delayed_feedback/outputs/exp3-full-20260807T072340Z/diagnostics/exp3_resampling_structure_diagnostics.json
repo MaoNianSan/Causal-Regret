@@ -1,0 +1,7 @@
+{
+  "diagnostic_role": "selection_instability_under_user_resampling",
+  "formal_ci_validated": false,
+  "route_count": 3,
+  "resampling_replication_count": 1000,
+  "interpretation": "Rates quantify how often user resampling changes support sets, valid units, held-out reference actions, or route-selected actions. They diagnose non-smooth selection behavior and do not alter the estimand."
+}

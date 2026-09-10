@@ -1,0 +1,16 @@
+{
+  "status": "READY",
+  "full_design_support_ready": true,
+  "required_action_count": 20,
+  "available_action_count": 20,
+  "selected_user_group_count": 5,
+  "display_user_group_count": 5,
+  "support_threshold": 500,
+  "history_support_pass_threshold": 0.8,
+  "support_limited_threshold": 0.5,
+  "evaluation_action_coverage": 0.9247058823529412,
+  "evaluation_pair_coverage": 0.9207430340557278,
+  "evaluation_reference_pair_coverage": 0.9207430340557278,
+  "evaluation_audit_unit_coverage": 1.0,
+  "selection_uses_evaluation_data": false
+}

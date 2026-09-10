@@ -1,0 +1,8 @@
+{
+  "eligible_event_count": 5997212,
+  "carrier_unavailable_rate": 0.0,
+  "source_carrier_exact_match_rate": 0.0021533339158262207,
+  "source_carrier_action_match_rate": 0.12653713092016758,
+  "mean_source_to_arrival_delay_hours": 7.999071604769236,
+  "mean_source_to_carrier_lag_hours": 5.021703637005181
+}

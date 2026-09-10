@@ -1,0 +1,321 @@
+{
+  "pipeline_execution_status": "PASS",
+  "independent_self_check_status": "PASS",
+  "archival_integrity_check_status": "NOT_RUN",
+  "final_engineering_status": "PASS",
+  "engineering_status": "PASS",
+  "scientific_status": "PASS",
+  "scientific_contract_status": "PASS",
+  "scientific_uncertainty_status": "SENSITIVITY_ONLY_ACCEPTED",
+  "formal_ci_validated": false,
+  "figure_data_contracts": "PASS",
+  "artifact_manifest_status": "PASS",
+  "full_design_support_ready": true,
+  "full_run_recommended": true,
+  "paper_promotion_eligible": true,
+  "paper_result": true,
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "checks": [
+    {
+      "check_id": "artifact_manifest_frozen_hashes",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "verified 103 complete-run frozen artifact hashes"
+    },
+    {
+      "check_id": "code_version_consistency",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0"
+    },
+    {
+      "check_id": "pipeline_completed",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "PASS"
+    },
+    {
+      "check_id": "timezone_rule",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "Asia/Shanghai_epoch_day"
+    },
+    {
+      "check_id": "interval_convention",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "left_closed_right_open"
+    },
+    {
+      "check_id": "strict_temporal_split",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "history ends before evaluation"
+    },
+    {
+      "check_id": "boundary_quarantine_within_frozen_limits",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "history=0.042277%; evaluation=0.035808%"
+    },
+    {
+      "check_id": "boundary_quarantine_reported",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "status=PASS_WITH_BOUNDARY_QUARANTINE; count=4159"
+    },
+    {
+      "check_id": "boundary_quarantine_summary_reconstruction",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "boundary quarantine table reconstructs counts, fractions, policy, and frozen tolerances"
+    },
+    {
+      "check_id": "history_target_window_contract",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "verified_events=4643582; window=[t,t+6h)"
+    },
+    {
+      "check_id": "evaluation_target_window_contract",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "verified_events=6127661; window=[t,t+6h)"
+    },
+    {
+      "check_id": "target_reuse_summary_reconstruction",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "data-dependence table reconstructs user counts, target reuse, and events-per-user summaries"
+    },
+    {
+      "check_id": "target_component_audit_reconstruction",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "target component audit reconstructs"
+    },
+    {
+      "check_id": "dependence_structure_disclosed",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "dependence quantiles and resampling selection-switch diagnostics are bounded and disclosed"
+    },
+    {
+      "check_id": "candidate_action_count",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "candidate_count=20"
+    },
+    {
+      "check_id": "residual_excluded",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "residual excluded"
+    },
+    {
+      "check_id": "group_fold_salts_separated",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "separate salts"
+    },
+    {
+      "check_id": "design_selection_history_only",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "design frozen on history"
+    },
+    {
+      "check_id": "ridge_feature_contract",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "features=['action_indicator_00', 'action_indicator_01', 'action_indicator_02', 'action_indicator_03', 'action_indicator_04', 'action_indicator_05', 'action_indicator_06', 'action_indicator_07', 'action_indicator_08', 'action_indicator_09', 'action_indicator_10', 'action_indicator_11', 'action_indicator_12', 'action_indicator_13', 'action_indicator_14', 'action_indicator_15', 'action_indicator_16', 'action_indicator_17', 'action_indicator_18', 'action_indicator_19', 'intercept', 'lag_proxy_mean', 'lag_proxy_missing', 'log1p_lag_proxy_count']"
+    },
+    {
+      "check_id": "ridge_alpha_history_only_selection",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "selected_alpha=30.0; origins=7"
+    },
+    {
+      "check_id": "ridge_history_only",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "history-only selection/refit"
+    },
+    {
+      "check_id": "design_contract_hash_and_fold_metadata",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "{'reference_action_source': 'selection_fold', 'route_action_source': 'selection_fold', 'route_gap_source': 'selection_fold', 'heldout_target_source': 'opposite_evaluation_fold'}"
+    },
+    {
+      "check_id": "primary_route_boundary",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "{'arrival_carrier', 'history_mean_control', 'ridge_proxy'}"
+    },
+    {
+      "check_id": "route_metadata_boundary",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "no deployment-value claim"
+    },
+    {
+      "check_id": "primary_uncertainty_interface",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "sensitivity-only ranges"
+    },
+    {
+      "check_id": "evaluation_support_reconstruction",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "reference_pair=0.9207"
+    },
+    {
+      "check_id": "support_not_blocked",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "PASS"
+    },
+    {
+      "check_id": "route_selection_diagnostics",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "route selection diversity and Ridge–History overlap reconstruct exactly"
+    },
+    {
+      "check_id": "two_fold_selection_evaluation_contract",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "verified_fold_directions=510"
+    },
+    {
+      "check_id": "canonical_metric_registry_and_schema",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "canonical=True"
+    },
+    {
+      "check_id": "paired_gain_sign_convention",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "expected_gain=-0.014907464192654096"
+    },
+    {
+      "check_id": "bootstrap_valid_fraction",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "1.0"
+    },
+    {
+      "check_id": "bootstrap_reconstructs_estimand",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "support/reference/pairs rebuilt"
+    },
+    {
+      "check_id": "bootstrap_does_not_retrain_proxy",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "conditions on frozen Ridge"
+    },
+    {
+      "check_id": "bootstrap_seed_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "SeedSequence([bootstrap_seed, replication_id])"
+    },
+    {
+      "check_id": "resampling_sensitivity_interface",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "percentile_user_cluster_sensitivity"
+    },
+    {
+      "check_id": "resampling_sensitivity_audit_reconstruction",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "route resampling bias, percentile sensitivity ranges, and legacy basic audit reconstruct exactly"
+    },
+    {
+      "check_id": "resampling_bias_is_disclosed",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "PASS_WITH_WARNING"
+    },
+    {
+      "check_id": "full_preflight_history_only_selection",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "READY"
+    },
+    {
+      "check_id": "full_preflight_metric_bounds",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "READY"
+    },
+    {
+      "check_id": "action_space_scope_reported",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "exposure scope reported"
+    },
+    {
+      "check_id": "support_readiness_semantics",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "READY"
+    },
+    {
+      "check_id": "main_figure_data_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "canonical main-figure metrics and dynamic scope reconstruct"
+    },
+    {
+      "check_id": "full_preflight_figure_data_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "full-design figure scientific fields reconstruct and display provenance remains separate"
+    },
+    {
+      "check_id": "dependence_figure_data_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "dependence and selection figure scientific fields reconstruct from frozen tables"
+    },
+    {
+      "check_id": "arrival_carrier_figure_data_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "arrival-carrier figure scientific fields reconstruct from frozen tables"
+    },
+    {
+      "check_id": "figure_source_hash_contract",
+      "category": "engineering",
+      "status": "PASS",
+      "detail": "verified 7 figure metadata bundles"
+    },
+    {
+      "check_id": "full_threshold_frozen",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "500"
+    },
+    {
+      "check_id": "full_not_synthetic",
+      "category": "paper",
+      "status": "PASS",
+      "detail": "full uses KuaiRand"
+    },
+    {
+      "check_id": "full_preflight_ready",
+      "category": "scientific",
+      "status": "PASS",
+      "detail": "READY"
+    }
+  ]
+}

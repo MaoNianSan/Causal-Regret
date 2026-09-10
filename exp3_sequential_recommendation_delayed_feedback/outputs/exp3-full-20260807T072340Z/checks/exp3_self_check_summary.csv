@@ -1,0 +1,51 @@
+check_id,category,status,detail,pipeline_execution_status,independent_self_check_status,archival_integrity_check_status,final_engineering_status,scientific_contract_status,scientific_uncertainty_status,figure_data_contracts,artifact_manifest_status
+artifact_manifest_frozen_hashes,engineering,PASS,verified 103 complete-run frozen artifact hashes,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+code_version_consistency,engineering,PASS,030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+pipeline_completed,engineering,PASS,PASS,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+timezone_rule,scientific,PASS,Asia/Shanghai_epoch_day,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+interval_convention,scientific,PASS,left_closed_right_open,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+strict_temporal_split,scientific,PASS,history ends before evaluation,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+boundary_quarantine_within_frozen_limits,scientific,PASS,history=0.042277%; evaluation=0.035808%,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+boundary_quarantine_reported,engineering,PASS,status=PASS_WITH_BOUNDARY_QUARANTINE; count=4159,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+boundary_quarantine_summary_reconstruction,engineering,PASS,"boundary quarantine table reconstructs counts, fractions, policy, and frozen tolerances",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+history_target_window_contract,scientific,PASS,"verified_events=4643582; window=[t,t+6h)",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+evaluation_target_window_contract,scientific,PASS,"verified_events=6127661; window=[t,t+6h)",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+target_reuse_summary_reconstruction,engineering,PASS,"data-dependence table reconstructs user counts, target reuse, and events-per-user summaries",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+target_component_audit_reconstruction,scientific,PASS,target component audit reconstructs,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+dependence_structure_disclosed,scientific,PASS,dependence quantiles and resampling selection-switch diagnostics are bounded and disclosed,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+candidate_action_count,scientific,PASS,candidate_count=20,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+residual_excluded,scientific,PASS,residual excluded,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+group_fold_salts_separated,scientific,PASS,separate salts,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+design_selection_history_only,scientific,PASS,design frozen on history,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+ridge_feature_contract,scientific,PASS,"features=['action_indicator_00', 'action_indicator_01', 'action_indicator_02', 'action_indicator_03', 'action_indicator_04', 'action_indicator_05', 'action_indicator_06', 'action_indicator_07', 'action_indicator_08', 'action_indicator_09', 'action_indicator_10', 'action_indicator_11', 'action_indicator_12', 'action_indicator_13', 'action_indicator_14', 'action_indicator_15', 'action_indicator_16', 'action_indicator_17', 'action_indicator_18', 'action_indicator_19', 'intercept', 'lag_proxy_mean', 'lag_proxy_missing', 'log1p_lag_proxy_count']",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+ridge_alpha_history_only_selection,scientific,PASS,selected_alpha=30.0; origins=7,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+ridge_history_only,scientific,PASS,history-only selection/refit,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+design_contract_hash_and_fold_metadata,scientific,PASS,"{'reference_action_source': 'selection_fold', 'route_action_source': 'selection_fold', 'route_gap_source': 'selection_fold', 'heldout_target_source': 'opposite_evaluation_fold'}",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+primary_route_boundary,scientific,PASS,"{'arrival_carrier', 'history_mean_control', 'ridge_proxy'}",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+route_metadata_boundary,scientific,PASS,no deployment-value claim,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+primary_uncertainty_interface,scientific,PASS,sensitivity-only ranges,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+evaluation_support_reconstruction,scientific,PASS,reference_pair=0.9207,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+support_not_blocked,scientific,PASS,PASS,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+route_selection_diagnostics,scientific,PASS,route selection diversity and Ridge–History overlap reconstruct exactly,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+two_fold_selection_evaluation_contract,scientific,PASS,verified_fold_directions=510,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+canonical_metric_registry_and_schema,engineering,PASS,canonical=True,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+paired_gain_sign_convention,scientific,PASS,expected_gain=-0.014907464192654096,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+bootstrap_valid_fraction,engineering,PASS,1.0,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+bootstrap_reconstructs_estimand,scientific,PASS,support/reference/pairs rebuilt,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+bootstrap_does_not_retrain_proxy,scientific,PASS,conditions on frozen Ridge,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+bootstrap_seed_contract,engineering,PASS,"SeedSequence([bootstrap_seed, replication_id])",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+resampling_sensitivity_interface,scientific,PASS,percentile_user_cluster_sensitivity,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+resampling_sensitivity_audit_reconstruction,scientific,PASS,"route resampling bias, percentile sensitivity ranges, and legacy basic audit reconstruct exactly",PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+resampling_bias_is_disclosed,scientific,PASS,PASS_WITH_WARNING,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_preflight_history_only_selection,scientific,PASS,READY,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_preflight_metric_bounds,engineering,PASS,READY,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+action_space_scope_reported,scientific,PASS,exposure scope reported,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+support_readiness_semantics,engineering,PASS,READY,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+main_figure_data_contract,engineering,PASS,canonical main-figure metrics and dynamic scope reconstruct,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_preflight_figure_data_contract,engineering,PASS,full-design figure scientific fields reconstruct and display provenance remains separate,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+dependence_figure_data_contract,engineering,PASS,dependence and selection figure scientific fields reconstruct from frozen tables,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+arrival_carrier_figure_data_contract,engineering,PASS,arrival-carrier figure scientific fields reconstruct from frozen tables,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+figure_source_hash_contract,engineering,PASS,verified 7 figure metadata bundles,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_threshold_frozen,scientific,PASS,500,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_not_synthetic,paper,PASS,full uses KuaiRand,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS
+full_preflight_ready,scientific,PASS,READY,PASS,PASS,NOT_RUN,PASS,PASS,SENSITIVITY_ONLY_ACCEPTED,PASS,PASS

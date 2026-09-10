@@ -1,0 +1,28 @@
+{
+  "appendix_candidate": true,
+  "axis_definitions": {
+    "A": "alpha_shared",
+    "B": "alpha_dep",
+    "C": "mechanism_id"
+  },
+  "cancellation_sweep_id": "cancellation_shared_vs_action_dependent",
+  "figure_code_hash": "a5b5399ed2243883ed32d81195905ed2c25f553176ce5ef81d5191ecda12b959",
+  "figure_id": "fig_exp1_appendix_targeted_cancellation",
+  "generated_at": "2026-09-10T09:28:00.428391+00:00",
+  "main_figure_touched": false,
+  "panel_definitions": {
+    "A": "mean actionwise level error vs shared amplitude, separated by shared profile, for selected alpha_dep values",
+    "B": "mean directed choice disagreement vs action-dependent ratio with shared-amplitude traces overlaid",
+    "C": "realized stability-budget utilization for primary arrival-assigned mechanisms where defined"
+  },
+  "paper_result": false,
+  "run_tier": "full",
+  "source_data_sha256": "73c81ae5fbf568e0eb011976c24a66dd5e262c3770b755c3ac3c92a186d3de93",
+  "source_derived_files": [
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\full\\derived\\exp1_regret_stability_utilization_summary.csv"
+  ],
+  "source_targeted_files": [
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\full\\targeted\\exp1_targeted_cancellation_summary.csv"
+  ],
+  "uncertainty_definition": "seed bootstrap over the targeted grid cells; undefined zero-budget cells are omitted, never drawn as zero"
+}

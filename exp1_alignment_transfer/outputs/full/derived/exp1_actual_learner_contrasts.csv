@@ -1,0 +1,7 @@
+mechanism_id,mechanism_display_name,metric_id,n_seeds,estimate,se,ci_lower,ci_upper,bootstrap_repetitions,ci_level,run_tier,paper_result
+exact_valid_shift,Exact-cardinal-valid shift,arrival_minus_source_regret_rate,30,0.06749504,0.0006893566505583059,0.066203312,0.06887312399999998,2000,0.95,full,False
+geometric_delay,Geometric delay,arrival_minus_source_regret_rate,30,0.05443969699479725,0.0009099556034461176,0.05271568867689488,0.05622510622609163,2000,0.95,full,False
+mixture_delay,Mixture delay,arrival_minus_source_regret_rate,30,0.043667689047043295,0.0006181319342120092,0.04250630257846288,0.04484191540647215,2000,0.95,full,False
+state_coupled_delay,State-coupled delay,arrival_minus_source_regret_rate,30,0.05160335823520014,0.0009358822728586948,0.04981192322928507,0.05338450242494669,2000,0.95,full,False
+systematic_misbinding,Systematic misbinding,arrival_minus_source_regret_rate,30,0.07138897119341564,0.0006160476193836403,0.07016566049382715,0.07260655144032921,2000,0.95,full,False
+zero_delay,Zero delay,arrival_minus_source_regret_rate,30,0.0,0.0,0.0,0.0,2000,0.95,full,False

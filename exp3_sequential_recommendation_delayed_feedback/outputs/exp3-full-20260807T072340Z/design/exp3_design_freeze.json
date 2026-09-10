@@ -1,0 +1,52 @@
+{
+  "candidate_group_counts": [
+    10,
+    5
+  ],
+  "selected_user_group_count": 5,
+  "support_min_events_per_fold": 500,
+  "support_threshold_is_fast_scaled": false,
+  "history_action_coverage": 0.8721428571428571,
+  "history_pair_coverage": 0.8654135338345864,
+  "history_audit_unit_coverage": 1.0,
+  "history_support_pass_threshold": 0.8,
+  "near_tie_multiplier": 0.1,
+  "near_tie_threshold": 0.024141111696847118,
+  "candidate_actions": [
+    "action_01",
+    "action_02",
+    "action_03",
+    "action_04",
+    "action_05",
+    "action_06",
+    "action_07",
+    "action_08",
+    "action_09",
+    "action_10",
+    "action_11",
+    "action_12",
+    "action_13",
+    "action_14",
+    "action_15",
+    "action_16",
+    "action_17",
+    "action_18",
+    "action_19",
+    "action_20"
+  ],
+  "residual_action_is_candidate": false,
+  "group_hash_salt": "exp3-user-group-v1",
+  "reference_fold_hash_salt": "exp3-reference-fold-v1",
+  "reference_fold_count": 2,
+  "selection_uses_evaluation_data": false,
+  "code_version_type": "source_tree_sha256",
+  "code_version": "030d6bb049591fda35c4e54df090bbc50eb1e12d8482c28cc71dffec7cef6fa0",
+  "design_contract_hash": "7a4fba9917b5609d7badc074b9e0aeb6636217758651e254a627eb0d8b243000",
+  "evaluation_array_schema_version": "exp3_evaluation_arrays_v2",
+  "two_fold_contract": {
+    "reference_action_source": "selection_fold",
+    "route_action_source": "selection_fold",
+    "route_gap_source": "selection_fold",
+    "heldout_target_source": "opposite_evaluation_fold"
+  }
+}

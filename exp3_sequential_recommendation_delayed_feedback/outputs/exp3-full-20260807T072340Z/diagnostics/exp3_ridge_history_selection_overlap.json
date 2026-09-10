@@ -1,0 +1,7 @@
+{
+  "comparison_id": "ridge_proxy_vs_history_mean_control",
+  "comparable_selection_direction_count": 170,
+  "selected_action_match_rate": 0.6705882352941176,
+  "selected_action_difference_rate": 0.3294117647058824,
+  "complete_selection_equivalence": false
+}

@@ -58,3 +58,40 @@ status/full_targeted_status.json
 status/fast_validation_status.json
 status/full_validation_status.json
 status/paper_promotion_status.json
+
+# --- Cloud-readable selective unignore of the accepted full run (2026-09-10) ---
+# Expose lightweight scientific result subtrees for GitHub readers while
+# keeping raw/heavy/binary material local. Parent ignore rules prevent
+# descent, so each subtree is unignored explicitly.
+outputs/full/*
+!outputs/full/
+!outputs/full/derived/
+!outputs/full/derived/**
+!outputs/full/targeted/
+!outputs/full/targeted/**
+!outputs/full/checks/
+!outputs/full/checks/**
+!outputs/full/metadata/
+!outputs/full/metadata/**
+!outputs/full/status/
+!outputs/full/status/**
+!outputs/full/reports/
+!outputs/full/reports/**
+!outputs/full/tables/
+!outputs/full/tables/**
+!outputs/full/figures/
+!outputs/full/figures/**
+!outputs/full/manuscript/
+!outputs/full/manuscript/**
+!outputs/full/seed_metrics/
+!outputs/full/seed_metrics/**
+
+# Heavy, intermediate, and binary outputs stay local.
+outputs/full/raw/
+outputs/full/processed/
+outputs/full/intermediate/
+outputs/full/cache/
+outputs/full/logs/
+outputs/full/**/*.parquet
+outputs/full/**/*.pkl
+outputs/full/**/*.joblib

@@ -1,0 +1,56 @@
+{
+  "artifacts": [
+    {
+      "path": "figures\\png\\fig_exp1_delay_verification.png",
+      "sha256": "332694c49d7c220ca6ebc7d76537a4b34362e0a611346f737b1d846363d32203"
+    },
+    {
+      "path": "figures\\pdf\\fig_exp1_delay_verification.pdf",
+      "sha256": "d8db47306b7be6b907868a82d8bd786233a0d204799e2f260a879334cb597a08"
+    },
+    {
+      "path": "figures\\png\\fig_exp1_reversal_margin.png",
+      "sha256": "acd16bd4368d3446e66044c313572ef1d70d3fd6bf089cd9a834894eab06b7e1"
+    },
+    {
+      "path": "figures\\pdf\\fig_exp1_reversal_margin.pdf",
+      "sha256": "a99ad77daf5643604100a81c2153c2b6239cf8d2aa6ff75e5c93e93a92cb9b6f"
+    },
+    {
+      "path": "figures\\png\\fig_exp1_route_trajectory.png",
+      "sha256": "85c6ca17cefeb4cc0190b58ae4225c9242f70793082442a75200a8818c9fd7e1"
+    },
+    {
+      "path": "figures\\pdf\\fig_exp1_route_trajectory.pdf",
+      "sha256": "1013ba699d4243ef08ff18bfb8394008eac12b5b7103ceb8be2796597c725b18"
+    },
+    {
+      "path": "figures\\png\\fig_exp1_targeted_validation.png",
+      "sha256": "1eeaa48c2f14274dd40ebfaebd15317c07d445f5976494986273fd496cebddea"
+    },
+    {
+      "path": "figures\\pdf\\fig_exp1_targeted_validation.pdf",
+      "sha256": "dfaf0e3732831b052ecb46de6adf5077b4da9642f7829f19ccc736e0b7b93186"
+    },
+    {
+      "path": "figures\\png\\fig_exp1_appendix_targeted_cancellation.png",
+      "sha256": "368f87003de624d67b26af9d6876b5d8d675279b7426680320616da201e80aa3"
+    },
+    {
+      "path": "figures\\pdf\\fig_exp1_appendix_targeted_cancellation.pdf",
+      "sha256": "b88e8b8cf2ca39aa7c70c9c0ded54ca17feda33c9f3fd37e47d06ce15b970308"
+    },
+    {
+      "path": "figures\\data\\fig_exp1_appendix_targeted_cancellation_data.csv",
+      "sha256": "73c81ae5fbf568e0eb011976c24a66dd5e262c3770b755c3ac3c92a186d3de93"
+    }
+  ],
+  "figure_code_hash": "a5b5399ed2243883ed32d81195905ed2c25f553176ce5ef81d5191ecda12b959",
+  "generated_at": "2026-09-10T09:28:00.433318+00:00",
+  "paper_result": false,
+  "presentation_source_lineage": "presentation:e83a398cc8983d7a387bef096ed1a77f4667da98a4e1d542d4725cdbdaa244dd",
+  "run_tier": "full",
+  "scientific_artifact_manifest_hash": "3ebb8ce93cecd9d76ef6358493113e3d186b46dc569038f73332c9cc58c495a3",
+  "scientific_source_lineage": "tree:094ece351cf80a8614e247dd21c08f58fb439bb31fb72dec427a80eb4fde90b1",
+  "targeted_validation_status": "PASS"
+}

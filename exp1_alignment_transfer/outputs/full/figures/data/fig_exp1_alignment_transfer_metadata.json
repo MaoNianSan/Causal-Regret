@@ -1,0 +1,22 @@
+{
+  "axis_definitions": {
+    "A": "alignment_budget_rate",
+    "B": "regret rate",
+    "C": "structural_regret_rate"
+  },
+  "figure_id": "fig_exp1_alignment_transfer",
+  "panel_definitions": {
+    "A": "arrival-route action-gap alignment budget with right-aligned Mean delay and Conflict rate (route-optimal conflict rate) columns",
+    "B": "structural regret and regret-transfer upper bound",
+    "C": "same contextual Delayed EXP3 under arrival-clock and source-round binding"
+  },
+  "paper_result": false,
+  "run_tier": "full",
+  "source_data_sha256": "07bf2a13cdf649d91b4143ba6b8fee6da527707fba0b4b9c2628bf81261d55e3",
+  "source_derived_files": [
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\full\\derived\\exp1_route_summary.csv",
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\full\\derived\\exp1_learner_summary.csv",
+    "D:\\research\\causalregret\\experiment\\github\\exp1_alignment_transfer\\outputs\\full\\derived\\exp1_actual_learner_contrasts.csv"
+  ],
+  "uncertainty_definition": "95% seed bootstrap; 2000 repetitions"
+}

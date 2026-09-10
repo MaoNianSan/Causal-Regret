@@ -92,6 +92,14 @@ See [`DATA.md`](DATA.md) for sources, expected paths, required fields, and licen
 
 If you use this repository or its results, cite it via the metadata in [`CITATION.cff`](CITATION.cff). The final paper DOI and journal metadata will be added when available.
 
+## Cloud-readable experiment outputs
+
+For paper-facing results, targeted diagnostics, figures, validation reports,
+and manuscript handoff files that can be read directly from GitHub, see:
+
+- `docs/CLOUD_OUTPUT_INDEX.md`
+- `cloud_outputs/CLOUD_MANIFEST.json`
+
 ## License
 
 The license for this repository is pending author decision; no license has been formally selected yet (see [`LICENSE_SELECTION_REQUIRED.md`](LICENSE_SELECTION_REQUIRED.md)). Until a license is chosen, treat the repository as all-rights-reserved by the authors.

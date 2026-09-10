@@ -1,5 +1,37 @@
 # Generated experiment artifacts
-outputs/
+outputs/*
+
+# --- Cloud-readable selective unignore of the canonical paper run (2026-09-10) ---
+# The canonical run is exp3-full-20260807T072340Z. Expose its lightweight
+# scientific result subtrees for GitHub readers; keep processed data and
+# binary analytical caches local.
+!outputs/exp3-full-20260807T072340Z/
+!outputs/exp3-full-20260807T072340Z/EXP3_RUN_REPORT.md
+!outputs/exp3-full-20260807T072340Z/checks/
+!outputs/exp3-full-20260807T072340Z/checks/**
+!outputs/exp3-full-20260807T072340Z/design/
+!outputs/exp3-full-20260807T072340Z/design/**
+!outputs/exp3-full-20260807T072340Z/diagnostics/
+!outputs/exp3-full-20260807T072340Z/diagnostics/**
+!outputs/exp3-full-20260807T072340Z/manifest/
+!outputs/exp3-full-20260807T072340Z/manifest/**
+!outputs/exp3-full-20260807T072340Z/metadata/
+!outputs/exp3-full-20260807T072340Z/metadata/**
+!outputs/exp3-full-20260807T072340Z/reports/
+!outputs/exp3-full-20260807T072340Z/reports/**
+!outputs/exp3-full-20260807T072340Z/tables/
+!outputs/exp3-full-20260807T072340Z/tables/**
+!outputs/exp3-full-20260807T072340Z/derived/
+!outputs/exp3-full-20260807T072340Z/derived/**
+!outputs/exp3-full-20260807T072340Z/figures/
+!outputs/exp3-full-20260807T072340Z/figures/**
+
+# Heavy and binary outputs stay local.
+outputs/exp3-full-20260807T072340Z/processed/
+outputs/exp3-full-20260807T072340Z/legacy/
+outputs/exp3-full-20260807T072340Z/design/**/*.parquet
+outputs/exp3-full-20260807T072340Z/derived/**/*.parquet
+outputs/exp3-full-20260807T072340Z/derived/**/*.npz
 
 # Original and synthetic data
 inputs/**

@@ -1,0 +1,18 @@
+{
+  "calibration_manifest_hash": "3ebb8ce93cecd9d76ef6358493113e3d186b46dc569038f73332c9cc58c495a3",
+  "code_commit": "23199c4827c06f76d1d9a7a4fc39e56e21eb26b8",
+  "code_lineage": "tree:094ece351cf80a8614e247dd21c08f58fb439bb31fb72dec427a80eb4fde90b1",
+  "completed_at": "2026-08-17T06:33:29.382632+00:00",
+  "config_hash": "1738aa639b37c24c9a687969970adb435313e91ca717b336ca50525dd7d4e928",
+  "engineering_status": "PASS",
+  "n_learner_round_rows": 1800000,
+  "n_path_bundles": 180,
+  "n_route_round_rows": 300000,
+  "paper_result": false,
+  "run_id": "exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00",
+  "run_tier": "full",
+  "scientific_status": "PASS",
+  "status": "FULL_VALIDATED",
+  "validated_at": "2026-09-10T09:27:42.834737+00:00",
+  "validation_report": "checks/exp1_validation_report.json"
+}
