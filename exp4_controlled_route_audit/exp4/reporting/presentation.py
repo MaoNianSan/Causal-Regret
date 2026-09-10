@@ -599,6 +599,23 @@ def render_presentation(
             va="center",
             fontsize=7,
         )
+    # Recoverability readouts are right-aligned inside a reserved lane: with a
+    # plain autoscaled x range the widest row's marker sat underneath the
+    # number that describes it.
+    discrepancy_values = pd.concat(
+        [
+            selected_controls["raw_pairwise_discrepancy"],
+            selected_controls["oof_calibrated_pairwise_discrepancy"],
+        ]
+    ).astype(float)
+    data_left = float(discrepancy_values.min())
+    data_right = float(discrepancy_values.max())
+    span = max(data_right - data_left, 1e-12)
+    lane_lower = data_left - 0.05 * span
+    CONTRAST_GUTTER = 0.27
+    axes[1, 1].set_xlim(
+        lane_lower, lane_lower + (data_right - lane_lower) / (1.0 - CONTRAST_GUTTER)
+    )
     axes[1, 1].set_yticks(
         [1, 0], [CALIBRATION_DISPLAY[key] for key in CALIBRATION_CONTROLS]
     )

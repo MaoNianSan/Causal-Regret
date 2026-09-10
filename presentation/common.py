@@ -129,7 +129,12 @@ def configure_matplotlib() -> None:
             "svg.fonttype": "none",
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
-            "font.family": ["Helvetica", "Arial", "DejaVu Sans", "sans-serif"],
+            # Portability-first stack: Arial and Helvetica are near-identical
+            # at paper sizes, so leading with Arial keeps the house style
+            # reproducible on Windows (where Helvetica is usually not
+            # installed and matplotlib otherwise logs one findfont fallback
+            # per text object) without changing the look on macOS/Linux.
+            "font.family": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
             "font.size": 8.0,
             "axes.titlesize": 9.0,
             "axes.labelsize": 8.5,

@@ -275,7 +275,21 @@ def render_presentation(
                 markerfacecolor="white",
                 markersize=4,
             )
-            axis.set_yticks([0], ["Ridge - Historical"])
+            # The contrast identity lives inside the panel rather than on a y
+            # tick label: that label was wide enough to reach across the
+            # column gap and cover the neighbouring panel's markers, while the
+            # band above the single contrast line is empty.
+            axis.set_yticks([])
+            axis.text(
+                0.02,
+                0.86,
+                "Ridge proxy - Historical mean",
+                transform=axis.transAxes,
+                ha="left",
+                va="top",
+                fontsize=6.4,
+                color="#333333",
+            )
             axis.axvline(0, color="0.55", linestyle="--", linewidth=0.7)
             span = max(
                 row.sensitivity_upper - row.sensitivity_lower,

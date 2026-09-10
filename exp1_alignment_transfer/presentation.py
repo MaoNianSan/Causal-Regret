@@ -10,11 +10,32 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 if str(REPOSITORY_ROOT) not in sys.path:
     sys.path.insert(0, str(REPOSITORY_ROOT))
 
+if __name__ == "presentation":
+    # Import-resolution guard: this file shares its name with the
+    # repository-root ``presentation`` package.  When the experiment directory
+    # precedes the repository root on ``sys.path`` (for example under
+    # ``python -m pytest``) the bare name ``presentation`` resolves here and
+    # the ``presentation.*`` imports below fail with "'presentation' is not a
+    # package".  Rebind the name to the real package so that every import
+    # style resolves deterministically; when this module is loaded by path as
+    # the Exp1 renderer the guard is inactive.
+    import importlib.util
+
+    _presentation_spec = importlib.util.spec_from_file_location(
+        "presentation",
+        REPOSITORY_ROOT / "presentation" / "__init__.py",
+        submodule_search_locations=[str(REPOSITORY_ROOT / "presentation")],
+    )
+    _presentation_package = importlib.util.module_from_spec(_presentation_spec)
+    sys.modules["presentation"] = _presentation_package
+    _presentation_spec.loader.exec_module(_presentation_package)
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
 from presentation.common import (
+    PALETTE,
     PreviewLayout,
     assert_no_suptitle,
     configure_matplotlib,
@@ -325,6 +346,269 @@ def _targeted_validation_figure(
     )
 
 
+ALPHA_SHARED_MARKERS = ((0.0, "o"), (0.05, "s"), (0.10, "^"), (0.20, "D"))
+ALPHA_SHARED_COLORS = {
+    0.0: PALETTE["neutral_dark"],
+    0.05: PALETTE["blue_secondary"],
+    0.10: PALETTE["blue_main"],
+    0.20: PALETTE["red_strong"],
+}
+SHARED_PROFILES = (
+    ("state_varying_shared", "-", "State-varying shared"),
+    ("static_shared", (0, (3.5, 1.8)), "Static shared"),
+)
+
+
+def _targeted_cancellation_and_utilization_figure(
+    source: PresentationSource,
+    layout: PreviewLayout,
+    *,
+    figure_id: str,
+    cancellation_path: Path,
+    utilization_path: Path,
+) -> None:
+    """Appendix view of the accepted targeted cancellation sweep and of the
+    realized stability-utilization diagnostic.
+
+    Both inputs are frozen scientific sources.  Nothing is recomputed here,
+    the targeted tier keeps ``paper_result=false``, and the targeted sweep is
+    never merged into the main Exp1 estimand contract.  Utilization rows whose
+    alignment budget is numerically undefined stay undefined: they are typed
+    in words on their own row instead of being drawn as a manufactured zero.
+    """
+    cancellation = pd.read_csv(cancellation_path)
+    utilization = pd.read_csv(utilization_path)
+    fig = plt.figure(figsize=(7.1, 4.7), constrained_layout=True)
+    grid = fig.add_gridspec(2, 2, height_ratios=[1.0, 1.05])
+    ax_levels = fig.add_subplot(grid[0, 0])
+    ax_defect = fig.add_subplot(grid[0, 1])
+    ax_utilization = fig.add_subplot(grid[1, :])
+    long_rows: list[dict[str, Any]] = []
+
+    # (a) Shared amplitude moves loss levels.  The state-varying shared
+    # profile is the strictly harder case, so it carries the panel.
+    levels = cancellation[
+        cancellation.metric_id.eq("mean_absolute_actionwise_level_error")
+    ]
+    for alpha, marker in ALPHA_SHARED_MARKERS:
+        group = levels[
+            levels.shared_profile.eq("state_varying_shared")
+            & levels.alpha_shared.eq(alpha)
+        ].sort_values("alpha_dep")
+        ax_levels.plot(
+            group.alpha_dep,
+            group.estimate,
+            marker=marker,
+            markersize=3.2,
+            linewidth=0.9,
+            color=ALPHA_SHARED_COLORS[alpha],
+            label=rf"$\alpha_{{shared}}={alpha:g}$",
+        )
+        for source_index, row in group.iterrows():
+            long_rows.append(
+                {
+                    "panel_id": "a",
+                    "metric_id": str(row.metric_id),
+                    "estimand_id": str(row.metric_id),
+                    "condition_id": f"{row.shared_profile}:alpha_shared={alpha:g}",
+                    "series_id": f"level_error_alpha_shared_{alpha:g}",
+                    "point_estimate": row.estimate,
+                    "uncertainty_role": "targeted sweep cell estimate",
+                    "uncertainty_method": "targeted_cancellation_sweep",
+                    "sample_count": row.get("n_seeds", pd.NA),
+                    "unit": "level error",
+                    "better_direction": "lower",
+                    "source_table": cancellation_path.name,
+                    "source_row_key": str(source_index),
+                }
+            )
+    ax_levels.set_xlabel(r"Action-dependent ratio, $\alpha_{dep}$")
+    ax_levels.set_ylabel("Absolute action-wise level error")
+    ax_levels.set_title(
+        "(a) Shared amplitude shifts levels", loc="left", fontweight="bold"
+    )
+    ax_levels.set_ylim(-0.012, 0.262)
+    ax_levels.grid(axis="y", alpha=0.2)
+    ax_levels.legend(frameon=False, fontsize=6.1, ncols=2, loc="upper left")
+
+    # (b) Both shared profiles and all four amplitudes collapse onto one
+    # action-gap-defect curve: only the action-dependent term enters it.
+    defect = cancellation[cancellation.metric_id.eq("mean_chi")]
+    for profile, linestyle, profile_label in SHARED_PROFILES:
+        labelled = False
+        for alpha, marker in ALPHA_SHARED_MARKERS:
+            group = defect[
+                defect.shared_profile.eq(profile) & defect.alpha_shared.eq(alpha)
+            ].sort_values("alpha_dep")
+            ax_defect.plot(
+                group.alpha_dep,
+                group.estimate,
+                linestyle=linestyle,
+                linewidth=0.9,
+                marker=marker,
+                markersize=3.0,
+                markeredgewidth=0.7,
+                color=ALPHA_SHARED_COLORS[alpha],
+                markerfacecolor=(
+                    "white"
+                    if profile == "static_shared"
+                    else ALPHA_SHARED_COLORS[alpha]
+                ),
+                label=profile_label if not labelled else None,
+            )
+            labelled = True
+            for source_index, row in group.iterrows():
+                long_rows.append(
+                    {
+                        "panel_id": "b",
+                        "metric_id": str(row.metric_id),
+                        "estimand_id": str(row.metric_id),
+                        "condition_id": f"{row.shared_profile}:alpha_shared={alpha:g}",
+                        "series_id": f"mean_chi_{row.shared_profile}_alpha_shared_{alpha:g}",
+                        "point_estimate": row.estimate,
+                        "uncertainty_role": "targeted sweep cell estimate",
+                        "uncertainty_method": "targeted_cancellation_sweep",
+                        "sample_count": row.get("n_seeds", pd.NA),
+                        "unit": "action-gap defect",
+                        "better_direction": "lower",
+                        "source_table": cancellation_path.name,
+                        "source_row_key": str(source_index),
+                    }
+                )
+    ax_defect.set_xlabel(r"Action-dependent ratio, $\alpha_{dep}$")
+    ax_defect.set_ylabel(r"Mean action-gap defect, $\chi$")
+    ax_defect.set_title(
+        "(b) Action-dependent defect",
+        loc="left",
+        fontweight="bold",
+    )
+    ax_defect.set_ylim(-0.07, 1.16)
+    ax_defect.grid(axis="y", alpha=0.2)
+    ax_defect.legend(frameon=False, fontsize=6.1, loc="upper left")
+    ax_defect.text(
+        0.04,
+        0.60,
+        r"markers: $\alpha_{shared}\in\{0,\,0.05,\,0.10,\,0.20\}$",
+        transform=ax_defect.transAxes,
+        fontsize=5.9,
+        color=PALETTE["ink"],
+    )
+
+    # (c) Realized stability utilization on the arrival-assigned route.  Rows
+    # whose alignment budget is numerically undefined carry no marker.
+    arrival = (
+        utilization[utilization.route_id.eq("arrival_assigned")]
+        .set_index("mechanism_id")
+        .reindex(MECHANISMS)
+        .reset_index()
+    )
+    positions = np.arange(len(MECHANISMS))[::-1]
+    data_right = 0.0
+    for yi, mechanism in zip(positions, MECHANISMS, strict=True):
+        row = arrival[arrival.mechanism_id.eq(mechanism)].iloc[0]
+        defined = int(row.n_defined) > 0 and pd.notna(row.estimate)
+        if defined:
+            ax_utilization.errorbar(
+                row.estimate,
+                yi,
+                xerr=[[row.estimate - row.ci_lower], [row.ci_upper - row.estimate]],
+                fmt="o",
+                color=PALETTE["blue_main"],
+                ecolor=PALETTE["blue_main"],
+                elinewidth=0.8,
+                capsize=2.0,
+                markersize=3.6,
+            )
+            data_right = max(data_right, float(row.ci_upper))
+        else:
+            ax_utilization.text(
+                0.015,
+                yi,
+                "undefined (zero alignment budget)",
+                transform=ax_utilization.get_yaxis_transform(),
+                ha="left",
+                va="center",
+                fontsize=6.4,
+                style="italic",
+                color=PALETTE["neutral_dark"],
+            )
+        long_rows.append(
+            {
+                "panel_id": "c",
+                "metric_id": str(row.metric_id),
+                "estimand_id": str(row.metric_id),
+                "condition_id": f"{row.route_id}:{mechanism}",
+                "series_id": f"regret_stability_utilization_{row.route_id}",
+                "point_estimate": row.estimate,
+                "interval_lower": row.ci_lower,
+                "interval_upper": row.ci_upper,
+                "uncertainty_role": "95% seed-bootstrap interval",
+                "uncertainty_method": "seed_bootstrap",
+                "repetition_count": row.get("bootstrap_repetitions", pd.NA),
+                "sample_count": row.get("n_defined", pd.NA),
+                "unit": "utilization",
+                "better_direction": "lower",
+                "source_table": utilization_path.name,
+                "source_row_key": str(mechanism),
+            }
+        )
+    ax_utilization.set_yticks(positions, arrival.mechanism_display_name.tolist())
+    ax_utilization.set_xlim(0, data_right * 1.12)
+    ax_utilization.set_xlabel(
+        r"Realized stability utilization, $|R_c - R_r| / A$ (arrival-assigned route)"
+    )
+    ax_utilization.set_title(
+        "(c) Realized stability utilization", loc="left", fontweight="bold"
+    )
+    ax_utilization.grid(axis="x", alpha=0.2)
+
+    assert_no_suptitle(fig)
+    long_frame = standardize_long_form(
+        pd.DataFrame(long_rows),
+        figure_id=figure_id,
+        experiment_id=source.experiment_id,
+        run_id=source.run_id,
+        run_tier=source.run_tier,
+        paper_result=source.paper_result,
+        analysis_tier="appendix",
+    )
+    write_figure_bundle(
+        fig,
+        long_frame,
+        layout,
+        figure_id=figure_id,
+        section="appendix",
+        layout_profile="appendix",
+        metadata=_metadata(
+            source,
+            claim="Targeted shared-versus-action-dependent cancellation and realized stability utilization.",
+            panels={
+                "a": "Absolute action-wise level error across the targeted cancellation grid.",
+                "b": "Mean action-gap defect across the targeted cancellation grid.",
+                "c": "Realized stability utilization on the arrival-assigned route.",
+            },
+            metrics={
+                "mean_absolute_actionwise_level_error": "absolute level error",
+                "mean_chi": "mean action-gap defect",
+                "regret_stability_utilization": "|R_c - R_r| / A",
+            },
+            boundary=(
+                "Appendix only. Action-invariant within-round shared error can move loss levels "
+                "without moving action comparisons; action-dependent residual variation is what "
+                "enters the action-gap defect. Utilization is defined only where the alignment "
+                "budget is numerically above tolerance. No arbitrary state variation, delayed "
+                "routing, history dependence, or nonlinear aggregation claim is made here."
+            ),
+            contract={
+                "layout": [2, 2],
+                "sources": [cancellation_path.name, utilization_path.name],
+            },
+            uncertainty="Targeted sweep cell estimates; utilization rows carry a 95% seed-bootstrap interval only where defined",
+        ),
+        source_files=[cancellation_path, utilization_path],
+    )
+
+
 def render_presentation(
     source: PresentationSource, preview_root: Path
 ) -> dict[str, Any]:
@@ -346,6 +630,12 @@ def render_presentation(
         .tolist()
     )
     y = np.arange(len(MECHANISMS))[::-1]
+    # One shared row axis for all three main panels.  Besides aligning the
+    # mechanisms across panels, the headroom above the top row is what keeps
+    # Panel (c)'s legend clear of that row's markers instead of letting the
+    # arrival-clock / source-round markers sit on the legend text.
+    ROW_AXIS_BOTTOM = -0.72
+    ROW_AXIS_TOP = float(y.max()) + 1.35
     # Width ratios mirror the known-good experimental figure: panel (c)
     # carries the contrast annotations and the longest x label, so it gets
     # the widest share.
@@ -412,7 +702,7 @@ def render_presentation(
         panel_a[panel_a.series_id.eq("alignment_budget_rate")].ci_upper.max()
     )
     axes[0].set_xlim(left=0, right=anchor / DATA_WIDTH)
-    axes[0].set_ylim(-0.6, float(y.max()) + 0.95)
+    axes[0].set_ylim(ROW_AXIS_BOTTOM, ROW_AXIS_TOP)
     axes[0].set_yticks(y, labels)
     axes[0].set_xlabel(r"Alignment budget rate, $A_T^{arr}/T$")
     axes[0].set_title("(a) Route alignment", loc="left", fontweight="bold")
@@ -473,13 +763,20 @@ def render_presentation(
             label=r"$(R_T^r+A_T^r)/T$" if yi == y[0] else None,
         )
     axes[1].set_yticks(y, [])
-    axes[1].set_ylim(-0.7, float(y.max()) + 0.7)
+    axes[1].set_ylim(ROW_AXIS_BOTTOM, ROW_AXIS_TOP)
     axes[1].set_xlim(left=0)
     axes[1].set_xlabel("Rate")
     axes[1].set_title("(b) Regret transfer", loc="left", fontweight="bold")
     axes[1].legend(frameon=False, loc="upper right")
 
     panel_c = data[data.panel_id.eq("C")]
+    # Contrast column.  The Δ readouts are right-aligned inside a reserved
+    # lane so that they can never land on top of the arrival-clock markers of
+    # the row above them: the data occupy only the left
+    # ``1 - CONTRAST_GUTTER`` of the panel, mirroring the auxiliary-column
+    # treatment Panel (a) already applies to its mean-delay column.
+    CONTRAST_GUTTER = 0.27
+    CONTRAST_X = 0.985
     for yi, mechanism in zip(y, MECHANISMS, strict=True):
         arrival = panel_c[
             panel_c.mechanism_id.eq(mechanism) & panel_c.series_id.eq("arrival_clock")
@@ -539,7 +836,7 @@ def render_presentation(
             label="Source-round" if yi == y[0] else None,
         )
         axes[2].text(
-            0.98,
+            CONTRAST_X,
             yi,
             rf"$\Delta$ {contrast.estimate:.3f}",
             transform=axes[2].get_yaxis_transform(),
@@ -548,10 +845,13 @@ def render_presentation(
             fontsize=7.1,
         )
     axes[2].set_yticks(y, [])
+    axes[2].set_ylim(ROW_AXIS_BOTTOM, ROW_AXIS_TOP)
     # Right-edge headroom: the last auto tick must stay inside the fixed
-    # canvas instead of poking past the rightmost panel edge.
+    # canvas instead of poking past the rightmost panel edge, and the Δ lane
+    # must stay clear of the widest interval on the right.
     bound_series = panel_c[panel_c.series_id.isin(["arrival_clock", "source_round"])]
-    axes[2].set_xlim(0, float(bound_series.ci_upper.max()) * 1.12)
+    data_right = float(bound_series.ci_upper.max())
+    axes[2].set_xlim(0, data_right / (1.0 - CONTRAST_GUTTER))
     axes[2].set_xlabel(r"Structural regret $R_T^c/T$")
     axes[2].set_title("(c) Feedback binding", loc="left", fontweight="bold")
     axes[2].legend(frameon=False, loc="upper left")
@@ -622,6 +922,17 @@ def render_presentation(
         figure_id="exp1_appendix_targeted_validation",
         path=targeted_path,
     )
+    _targeted_cancellation_and_utilization_figure(
+        source,
+        layout,
+        figure_id="exp1_appendix_targeted_cancellation_and_utilization",
+        cancellation_path=(
+            source.source_run / "targeted/exp1_targeted_cancellation_summary.csv"
+        ),
+        utilization_path=(
+            source.source_run / "derived/exp1_regret_stability_utilization_summary.csv"
+        ),
+    )
 
     table = pd.read_csv(table_path)
     protocol_columns = ["mechanism_id", "mechanism", "mean_delay"]
@@ -641,7 +952,8 @@ def render_presentation(
         paper_result=source.paper_result,
     )
     appendix_ids = [item[0] for item in appendix_groups] + [
-        "exp1_appendix_targeted_validation"
+        "exp1_appendix_targeted_validation",
+        "exp1_appendix_targeted_cancellation_and_utilization",
     ]
     write_manifest(layout, source, figure_ids=[source.main_figure_id])
     write_manifest(layout, source, appendix=True, figure_ids=appendix_ids)
@@ -652,5 +964,6 @@ __all__ = [
     "MAIN_CONTRACT",
     "build_main_long_form",
     "render_presentation",
+    "_targeted_cancellation_and_utilization_figure",
     "_targeted_validation_figure",
 ]
