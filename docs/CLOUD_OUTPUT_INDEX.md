@@ -188,7 +188,7 @@ Key files:
 | Paper-result status | `true` |
 | Promoted | yes |
 | Kind | primary |
-| Formats | csv, json, tex, md, pdf, png, svg |
+| Formats | csv, json, tex, md, pdf, png |
 | Key claim supported | Route alignment (Module A), audit reliability (Module B), calibration/recoverability (Module C) |
 | Interpretation boundary | Canonical curated full run; raw/parquet/simulation intermediates excluded |
 | Canonical source | yes |
@@ -203,8 +203,10 @@ Key files:
 - Module C: `derived/module_c/exp4_module_c_control_summary.csv`,
   `derived/module_c/exp4_module_c_correspondence_checks.csv`,
   `derived/module_c/exp4_module_c_parameter_recovery.csv`
-- main figure: `figures/main/fig_exp4_route_alignment_and_audit_reliability.{pdf,png,svg}`
-  with source data and metadata alongside
+- main figure: `figures/pdf/fig_exp4_route_alignment_and_audit_reliability.pdf`,
+  `figures/png/fig_exp4_route_alignment_and_audit_reliability.png` with source
+  data at `figures/data/fig_exp4_route_alignment_and_audit_reliability_data.csv`
+  and metadata at `figures/metadata/fig_exp4_route_alignment_and_audit_reliability_metadata.json`
 - checks/tables/reports: `checks/exp4_scientific_checks.json`,
   `checks/exp4_v3_full_output_audit.json`, `tables/*.csv|tex`,
   `reports/exp4_run_summary.md`
