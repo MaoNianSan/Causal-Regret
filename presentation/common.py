@@ -102,6 +102,26 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
+# Semantic publication palette (blue-green-red-neutral family).  Blue marks the
+# proposed / reference object, green bands mark positive comparator series,
+# red / pink bands mark contrast or failure series, and neutrals carry
+# baselines and supporting marks.
+PALETTE = {
+    "blue_main": "#0F4D92",
+    "blue_secondary": "#3775BA",
+    "green_1": "#DDF3DE",
+    "green_2": "#AADCA9",
+    "green_3": "#8BCF8B",
+    "red_1": "#F6CFCB",
+    "red_2": "#E9A6A1",
+    "red_strong": "#B64342",
+    "neutral": "#CFCECE",
+    "neutral_dark": "#767676",
+    "ink": "#272727",
+    "highlight": "#FFD700",
+}
+
+
 def configure_matplotlib() -> None:
     mpl.use("Agg", force=True)
     mpl.rcParams.update(
@@ -109,16 +129,18 @@ def configure_matplotlib() -> None:
             "svg.fonttype": "none",
             "pdf.fonttype": 42,
             "ps.fonttype": 42,
+            "font.family": ["Helvetica", "Arial", "DejaVu Sans", "sans-serif"],
             "font.size": 8.0,
             "axes.titlesize": 9.0,
             "axes.labelsize": 8.5,
             "xtick.labelsize": 7.5,
             "ytick.labelsize": 7.5,
             "legend.fontsize": 7.5,
+            "legend.frameon": False,
             "axes.spines.top": False,
             "axes.spines.right": False,
-            "axes.linewidth": 0.8,
-            "lines.linewidth": 0.9,
+            "axes.linewidth": 1.1,
+            "lines.linewidth": 1.4,
             "patch.linewidth": 0.8,
         }
     )

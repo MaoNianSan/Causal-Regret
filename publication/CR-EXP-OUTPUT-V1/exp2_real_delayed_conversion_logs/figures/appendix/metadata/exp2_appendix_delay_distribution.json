@@ -6,13 +6,13 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "exp2_appendix_delay_distribution.pdf": "64f82b72e3f769966e25bb4eaff180339a9a81742391aaefb4a4d8156436a23c",
-    "exp2_appendix_delay_distribution.png": "9fb2ddcc9f04d8f7f622af9f2d966a4681ffa5d690e89ebbbbb989c978a00a4e",
-    "exp2_appendix_delay_distribution.svg": "7abec6ac8fe4016d6daf3802c208db6159369f09670377123ad6ae23fae752b4"
+    "exp2_appendix_delay_distribution.pdf": "838bff1fd41f1f2ac6923a82715476c56485a0aaaead7008f2e9058db4e669b6",
+    "exp2_appendix_delay_distribution.png": "ffd6515d76702b30a4e8838622a56b236dfd87e1a213dc3420caadd17e5af45a",
+    "exp2_appendix_delay_distribution.svg": "fef40381a49678582197eb76dc4557244a5136b0a8652bac3658836c230a6a5b"
   },
   "figure_id": "exp2_appendix_delay_distribution",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:59.941656+00:00",
+  "generated_at": "2026-09-10T05:55:35.843766+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "dec635fac0491fd2f8275f50ba7e9f3dcb85a7287f652f9b436185eaf16301e5",
   "presentation_contract": {
     "layout": [
       1,
@@ -57,7 +57,7 @@
     ],
     "source": "figure_exp2_delay_appendix_data.csv"
   },
-  "presentation_source_lineage": "presentation:67e34b4f2d92c929f1c0a7575477b3af93dad0c1d958ed7ca102f4c41c0824bc",
+  "presentation_source_lineage": "presentation:a0c833aa7222995ec37471047f99d1b58f12c229040c3b7d328e6a96ab3707c1",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Delay-distribution diagnostics",

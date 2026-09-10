@@ -6,13 +6,13 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "exp2_appendix_pairwise_topk.pdf": "a077f697f125e1cdd1ea1e1fdc119975ae7eaf12ea94e577e17f268f03ef0383",
-    "exp2_appendix_pairwise_topk.png": "7265bf02f05a647fdcfae9abfea3fc137276d52c05c96fb3915417c98ab51c6f",
-    "exp2_appendix_pairwise_topk.svg": "15f6dd763ac81ae49a43a7d76dc431ea12dd73e578652ca2e654e38a8a57a439"
+    "exp2_appendix_pairwise_topk.pdf": "83f83eaf36248b459630c5bd80f5f91f17b1b79d0f6f5670157128d30aa608fe",
+    "exp2_appendix_pairwise_topk.png": "620fbd13c4b5831a251992480f66ef98e2c4102aa777913d4b69aa88b96d1a6e",
+    "exp2_appendix_pairwise_topk.svg": "fb0eee89e1be0a841c86c3c3eea28f9a8a073f35c274d69e86ed445e4d9f7bfb"
   },
   "figure_id": "exp2_appendix_pairwise_topk",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:01.027387+00:00",
+  "generated_at": "2026-09-10T05:55:37.525171+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "dec635fac0491fd2f8275f50ba7e9f3dcb85a7287f652f9b436185eaf16301e5",
   "presentation_contract": {
     "layout": [
       1,
@@ -57,7 +57,7 @@
     ],
     "source": "figure_exp2_pairwise_appendix_data.csv"
   },
-  "presentation_source_lineage": "presentation:fe69bf9c5b900a3d747cf5c5ef93054e20c40f880ee02ce0209709ae742344a5",
+  "presentation_source_lineage": "presentation:b5244d610e90accc6a9ab170d98fd32a60a5fec6f926188fd9d9ea0442fcf0a8",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Pairwise Top-k diagnostics",

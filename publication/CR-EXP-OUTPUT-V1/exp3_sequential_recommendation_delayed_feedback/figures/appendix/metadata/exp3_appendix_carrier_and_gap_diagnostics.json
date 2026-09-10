@@ -6,13 +6,13 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_appendix_carrier_and_gap_diagnostics.pdf": "8e4ecced7e310b503c53f1b0a12ee738379b719f9c3ff522e2820470c9ce2b75",
-    "exp3_appendix_carrier_and_gap_diagnostics.png": "486fd98e57af7aa41679e9d638bc1a782af5b6efa6c4c6528c93e267fc759a34",
-    "exp3_appendix_carrier_and_gap_diagnostics.svg": "3f3cc8cdc5c308675544de5eb15f5c0eef616bcb1de69db1b4ea396c4b723a24"
+    "exp3_appendix_carrier_and_gap_diagnostics.pdf": "ab220cb19667d2d3603a75d0aa4aa3e7d003ea3581cdcfd52df6e0f23c249e23",
+    "exp3_appendix_carrier_and_gap_diagnostics.png": "2a8b48019ae8b44784a206b4e9e7f48467f53b8e8f53cb536cd9dffab12dbc39",
+    "exp3_appendix_carrier_and_gap_diagnostics.svg": "97046cc19f39f79f708d978685d075d72eee23dee0916178c6a76c2b2859f520"
   },
   "figure_id": "exp3_appendix_carrier_and_gap_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:08.500491+00:00",
+  "generated_at": "2026-09-10T05:55:47.690554+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
   "layout_checks": [
@@ -47,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "93af3f7441a4789ec2550515864a5ae348255bc1d61d0a2b3c456b4f5b651aca",
   "presentation_contract": {
     "layout": [
       1,
@@ -59,7 +59,7 @@
       "exp3_appendix_gap_error_distribution_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:fb40568064ee468186ee0c7887d18a1bf40f15179973c4a17f6676e3de89eb92",
+  "presentation_source_lineage": "presentation:1b786cb2b16ac6dd0717e8a5518348d2a2817916e0cd861b81beb6f01e019907",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Carrier and gap diagnostics",

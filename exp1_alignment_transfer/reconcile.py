@@ -54,8 +54,13 @@ def _rebuild_validation(source_run: Path, run_tier: str) -> list[str]:
         targeted_dir / "exp1_targeted_mean_delay_summary.csv",
         targeted_dir / "exp1_targeted_horizon_seed_metrics.csv",
         targeted_dir / "exp1_targeted_horizon_summary.csv",
+        targeted_dir / "exp1_targeted_horizon_route_seed_metrics.csv",
+        targeted_dir / "exp1_targeted_horizon_route_summary.csv",
         targeted_dir / "exp1_targeted_theory_exact_shift_sweep.csv",
         targeted_dir / "exp1_targeted_theory_margin_threshold_sweep.csv",
+        targeted_dir / "exp1_targeted_cancellation_sweep.csv",
+        targeted_dir / "exp1_targeted_cancellation_summary.csv",
+        targeted_dir / "exp1_targeted_cancellation_invariants.json",
         targeted_dir / "fig_exp1_targeted_validation_data.csv",
     ]
     missing = [path for path in required if not path.exists()]

@@ -21,6 +21,18 @@ from src.artifact_io import (
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 
+# Repository house style must be applied before any figure is created:
+# matplotlib resolves a Text object's font at creation time, so styling at save
+# time is too late for a figure that has already been built.
+import sys as _sys
+
+if str(PROJECT_ROOT.parent) not in _sys.path:
+    _sys.path.insert(0, str(PROJECT_ROOT.parent))
+
+from presentation.common import PALETTE, configure_matplotlib  # noqa: E402
+
+configure_matplotlib()
+
 
 def _row(data: pd.DataFrame, mechanism: str, panel: str, series: str) -> pd.Series:
     subset = data[
@@ -55,10 +67,10 @@ def _draw_panel_a_columns(
     if header_y is None:
         header_y = float(y.max()) + 0.55
     header_style = dict(
-        fontsize=8.5, va="center", ha="right", clip_on=False, color="#333333"
+        fontsize=8.5, va="center", ha="right", clip_on=False, color=PALETTE["ink"]
     )
     value_style = dict(
-        fontsize=8, va="center", ha="right", clip_on=False, color="#1f4e79"
+        fontsize=8, va="center", ha="right", clip_on=False, color=PALETTE["blue_main"]
     )
     panel_a = data[data.panel_id == "A"]
     delay_rows = panel_a[panel_a.series_id == "generated_mean_delay"].set_index(
@@ -164,10 +176,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             ],
             fmt="o",
             capsize=3,
-            color="#1f4e79",
-            ecolor="#1f4e79",
-            markerfacecolor="#1f4e79",
-            markeredgecolor="#1f4e79",
+            color=PALETTE["blue_main"],
+            ecolor=PALETTE["blue_main"],
+            markerfacecolor=PALETTE["blue_main"],
+            markeredgecolor=PALETTE["blue_main"],
         )
     anchor = float(
         data[
@@ -200,10 +212,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             ],
             fmt="o",
             capsize=3,
-            color="#1f4e79",
-            ecolor="#1f4e79",
-            markerfacecolor="#1f4e79",
-            markeredgecolor="#1f4e79",
+            color=PALETTE["blue_main"],
+            ecolor=PALETTE["blue_main"],
+            markerfacecolor=PALETTE["blue_main"],
+            markeredgecolor=PALETTE["blue_main"],
             label=r"$R_T^c/T$" if mechanism == mechanisms[0] else None,
         )
         ax.errorbar(
@@ -212,10 +224,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             xerr=[[bound.estimate - bound.ci_lower], [bound.ci_upper - bound.estimate]],
             fmt="s",
             capsize=3,
-            color="#d97706",
-            ecolor="#d97706",
+            color=PALETTE["neutral_dark"],
+            ecolor=PALETTE["neutral_dark"],
             markerfacecolor="white",
-            markeredgecolor="#d97706",
+            markeredgecolor=PALETTE["neutral_dark"],
             label=(
                 r"$(R_T^r+\mathfrak{A}_T^r)/T$" if mechanism == mechanisms[0] else None
             ),
@@ -245,10 +257,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             ],
             fmt="o",
             capsize=3,
-            color="#b54708",
-            ecolor="#b54708",
-            markerfacecolor="#b54708",
-            markeredgecolor="#b54708",
+            color=PALETTE["red_strong"],
+            ecolor=PALETTE["red_strong"],
+            markerfacecolor=PALETTE["red_strong"],
+            markeredgecolor=PALETTE["red_strong"],
             label="Arrival-clock binding" if mechanism == mechanisms[0] else None,
         )
         ax.errorbar(
@@ -260,10 +272,10 @@ def generate(run_tier: str) -> tuple[Path, Path]:
             ],
             fmt="s",
             capsize=3,
-            color="#2e7d32",
-            ecolor="#2e7d32",
+            color=PALETTE["blue_secondary"],
+            ecolor=PALETTE["blue_secondary"],
             markerfacecolor="white",
-            markeredgecolor="#2e7d32",
+            markeredgecolor=PALETTE["blue_secondary"],
             label="Source-round binding" if mechanism == mechanisms[0] else None,
         )
         right = max(arrival.ci_upper, source.ci_upper)

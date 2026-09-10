@@ -6,13 +6,13 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "exp4_appendix_calibration_diagnostics.pdf": "d3227e75878c1afd8c33b0d60e7bd46905e47c865a9097c4d2195accb57ff08b",
-    "exp4_appendix_calibration_diagnostics.png": "d18afe9d0ad1d86aa805bd887f68429784f27e29ce23e32167bd648e0bc6fe3b",
-    "exp4_appendix_calibration_diagnostics.svg": "3f8f1838eda89ab070b209ad1bc3e19b0d197da28afc7340f027fdf49f37aed4"
+    "exp4_appendix_calibration_diagnostics.pdf": "63b40f48e1fe1e8e33424559946599778eee9e640898c5aaaa5b571866dc6b45",
+    "exp4_appendix_calibration_diagnostics.png": "cd6730668d6cbd4520ca9c71f7c1f051164571d2bb9a8db8c355653da43dab1f",
+    "exp4_appendix_calibration_diagnostics.svg": "9b82787c3bd88c1b76be1d3f552190d7df75d265be208a04dc3f468568b74768"
   },
   "figure_id": "exp4_appendix_calibration_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:19.236807+00:00",
+  "generated_at": "2026-09-10T05:56:04.736960+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "3099d1a5a34ec85acf502c69214282f3b20103889504fa900112c8109dfa1e56",
   "presentation_contract": {
     "layout": [
       1,
@@ -61,7 +61,7 @@
       "exp4_module_c_control_summary.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:30b57645d1fbbf9601c1dc7ccd3cf5581f5f2b30f28ee95728b980c68416aab9",
+  "presentation_source_lineage": "presentation:181c7a01cd0018ba37d418e4d85c77232db1c0d2cb72dd106c847533c53c0259",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Calibration diagnostics",

@@ -6,13 +6,13 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "exp4_appendix_route_alignment_detail.pdf": "2e04f28092d3e9cf957355e74e133886cc6503668edecc848942028f87e20ea0",
-    "exp4_appendix_route_alignment_detail.png": "885913699eaea03c054f96d3f8d33745a82766b55d63f152c21aac3f8d913fee",
-    "exp4_appendix_route_alignment_detail.svg": "5499de73f2bb4f9d8776fd8202567b6f93ffa09898f42208b9171c5c34d1e710"
+    "exp4_appendix_route_alignment_detail.pdf": "7b3559da9cabee24ea3bd9d7cea023f668f279e5d6e0c4a43044f1f396af522b",
+    "exp4_appendix_route_alignment_detail.png": "6c8a5c62fe8852734d6a5376e2f272fe3385cc3b8c80d996f073acffe2e86469",
+    "exp4_appendix_route_alignment_detail.svg": "dd0d59aecc9701f988c04d1679134e0da4a5298405dca8964cd0a06f3e5bba92"
   },
   "figure_id": "exp4_appendix_route_alignment_detail",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:15.570612+00:00",
+  "generated_at": "2026-09-10T05:55:59.067560+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "3099d1a5a34ec85acf502c69214282f3b20103889504fa900112c8109dfa1e56",
   "presentation_contract": {
     "layout": [
       1,
@@ -61,7 +61,7 @@
       "fig_app_exp4_smooth_loss_robustness_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:3b405700c36324b57f0cd50d026fe7d201dacf0a2c34b308c428e14905fef609",
+  "presentation_source_lineage": "presentation:77beaa177095e195f616726479a6561dfecacec57c96a070e70f0f548134d589",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Route-alignment detail",

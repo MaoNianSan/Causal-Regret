@@ -18,6 +18,12 @@ from src.artifact_io import (
     sha256_file,
 )
 from src.contracts import ScientificInvariantError
+from src.metrics import regret_stability_slack
+
+
+UTILIZATION_METRIC_ID = "regret_stability_utilization"
+UTILIZATION_ARTIFACT_NAME = "exp1_regret_stability_utilization.csv"
+UTILIZATION_SUMMARY_ARTIFACT_NAME = "exp1_regret_stability_utilization_summary.csv"
 
 
 def _stable_seed(*parts: object) -> int:
@@ -116,6 +122,158 @@ def build_route_summary(
                 }
             )
     return pd.DataFrame(rows)
+
+
+def regret_stability_utilization(
+    structural_regret: float,
+    route_regret: float,
+    alignment_budget: float,
+    horizon: int,
+) -> tuple[float, bool, float]:
+    """Realized utilization ``abs(R_c - R_r) / A`` of the sharp stability budget.
+
+    Returns ``(utilization, defined, alignment_budget_tolerance)``. The
+    denominator rule reuses the frozen :func:`regret_stability_slack` helper
+    and introduces no unrelated epsilon, so it stays consistent with the
+    repository's existing stability tolerance:
+
+        alignment_budget_tolerance = stability_tolerance_rate * T
+
+    When ``alignment_budget <= alignment_budget_tolerance`` the ratio is
+    undefined and reported as NaN with ``defined=False`` (never a manufactured
+    zero). Defined ratios are checked against the tolerance-adjusted interval
+    ``0 <= u <= 1 + alignment_budget_tolerance / alignment_budget``.
+
+    This is a descriptive realized bound utilization on a controlled path, not
+    a new theorem and not a proof of sharpness.
+    """
+    _slack_rate, stability_tolerance_rate = regret_stability_slack(
+        structural_regret, route_regret, alignment_budget, horizon
+    )
+    alignment_budget_tolerance = float(stability_tolerance_rate) * int(horizon)
+    if float(alignment_budget) <= alignment_budget_tolerance:
+        return float("nan"), False, alignment_budget_tolerance
+    utilization = abs(
+        float(structural_regret) - float(route_regret)
+    ) / float(alignment_budget)
+    upper = 1.0 + alignment_budget_tolerance / float(alignment_budget)
+    if not (0.0 <= utilization <= upper):
+        raise ScientificInvariantError(
+            "regret_stability_utilization outside the tolerance-adjusted "
+            f"[0, {upper}] interval: {utilization}"
+        )
+    return float(utilization), True, alignment_budget_tolerance
+
+
+def build_regret_stability_utilization(route_seed: pd.DataFrame) -> pd.DataFrame:
+    """Per-row realized stability utilization from frozen seed-level route maps.
+
+    Every source column (including run / provenance identifiers and the
+    inherited ``paper_result`` flag) is carried through unchanged; only the
+    utilization columns are added.
+    """
+    rows: list[dict[str, Any]] = []
+    for record in route_seed.to_dict("records"):
+        horizon = int(record["n_rounds"])
+        utilization, defined, tolerance = regret_stability_utilization(
+            record["structural_regret"],
+            record["route_regret"],
+            record["alignment_budget"],
+            horizon,
+        )
+        row = dict(record)
+        row.update(
+            {
+                "n_rounds": horizon,
+                "alignment_budget_tolerance": tolerance,
+                "regret_stability_utilization": utilization,
+                "utilization_defined": bool(defined),
+            }
+        )
+        rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def build_regret_stability_utilization_summary(
+    utilization: pd.DataFrame, repetitions: int, ci_level: float
+) -> pd.DataFrame:
+    """Seed-level summary of the realized utilization over defined rows only.
+
+    The reported estimate is the mean of seed-level ratios (never
+    ``abs(mean(R_c) - mean(R_r)) / mean(A)``). Mechanisms/routes whose
+    alignment budget is numerically zero keep their row with
+    ``n_defined = 0`` and NaN estimate / interval.
+    """
+    rows: list[dict[str, Any]] = []
+    for (mechanism, route), group in utilization.groupby(
+        ["mechanism_id", "route_id"], sort=False
+    ):
+        defined = group[group["utilization_defined"].astype(bool)]
+        summary = bootstrap_mean(
+            defined["regret_stability_utilization"],
+            repetitions,
+            ci_level,
+            ("utilization", mechanism, route, UTILIZATION_METRIC_ID),
+        )
+        rows.append(
+            {
+                "mechanism_id": mechanism,
+                "mechanism_display_name": DISPLAY_NAMES[mechanism],
+                "route_id": route,
+                "route_display_name": DISPLAY_NAMES[route],
+                "metric_id": UTILIZATION_METRIC_ID,
+                "n_total_seeds": int(group["seed"].nunique()),
+                "n_defined": int(defined["seed"].nunique()),
+                "n_seeds": int(summary["n_seeds"]),
+                "estimate": summary["estimate"],
+                "se": summary["se"],
+                "ci_lower": summary["ci_lower"],
+                "ci_upper": summary["ci_upper"],
+                "bootstrap_repetitions": repetitions,
+                "ci_level": ci_level,
+                "run_tier": group["run_tier"].iloc[0],
+                "paper_result": bool(group["paper_result"].iloc[0]),
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def materialize_regret_stability_utilization(
+    output_root: Path,
+    repetitions: int | None = None,
+    ci_level: float | None = None,
+    route_seed: pd.DataFrame | None = None,
+) -> dict[str, Path]:
+    """Write the realized stability-utilization derived artifacts for a root.
+
+    Reads the frozen seed-level route metrics of ``output_root`` and emits the
+    new derived artifacts next to the existing derived files. Existing primary
+    seed metrics are never rewritten.
+    """
+    run_tier = output_root.name
+    if repetitions is None:
+        repetitions = (
+            RUN.bootstrap_repetitions_fast
+            if run_tier == "fast"
+            else RUN.bootstrap_repetitions_full
+        )
+    if ci_level is None:
+        ci_level = RUN.ci_level
+    if route_seed is None:
+        route_seed = read_frame(
+            output_root / "seed_metrics" / "exp1_route_seed_metrics.parquet"
+        )
+    utilization = build_regret_stability_utilization(route_seed)
+    summary = build_regret_stability_utilization_summary(
+        utilization, int(repetitions), float(ci_level)
+    )
+    derived_dir = output_root / "derived"
+    derived_dir.mkdir(parents=True, exist_ok=True)
+    utilization_path = derived_dir / UTILIZATION_ARTIFACT_NAME
+    summary_path = derived_dir / UTILIZATION_SUMMARY_ARTIFACT_NAME
+    atomic_write_csv(utilization_path, utilization)
+    atomic_write_csv(summary_path, summary)
+    return {"regret_stability_utilization": utilization_path, "summary": summary_path}
 
 
 def build_learner_summary(
@@ -462,6 +620,14 @@ def generate_all_derived(
     atomic_write_csv(paths["state_coupling_data"], state_coupling)
     atomic_write_csv(paths["reversal_margin_data"], reversal_margin_data)
     atomic_write_csv(paths["trajectory_data"], trajectory_data)
+    paths.update(
+        materialize_regret_stability_utilization(
+            output_root,
+            repetitions=repetitions,
+            ci_level=ci_level,
+            route_seed=route_seed,
+        )
+    )
     write_latex_table(paths["mechanism_table_tex"], mechanism_table)
     write_manuscript_artifacts(
         manuscript_dir,

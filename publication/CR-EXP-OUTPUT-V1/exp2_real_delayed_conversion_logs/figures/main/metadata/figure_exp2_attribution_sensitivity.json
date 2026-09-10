@@ -6,13 +6,13 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "figure_exp2_attribution_sensitivity.pdf": "9e1d982b7dda7a58fc80e6defaf76d1ef85bdea4fdeb695d881da47f93cb0916",
-    "figure_exp2_attribution_sensitivity.png": "f2c3d9cfba1fb0eefc1f368c8175e80413d66dbc3a1933a02095c09432a43cb2",
-    "figure_exp2_attribution_sensitivity.svg": "3f7837dceab128a5cfbea2302b6fc6812a8c6a26a44b27373f7b5d3f31b8e4ff"
+    "figure_exp2_attribution_sensitivity.pdf": "85a435d829ef4b559ca062e75104b2e42790ae09520f1e4ebabe491e30030f18",
+    "figure_exp2_attribution_sensitivity.png": "485127674d26ce71585b5b27040b4a5bd2f118062d082aed701b62e022e93436",
+    "figure_exp2_attribution_sensitivity.svg": "3b9c589fe0710cb160d73a464895b245fea2c96a912eed8a17f85be247db6fb8"
   },
   "figure_id": "figure_exp2_attribution_sensitivity",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:58.019033+00:00",
+  "generated_at": "2026-09-10T05:55:32.620369+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Fixed-cohort attribution sensitivity; not causal attribution or policy value.",
   "layout_checks": [
@@ -66,8 +66,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "dec635fac0491fd2f8275f50ba7e9f3dcb85a7287f652f9b436185eaf16301e5",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -87,7 +87,7 @@
     "source_pair_rows": 6,
     "source_vs_arrival_rows": 4
   },
-  "presentation_source_lineage": "presentation:f4cfafac3a1403763c6643359ee9fb609cde9c34568759e802b671b9c2dd2e94",
+  "presentation_source_lineage": "presentation:10051b503c93d9fd4b7967f5582ef2212b41f9ac7a90b303959ae4807c870a7b",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Attribution sensitivity on a fixed delayed-conversion cohort.",

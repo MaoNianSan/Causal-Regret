@@ -28,13 +28,13 @@ def plot_main_figure(output_dir: Path, run_tier: str, paper_result: bool) -> Non
     inputs = load_main_figure_inputs(output_dir)
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
             "font.size": 7.5,
             "axes.titlesize": 8.5,
             "axes.labelsize": 7.2,
             "xtick.labelsize": 6.7,
             "ytick.labelsize": 6.7,
-            "axes.linewidth": 0.8,
+            "axes.linewidth": 1.1,
         }
     )
     fig, axes = plt.subplots(2, 3, figsize=(10.2, 5.5), constrained_layout=False)

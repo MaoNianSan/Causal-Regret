@@ -87,6 +87,13 @@ class TheorySweepConfig:
     - exact_shift_scales test action-invariant offset magnitude;
     - margin_distortion_ratios directly bracket the theorem threshold
       delta/mu = 1 (strict inequality at 1 is required).
+    - cancellation_shared_scales / cancellation_dep_ratios /
+      cancellation_shared_profiles define the matched shared-vs-action-
+      dependent cancellation diagnostic: the shared component is added
+      identically to every action of a round, while the action-dependent
+      component perturbs the unique best and the deterministic nearest
+      competitor by +d/2 / -d/2 with d = ratio * mu. This stays a
+      route-map-only diagnostic and must never enter MECHANISM_ORDER.
     """
 
     exact_shift_scales = (
@@ -109,6 +116,27 @@ class TheorySweepConfig:
         1.25,
         1.50,
         2.00,
+    )
+
+    cancellation_shared_scales = (
+        0.00,
+        0.05,
+        0.10,
+        0.20,
+    )
+
+    cancellation_dep_ratios = (
+        0.00,
+        0.50,
+        0.99,
+        1.00,
+        1.01,
+        1.50,
+    )
+
+    cancellation_shared_profiles = (
+        "static_shared",
+        "state_varying_shared",
     )
 
 
@@ -254,6 +282,9 @@ def validation_config_payload(
         "stage": "validation",
         "exact_shift_scales": list(theory_sweep.exact_shift_scales),
         "margin_distortion_ratios": list(theory_sweep.margin_distortion_ratios),
+        "cancellation_shared_scales": list(theory_sweep.cancellation_shared_scales),
+        "cancellation_dep_ratios": list(theory_sweep.cancellation_dep_ratios),
+        "cancellation_shared_profiles": list(theory_sweep.cancellation_shared_profiles),
     }
 
 

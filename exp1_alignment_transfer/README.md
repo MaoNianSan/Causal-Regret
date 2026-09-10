@@ -75,6 +75,41 @@ calibration checks do not pass. `reconcile.py` is the only supported reuse
 interface for an existing run and never reruns the primary scientific full or
 changes `raw/` or seed-level scientific artifacts.
 
+## Targeted diagnostics (route-map-only, non-promoted)
+
+`targeted.py` additionally reports three diagnostics that never call the
+learner, never write into `raw/` or `seed_metrics/`, stay `paper_result=false`,
+and do not add a mechanism to `MECHANISM_ORDER`:
+
+- **Horizon route quantities** reuse the frozen shared-prefix levels
+  `T = {1000, 5000, 10000}` and the *same* generated bundle as the learner
+  horizon check (no second path). The arrival-assigned route is the
+  manuscript-facing curve; source-bound rows are kept for consistency only.
+- **Cancellation sweep** is route-map-only and matched across an
+  action-invariant shared level component and an action-dependent residual:
+  `L_route[t, a] = L[t, a] + alpha_shared * c_t + u_t[a]` on the frozen
+  eligible-round support. `static_shared` is `c_t = 1`; `state_varying_shared`
+  is `c_t = 1 + S_t`, i.e. the same value is added to every action of a round,
+  so `c_t` stays in `[0, 2]` by construction. Changing the shared component
+  changes loss levels only: delta, rho, chi, complete conflict, the optimal
+  masks and the all-action regret map must be unchanged up to the sweep
+  tolerance, while the action-dependent residual is what moves them.
+  Its hard C4 gate is checked in the native scale `delta_t = alpha_dep * mu_t`
+  with tolerance `ratio_tol * mu_t + 32 * eps * max(1, |L_row|, |L_route_row|)`;
+  the normalized ratio `delta_t / mu_t` (`ratio_tol = 1e-9`) is gated only on
+  ratio-conditioned rounds, where the normalization is numerically meaningful.
+- **Realized stability utilization** is the descriptive quantity
+  `abs(R_c - R_r) / A`, computed downstream from frozen seed-level route
+  metrics (`derive_utilization.py`, or automatically in the derived stage). It
+  measures how much of the sharp stability budget a controlled path realizes;
+  it is not a theorem and not a proof of sharpness. When the alignment budget is
+  numerically zero the value is NaN with `utilization_defined = False`, never a
+  manufactured 0.
+
+These outputs are not automatically paper-promoted: they remain
+`paper_result=false` until a separate human authorization, and they are not a
+new primary mechanism.
+
 ## Interpretation boundary
 
 - The experiment is a controlled-simulation diagnostic of route-level

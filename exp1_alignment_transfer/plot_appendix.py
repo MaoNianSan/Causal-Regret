@@ -293,6 +293,244 @@ def generate_targeted_validation(output: Path) -> tuple[Path, Path] | tuple[()]:
     return png, pdf
 
 
+FIGURE_ID_TARGETED_CANCELLATION = "fig_exp1_appendix_targeted_cancellation"
+PANEL_A_RATIOS = (0.00, 1.00)
+PROFILE_STYLES = {"static_shared": "-", "state_varying_shared": "--"}
+
+
+def _errorbar(axis, x, frame, colour, linestyle, marker, label):
+    if frame.empty:
+        return
+    axis.errorbar(
+        x,
+        frame.estimate,
+        yerr=[frame.estimate - frame.ci_lower, frame.ci_upper - frame.estimate],
+        fmt=marker,
+        linestyle=linestyle,
+        color=colour,
+        capsize=3,
+        label=label,
+    )
+
+
+def generate_targeted_cancellation_diagnostics(output: Path) -> tuple[Path, Path, Path]:
+    """Appendix-candidate figure for the shared-vs-action-dependent cancellation.
+
+    Route-map reporting only: every panel is built from the added targeted /
+    derived reporting CSVs. The main Exp1 figure is never touched and nothing
+    is marked ``paper_result``.
+    """
+    sweep_path = output / "targeted" / "exp1_targeted_cancellation_summary.csv"
+    utilization_path = output / "derived" / "exp1_regret_stability_utilization_summary.csv"
+    _require_files([sweep_path, utilization_path], output.name)
+    sweep = pd.read_csv(sweep_path)
+    utilization = pd.read_csv(utilization_path)
+
+    fig, axes = plt.subplots(1, 3, figsize=(14.6, 4.6), constrained_layout=True)
+    figure_rows: list[dict[str, object]] = []
+
+    # (a) action-invariant level error grows with shared amplitude only.
+    axis = axes[0]
+    colours = {0.00: "#1f77b4", 1.00: "#d62728"}
+    level_error = sweep[sweep.metric_id == "mean_absolute_actionwise_level_error"]
+    for ratio in PANEL_A_RATIOS:
+        for profile, linestyle in PROFILE_STYLES.items():
+            subset = level_error[
+                (level_error.alpha_dep == ratio) & (level_error.shared_profile == profile)
+            ].sort_values("alpha_shared")
+            _errorbar(
+                axis,
+                subset.alpha_shared,
+                subset,
+                colours[ratio],
+                linestyle,
+                "o",
+                f"{profile} ($\\alpha_{{dep}}$={ratio:.2f})",
+            )
+            for row in subset.itertuples(index=False):
+                figure_rows.append(
+                    {
+                        "figure_id": FIGURE_ID_TARGETED_CANCELLATION,
+                        "panel_id": "A",
+                        "shared_profile": profile,
+                        "alpha_shared": float(row.alpha_shared),
+                        "alpha_dep": float(row.alpha_dep),
+                        "metric_id": "mean_absolute_actionwise_level_error",
+                        "estimate": float(row.estimate),
+                        "ci_lower": float(row.ci_lower),
+                        "ci_upper": float(row.ci_upper),
+                        "n_seeds": int(row.n_seeds),
+                        "bootstrap_repetitions": int(row.bootstrap_repetitions),
+                        "run_tier": output.name,
+                        "paper_result": False,
+                    }
+                )
+    axis.set_xlabel(r"Shared amplitude $\alpha_{\mathrm{shared}}$")
+    axis.set_ylabel("Mean actionwise level error")
+    axis.set_title("(a) Action-invariant level error")
+    axis.grid(alpha=0.25)
+    axis.legend(frameon=False, fontsize=8)
+
+    # (b) decision metric vs residual ratio; shared amplitude is overlaid.
+    axis = axes[1]
+    chi = sweep[sweep.metric_id == "mean_chi"]
+    scales = sorted(float(value) for value in chi.alpha_shared.unique())
+    colour_map = plt.get_cmap("viridis")
+    for index, scale in enumerate(scales):
+        colour = colour_map(index / max(1, len(scales) - 1))
+        subset = chi[
+            (chi.shared_profile == "state_varying_shared") & (chi.alpha_shared == scale)
+        ].sort_values("alpha_dep")
+        _errorbar(axis, subset.alpha_dep, subset, colour, "-", "o", f"$\\alpha_{{shared}}$={scale:.2f}")
+        static = chi[
+            (chi.shared_profile == "static_shared") & (chi.alpha_shared == scale)
+        ].sort_values("alpha_dep")
+        axis.plot(
+            static.alpha_dep,
+            static.estimate,
+            linestyle=":",
+            marker="x",
+            markersize=3.5,
+            linewidth=1.0,
+            color=colour,
+        )
+        for row in subset.itertuples(index=False):
+            figure_rows.append(
+                {
+                    "figure_id": FIGURE_ID_TARGETED_CANCELLATION,
+                    "panel_id": "B",
+                    "shared_profile": "state_varying_shared",
+                    "alpha_shared": float(row.alpha_shared),
+                    "alpha_dep": float(row.alpha_dep),
+                    "metric_id": "mean_chi",
+                    "estimate": float(row.estimate),
+                    "ci_lower": float(row.ci_lower),
+                    "ci_upper": float(row.ci_upper),
+                    "n_seeds": int(row.n_seeds),
+                    "bootstrap_repetitions": int(row.bootstrap_repetitions),
+                    "run_tier": output.name,
+                    "paper_result": False,
+                }
+            )
+    axis.plot([], [], linestyle=":", marker="x", color="0.4", label="static profile (C3)")
+    axis.set_xlabel(r"Action-dependent ratio $\alpha_{\mathrm{dep}}$")
+    axis.set_ylabel(r"Mean directed choice disagreement $\bar{\chi}$")
+    axis.set_title("(b) Decision metric vs residual ratio")
+    axis.set_ylim(-0.05, 1.05)
+    axis.grid(alpha=0.25)
+    axis.legend(frameon=False, fontsize=8, ncol=2)
+
+    # (c) realized utilization of the sharp stability budget, arrival-assigned.
+    axis = axes[2]
+    arrival = utilization[utilization.route_id == "arrival_assigned"].reset_index(drop=True)
+    if arrival.empty:
+        raise RuntimeError("Missing arrival-assigned utilization summary rows")
+    defined = arrival[arrival.n_defined.astype(int) > 0]
+    for position, row in arrival.iterrows():
+        if int(row.n_defined) > 0:
+            axis.errorbar(
+                position,
+                float(row.estimate),
+                yerr=[
+                    [float(row.estimate) - float(row.ci_lower)],
+                    [float(row.ci_upper) - float(row.estimate)],
+                ],
+                fmt="o",
+                color="#1f77b4",
+                capsize=3,
+            )
+            figure_rows.append(
+                {
+                    "figure_id": FIGURE_ID_TARGETED_CANCELLATION,
+                    "panel_id": "C",
+                    "shared_profile": "not_applicable",
+                    "alpha_shared": float("nan"),
+                    "alpha_dep": float("nan"),
+                    "metric_id": "regret_stability_utilization",
+                    "mechanism_id": row.mechanism_id,
+                    "estimate": float(row.estimate),
+                    "ci_lower": float(row.ci_lower),
+                    "ci_upper": float(row.ci_upper),
+                    "n_seeds": int(row.n_seeds),
+                    "n_defined": int(row.n_defined),
+                    "bootstrap_repetitions": int(row.bootstrap_repetitions),
+                    "run_tier": output.name,
+                    "paper_result": False,
+                }
+            )
+        else:
+            axis.axvline(position, color="0.88", linewidth=1.0, zorder=0)
+            axis.annotate(
+                "undefined\n(alignment\nbudget $\\equiv$ 0)",
+                xy=(position, 0.02),
+                xycoords=("data", "axes fraction"),
+                ha="center",
+                va="bottom",
+                fontsize=7,
+                color="0.4",
+            )
+    axis.set_xticks(list(range(len(arrival))))
+    axis.set_xticklabels(
+        [DISPLAY_NAMES[mechanism] for mechanism in arrival.mechanism_id],
+        rotation=25,
+        ha="right",
+        fontsize=8,
+    )
+    axis.set_ylabel("Realized stability utilization")
+    axis.set_title("(c) Realized stability-budget utilization")
+    axis.set_ylim(0.0, float(max(0.35, defined.estimate.max() * 1.45)))
+    axis.grid(alpha=0.25)
+    axis.annotate(
+        "undefined cells are never drawn as zero",
+        xy=(0.5, 0.985),
+        xycoords="axes fraction",
+        ha="center",
+        va="top",
+        fontsize=7,
+        color="0.4",
+    )
+
+    png = output / "figures" / "png" / f"{FIGURE_ID_TARGETED_CANCELLATION}.png"
+    pdf = output / "figures" / "pdf" / f"{FIGURE_ID_TARGETED_CANCELLATION}.pdf"
+    data_path = output / "figures" / "data" / f"{FIGURE_ID_TARGETED_CANCELLATION}_data.csv"
+    fig.savefig(png, dpi=300, bbox_inches="tight")
+    fig.savefig(pdf, bbox_inches="tight")
+    plt.close(fig)
+    figure_data = pd.DataFrame(figure_rows)
+    figure_data.to_csv(data_path, index=False)
+    atomic_write_json(
+        output / "figures" / "metadata" / f"{FIGURE_ID_TARGETED_CANCELLATION}_metadata.json",
+        {
+            "figure_id": FIGURE_ID_TARGETED_CANCELLATION,
+            "run_tier": output.name,
+            "paper_result": False,
+            "appendix_candidate": True,
+            "main_figure_touched": False,
+            "source_targeted_files": [str(sweep_path)],
+            "source_derived_files": [str(utilization_path)],
+            "source_data_sha256": sha256_file(data_path),
+            "panel_definitions": {
+                "A": "mean actionwise level error vs shared amplitude, separated by shared profile, for selected alpha_dep values",
+                "B": "mean directed choice disagreement vs action-dependent ratio with shared-amplitude traces overlaid",
+                "C": "realized stability-budget utilization for primary arrival-assigned mechanisms where defined",
+            },
+            "axis_definitions": {
+                "A": "alpha_shared",
+                "B": "alpha_dep",
+                "C": "mechanism_id",
+            },
+            "uncertainty_definition": (
+                "seed bootstrap over the targeted grid cells; undefined "
+                "zero-budget cells are omitted, never drawn as zero"
+            ),
+            "cancellation_sweep_id": "cancellation_shared_vs_action_dependent",
+            "generated_at": utc_now(),
+            "figure_code_hash": sha256_file(PROJECT_ROOT / "plot_appendix.py"),
+        },
+    )
+    return png, pdf, data_path
+
+
 def generate_all(run_tier: str) -> list[Path]:
     """Render every appendix figure and its shared provenance metadata."""
     output = PROJECT_ROOT / "outputs" / run_tier
@@ -302,6 +540,7 @@ def generate_all(run_tier: str) -> list[Path]:
         generate_margin_reversal,
         generate_trajectory,
         generate_targeted_validation,
+        generate_targeted_cancellation_diagnostics,
     ):
         artifacts.extend(function(output))
     scientific_manifest = json.loads(

@@ -6,13 +6,13 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "fig_exp4_route_alignment_and_audit_reliability.pdf": "3df71383a60b7d40e1b1821bc58ec14ff351b6d4f0c718fa493dc94bb859d02a",
-    "fig_exp4_route_alignment_and_audit_reliability.png": "3ec2277839a635612a96cd1171f515193d052c3bd6e14f7da9603b37b759cb97",
-    "fig_exp4_route_alignment_and_audit_reliability.svg": "ac31a5f35257422ba84e058eff744b6614adb278c73fd61e0dcb81d952a8a44c"
+    "fig_exp4_route_alignment_and_audit_reliability.pdf": "9967d2d4a6081da0560e6068920ca6cff05aec216511fad228289060d1bf676a",
+    "fig_exp4_route_alignment_and_audit_reliability.png": "f46211d4c4e0b2600a2ee29281547683beb656cb5006bd0f291fd44320d81468",
+    "fig_exp4_route_alignment_and_audit_reliability.svg": "4882b08e89a0913d354ec14470366b0bab04183e94eed4b84a78efa48081e80b"
   },
   "figure_id": "fig_exp4_route_alignment_and_audit_reliability",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:13.318028+00:00",
+  "generated_at": "2026-09-10T05:55:55.877213+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Population alignment, audit reliability, and calibratability are distinct; lower calibrated discrepancy does not prove route validity.",
   "layout_checks": [
@@ -76,8 +76,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "3099d1a5a34ec85acf502c69214282f3b20103889504fa900112c8109dfa1e56",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -112,7 +112,7 @@
       "blocked_correspondence_destroyed"
     ]
   },
-  "presentation_source_lineage": "presentation:64bf8a360c2f3648ac3c2d6b3c6e451b6661213d59b0bf70dce5297574217701",
+  "presentation_source_lineage": "presentation:8ca885c3c4c3e3cbc6a5e7875cdc9aa64b11d8fa5d712790ad4d18ec929bf5d4",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Population route alignment, audit reliability, and calibration-family recoverability are distinct diagnostics.",

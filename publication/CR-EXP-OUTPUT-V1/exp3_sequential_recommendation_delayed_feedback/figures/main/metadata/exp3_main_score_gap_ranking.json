@@ -6,13 +6,13 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_main_score_gap_ranking.pdf": "7bd98d5a918c67223d3f0d4ec12045acfd737c33bb5ceb47efcfeb9f96204268",
-    "exp3_main_score_gap_ranking.png": "ba6990a51c3a24c89393a40f4f5b4cd794358870aba75758a59bfdabc750ed33",
-    "exp3_main_score_gap_ranking.svg": "49dd9b1f4f91763e14db9bcb5aad9ed55c61b3e1e64ef7ffb9a0ba4764ccba40"
+    "exp3_main_score_gap_ranking.pdf": "d6e8c70fee873f742b33f1ca8613c8adf1054bcb50296ba144204eee64440447",
+    "exp3_main_score_gap_ranking.png": "411afca514dda166b13a6d16bc34436893e225083ead848d6203277433af9bc2",
+    "exp3_main_score_gap_ranking.svg": "dac624c9f14c0d30ccaee2517c52c99cb302ea8c1736f203ce93ab7562e0d85e"
   },
   "figure_id": "exp3_main_score_gap_ranking",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:02.919822+00:00",
+  "generated_at": "2026-09-10T05:55:40.280980+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Score recovery need not transfer to decision recovery; not OPE or causal regret.",
   "layout_checks": [
@@ -75,8 +75,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "93af3f7441a4789ec2550515864a5ae348255bc1d61d0a2b3c456b4f5b651aca",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -102,7 +102,7 @@
     "scope_paragraph_on_canvas": false,
     "uncertainty_role": "sensitivity range, not confidence interval"
   },
-  "presentation_source_lineage": "presentation:12c11e548261ae8985dc0ad6c385f799ca06a0af3428ac18f4bd9418b8d4ed55",
+  "presentation_source_lineage": "presentation:832dc8e598f45b672cf7d92b73d2c37f9512c790e916da83e09795c340628cb9",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Logged-supported score, held-out pair-gap, and ranking recovery across three routes.",

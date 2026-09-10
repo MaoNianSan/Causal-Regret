@@ -6,13 +6,13 @@
   "config_hash": "2eebb3dfafa708ac36ff5b5fb2d215b77f5189e37ae94ea9afe8470831770580",
   "experiment_id": "exp3_sequential_recommendation_delayed_feedback",
   "figure_file_hashes": {
-    "exp3_appendix_calibration_and_selection.pdf": "54ad833e2321f10543c2107a47c4bdfac9b7bf0f47375702cc4c13af68543a8c",
-    "exp3_appendix_calibration_and_selection.png": "78cc6068a62c29687f544880fdd49eaf40c146a9e45fbfc5a72ba0a265ec48bb",
-    "exp3_appendix_calibration_and_selection.svg": "57cccedcf9868a6a41a70def4a7c75b1923e260d24f256085588d8d105ce2b26"
+    "exp3_appendix_calibration_and_selection.pdf": "662a72b00c516e91392ecdd2019882ec585999171425c62dbef64fb8b3269f1d",
+    "exp3_appendix_calibration_and_selection.png": "88f2ae3d74874a6c2dc78fe7fa3a4fccfcbbb71a470a5cd19ebb7e38ef0af095",
+    "exp3_appendix_calibration_and_selection.svg": "135858c382fe3c3113387822650f5fdee43c0cadd2332ac72e9a1e8fea7989c2"
   },
   "figure_id": "exp3_appendix_calibration_and_selection",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:10.120902+00:00",
+  "generated_at": "2026-09-10T05:55:50.294469+00:00",
   "input_manifest_hash": "e0c1288a22ea2cf3abde9f2c0887f795fe4c2e7d6f705d077ac9a8a819518e6d",
   "interpretation_boundary": "Appendix composite from frozen paper-candidate tables.",
   "layout_checks": [
@@ -47,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "a7ddf6af3fcae1b7ea51a641b28958934c9d57305bf0a837d17b848b1df58954",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "93af3f7441a4789ec2550515864a5ae348255bc1d61d0a2b3c456b4f5b651aca",
   "presentation_contract": {
     "layout": [
       1,
@@ -59,7 +59,7 @@
       "exp3_appendix_route_selection_concentration_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:ca0a1df99fdda81ea684c538e2a7301d635073822e87fd001870684279b2a5f1",
+  "presentation_source_lineage": "presentation:e9fd9ceda705347b06e4f372f6c8478f59c14ef2ac1f7431d87bde4e99dbc527",
   "preview_root_relative_path": "exp3_sequential_recommendation_delayed_feedback",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Calibration and selection",

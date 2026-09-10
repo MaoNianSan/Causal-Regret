@@ -6,13 +6,13 @@
   "config_hash": "9a0a87ecc64ead7528cbd43d299e26c64ea8499f9d54852e0cc45d7e061364a7",
   "experiment_id": "exp4_controlled_route_audit",
   "figure_file_hashes": {
-    "exp4_appendix_audit_support.pdf": "81f1089af6fd347135e2ba47be7d92d1fbff4b19568f0f31726e2f2aaa9cba9b",
-    "exp4_appendix_audit_support.png": "f173c9b603e4914b8b08f03fb26811ed2ceff882c533a5f07a17d01a23a285c8",
-    "exp4_appendix_audit_support.svg": "6587b1d4ee873f087d77befe6181a1f36b8498c3db04776714b2ea870d07ca23"
+    "exp4_appendix_audit_support.pdf": "f4d332e9df274a312f597afcf03d66c886b7b99b6e2018b977748bcf1088c4ee",
+    "exp4_appendix_audit_support.png": "ddd992d1df65ff4e5e7997c4bef55a9bdefce04399f18960f6a18aca41e0cc4e",
+    "exp4_appendix_audit_support.svg": "45729f6fb6591b23645324130cdc0462033423734f07af80adbd8c5ce6dfe9ef"
   },
   "figure_id": "exp4_appendix_audit_support",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:42:17.812083+00:00",
+  "generated_at": "2026-09-10T05:56:02.476406+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix composite; any round-max gap defect is secondary and is never labeled D_pair.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "cbdfc65ff64d12c763328b44262f9213fd7063a2bbdd9ad9b1f779daf9af5c19",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "3099d1a5a34ec85acf502c69214282f3b20103889504fa900112c8109dfa1e56",
   "presentation_contract": {
     "layout": [
       1,
@@ -61,7 +61,7 @@
       "exp4_module_b_audit_performance.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:6a69ad1c79e18034281fa7f27cd6ecce7d12b14edf98005aa9c1353aaf6d46b7",
+  "presentation_source_lineage": "presentation:12ec234d31a7460dd43a47e1ab8c3e6cb8fdd9055995fc44f1e12126640fb958",
   "preview_root_relative_path": "exp4_controlled_route_audit",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Audit support",

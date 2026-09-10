@@ -22,14 +22,14 @@ NOISE_MARKERS = {0.0: "o", 0.10: "s", 0.25: "^", 1.0: "v"}
 def set_publication_style() -> None:
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
             "font.size": 7.2,
             "axes.labelsize": 8.0,
             "axes.titlesize": 8.2,
             "xtick.labelsize": 7.0,
             "ytick.labelsize": 7.0,
             "legend.fontsize": 6.7,
-            "axes.linewidth": 0.8,
+            "axes.linewidth": 1.1,
             "grid.linewidth": 0.5,
             "grid.alpha": 0.24,
             "savefig.bbox": "tight",

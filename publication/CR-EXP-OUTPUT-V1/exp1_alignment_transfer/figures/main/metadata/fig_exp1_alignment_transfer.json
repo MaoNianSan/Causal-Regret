@@ -6,13 +6,13 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "fig_exp1_alignment_transfer.pdf": "5329076924147d2f14d5e31df0bb234130b2d9e4cc9d4dbc24398aad4b0e42ab",
-    "fig_exp1_alignment_transfer.png": "5d60d2121d9e78da9b1e986268981aa1b94849b2487c923e317ce1b88d2b9eb4",
-    "fig_exp1_alignment_transfer.svg": "2bf0721b80336aa1f61eff324b2ea2eb8f87224f643ebb2f68916204db15d71f"
+    "fig_exp1_alignment_transfer.pdf": "3f7f7033a47f119e93f48abdf61a4a07d85ff02c4a24b11a885dfec11cc730e2",
+    "fig_exp1_alignment_transfer.png": "43ad07dcac8732d2486809f61e9120e26176674ca7d5a0bc65ace468c8a0001d",
+    "fig_exp1_alignment_transfer.svg": "f3fe116fdabef9c74133299a01805d0550a57e1b994ed74a6fc11001b845baea"
   },
   "figure_id": "fig_exp1_alignment_transfer",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:51.662059+00:00",
+  "generated_at": "2026-09-10T05:55:22.936557+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Action-gap alignment controls transfer; learner allocation is a separate consequence.",
   "layout_checks": [
@@ -67,8 +67,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "87ae7449fcba436251df299bef96c93487cac0e2749a6e56acc8531d5b598957",
   "presentation_contract": {
     "canvas_inches": [
       7.1,
@@ -114,7 +114,7 @@
       "paired_contrast"
     ]
   },
-  "presentation_source_lineage": "presentation:9041cd3b89ad7272f5a6d732751e28d6469b6c5476e83a0603b86dd406d6870e",
+  "presentation_source_lineage": "presentation:f482627df8cddf88f8f2ee7588314c550b772fc9142210094f93eaccedb6ae6e",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Alignment, structural regret transfer, and scalar-feedback binding across canonical mechanisms.",

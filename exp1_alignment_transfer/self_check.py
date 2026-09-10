@@ -34,6 +34,11 @@ from src.metrics import (
 )
 from src.path_generator import build_shared_path_bundle
 from src.route_maps import build_arrival_assigned_route_map
+from src.derived import (
+    UTILIZATION_ARTIFACT_NAME,
+    UTILIZATION_SUMMARY_ARTIFACT_NAME,
+    build_regret_stability_utilization,
+)
 from src.theory_sweeps import run_invariant_checks
 
 PROJECT_ROOT = Path(__file__).resolve().parent
@@ -645,6 +650,148 @@ def run_checks(run_tier: str) -> dict[str, Any]:
                 "margin_threshold": sweep_checks["theory_margin_threshold_sweep"][
                     "passed"
                 ],
+                "cancellation": sweep_checks["theory_cancellation_sweep"]["passed"],
+            },
+        )
+    )
+    cancellation_checks = sweep_checks["theory_cancellation_sweep"]
+    checks.append(
+        _assert(
+            bool(cancellation_checks["passed"]),
+            "theory_cancellation_sweep_gates",
+            {
+                "C1_pure_shared": cancellation_checks["C1_pure_shared"]["passed"],
+                "C2_shared_amplitude_invariance": cancellation_checks[
+                    "C2_shared_amplitude_invariance"
+                ]["passed"],
+                "C3_profile_invariance": cancellation_checks["C3_profile_invariance"][
+                    "passed"
+                ],
+                "C4_delta_margin_ratio": cancellation_checks["C4_delta_margin_ratio"][
+                    "passed"
+                ],
+                "C5_choice_threshold": cancellation_checks["C5_choice_threshold"][
+                    "passed"
+                ],
+                "C6_no_clipping_no_learner": cancellation_checks[
+                    "C6_no_clipping_no_learner"
+                ]["passed"],
+                "max_numerical_deviation": cancellation_checks[
+                    "max_numerical_deviation"
+                ],
+            },
+        )
+    )
+
+    # J. REALIZED STABILITY UTILIZATION: independent rebuild from frozen seed
+    #    metrics plus the definition/range and derived-artifact consistency
+    #    checks for the added diagnostic.
+    utilization = build_regret_stability_utilization(route_seed)
+    derived_utilization_path = output / "derived" / UTILIZATION_ARTIFACT_NAME
+    derived_summary_path = output / "derived" / UTILIZATION_SUMMARY_ARTIFACT_NAME
+    missing_utilization = [
+        str(path)
+        for path in (derived_utilization_path, derived_summary_path)
+        if not path.exists()
+    ]
+    checks.append(
+        _assert(
+            not missing_utilization,
+            "stability_utilization_artifacts_present",
+            missing_utilization,
+        )
+    )
+    defined_mask = utilization["utilization_defined"].astype(bool)
+    undefined_rows = utilization.loc[~defined_mask]
+    defined_rows = utilization.loc[defined_mask]
+    undefined_budget_violations = int(
+        (
+            undefined_rows["alignment_budget"]
+            > undefined_rows["alignment_budget_tolerance"]
+        ).sum()
+    )
+    range_violations = int(
+        (
+            (defined_rows["regret_stability_utilization"] < 0.0)
+            | (
+                defined_rows["regret_stability_utilization"]
+                > 1.0
+                + defined_rows["alignment_budget_tolerance"]
+                / defined_rows["alignment_budget"]
+            )
+        ).sum()
+    )
+    checks.append(
+        _assert(
+            undefined_budget_violations == 0 and range_violations == 0,
+            "stability_utilization_definition_and_range",
+            {
+                "undefined_budget_violations": undefined_budget_violations,
+                "range_violations": range_violations,
+                "defined_rows": int(defined_mask.sum()),
+                "undefined_rows": int((~defined_mask).sum()),
+            },
+        )
+    )
+    derived_utilization = pd.read_csv(derived_utilization_path)
+    key_columns = ["seed", "mechanism_id", "route_id"]
+    rebuilt = utilization.sort_values(key_columns).reset_index(drop=True)
+    stored = derived_utilization.sort_values(key_columns).reset_index(drop=True)
+    artifact_violations = abs(len(rebuilt) - len(stored))
+    if artifact_violations == 0:
+        both_defined = rebuilt["utilization_defined"].astype(bool) & stored[
+            "utilization_defined"
+        ].astype(bool)
+        artifact_violations += int(
+            (
+                rebuilt["utilization_defined"].astype(bool)
+                != stored["utilization_defined"].astype(bool)
+            ).sum()
+        )
+        artifact_violations += int(
+            (
+                rebuilt.loc[both_defined, "regret_stability_utilization"]
+                - stored.loc[both_defined, "regret_stability_utilization"]
+            )
+            .abs()
+            .gt(1e-12)
+            .sum()
+        )
+    checks.append(
+        _assert(
+            artifact_violations == 0,
+            "stability_utilization_derived_matches_rebuild",
+            artifact_violations,
+        )
+    )
+    derived_summary = pd.read_csv(derived_summary_path)
+    zero_defined = derived_summary["n_defined"].eq(0)
+    summary_violations = int(
+        derived_summary.loc[zero_defined, "estimate"].notna().sum()
+    )
+    summary_violations += int(
+        derived_summary.loc[~zero_defined, "estimate"].isna().sum()
+    )
+    summary_violations += int(
+        derived_summary.loc[zero_defined, "ci_lower"].notna().sum()
+    )
+    summary_violations += int(
+        derived_summary.loc[zero_defined, "ci_upper"].notna().sum()
+    )
+    summary_violations += int(
+        (
+            derived_summary.loc[~zero_defined, "n_seeds"]
+            != derived_summary.loc[~zero_defined, "n_defined"]
+        ).sum()
+    )
+    checks.append(
+        _assert(
+            summary_violations == 0,
+            "stability_utilization_summary_semantics",
+            {
+                "violations": summary_violations,
+                "rows": int(len(derived_summary)),
+                "rows_without_defined_seed": int(zero_defined.sum()),
             },
         )
     )

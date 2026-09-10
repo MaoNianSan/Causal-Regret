@@ -6,13 +6,13 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "exp1_appendix_reversal_trajectory_diagnostics.pdf": "652f52e6f3a1ad9f143390be880984ec57fd5ee11dccc880f7bf301d63e9a787",
-    "exp1_appendix_reversal_trajectory_diagnostics.png": "b5a54dbf27f35b22a6f09a9e05947677fb0f18871b4b8978859908064d8c0db4",
-    "exp1_appendix_reversal_trajectory_diagnostics.svg": "0ffdfe4c28f42764483870688c54ca4ea6650b059eaad3322230d02ec1a5272f"
+    "exp1_appendix_reversal_trajectory_diagnostics.pdf": "fe826803d1bfacdcb5845d95d6c6464e52b73744e7eebb08672ccb24d1a7ee57",
+    "exp1_appendix_reversal_trajectory_diagnostics.png": "a873fe3b208bd0765ed55310dca99f4aeb5854f1ff9fed6e2dba7663f7a9dbce",
+    "exp1_appendix_reversal_trajectory_diagnostics.svg": "88e10cf68d1b3bff35e7c4417483fdb6937ca6f2700a6e16ca3f507329bc6a81"
   },
   "figure_id": "exp1_appendix_reversal_trajectory_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:54.608032+00:00",
+  "generated_at": "2026-09-10T05:55:27.643275+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix diagnostic from frozen full-run sources; no new scientific estimate.",
   "layout_checks": [
@@ -47,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "87ae7449fcba436251df299bef96c93487cac0e2749a6e56acc8531d5b598957",
   "presentation_contract": {
     "layout": [
       1,
@@ -59,7 +59,7 @@
       "fig_exp1_route_trajectory_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:c9ed5f50144e42194cd49d6665b9576a076c69ab0f30be1358ffc5aa8573c951",
+  "presentation_source_lineage": "presentation:a365a34ec8329f494e3b69e81d0f45191656f2128843bb89e28a7237fc098d85",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Reversal-margin and route-trajectory diagnostics",

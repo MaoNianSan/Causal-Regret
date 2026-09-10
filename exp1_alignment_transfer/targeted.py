@@ -4,6 +4,12 @@ from __future__ import annotations
 
 1. Geometric-delay mean robustness at target means 5, 15, and 30.
 2. Systematic-misbinding horizon scaling at T=1000, 5000, and 10000.
+3. Matched shared-vs-action-dependent cancellation sweep (route-map only,
+   theorem-confronting diagnostic; not a new primary mechanism).
+
+The route-map quantities reported here reuse the arrival-assigned route
+diagnostic built into the primary runner; the learner horizon files keep
+their existing names and semantics.
 """
 
 from dataclasses import replace
@@ -43,14 +49,27 @@ from src.delay_mechanisms import (
     generate_geometric_delay,
     solve_geometric_probability,
 )
-from src.derived import bootstrap_mean
+from src.derived import (
+    bootstrap_mean,
+    build_regret_stability_utilization,
+    build_regret_stability_utilization_summary,
+    regret_stability_utilization,
+)
 from src.path_generator import SharedPathBundle
-from src.runner import RunMetadata, run_paired_learner_consequence
+from src.runner import (
+    RunMetadata,
+    run_paired_learner_consequence,
+    run_route_map_diagnostic,
+)
 from src.structural_process import (
     generate_smooth_bounded_ar1_path,
     generate_systematic_misbinding_path,
 )
-from src.theory_sweeps import exact_shift_sweep_rows, margin_threshold_sweep_rows
+from src.theory_sweeps import (
+    cancellation_sweep_rows,
+    exact_shift_sweep_rows,
+    margin_threshold_sweep_rows,
+)
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 STATUS_DIR = PROJECT_ROOT / "status"
@@ -156,12 +175,137 @@ def _summarize_horizon(seed_metrics: pd.DataFrame, repetitions: int) -> pd.DataF
                     "feedback_binding_id": binding,
                     "metric_id": metric,
                     **summary,
+                "bootstrap_repetitions": repetitions,
+                "ci_level": RUN.ci_level,
+                "paper_result": False,
+            }
+        )
+    return pd.DataFrame(rows)
+
+
+def _attach_utilization_columns(frame: pd.DataFrame) -> pd.DataFrame:
+    """Add realized stability-utilization columns to route seed-metric rows."""
+    utilization: list[float] = []
+    defined: list[bool] = []
+    tolerance: list[float] = []
+    for record in frame.to_dict("records"):
+        value, is_defined, budget_tolerance = regret_stability_utilization(
+            record["structural_regret"],
+            record["route_regret"],
+            record["alignment_budget"],
+            int(record["n_rounds"]),
+        )
+        utilization.append(value)
+        defined.append(bool(is_defined))
+        tolerance.append(budget_tolerance)
+    out = frame.copy()
+    out["alignment_budget_tolerance"] = tolerance
+    out["regret_stability_utilization"] = utilization
+    out["utilization_defined"] = defined
+    return out
+
+
+def _summarize_horizon_route(
+    seed_metrics: pd.DataFrame, repetitions: int
+) -> pd.DataFrame:
+    rows: list[dict[str, Any]] = []
+    metrics = (
+        "structural_regret",
+        "route_regret",
+        "alignment_budget",
+        "structural_regret_rate",
+        "route_regret_rate",
+        "alignment_budget_rate",
+        "complete_conflict_rate",
+        "regret_stability_slack_rate",
+    )
+    for (horizon, route), group in seed_metrics.groupby(
+        ["target_horizon", "route_id"], sort=True
+    ):
+        manuscript_facing = bool(route == "arrival_assigned")
+        for metric in metrics:
+            summary = bootstrap_mean(
+                group[metric],
+                repetitions,
+                RUN.ci_level,
+                ("targeted_horizon_route", int(horizon), route, metric),
+            )
+            rows.append(
+                {
+                    "targeted_component": "horizon_route_map",
+                    "target_horizon": int(horizon),
+                    "route_id": route,
+                    "manuscript_facing": manuscript_facing,
+                    "metric_id": metric,
+                    **summary,
                     "bootstrap_repetitions": repetitions,
                     "ci_level": RUN.ci_level,
                     "paper_result": False,
                 }
             )
+        defined = group[group["utilization_defined"].astype(bool)]
+        utilization = bootstrap_mean(
+            defined["regret_stability_utilization"],
+            repetitions,
+            RUN.ci_level,
+            ("targeted_horizon_route_utilization", int(horizon), route),
+        )
+        rows.append(
+            {
+                "targeted_component": "horizon_route_map",
+                "target_horizon": int(horizon),
+                "route_id": route,
+                "manuscript_facing": manuscript_facing,
+                "metric_id": "regret_stability_utilization",
+                "n_total_seeds": int(group["seed"].nunique()),
+                "n_defined": int(defined["seed"].nunique()),
+                **utilization,
+                "bootstrap_repetitions": repetitions,
+                "ci_level": RUN.ci_level,
+                "paper_result": False,
+            }
+        )
     return pd.DataFrame(rows)
+
+
+def _summarize_cancellation(
+    rows: list[dict[str, Any]], repetitions: int
+) -> pd.DataFrame:
+    frame = pd.DataFrame(rows)
+    summaries: list[dict[str, Any]] = []
+    metrics = (
+        "mean_absolute_actionwise_level_error",
+        "mean_delta",
+        "alignment_budget_rate",
+        "mean_rho",
+        "mean_chi",
+        "complete_conflict_rate",
+        "regret_map_linf_to_structural",
+    )
+    for (profile, scale, ratio), group in frame.groupby(
+        ["shared_profile", "alpha_shared", "alpha_dep"], sort=True
+    ):
+        for metric in metrics:
+            summary = bootstrap_mean(
+                group[metric],
+                repetitions,
+                RUN.ci_level,
+                ("cancellation", profile, float(scale), float(ratio), metric),
+            )
+            summaries.append(
+                {
+                    "cancellation_sweep_id": "cancellation_shared_vs_action_dependent",
+                    "shared_profile": profile,
+                    "alpha_shared": float(scale),
+                    "alpha_dep": float(ratio),
+                    "metric_id": metric,
+                    **summary,
+                    "bootstrap_repetitions": repetitions,
+                    "ci_level": RUN.ci_level,
+                    "paper_result": False,
+                }
+            )
+    return pd.DataFrame(summaries)
 
 
 def execute(run_tier: str, force: bool = False) -> Path:
@@ -229,6 +373,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
     mean_seed = pd.concat(mean_rows, ignore_index=True)
 
     horizon_rows = []
+    horizon_route_rows: list[pd.DataFrame] = []
     prefix_checks = []
     block_length = int(calibration["misbinding"]["selected_block_length"])
     horizon_learner = LEARNER  # Frozen at primary T=5000 for all scaling cells.
@@ -289,9 +434,24 @@ def execute(run_tier: str, force: bool = False) -> Path:
             seed_frame["targeted_component"] = "horizon_scaling"
             seed_frame["target_horizon"] = horizon
             horizon_rows.append(seed_frame)
+            # Route-map diagnostic on the SAME bundle and metadata: no second
+            # independently generated path is created.
+            _, route_seed_frame = run_route_map_diagnostic(bundle, metadata)
+            route_seed_frame["targeted_component"] = "horizon_route_map"
+            route_seed_frame["target_horizon"] = horizon
+            horizon_route_rows.append(route_seed_frame)
     if prefix_checks and not all(prefix_checks):
         raise RuntimeError("Horizon-scaling shared-prefix invariant failed")
     horizon_seed = pd.concat(horizon_rows, ignore_index=True)
+    if not horizon_route_rows:
+        raise RuntimeError("Horizon route-map diagnostic produced no rows")
+    horizon_route_seed = _attach_utilization_columns(
+        pd.concat(horizon_route_rows, ignore_index=True)
+    )
+    if not bool(horizon_route_seed.regret_stability_invariant_pass.all()):
+        raise RuntimeError("Horizon route-map stability inequality failed")
+    if not bool(horizon_route_seed.utilization_defined.any()):
+        raise RuntimeError("Horizon route-map stability utilization is undefined")
 
     # --- Theory-targeted controlled sweeps (config v1.2). -----------------
     # These are theorem diagnostics, not new delay mechanisms. They reuse the
@@ -311,18 +471,50 @@ def execute(run_tier: str, force: bool = False) -> Path:
         seeds,
         ratios=THEORY_SWEEP.margin_distortion_ratios,
     )
+    # Matched shared-vs-action-dependent cancellation sweep. Route-map only:
+    # the learner is never called and no primary artifact is written.
+    cancellation_rows, cancellation_checks = cancellation_sweep_rows(
+        base_structural,
+        seeds,
+        shared_scales=THEORY_SWEEP.cancellation_shared_scales,
+        dep_ratios=THEORY_SWEEP.cancellation_dep_ratios,
+        shared_profiles=THEORY_SWEEP.cancellation_shared_profiles,
+    )
     exact_frame = pd.DataFrame(exact_rows)
     margin_frame = pd.DataFrame(margin_rows)
+    cancellation_frame = pd.DataFrame(cancellation_rows)
 
     mean_summary = _summarize_mean_delay(mean_seed, repetitions)
     horizon_summary = _summarize_horizon(horizon_seed, repetitions)
+    horizon_route_summary = _summarize_horizon_route(horizon_route_seed, repetitions)
+    cancellation_summary = _summarize_cancellation(cancellation_rows, repetitions)
+    utilization_defined_rows = int(horizon_route_seed.utilization_defined.sum())
+    overall_status = (
+        "PASS"
+        if exact_checks["passed"]
+        and margin_checks["passed"]
+        and cancellation_checks["passed"]
+        else "FAIL"
+    )
     atomic_write_csv(output / "exp1_targeted_mean_delay_seed_metrics.csv", mean_seed)
     atomic_write_csv(output / "exp1_targeted_horizon_seed_metrics.csv", horizon_seed)
+    atomic_write_csv(
+        output / "exp1_targeted_horizon_route_seed_metrics.csv", horizon_route_seed
+    )
     atomic_write_csv(output / "exp1_targeted_mean_delay_summary.csv", mean_summary)
     atomic_write_csv(output / "exp1_targeted_horizon_summary.csv", horizon_summary)
+    atomic_write_csv(
+        output / "exp1_targeted_horizon_route_summary.csv", horizon_route_summary
+    )
     atomic_write_csv(output / "exp1_targeted_theory_exact_shift_sweep.csv", exact_frame)
     atomic_write_csv(
         output / "exp1_targeted_theory_margin_threshold_sweep.csv", margin_frame
+    )
+    atomic_write_csv(
+        output / "exp1_targeted_cancellation_sweep.csv", cancellation_frame
+    )
+    atomic_write_csv(
+        output / "exp1_targeted_cancellation_summary.csv", cancellation_summary
     )
     atomic_write_csv(
         output / "fig_exp1_targeted_validation_data.csv",
@@ -340,12 +532,64 @@ def execute(run_tier: str, force: bool = False) -> Path:
             "horizon_shared_prefix_pass": (
                 bool(all(prefix_checks)) if prefix_checks else True
             ),
+            "horizon_route_map": {
+                "levels": [1000, 5000, 10000],
+                "manuscript_facing_route": "arrival_assigned",
+                "stability_inequality_pass": bool(
+                    horizon_route_seed.regret_stability_invariant_pass.all()
+                ),
+                "utilization_defined_rows": utilization_defined_rows,
+                "seed_metrics": "targeted/exp1_targeted_horizon_route_seed_metrics.csv",
+                "summary": "targeted/exp1_targeted_horizon_route_summary.csv",
+                "paper_result": False,
+            },
             "theory_exact_cardinal_shift_sweep": exact_checks,
             "theory_margin_threshold_sweep": margin_checks,
-            "status": (
-                "PASS" if exact_checks["passed"] and margin_checks["passed"] else "FAIL"
-            ),
+            "cancellation_sweep": {
+                "sweep_id": cancellation_checks["sweep_id"],
+                "grid_cells_per_seed": cancellation_checks["grid_cells_per_seed"],
+                "seeds": [int(seed) for seed in seeds],
+                "n_cells": cancellation_checks["n_cells"],
+                "tolerance": cancellation_checks["tolerance"],
+                "max_numerical_deviation": cancellation_checks[
+                    "max_numerical_deviation"
+                ],
+                "gates": {
+                    name: cancellation_checks[name]["passed"]
+                    for name in (
+                        "C1_pure_shared",
+                        "C2_shared_amplitude_invariance",
+                        "C3_profile_invariance",
+                        "C4_delta_margin_ratio",
+                        "C5_choice_threshold",
+                        "C6_no_clipping_no_learner",
+                    )
+                },
+                "sweep": "targeted/exp1_targeted_cancellation_sweep.csv",
+                "summary": "targeted/exp1_targeted_cancellation_summary.csv",
+                "invariants": "targeted/exp1_targeted_cancellation_invariants.json",
+                "paper_result": False,
+            },
+            "status": overall_status,
             "code_lineage": code_lineage(PROJECT_ROOT),
+            "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[
+                "validation_source_hash"
+            ],
+            "generated_at": utc_now(),
+        },
+    )
+    atomic_write_json(
+        output / "exp1_targeted_cancellation_invariants.json",
+        {
+            "experiment_id": EXPERIMENT_ID,
+            "run_tier": run_tier,
+            "analysis_tier": "targeted",
+            "paper_result": False,
+            "horizon_levels": [1000, 5000, 10000],
+            "cancellation_sweep": cancellation_checks,
+            "status": (
+                "PASS" if cancellation_checks["passed"] else "FAIL"
+            ),
             "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[
                 "validation_source_hash"
             ],
@@ -356,9 +600,7 @@ def execute(run_tier: str, force: bool = False) -> Path:
         STATUS_DIR / f"{run_tier}_targeted_status.json",
         {
             "stage": f"{run_tier}_targeted",
-            "status": (
-                "PASS" if exact_checks["passed"] and margin_checks["passed"] else "FAIL"
-            ),
+            "status": overall_status,
             "paper_result": False,
             "code_lineage": code_lineage(PROJECT_ROOT),
             "validation_source_hash": exp1_stage_source_hashes(PROJECT_ROOT)[

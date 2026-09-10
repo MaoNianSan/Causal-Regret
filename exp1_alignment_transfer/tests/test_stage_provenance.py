@@ -24,6 +24,7 @@ from config import (
     MECHANISM_ORDER,
     RUN,
     STRUCTURAL,
+    THEORY_SWEEP,
     aggregation_config_hash,
     calibration_config_hash,
     reporting_config_hash,
@@ -290,9 +291,23 @@ def test_theory_sweep_change_is_validation_only_and_calibration_isolated() -> No
     changed = SimpleNamespace(
         exact_shift_scales=(0.0, 0.25),
         margin_distortion_ratios=(0.0, 1.0, 2.0),
+        cancellation_shared_scales=(0.0, 0.10),
+        cancellation_dep_ratios=(0.0, 1.0, 2.0),
+        cancellation_shared_profiles=("static_shared", "state_varying_shared"),
     )
     assert validation_config_hash(theory_sweep=changed) != validation_config_hash()
     assert calibration_config_hash() == calibration_config_hash()
+    changed_cancellation = SimpleNamespace(
+        exact_shift_scales=THEORY_SWEEP.exact_shift_scales,
+        margin_distortion_ratios=THEORY_SWEEP.margin_distortion_ratios,
+        cancellation_shared_scales=(0.0, 0.30),
+        cancellation_dep_ratios=THEORY_SWEEP.cancellation_dep_ratios,
+        cancellation_shared_profiles=THEORY_SWEEP.cancellation_shared_profiles,
+    )
+    assert (
+        validation_config_hash(theory_sweep=changed_cancellation)
+        != validation_config_hash()
+    )
 
 
 def test_display_names_change_is_reporting_only_and_calibration_isolated() -> None:
@@ -316,8 +331,13 @@ def test_reconcile_uses_canonical_aggregation_and_rebuilds_full_validation(
         "exp1_targeted_mean_delay_summary.csv",
         "exp1_targeted_horizon_seed_metrics.csv",
         "exp1_targeted_horizon_summary.csv",
+        "exp1_targeted_horizon_route_seed_metrics.csv",
+        "exp1_targeted_horizon_route_summary.csv",
         "exp1_targeted_theory_exact_shift_sweep.csv",
         "exp1_targeted_theory_margin_threshold_sweep.csv",
+        "exp1_targeted_cancellation_sweep.csv",
+        "exp1_targeted_cancellation_summary.csv",
+        "exp1_targeted_cancellation_invariants.json",
         "fig_exp1_targeted_validation_data.csv",
     )
     (source / "checks").mkdir()

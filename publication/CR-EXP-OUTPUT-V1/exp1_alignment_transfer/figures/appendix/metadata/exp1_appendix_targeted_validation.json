@@ -6,13 +6,13 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "exp1_appendix_targeted_validation.pdf": "35eb2598bb28be2f8731d25ad22cda4268426bd30f9dc8922a06ad99efec7950",
-    "exp1_appendix_targeted_validation.png": "3b15320bde83e68cebe42bcd17a6a5a58e94d3ba79ea30a5666a7e8c0a4f7942",
-    "exp1_appendix_targeted_validation.svg": "62ef54892e959e7634f010f296e2f4dd96b8420d0273d6b70c00a2938851d525"
+    "exp1_appendix_targeted_validation.pdf": "c46cb40992df7597398e09b55c843dbf11a50ac266bd2f66b0fe9aba839591cb",
+    "exp1_appendix_targeted_validation.png": "9b65c5e3435ab8f734cd114a0dc661569c51002c965d2821af5374e14e3eacaa",
+    "exp1_appendix_targeted_validation.svg": "f9be2321491625167bb817f39800cf79e791567e78d1e01ebbe04832775928e3"
   },
   "figure_id": "exp1_appendix_targeted_validation",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:56.451458+00:00",
+  "generated_at": "2026-09-10T05:55:30.303114+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix diagnostic from the frozen targeted-validation source; no targeted recomputation.",
   "layout_checks": [
@@ -50,8 +50,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "87ae7449fcba436251df299bef96c93487cac0e2749a6e56acc8531d5b598957",
   "presentation_contract": {
     "layout": [
       1,
@@ -61,7 +61,7 @@
       "fig_exp1_targeted_validation_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:9ac9d5703df4857df35586ded51518c8d9c770b63eb41ce9f132fbd1073ef9fd",
+  "presentation_source_lineage": "presentation:354fa7a4eeba3b9810a92d069720153482bc500553ac98bcf40160a5a0aaec03",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Mean-delay robustness and systematic-misbinding horizon scaling from the frozen targeted validation.",

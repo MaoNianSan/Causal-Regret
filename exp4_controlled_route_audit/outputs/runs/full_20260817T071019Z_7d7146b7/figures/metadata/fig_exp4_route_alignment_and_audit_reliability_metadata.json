@@ -8,7 +8,7 @@
   },
   "experiment_id": "exp4_controlled_route_audit",
   "figure_id": "fig_exp4_route_alignment_and_audit_reliability",
-  "generated_at": "2026-08-18T09:04:43+00:00",
+  "generated_at": "2026-09-10T05:51:55+00:00",
   "panel_definitions": {
     "a": "Population action-gap defect across shared structural seeds.",
     "b": "Monte Carlo bias of the population-defect audit estimator.",

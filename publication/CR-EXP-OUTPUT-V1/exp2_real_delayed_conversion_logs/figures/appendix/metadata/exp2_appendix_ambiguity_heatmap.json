@@ -6,13 +6,13 @@
   "config_hash": "bc6143ea17e219a7bb625a522c770ba83ea2430aca8e5f3773467a10f295e102",
   "experiment_id": "exp2_real_delayed_conversion_logs",
   "figure_file_hashes": {
-    "exp2_appendix_ambiguity_heatmap.pdf": "d3e3df2e79200175f87cdda508786e91394081fdb77830f6eaba4ccfe2ef735f",
-    "exp2_appendix_ambiguity_heatmap.png": "e0bc3925985fd9003b05b5e04821298ab565395e3525819046c4308896c53c91",
-    "exp2_appendix_ambiguity_heatmap.svg": "9cf3ee2bb5a20861312357206c9940de4a94066c38dd6690434dce69761f2d0d"
+    "exp2_appendix_ambiguity_heatmap.pdf": "b3479589eacdf14740c9eaf81d38ff8ee0c1e32ed159406ea518810d5ac04b5b",
+    "exp2_appendix_ambiguity_heatmap.png": "03f2adc33cc53091b9cded6f706b130db9647468738bb52317bf54d834739f5d",
+    "exp2_appendix_ambiguity_heatmap.svg": "eab0a7864c4d7a1ddbc7a0139edcb48a88de0ba2b0fbf947a50440739ad75eaa"
   },
   "figure_id": "exp2_appendix_ambiguity_heatmap",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:59.132076+00:00",
+  "generated_at": "2026-09-10T05:55:34.446631+00:00",
   "input_manifest_hash": "1ea83982d74b61201abfb25f7f74a27f811ffa62661130e78ad1cb70002f9cc3",
   "interpretation_boundary": "Appendix diagnostic from frozen Exp2 outputs; no UID resampling recomputation.",
   "layout_checks": [
@@ -48,8 +48,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "8c9ddf18b0540f28184bf38ad64068f501bbaf5e6e1b1d515aa0efe82f2244f3",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "dec635fac0491fd2f8275f50ba7e9f3dcb85a7287f652f9b436185eaf16301e5",
   "presentation_contract": {
     "layout": [
       1,
@@ -57,7 +57,7 @@
     ],
     "source": "figure_exp2_ambiguity_mechanism_source.csv"
   },
-  "presentation_source_lineage": "presentation:bade1e15a30ad9abb5f8fd5f08f79479d36452535d863a95241818bb7c9046fa",
+  "presentation_source_lineage": "presentation:14dc49ea9c35bbbb44bb10e41badb410fd39f9d6f57b6170495870ceab3bc84b",
   "preview_root_relative_path": "exp2_real_delayed_conversion_logs",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Ambiguity-mechanism diagnostics",

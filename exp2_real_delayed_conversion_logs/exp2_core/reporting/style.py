@@ -12,14 +12,14 @@ def set_publication_style(config: dict[str, Any]) -> None:
     plots = config["plots"]
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
             "font.size": float(plots["tick_font_size"]),
             "axes.labelsize": float(plots["axis_label_font_size"]),
             "axes.titlesize": float(plots["axis_label_font_size"]),
             "xtick.labelsize": float(plots["tick_font_size"]),
             "ytick.labelsize": float(plots["tick_font_size"]),
             "legend.fontsize": float(plots["annotation_font_size"]),
-            "axes.linewidth": 0.8,
+            "axes.linewidth": 1.1,
             "lines.linewidth": float(plots["line_width"]),
             "pdf.fonttype": 42,
             "ps.fonttype": 42,

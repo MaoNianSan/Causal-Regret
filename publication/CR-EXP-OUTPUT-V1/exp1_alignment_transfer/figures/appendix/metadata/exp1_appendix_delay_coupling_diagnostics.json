@@ -6,13 +6,13 @@
   "config_hash": "483df70d6daceef6ffbb42b5c59d98e50373a606a8d9d6e9da8f317eee8af914",
   "experiment_id": "exp1_alignment_transfer",
   "figure_file_hashes": {
-    "exp1_appendix_delay_coupling_diagnostics.pdf": "0f224fc994e0b17fc2e09827e0a3da8693323307631d3abdd67ce443e105a7fb",
-    "exp1_appendix_delay_coupling_diagnostics.png": "b99ec97f4132187cac8cdf62e6f1620ee283a1068154e4516db2cae77ea7b1c2",
-    "exp1_appendix_delay_coupling_diagnostics.svg": "71782db3f6dcd08c5d196b62a660db59570584c386157c967e7a39da006b3967"
+    "exp1_appendix_delay_coupling_diagnostics.pdf": "00dbe8664d6ac61a165e41b909f2c3b4e145fb81599dc43d33bd1a4017a58b99",
+    "exp1_appendix_delay_coupling_diagnostics.png": "26ac7675dcb7d23b8bae9e289d8b8e1971a34bb768f0ba24eb878cd03dd662c2",
+    "exp1_appendix_delay_coupling_diagnostics.svg": "8cc74bb7c8c2b9537871acacda1c2746a4f9290a138c000d841cf0f563a6a073"
   },
   "figure_id": "exp1_appendix_delay_coupling_diagnostics",
   "figure_version": "v1",
-  "generated_at": "2026-08-19T03:41:53.021296+00:00",
+  "generated_at": "2026-09-10T05:55:25.236293+00:00",
   "input_manifest_hash": "NA",
   "interpretation_boundary": "Appendix diagnostic from frozen full-run sources; no new scientific estimate.",
   "layout_checks": [
@@ -47,8 +47,8 @@
   },
   "paper_result": true,
   "png_dpi": 300,
-  "presentation_build_commit": "54c9d9f5d1b79e4310873e8f253bc86cb24b0324",
-  "presentation_code_hash": "f553cec8f3a43743cf724babf965b977abcd46a3ace710fb73a51b1a304ba094",
+  "presentation_build_commit": "3ddb55654ed7020ccecce1477ee0dd89c92f37d7",
+  "presentation_code_hash": "87ae7449fcba436251df299bef96c93487cac0e2749a6e56acc8531d5b598957",
   "presentation_contract": {
     "layout": [
       1,
@@ -59,7 +59,7 @@
       "fig_exp1_state_coupling_data.csv"
     ]
   },
-  "presentation_source_lineage": "presentation:b7423db72db8300a3ebdb79abbecaa9bf5baf4c1672410c018d326501eefb279",
+  "presentation_source_lineage": "presentation:4ddb816cdaa4e5a286cc69d0bc8cb4225039d9ea9e0cbbc78ae7531ffeeb28e2",
   "preview_root_relative_path": "exp1_alignment_transfer",
   "promotion_status": "CANONICAL_PUBLICATION",
   "question_or_claim": "Delay survival and state-coupling verification",
