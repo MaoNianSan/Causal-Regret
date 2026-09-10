@@ -20,6 +20,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 OUTPUTS = PROJECT_ROOT / "outputs"
 STATUS = PROJECT_ROOT / "status"
 
+# A memo that authorizes the *targeted manuscript extension* is intentionally
+# not a primary-promotion authorization, and vice versa.  The two scopes are
+# bound to different snapshots and are evaluated by different gates
+# (``promote_targeted.py`` for the targeted extension).
+TARGETED_PROMOTION_SCOPE = "targeted_extension"
+
+
+def _is_targeted_extension_memo(metadata: dict[str, str]) -> bool:
+    """True when a memo is scoped to the targeted extension, not to primary."""
+    return any(
+        metadata.get(key, "").strip() == TARGETED_PROMOTION_SCOPE
+        for key in ("authorized_promotion_scope", "promotion_scope")
+    )
+
 
 def _parse_memo_metadata(path: Path) -> dict[str, str]:
     metadata: dict[str, str] = {}
@@ -45,6 +59,9 @@ def promotion_authorization() -> dict[str, object]:
     for path in PROJECT_ROOT.glob("CHANGE_MEMO_EXP1_*.md"):
         metadata = _parse_memo_metadata(path)
         if metadata.get("experiment_id", "exp1_alignment_transfer") != "exp1_alignment_transfer":
+            continue
+        if _is_targeted_extension_memo(metadata):
+            # Scope-isolated: evaluated by promote_targeted.promotion_authorization.
             continue
         memos.append((path, metadata))
     if not memos:
