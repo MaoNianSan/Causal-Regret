@@ -54,8 +54,27 @@ python exp1_alignment_transfer/reconcile.py --source-run exp1_alignment_transfer
 # Paper promotion (paper-facing; requires human authorization memo, see CHANGE_MEMO_EXP1_005.md)
 python exp1_alignment_transfer/promote.py --run full --dry-run
 python exp1_alignment_transfer/promote.py --run full --force
+
+# Targeted-extension promotion (additive; separate scope-specific authorization,
+# see CHANGE_MEMO_EXP1_006_TARGETED_PROMOTION_DRAFT.md, approved 2026-09-10)
+python exp1_alignment_transfer/promote_targeted.py --dry-run
+python exp1_alignment_transfer/promote_targeted.py
 ```
-Commands are exactly the flags accepted by each parser (`main.py {fast,full} [--force]`, `self_check.py/targeted.py/plot_*.py {fast,full} | --run {fast,full}`, `reconcile.py --source-run --rebuild {validation,aggregation,reporting,downstream}`, `promote.py --run full [--dry-run] [--force]`).
+Commands are exactly the flags accepted by each parser (`main.py {fast,full} [--force]`, `self_check.py/targeted.py/plot_*.py {fast,full} | --run {fast,full}`, `reconcile.py --source-run --rebuild {validation,aggregation,reporting,downstream}`, `promote.py --run full [--dry-run] [--force]`, `promote_targeted.py [--dry-run]`).
+
+Two promotion scopes exist and they are deliberately not interchangeable:
+
+| scope | command | authorization | effect |
+|---|---|---|---|
+| `primary` | `promote.py --run full --force` | a `PAPER_PROMOTION_AUTHORIZATION` memo with `paper_promotion_authorized: YES` | deletes and rebuilds `outputs/paper_candidate/` from `outputs/full` |
+| `targeted_extension` | `promote_targeted.py` | an approved memo declaring `authorized_promotion_scope: targeted_extension` plus the exact snapshot binding | copies an explicit allowlist into the existing candidate; never deletes or rebuilds it |
+
+A memo scoped to one never authorizes the other. The targeted gate binds
+authorization to `authorized_source_run_id`,
+`authorized_scientific_generation_hash`, `authorized_validation_hash`,
+`authorized_targeted_validation_report_sha256`, and
+`authorized_cancellation_invariants_sha256`; any drift makes the authorization
+stale and blocks the promotion again.
 
 ### Output contract
 - **Canonical output root**: `exp1_alignment_transfer/outputs/paper_candidate/` (paper-facing; `outputs/full/` is the scientific full run and is intentionally not tracked).
@@ -78,7 +97,10 @@ Commands are exactly the flags accepted by each parser (`main.py {fast,full} [--
 Uncertainty: `95% seed-bootstrap interval` computed over the 30 shared seeds with 2000 bootstrap repetitions; structural rounds are not treated as independent bootstrap observations. Deterministic / structural endpoints (e.g., zero-delay and exact-valid zero rates) are reported without artificial intervals.
 
 ### Targeted diagnostics (route-map-only, non-promoted)
-- **Targeted output root**: `exp1_alignment_transfer/outputs/<tier>/targeted/` with `<tier> ∈ {fast, full}`. Every targeted row carries `paper_result = false`; targeted outputs are never paper-promoted without separate human authorization.
+- **Targeted output root**: `exp1_alignment_transfer/outputs/<tier>/targeted/` with `<tier> ∈ {fast, full}`. Every targeted row carries `paper_result = false`. Targeted source artifacts stay non-promoted in `outputs/full`; an *accepted* targeted analysis may be copied into the paper-candidate bundle through the scope-specific targeted-promotion gate (`promote_targeted.py`) after separate human authorization. Promotion changes manuscript-facing authority only — never the analysis tier, and never a scientific value.
+- **Targeted-extension promotion (not a primary promotion)**: the additive path copies only `promote_targeted.TARGETED_ALLOWLIST`, rewrites governance fields in the destination copies only, and writes its own records — manifest `outputs/paper_candidate/metadata/exp1_targeted_promotion_manifest.json` and status `status/targeted_paper_promotion_status.json`. It never deletes or rebuilds `outputs/paper_candidate/`, never rewrites pre-existing primary artifacts, and never changes the full-run sources. Promoted copies carry `analysis_tier = targeted`, `paper_result = true`, `run_tier = paper`, `promotion_scope = targeted_extension`.
+- **Candidate artifact index**: the promotion also refreshes the promoted destinations' entries in the candidate's own `outputs/paper_candidate/metadata/artifact_manifest.json`, so the index the frozen-science hygiene test reads stays truthful. Every entry outside the promoted set must remain exactly as recorded; a candidate whose index cannot be maintained blocks the promotion.
+- **Promotion-scope isolation**: `promote.py` ignores memos whose scope is `targeted_extension`, and `promote_targeted.py` ignores primary-promotion memos. An approved primary memo (for example `CHANGE_MEMO_EXP1_005`) is reported as a stale authorization for a targeted promotion and cannot be reused for one.
 - **Horizon route-map artifacts**: `targeted/exp1_targeted_horizon_route_seed_metrics.csv` (per seed × horizon × route) and `targeted/exp1_targeted_horizon_route_summary.csv`. Horizon levels stay frozen at `T = {1000, 5000, 10000}` and the route quantities are computed on the *same* generated bundle as the learner horizon check. In the summary, `manuscript_facing = true` only for `route_id = arrival_assigned`; source-bound rows are retained for consistency.
 - **Cancellation artifacts**: `targeted/exp1_targeted_cancellation_sweep.csv`, `targeted/exp1_targeted_cancellation_summary.csv`, `targeted/exp1_targeted_cancellation_invariants.json`; the overall `cancellation_sweep` block (gates C1–C6 plus `max_numerical_deviation`) and the PASS/FAIL status live in `targeted/exp1_targeted_validation_report.json`.
 - **Cancellation grid (frozen)**: `shared_profile ∈ {static_shared, state_varying_shared}`, `alpha_shared ∈ {0.00, 0.05, 0.10, 0.20}`, `alpha_dep ∈ {0.00, 0.50, 0.99, 1.00, 1.01, 1.50}` → 48 cells per seed. The matched invariance reference is `(shared_profile = static_shared, alpha_shared = 0.00)` at fixed `(seed, alpha_dep)`.
@@ -92,6 +114,14 @@ Uncertainty: `95% seed-bootstrap interval` computed over the 30 shared seeds wit
 
 ### Canonical paper result
 `exp1_alignment_transfer/outputs/paper_candidate/` — promoted from full run `exp1_alignment_transfer:full:2026-08-17T06:28:21.157011+00:00` (code commit `23199c48`), `paper_result = true`, `run_tier = paper`.
+
+Authority hierarchy inside that root:
+
+| path | authority |
+|---|---|
+| `outputs/paper_candidate/<primary artifacts>` | canonical primary scientific result |
+| `outputs/paper_candidate/targeted/` and the allowlisted `derived/`/`figures/` paths | paper-facing targeted extension (`promotion_scope = targeted_extension`); promoted 2026-09-10 through the authorized `promote_targeted.py` run |
+| `outputs/full/targeted/`, `outputs/full/derived/` | validated accepted source, `paper_result = false` |
 
 ### Interpretation boundary
 Separates complete-map route validity from learner-level update allocation. It does **not** prove the stability theorems (those are proven in the paper's theory sections); the alignment budget is a valid but conservative **diagnostic bound**, not an exact prediction of realized regret.

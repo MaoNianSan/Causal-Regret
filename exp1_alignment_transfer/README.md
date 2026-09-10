@@ -45,6 +45,11 @@ python targeted.py --run full
 python plot_main.py --run full
 python plot_appendix.py --run full
 python promote.py --run full
+
+# Additive targeted-extension promotion (separate scope-specific authorization;
+# never replaces the primary candidate)
+python promote_targeted.py --dry-run
+python promote_targeted.py
 ```
 
 Selective rebuild of a downstream stage without a scientific rerun uses
@@ -66,6 +71,37 @@ data only.
   (code_commit `23199c48`).
 - Publication bundle: `../publication/CR-EXP-OUTPUT-V1/exp1_alignment_transfer/`
   (main figure ID `fig_exp1_alignment_transfer`).
+
+### Two promotion scopes
+
+`promote.py` and `promote_targeted.py` answer different questions and are not
+interchangeable.
+
+| | primary promotion | targeted-extension promotion |
+|---|---|---|
+| entry point | `promote.py --run full --force` | `promote_targeted.py` |
+| effect | deletes and rebuilds `outputs/paper_candidate/` from `outputs/full` | copies an explicit allowlist into the existing candidate |
+| authorization | `paper_promotion_authorized: YES` memo | approved memo declaring `authorized_promotion_scope: targeted_extension` **and** the exact snapshot binding |
+| analysis tier | `primary` | stays `targeted` |
+| manifest | `outputs/paper_candidate/exp1_promotion_manifest.json` | `outputs/paper_candidate/metadata/exp1_targeted_promotion_manifest.json` |
+| status | `status/paper_promotion_status.json` | `status/targeted_paper_promotion_status.json` |
+
+The targeted gate binds the authorization to the accepted snapshot
+(`authorized_source_run_id`, `authorized_scientific_generation_hash`,
+`authorized_validation_hash`, `authorized_targeted_validation_report_sha256`,
+`authorized_cancellation_invariants_sha256`). A memo approved for an earlier
+primary snapshot therefore never authorizes a targeted extension: it is
+reported as stale and the promotion is blocked. The scope-specific
+authorization is `CHANGE_MEMO_EXP1_006_TARGETED_PROMOTION_DRAFT.md`, approved
+2026-09-10, and the targeted promotion was executed the same day.
+
+Before authorization the gate stops at
+`TARGETED_PROMOTION_READY_EXCEPT_AUTHORIZATION` with a dry-run report; after
+authorization it copies the allowlist, re-verifies that `outputs/full` and every
+pre-existing primary candidate artifact are byte-identical, refreshes the
+candidate's own artifact index for the promoted destinations only
+(`metadata/artifact_manifest.json`; every other entry must stay exactly as
+recorded), and writes the targeted manifest and status.
 
 ## Validation
 
@@ -108,7 +144,9 @@ and do not add a mechanism to `MECHANISM_ORDER`:
 
 These outputs are not automatically paper-promoted: they remain
 `paper_result=false` until a separate human authorization, and they are not a
-new primary mechanism.
+new primary mechanism. When that authorization exists, `promote_targeted.py`
+adds them to the paper candidate under `promotion_scope = targeted_extension`;
+the `outputs/full` sources keep `paper_result=false` either way.
 
 ## Interpretation boundary
 

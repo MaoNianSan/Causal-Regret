@@ -54,6 +54,7 @@ Key files: `derived/exp1_primary_summary.csv`, `derived/exp1_learner_summary.csv
 | Key claim supported | Targeted cancellation, horizon-route and mean-delay diagnostics (accepted validation-level evidence) |
 | Interpretation boundary | Targeted, not canonical primary results; must not be cited as primary paper results |
 | Canonical source | yes (accepted targeted diagnostics) |
+| Promotion path | Applied 2026-09-10: the authorized additive `promote_targeted.py` run (`promotion_scope = targeted_extension`) copied the allowlist into `outputs/paper_candidate/`; it never replaced the primary candidate, and the `outputs/full` source keeps `paper_result = false`. |
 
 Key files: `exp1_targeted_cancellation_sweep.csv`,
 `exp1_targeted_cancellation_summary.csv`,
@@ -82,6 +83,7 @@ Key files: `exp1_targeted_cancellation_sweep.csv`,
 | Key claim supported | Regret-stability utilization (seed-level and summary) |
 | Interpretation boundary | Accepted targeted diagnostic; the promoted copy lives in `outputs/paper_candidate/derived/` |
 | Canonical source | full-run source (promoted copy in paper_candidate) |
+| Promotion path | Applied 2026-09-10: the authorized additive `promote_targeted.py` run (`promotion_scope = targeted_extension`) copied the allowlist into `outputs/paper_candidate/`; it never replaced the primary candidate, and the `outputs/full` source keeps `paper_result = false`. |
 
 ### Targeted appendix figure
 
@@ -96,6 +98,7 @@ Key files: `exp1_targeted_cancellation_sweep.csv`,
 | Key claim supported | Targeted cancellation appendix figure and its source data |
 | Interpretation boundary | Full-run figure bundle; the promoted paper figures live in `outputs/paper_candidate/figures/` |
 | Canonical source | full-run copy (promoted copy in paper_candidate) |
+| Promotion path | Applied 2026-09-10: the authorized additive `promote_targeted.py` run (`promotion_scope = targeted_extension`) copied the allowlist into `outputs/paper_candidate/`; it never replaced the primary candidate, and the `outputs/full` source keeps `paper_result = false`. |
 
 ### Full self-check / validation / provenance
 
